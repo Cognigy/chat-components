@@ -1,6 +1,5 @@
 import { FC } from "react";
 import classnames from "classnames";
-import "@fontsource/figtree"
 
 import ChatBubble from "./common/ChatBubble";
 
