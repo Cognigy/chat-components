@@ -1,3 +1,4 @@
-import Message from "./Message";
+import Message, { IMessageProps } from "./Message";
 
 export { Message };
+export type { IMessageProps }
