@@ -2,6 +2,7 @@
 
 ## Develop
 `npm run dev`
+`npm run test:watch`
 
-## Build and publish (TBD)
-`npm run publish`
+## Publish to NPM registry
+`npm publish --access public`
