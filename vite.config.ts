@@ -19,7 +19,6 @@ export default defineConfig({
       formats: ["es"],
     },
     rollupOptions: {
-      // external: ["react", "react-dom"], // We will ship all deps 
       output: {
         format: "es",
       },
