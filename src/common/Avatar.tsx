@@ -10,7 +10,7 @@ interface IAvatarProps {
 }
 
 const Avatar: FC<IAvatarProps> = props => {
-	const classNames = classnames(classes.bubble, props.className, "avatar");
+	const classNames = classnames(classes.avatar, props.className, "avatar");
 
 	return <img alt={props.alt} className={classNames} src={props.src} />;
 };
