@@ -30,7 +30,9 @@ const Message: FC<MessageProps> = props => {
 	return (
 		<article className={rootClassName}>
 			<Header />
-			<ChatBubble><MessageComponent action={props.action} message={props.message} /></ChatBubble>
+			<ChatBubble>
+				<MessageComponent action={props.action} message={props.message} />
+			</ChatBubble>
 		</article>
 	);
 };
