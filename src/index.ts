@@ -1,4 +1,5 @@
 import Message, { MessageProps } from "./Message";
+import { match } from "./matcher";
 
-export { Message };
+export { Message, match };
 export type { MessageProps };
