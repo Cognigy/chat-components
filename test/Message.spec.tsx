@@ -4,9 +4,9 @@ import Message from "../src/Message";
 
 describe("Message", () => {
 	it("renders text message", () => {
-		const message = { text: "Hello World" };
+		const message = { text: "Hello World", source: "bot" };
 
-		render(<Message source="bot" message={message} />);
+		render(<Message message={message} />);
 
 	});
 });

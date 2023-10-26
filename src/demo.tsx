@@ -6,20 +6,20 @@ import Message, { MessageProps } from "./Message.tsx";
 
 const messages: MessageProps[] = [
 	{
-		source: "bot",
-		message: {
+    message: {
+      source: "bot",
 			text: "Hello, how can I help you?",
 		},
 	},
 	{
-		source: "user",
-		message: {
+    message: {
+      source: "user",
 			text: "I have a problem with my order",
 		},
 	},
 	{
-		source: "bot",
-		message: {
+    message: {
+      source: "bot",
 			text: "Sorry to here that. That sounds like a perfect time to test multiline message rendering, don't you think?",
 		},
 	},

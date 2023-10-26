@@ -6,7 +6,6 @@ import ChatBubble from "./common/ChatBubble";
 import Header from "./common/Header";
 import { match, MatchConfig } from "./matcher";
 
-type MessageSource = "agent" | "user" | "bot";
 type MessageContent = any;
 
 export interface MessageProps {
@@ -14,18 +13,22 @@ export interface MessageProps {
 	className?: string;
 	message: MessageContent;
 	plugins?: MatchConfig[];
-	source: MessageSource;
+	onEmitAnalytics?: (event: string, payload?: any) => void;
 }
 
 const Message: FC<MessageProps> = props => {
 	const rootClassName = classnames(
 		"webchat-message-row",
 		props.className,
-		props.source,
+		props.message.source,
 		classes.message,
 	);
 
 	const MessageComponent = match(props.message, props.plugins);
+
+	if (!MessageComponent) {
+		return null;
+	}
 
 	return (
 		<article className={rootClassName}>
