@@ -1,10 +1,11 @@
 import { ComponentType } from "react";
 import { Text } from "./messages";
-import { MessagePasstroughProps } from "./messages/types";
+import { MessagePasstroughProps, TMessage } from "./messages/types";
 import TextWithButtons from "./messages/TextWithButtons/TextWithButtons";
 
+
 export type MatchConfig = {
-	rule: (message: any) => boolean;
+	rule: (message: TMessage) => boolean;
 	component: ComponentType<MessagePasstroughProps>;
 };
 
@@ -25,7 +26,7 @@ const defaultConfig: MatchConfig[] = [
  * Matches a message to a component by given rule.
  * Accepts `configExtended` to extend with custom rules.
  */
-export function match(message: any, configExtended: MatchConfig[] = []) {
+export function match(message: TMessage, configExtended: MatchConfig[] = []) {
 	const config = [...configExtended, ...defaultConfig];
 
 	const match = config.find((matcher: MatchConfig) => matcher.rule(message));

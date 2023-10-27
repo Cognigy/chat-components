@@ -18,6 +18,7 @@
 		"test:watch": "vitest"
 	},
 	"devDependencies": {
+		"@cognigy/socket-client": "^5.0.0-beta.2",
 		"@testing-library/jest-dom": "^6.1.4",
 		"@testing-library/react": "^14.0.0",
 		"@types/react": "^18.2.31",
@@ -37,8 +38,8 @@
 		"vitest": "^0.34.6"
 	},
 	"dependencies": {
+		"classnames": "^2.3.2",
 		"react": "^18.2.0",
-		"react-dom": "^18.2.0",
-		"classnames": "^2.3.2"
+		"react-dom": "^18.2.0"
 	}
 }
