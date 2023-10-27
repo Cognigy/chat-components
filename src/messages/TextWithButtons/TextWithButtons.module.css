@@ -1,0 +1,24 @@
+.text {
+    white-space: pre-wrap;
+    padding-block-end: 8px;
+}
+
+.buttons {
+    align-items: flex-start;
+    display: flex;
+    flex-direction: column;
+    margin-top: 10px;
+}
+
+.button {
+    background: transparent;
+    border: none;
+    border-top: 1px solid #e6e6e6;
+    cursor: pointer;
+    display: block;
+    font-weight: inherit;
+    font: inherit;
+    padding-block: 12px;
+    padding-inline: 0;
+    width: 100%;
+}

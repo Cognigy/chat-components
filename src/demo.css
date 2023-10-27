@@ -1,5 +1,8 @@
+body {
+	background-color: gray;
+}
 #root {
-	border: 1px solid #ccc;
+	background-color: #fff;
 	font-family:
 		Figtree,
 		system-ui,
@@ -15,7 +18,6 @@
 		sans-serif;
 	margin-inline: auto;
 	width: 375px;
-	padding-inline: 20px;
 	height: 620px;
 	overflow-y: auto;
 	resize: both;
