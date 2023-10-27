@@ -6,14 +6,16 @@ import ChatBubble from "./common/ChatBubble";
 import Header from "./common/Header";
 import { match, MatchConfig } from "./matcher";
 
+// TODO
 type MessageContent = any;
 
 export interface MessageProps {
-	action?: () => void;
+	action?: (payload: Record<string, unknown>) => void;
 	className?: string;
 	message: MessageContent;
 	plugins?: MatchConfig[];
-	onEmitAnalytics?: (event: string, payload?: any) => void;
+	onEmitAnalytics?: (event: string, payload?: unknown) => void;
+	config?: unknown; // TODO Webchat config type
 }
 
 const Message: FC<MessageProps> = props => {
