@@ -1,4 +1,5 @@
 import { Text } from "./messages";
+import Image from "./messages/Image";
 
 export type MatchConfig = {
 	rule: (message: any) => boolean;
@@ -16,6 +17,13 @@ const defaultConfig = [
 		},
 		component: Text,
 	},
+	{
+		rule: (message: any) => {
+			console.log(message);
+			return message?.data?._cognigy?._webchat?.message?.attachment?.type === "image"
+		},
+		component: Image
+	}
 ];
 
 /**
