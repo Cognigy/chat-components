@@ -1,0 +1,44 @@
+{
+	"name": "@cognigy/chat-components",
+	"version": "0.2.2",
+	"type": "module",
+	"exports": "./dist/chat-components.js",
+	"files": [
+		"./dist/**/*",
+		"./src/**/*"
+	],
+	"scripts": {
+		"dev": "vite",
+		"build": "tsc && vite build",
+		"lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
+		"preview": "vite preview",
+		"prepack": "npm run build",
+		"test": "vitest run",
+		"test:ui": "vitest --ui",
+		"test:watch": "vitest"
+	},
+	"devDependencies": {
+		"@testing-library/jest-dom": "^6.1.4",
+		"@testing-library/react": "^14.0.0",
+		"@types/react": "^18.2.31",
+		"@types/react-dom": "^18.2.14",
+		"@typescript-eslint/eslint-plugin": "^6.9.0",
+		"@typescript-eslint/parser": "^6.9.0",
+		"@vitejs/plugin-react-swc": "^3.4.0",
+		"@vitest/ui": "^0.34.6",
+		"eslint": "^8.52.0",
+		"eslint-plugin-jsx-a11y": "^6.7.1",
+		"eslint-plugin-react-hooks": "^4.6.0",
+		"eslint-plugin-react-refresh": "^0.4.3",
+		"jsdom": "^22.1.0",
+		"typescript": "^5.2.2",
+		"vite": "^4.5.0",
+		"vite-plugin-css-injected-by-js": "^3.3.0",
+		"vitest": "^0.34.6"
+	},
+	"dependencies": {
+		"react": "^18.2.0",
+		"react-dom": "^18.2.0",
+		"classnames": "^2.3.2"
+	}
+}

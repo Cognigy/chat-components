@@ -1,0 +1,18 @@
+.bubble {
+	border-radius: var(--webchat-bubble-border-radius, 15px);
+	border: var(--webchat-bubble-border-width, 1px) var(--webchat-bubble-border-style, solid)
+		var(--webchat-bubble-border-color, #ccc);
+	padding: 12px;
+	max-width: 295px;
+	width: max-content;
+}
+
+:global(.bot) .bubble {
+	background-color: var(--webchat-bubble-background-bot, transparent);
+}
+
+:global(.user) .bubble {
+	background-color: var(--webchat-bubble-background-user, #e7ebff);
+	border-color: var(--webchat-bubble-border-color-user, transparent);
+	margin-inline-start: auto;
+}
