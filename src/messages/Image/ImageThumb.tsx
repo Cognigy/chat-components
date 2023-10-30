@@ -14,23 +14,23 @@ const ImageThumb = () => {
 
 	const handleKeyDown = (event: React.KeyboardEvent<HTMLDivElement>) => {
 		event.key === "Enter" && onExpand && onExpand();
-    };
-    
-    const isDynamicRatio = !config?.settings?.dynamicImageAspectRatio; // temp
+	};
+	
+	const isDynamicRatio = !config?.settings?.dynamicImageAspectRatio; // temp
 
-    const flexImageClasses = cx({
-        flexImage: true,
+	const flexImageClasses = cx({
+		flexImage: true,
 		wrapper: true,
 		wrapperDownloadable: isDownloadable,
-    });
+	});
 
-    const fixedImageClasses = cx({
-        fixedImage: true,
+	const fixedImageClasses = cx({
+		fixedImage: true,
 		wrapper: true,
-        wrapperDownloadable: isDownloadable,
-        templateMedia: template === 'media',
-        templateGeneric: template === 'generic', 
-        templateList: template === 'list'
+		wrapperDownloadable: isDownloadable,
+		templateMedia: template === 'media',
+		templateGeneric: template === 'generic', 
+		templateList: template === 'list'
 	});
 
 	const backgroundImage = getBackgroundImage(url);

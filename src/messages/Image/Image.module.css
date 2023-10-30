@@ -1,48 +1,48 @@
 .wrapper {
-    border-radius: var(--webchat-bubble-border-radius, 15px);
+	border-radius: var(--webchat-bubble-border-radius, 15px);
 	max-width: 295px;
 	width: max-content;
 }
 
 .wrapperDownloadable {
-    cursor: pointer;
+	cursor: pointer;
 }
 .wrapperDownloadable:hover {
    opacity: .8;
 }
 .wrapperDownloadable:focus {
-    opacity: .8;
-    outline: none;
+	opacity: .8;
+	outline: none;
  }
 
 .flexImage {
-    display: block;
-    width: 100%;
+	display: block;
+	width: 100%;
 }
 
 .flexImage img {
-    aspect-ratio: 16/9;
-    width: 100%;
-    object-fit: cover;
-    object-position: left;
-    border-radius: var(--webchat-bubble-border-radius, 15px);
+	aspect-ratio: 16/9;
+	width: 100%;
+	object-fit: cover;
+	object-position: left;
+	border-radius: var(--webchat-bubble-border-radius, 15px);
 }
 
 .fixedImage {
-    background-size: cover;
-    background-position: center center;
+	background-size: cover;
+	background-position: center center;
 }
 
 .templateMedia {
-    padding-top: 75%;
+	padding-top: 75%;
 }
 
 .templateGeneric {
-    padding-top: 50%;
-    display: table;
-    width: 100%;
+	padding-top: 50%;
+	display: table;
+	width: 100%;
 }
 
 .templateList {
-    padding-top: 50%;
+	padding-top: 50%;
 }

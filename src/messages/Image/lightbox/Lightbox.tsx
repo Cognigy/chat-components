@@ -39,8 +39,8 @@ const Lightbox = () => {
 					onClick={handleOnClickImage}
 					onTouchMove={handleOnSwipeImage}
 				/>
-            </div>
-            <LightboxHeader />
+			</div>
+			<LightboxHeader />
 			<div />
 		</div>
 	);
