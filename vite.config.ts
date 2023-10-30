@@ -1,9 +1,10 @@
 import { defineConfig } from "vitest/config";
 import react from "@vitejs/plugin-react-swc";
+import svgr from "vite-plugin-svgr";
 import cssInjectedByJsPlugin from "vite-plugin-css-injected-by-js";
 
 export default defineConfig({
-	plugins: [react(), cssInjectedByJsPlugin()],
+	plugins: [react(), cssInjectedByJsPlugin(), svgr()],
 	test: {
 		environment: "jsdom",
 		globals: true,

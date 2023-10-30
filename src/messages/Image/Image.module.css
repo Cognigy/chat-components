@@ -1,0 +1,52 @@
+.wrapper {
+    cursor: default;
+}
+.wrapper:hover {
+   opacity: 1;
+}
+.wrapper:focus {
+    opacity: 1;
+    outline: none;
+}
+
+.wrapperDownloadable {
+    cursor: pointer;
+}
+.wrapperDownloadable:hover {
+   opacity: .8;
+}
+.wrapperDownloadable:focus {
+    opacity: .8;
+    outline: none;
+ }
+
+.flexImage {
+    display: block;
+    width: 100%;
+}
+
+.flexImage img {
+    aspect-ratio: 16/9;
+    width: 100%;
+    object-fit: cover;
+    object-position: left;
+}
+
+.fixedImage {
+    background-size: cover;
+    background-position: center center;
+}
+
+.templateMedia {
+    padding-top: 75%;
+}
+
+.templateGeneric {
+    padding-top: 50%;
+    display: table;
+    width: 100%;
+}
+
+.templateList {
+    padding-top: 50%;
+}
