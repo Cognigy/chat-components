@@ -34,7 +34,7 @@
 	top: 0;
 	height: 56px;
 	width: 100%;
-	background-color: var(--webchat-primary-color, #3f51b5);
+	background-color: white;
 	overflow: hidden;
 	display: flex;
 	justify-content: space-between;
@@ -44,7 +44,7 @@
 	display: flex;
 	align-items: center;
 	margin-left: 15px;
-	color: var(--webchat-primary-contrast-color, #3f51b5);
+	color: black;
 	font-weight: 700;
 	font-size: 16px;
 }
@@ -56,24 +56,28 @@
 }
 
 .icon {
-	padding: 8px;
+	display: flex;
+    align-items: center;
+    justify-content: center;
 	box-sizing: border-box;
 	background-color: transparent;
 	border: none;
 	outline: none;
 	margin: 0;
 	transition: background-color 0.1s ease-out, color 0.1s ease-out, fill 0.1s ease-out;
-	color: var(--webchat-primary-contrast-color, #3f51b5);
+	color: black;
 	border-radius: 50%;
 	cursor: pointer;
+    width: 40px;
+    height: 40px;
 }
 
 .icon:hover,
 .icon:focus {
-	background-color: var(--webchat-primary-strong-color, #3f51b5);
+	background-color: lightgrey;
 	opacity: 0.85;
 }
 
 .icon svg {
-	fill: var(--webchat-primary-contrast-color, white);
+	fill: black;
 }

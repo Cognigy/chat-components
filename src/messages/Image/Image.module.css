@@ -1,12 +1,7 @@
 .wrapper {
-    cursor: default;
-}
-.wrapper:hover {
-   opacity: 1;
-}
-.wrapper:focus {
-    opacity: 1;
-    outline: none;
+    border-radius: var(--webchat-bubble-border-radius, 15px);
+	max-width: 295px;
+	width: max-content;
 }
 
 .wrapperDownloadable {
@@ -30,6 +25,7 @@
     width: 100%;
     object-fit: cover;
     object-position: left;
+    border-radius: var(--webchat-bubble-border-radius, 15px);
 }
 
 .fixedImage {

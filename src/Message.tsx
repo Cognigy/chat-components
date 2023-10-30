@@ -2,7 +2,6 @@ import { FC } from "react";
 import classnames from "classnames";
 
 import classes from "./Message.module.css";
-import ChatBubble from "./common/ChatBubble";
 import Header from "./common/Header";
 import { match, MatchConfig } from "./matcher";
 
@@ -33,9 +32,7 @@ const Message: FC<MessageProps> = props => {
 	return (
 		<article className={rootClassName}>
 			<Header />
-			<ChatBubble>
-				<MessageComponent action={props.action} message={props.message} />
-			</ChatBubble>
+			<MessageComponent action={props.action} message={props.message} />
 		</article>
 	);
 };

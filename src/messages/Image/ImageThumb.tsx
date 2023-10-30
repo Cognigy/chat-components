@@ -20,16 +20,16 @@ const ImageThumb = () => {
 
     const flexImageClasses = cx({
         flexImage: true,
-		wrapper: !isDownloadable,
+		wrapper: true,
 		wrapperDownloadable: isDownloadable,
     });
 
     const fixedImageClasses = cx({
         fixedImage: true,
-		wrapper: !isDownloadable,
+		wrapper: true,
         wrapperDownloadable: isDownloadable,
         templateMedia: template === 'media',
-        templateGeneric: template === 'generic',
+        templateGeneric: template === 'generic', 
         templateList: template === 'list'
 	});
 
