@@ -31,7 +31,7 @@ const LightboxHeader = () => {
 				<button
 					ref={firstButton}
 					onClick={handleDownload}
-					onKeyDown={(e) => handleKeyDownload(e)}
+					onKeyDown={e => handleKeyDownload(e)}
 					aria-label="Download fullsize image"
 					className={classes.icon}
 				>
@@ -39,7 +39,7 @@ const LightboxHeader = () => {
 				</button>
 				<button
 					onClick={onClose}
-					onKeyDown={(e) => handleKeyClose(e)}
+					onKeyDown={e => handleKeyClose(e)}
 					aria-label="Close fullsize image modal"
 					className={classes.icon}
 				>

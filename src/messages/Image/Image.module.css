@@ -8,12 +8,12 @@
 	cursor: pointer;
 }
 .wrapperDownloadable:hover {
-   opacity: .8;
+	opacity: 0.8;
 }
 .wrapperDownloadable:focus {
-	opacity: .8;
+	opacity: 0.8;
 	outline: none;
- }
+}
 
 .flexImage {
 	display: block;

@@ -18,9 +18,10 @@ const defaultConfig = [
 		component: Text,
 	},
 	{
-		rule: (message: any) => message?.data?._cognigy?._webchat?.message?.attachment?.type === "image",
-		component: Image
-	}
+		rule: (message: any) =>
+			message?.data?._cognigy?._webchat?.message?.attachment?.type === "image",
+		component: Image,
+	},
 ];
 
 /**

@@ -36,15 +36,15 @@
 		"vite-plugin-css-injected-by-js": "^3.3.0",
 		"vite-plugin-svgr": "^4.1.0",
 		"vitest": "^0.34.6",
-    "react": "^18.2.0",
+		"react": "^18.2.0",
 		"react-dom": "^18.2.0"
 	},
 	"dependencies": {
 		"@cognigy/socket-client": "^5.0.0-beta.2",
 		"classnames": "^2.3.2"
 	},
-  "peerDependencies": {
-    "react": "^17.x || 18.x",
-    "react-dom": "^17.x || 18.x"
-  }
+	"peerDependencies": {
+		"react": "^17.x || 18.x",
+		"react-dom": "^17.x || 18.x"
+	}
 }
