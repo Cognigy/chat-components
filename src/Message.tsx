@@ -2,6 +2,7 @@ import { FC } from "react";
 import classnames from "classnames";
 
 import classes from "./Message.module.css";
+import "./theme.css";
 import Header from "./common/Header";
 import { match, MatchConfig } from "./matcher";
 
