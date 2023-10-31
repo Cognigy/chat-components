@@ -1,0 +1,27 @@
+:root {
+    --primary-color: var(--webchat-primary-color, #2455E6);
+    --primary-color-hover: color-mix(in srgb, var(--primary-color), #000 20%);
+    --primary-color-disabled: color-mix(in srgb, var(--primary-color), #fff 90%);
+
+    --secondary-color: var(--webchat-secondary-color, #1a1a1a);
+    --secondary-color-hover: color-mix(in srgb, var(--secondary-color), #fff 20%);
+    --secondary-color-disabled: color-mix(in srgb, var(--secondary-color), #fff 90%);
+
+    --background-bot-message: var(--webchat-background-bot-message, #fff);
+    --background-user-message: var(--webchat-background-user-message, #e8ebff);
+
+    --text-link: var(--webchat-text-link, #6688ed);
+    --text-link-hover: color-mix(in srgb, var(--text-link), #000 20%);
+    --text-link-disabled: color-mix(in srgb, var(--text-link), #fff 90%);
+
+    --black-10: #1a1a1a;
+    --black-20: #333;
+    --black-40: #666;
+    --black-60: #999;
+    --black-80: #ccc;
+    --black-95: #f2f2f2;
+    --white: #fff;
+
+    --text-dark: var(--webchat-text-dark, --black-10);
+    --text-light: var(--webchat-text-light, --white);
+}

@@ -2,6 +2,7 @@ import { FC } from "react";
 import classnames from "classnames";
 
 import classes from "./Message.module.css";
+import "./theme.css";
 import ChatBubble from "./common/ChatBubble";
 import Header from "./common/Header";
 import { match, MatchConfig } from "./matcher";
