@@ -1,15 +1,15 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { FC, useCallback, useRef, useState } from "react";
 import ReactPlayer from "react-player";
 import classes from "./Audio.module.css";
 import { MessagePasstroughProps } from "../types";
 import Controls from "./Controls";
+import { OnProgressProps } from "react-player/base";
 
 const Audio: FC<MessagePasstroughProps> = props => {
 	const { url, altText } =
 		props?.message?.data?._cognigy?._webchat?.message?.attachment?.payload || {};
 
-	const playerRef = useRef<ReactPlayer | null>(null);
+	const playerRef = useRef<ReactPlayer| null>(null);
 	const [playing, setPlaying] = useState<boolean>(false);
 	const [progress, setProgress] = useState<number>(0);
 	const [duration, setDuration] = useState<number>(0);
@@ -34,7 +34,7 @@ const Audio: FC<MessagePasstroughProps> = props => {
 		setPlaying(false);
 	}, []);
 
-	const handleProgress = useCallback((state: any) => {
+	const handleProgress = useCallback((state: OnProgressProps) => {
 		setProgress(state.played);
 	}, []);
 

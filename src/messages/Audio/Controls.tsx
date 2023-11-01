@@ -1,10 +1,10 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-import { FC, useEffect, useRef, useState } from "react";
+import { ChangeEvent, FC, MutableRefObject, useEffect, useRef, useState } from "react";
 import classes from "./Audio.module.css";
 import { PlayIcon, PauseIcon } from "src/assets/svg";
+import ReactPlayer from "react-player";
 
 type ControlsProps = {
-	playerRef: any;
+	playerRef: MutableRefObject<ReactPlayer | null>;
 	playing: boolean;
 	progress: number;
 	duration: number;
@@ -32,7 +32,7 @@ const Controls: FC<ControlsProps> = props => {
 		setSeeking(true);
 	};
 
-	const handleSeekChange = (e: any) => {
+	const handleSeekChange = (e: ChangeEvent<HTMLInputElement>) => {
 		playerRef.current?.seekTo(parseFloat(e.target.value));
 		setPlayed(parseFloat(e.target.value));
 	};
