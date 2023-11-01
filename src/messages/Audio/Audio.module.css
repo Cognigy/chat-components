@@ -22,7 +22,7 @@
 	width: 100%;
 	background-color: var(--white);
 	border-radius: var(--bubble-border-radius);
-	border: 1px solid var(--black-95);
+	border: 1px solid var(--black-80);
 	padding: 0px 15px;
 }
 
