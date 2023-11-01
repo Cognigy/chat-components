@@ -34,7 +34,7 @@
 	top: 0;
 	height: 56px;
 	width: 100%;
-	background-color: white;
+	background-color: var(--white);
 	overflow: hidden;
 	display: flex;
 	justify-content: space-between;
@@ -44,7 +44,7 @@
 	display: flex;
 	align-items: center;
 	margin-left: 15px;
-	color: black;
+	color: var(--black-10);
 	font-weight: 700;
 	font-size: 16px;
 }
@@ -68,7 +68,7 @@
 		background-color 0.1s ease-out,
 		color 0.1s ease-out,
 		fill 0.1s ease-out;
-	color: black;
+	color: var(--black-10);
 	border-radius: 50%;
 	cursor: pointer;
 	width: 40px;
@@ -77,10 +77,10 @@
 
 .icon:hover,
 .icon:focus {
-	background-color: lightgrey;
+	background-color: var(--black-95);
 	opacity: 0.85;
 }
 
 .icon svg {
-	fill: black;
+	fill: var(--black-10);
 }

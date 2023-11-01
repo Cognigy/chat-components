@@ -1,5 +1,7 @@
-import { Text } from "./messages";
-import Image from "./messages/Image";
+import { Text } from "src/messages";
+import Image from "src/messages/Image";
+import Video from "src/messages/Video";
+import Audio from "src/messages/Audio";
 
 export type MatchConfig = {
 	rule: (message: any) => boolean;
@@ -21,6 +23,16 @@ const defaultConfig = [
 		rule: (message: any) =>
 			message?.data?._cognigy?._webchat?.message?.attachment?.type === "image",
 		component: Image,
+	},
+	{
+		rule: (message: any) =>
+			message?.data?._cognigy?._webchat?.message?.attachment?.type === "video",
+		component: Video,
+	},
+	{
+		rule: (message: any) =>
+			message?.data?._cognigy?._webchat?.message?.attachment?.type === "audio",
+		component: Audio,
 	},
 ];
 
