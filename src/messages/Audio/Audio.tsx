@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { FC, useRef, useState } from "react";
+import { FC, useCallback, useRef, useState } from "react";
 import ReactPlayer from "react-player";
 import classes from "./Audio.module.css";
 import { MessagePasstroughProps } from "../types";
@@ -14,7 +14,7 @@ const Audio: FC<MessagePasstroughProps> = props => {
 	const [progress, setProgress] = useState<number>(0);
 	const [duration, setDuration] = useState<number>(0);
 
-	const handleFocus = (player: ReactPlayer) => {
+	const handleFocus = useCallback((player: ReactPlayer) => {
 		const chatHistory = document.getElementById("webchatChatHistoryWrapperLiveLogPanel");
 
 		// if(!config?.settings.enableAutoFocus) return;
@@ -24,23 +24,23 @@ const Audio: FC<MessagePasstroughProps> = props => {
 		setTimeout(() => {
 			player.getInternalPlayer()?.focus();
 		}, 100);
-	};
+	}, []);
 
-	const handlePlay = () => {
+	const handlePlay = useCallback(() => {
 		setPlaying(true);
-	};
+	}, []);
 
-	const handlePause = () => {
+	const handlePause = useCallback(() => {
 		setPlaying(false);
-	};
+	}, []);
 
-	const handleProgress = (state: any) => {
+	const handleProgress = useCallback((state: any) => {
 		setProgress(state.played);
-	};
+	}, []);
 
-	const handleDuration = (duration: number) => {
+	const handleDuration = useCallback((duration: number) => {
 		setDuration(duration);
-	};
+	}, []);
 
 	if (!url) return null;
 
@@ -58,7 +58,7 @@ const Audio: FC<MessagePasstroughProps> = props => {
 				onDuration={handleDuration}
 				height={0}
 				width={0}
-				style={{ display: 'none' }}
+				style={{ display: "none" }}
 			/>
 			<Controls
 				playerRef={playerRef}

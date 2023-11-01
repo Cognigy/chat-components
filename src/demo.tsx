@@ -39,7 +39,7 @@ const messages: MessageProps[] = [
 							attachment: {
 								type: "image",
 								payload: {
-									url: "https://placekitten.com/300/300",
+									url: "https://picsum.photos/500/500",
 								},
 							},
 						},

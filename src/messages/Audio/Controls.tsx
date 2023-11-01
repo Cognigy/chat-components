@@ -32,8 +32,8 @@ const Controls: FC<ControlsProps> = props => {
 		setSeeking(true);
 	};
 
-    const handleSeekChange = (e: any) => {
-        playerRef.current?.seekTo(parseFloat(e.target.value));
+	const handleSeekChange = (e: any) => {
+		playerRef.current?.seekTo(parseFloat(e.target.value));
 		setPlayed(parseFloat(e.target.value));
 	};
 
@@ -41,35 +41,35 @@ const Controls: FC<ControlsProps> = props => {
 		setSeeking(false);
 	};
 
-    useEffect(() => {
+	useEffect(() => {
 		setPlayed(prevPlayed => {
 			if (prevPlayed !== progress) {
 				return progress;
 			}
 			return prevPlayed;
 		});
-    }, [progress, seeking]);
-    
-    const formatTime = () => {
-        const padString = (string: number) => {
-            return ("0" + string).slice(-2);
-        };
+	}, [progress, seeking]);
 
-        const seconds = duration * (1 - played);
-        const date = new Date(seconds * 1000);
-        const hh = date.getUTCHours();
-        const mm = date.getUTCMinutes();
-        const ss = padString(date.getUTCSeconds());
-        if (hh) {
-            return `${hh}:${padString(mm)}:${ss}`;
-        }
-        return `${mm}:${ss}`;
-    };
+	const formatTime = () => {
+		const padString = (string: number) => {
+			return ("0" + string).slice(-2);
+		};
+
+		const seconds = duration * (1 - played);
+		const date = new Date(seconds * 1000);
+		const hh = date.getUTCHours();
+		const mm = date.getUTCMinutes();
+		const ss = padString(date.getUTCSeconds());
+		if (hh) {
+			return `${hh}:${padString(mm)}:${ss}`;
+		}
+		return `${mm}:${ss}`;
+	};
 
 	return (
 		<div className={classes.controls}>
-            <div className="duration">
-                <time>{formatTime()}</time>
+			<div className="duration">
+				<time>{formatTime()}</time>
 			</div>
 
 			<div className={classes.progressBar}>
