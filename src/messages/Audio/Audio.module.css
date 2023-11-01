@@ -28,7 +28,7 @@
 
 .playButton {
 	border-radius: 50%;
-	background-color: var(--black-10);
+	background-color: var(--secondary-color);
 	width: 30px;
 	height: 30px;
 	border: none;

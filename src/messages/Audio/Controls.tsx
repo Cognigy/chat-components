@@ -27,7 +27,8 @@ const Controls: FC<ControlsProps> = props => {
 		}
 	};
 
-    const handleSeekMouseDown = () => {
+	const handleSeekMouseDown = () => {
+		handlePause();
 		setSeeking(true);
 	};
 
@@ -84,7 +85,7 @@ const Controls: FC<ControlsProps> = props => {
 					style={{
 						background: `linear-gradient(to right, var(--primary-color) ${
 							progress * 100
-						}%, #ccc ${progress * 100}%)`,
+						}%, var(--black-80) ${progress * 100}%)`,
 					}}
 				/>
 			</div>
