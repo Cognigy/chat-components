@@ -43,7 +43,7 @@ const Controls: FC<ControlsProps> = props => {
 
 	useEffect(() => {
 		setPlayed(prevPlayed => {
-			if (prevPlayed !== progress) {
+			if (!seeking && prevPlayed !== progress) {
 				return progress;
 			}
 			return prevPlayed;
