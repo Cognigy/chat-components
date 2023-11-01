@@ -67,7 +67,7 @@
 .progressBar input[type="range"] {
 	-webkit-appearance: none;
 	appearance: none;
-	width: 10rem;
+	width: 100%;
 	cursor: pointer;
 	outline: none;
 	border-radius: var(--bubble-border-radius);
