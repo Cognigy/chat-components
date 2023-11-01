@@ -32,8 +32,8 @@ const Video: FC<MessagePasstroughProps> = props => {
 				controls
 				className={classes.player}
 				playIcon={<VideoPlayIcon width="50px" height="50px" />}
-				width="auto"
-				height="auto"
+				width="unset"
+				height="unset"
 				onReady={handleFocus}
 			/>
 		</div>
