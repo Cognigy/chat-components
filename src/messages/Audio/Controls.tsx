@@ -1,4 +1,4 @@
-import { ChangeEvent, FC, MutableRefObject, useEffect, useRef, useState } from "react";
+import { ChangeEvent, FC, MutableRefObject, useEffect, useState } from "react";
 import classes from "./Audio.module.css";
 import { PlayIcon, PauseIcon } from "src/assets/svg";
 import ReactPlayer from "react-player";
@@ -17,7 +17,6 @@ const Controls: FC<ControlsProps> = props => {
 
 	const [played, setPlayed] = useState(0);
 	const [seeking, setSeeking] = useState(false);
-	const playPauseButtonRef = useRef<HTMLButtonElement>(null);
 
 	const togglePlayAndPause = () => {
 		if (playing) {
@@ -92,7 +91,6 @@ const Controls: FC<ControlsProps> = props => {
 
 			<div className="buttons">
 				<button
-					ref={playPauseButtonRef}
 					className={classes.playButton}
 					onClick={togglePlayAndPause}
 				>

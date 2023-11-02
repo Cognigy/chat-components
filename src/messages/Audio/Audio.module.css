@@ -75,7 +75,7 @@
 	background: var(--black-80);
 }
 
-/* Thumb: webkit */
+/* Thumb: Webkit */
 .progressBar input[type="range"]::-webkit-slider-thumb {
 	-webkit-appearance: none;
 	appearance: none;
@@ -109,7 +109,7 @@
 	box-shadow: 0 0 0 13px var(--primary-color-opacity-20);
 }
 
-/* Hover, active & focus Thumb: Firfox */
+/* Hover, active & focus Thumb: Firefox */
 
 .progressBar input[type="range"]::-moz-range-thumb:hover {
 	box-shadow: 0 0 0 10px var(--primary-color-opacity-10);
