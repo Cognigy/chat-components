@@ -43,6 +43,7 @@ const ImageThumb = () => {
 			tabIndex={divTabIndex}
 			role={divRole}
 			aria-label={divAriaLabel}
+			data-testid="image-message"
 		>
 			<img src={url} alt={altText || "Attachment Image"} />
 		</div>
@@ -55,6 +56,7 @@ const ImageThumb = () => {
 			tabIndex={divTabIndex}
 			role={divRole}
 			aria-label={divAriaLabel}
+			data-testid="image-message"
 		>
 			<span role="img" aria-label={altText || "Attachment Image"} />
 		</div>

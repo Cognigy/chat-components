@@ -23,7 +23,7 @@ const Video: FC<MessagePasstroughProps> = props => {
 	if (!url) return null;
 
 	return (
-		<div className={classes.wrapper}>
+		<div className={classes.wrapper} data-testid="video-message">
 			<span className={classes.srOnly}>{altText || "Attachment Video"}</span>
 			<ReactPlayer
 				url={url}

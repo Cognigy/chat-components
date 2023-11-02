@@ -66,7 +66,7 @@ const Controls: FC<ControlsProps> = props => {
 	};
 
 	return (
-		<div className={classes.controls}>
+		<div className={classes.controls} data-testid="audio-controls">
 			<div className="duration">
 				<time>{formatTime()}</time>
 			</div>
@@ -90,10 +90,7 @@ const Controls: FC<ControlsProps> = props => {
 			</div>
 
 			<div className="buttons">
-				<button
-					className={classes.playButton}
-					onClick={togglePlayAndPause}
-				>
+				<button className={classes.playButton} onClick={togglePlayAndPause}>
 					{playing ? (
 						<PauseIcon className={classes.pauseIcon} />
 					) : (

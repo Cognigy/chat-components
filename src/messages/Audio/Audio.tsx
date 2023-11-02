@@ -9,7 +9,7 @@ const Audio: FC<MessagePasstroughProps> = props => {
 	const { url, altText } =
 		props?.message?.data?._cognigy?._webchat?.message?.attachment?.payload || {};
 
-	const playerRef = useRef<ReactPlayer| null>(null);
+	const playerRef = useRef<ReactPlayer | null>(null);
 	const [playing, setPlaying] = useState<boolean>(false);
 	const [progress, setProgress] = useState<number>(0);
 	const [duration, setDuration] = useState<number>(0);
@@ -45,7 +45,7 @@ const Audio: FC<MessagePasstroughProps> = props => {
 	if (!url) return null;
 
 	return (
-		<div className={classes.wrapper}>
+		<div className={classes.wrapper} data-testid="audio-message">
 			<span className={classes.srOnly}>{altText || "Attachment Audio"}</span>
 			<ReactPlayer
 				url={url}
