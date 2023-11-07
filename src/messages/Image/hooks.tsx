@@ -1,5 +1,5 @@
 import { useContext } from "react";
-import { IMessangerImageContext, MessangerImageContext } from "./context";
+import { IImageContext, ImageMessageContext } from "./context";
 
-export const useMessangerImageContext = () =>
-	useContext(MessangerImageContext) as IMessangerImageContext;
+export const useImageMessageContext = () =>
+	useContext(ImageMessageContext) as IImageContext;

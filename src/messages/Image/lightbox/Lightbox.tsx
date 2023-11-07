@@ -1,10 +1,10 @@
 import { useEffect } from "react";
-import { useMessangerImageContext } from "../hooks";
+import { useImageMessageContext } from "../hooks";
 import classes from "./Lightbox.module.css";
 import LightboxHeader from "./LightboxHeader";
 
 const Lightbox = () => {
-	const { url, altText, onClose } = useMessangerImageContext();
+	const { url, altText, onClose } = useImageMessageContext();
 
 	useEffect(() => {
 		const close = (event: KeyboardEvent) => {

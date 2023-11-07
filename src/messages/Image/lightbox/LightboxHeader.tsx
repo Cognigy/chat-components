@@ -1,10 +1,10 @@
 import { KeyboardEvent, useRef } from "react";
-import { useMessangerImageContext } from "../hooks";
+import { useImageMessageContext } from "../hooks";
 import classes from "./Lightbox.module.css";
 import { CloseIcon, DownloadIcon } from "src/assets/svg";
 
 const LightboxHeader = () => {
-	const { url, altText, onClose } = useMessangerImageContext();
+	const { url, altText, onClose } = useImageMessageContext();
 
 	const firstButton = useRef<HTMLButtonElement>(null);
 

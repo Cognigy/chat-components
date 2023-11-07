@@ -1,12 +1,12 @@
 import classes from "./Image.module.css";
 import classnames from "classnames/bind";
 import { getBackgroundImage } from "../../lib/css";
-import { useMessangerImageContext } from "./hooks";
+import { useImageMessageContext } from "./hooks";
 
 const cx = classnames.bind(classes);
 
 const ImageThumb = () => {
-	const { config, url, altText, template, isDownloadable, onExpand } = useMessangerImageContext();
+	const { config, url, altText, template, isDownloadable, onExpand } = useImageMessageContext();
 
 	const divTabIndex = isDownloadable ? 0 : -1;
 	const divRole = isDownloadable ? "button" : undefined;
