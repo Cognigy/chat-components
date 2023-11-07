@@ -20,12 +20,12 @@
 		"noUnusedParameters": true,
 		"noFallthroughCasesInSwitch": true,
 
-		"types": ["vite/client", "@testing-library/jest-dom"],
+		"types": ["vite/client", "jest", "@testing-library/jest-dom"],
 		"baseUrl": "./",
 		"paths": {
 			"src/*": ["./src/*"],
 			"test/*": ["./test/*"]
 		}
 	},
-	"include": ["src", "test/Message.spec.tsx"]
+	"include": ["src", "test/Message.spec.tsx", "test/Video.spec.tsx", "test/Audio.spec.tsx", "test/Image.specx.tsx"]
 }
