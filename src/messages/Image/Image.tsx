@@ -1,6 +1,6 @@
 import { FC, useMemo, useState } from "react";
 import { MessagePasstroughProps } from "../types";
-import { MessangerImageContext } from "./context";
+import { ImageMessageContext } from "./context";
 import Lightbox from "./lightbox/Lightbox";
 import ImageThumb from "./ImageThumb";
 
@@ -31,10 +31,10 @@ const Image: FC<MessagePasstroughProps> = props => {
 	if (!url) return null;
 
 	return (
-		<MessangerImageContext.Provider value={contextValue}>
+		<ImageMessageContext.Provider value={contextValue}>
 			<ImageThumb />
 			{showLightbox && <Lightbox />}
-		</MessangerImageContext.Provider>
+		</ImageMessageContext.Provider>
 	);
 };
 
