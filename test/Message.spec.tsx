@@ -7,6 +7,5 @@ describe("Message", () => {
 		const message = { text: "Hello World", source: "bot" };
 
 		render(<Message message={message} />);
-
 	});
 });

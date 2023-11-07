@@ -1,0 +1,48 @@
+.wrapper {
+	border-radius: var(--bubble-border-radius);
+	max-width: 295px;
+	width: max-content;
+}
+
+.wrapperDownloadable {
+	cursor: pointer;
+}
+.wrapperDownloadable:hover {
+	opacity: 0.8;
+}
+.wrapperDownloadable:focus {
+	opacity: 0.8;
+	outline: none;
+}
+
+.flexImage {
+	display: block;
+	width: 100%;
+}
+
+.flexImage img {
+	aspect-ratio: 16/9;
+	width: 100%;
+	object-fit: cover;
+	object-position: left;
+	border-radius: var(--bubble-border-radius);
+}
+
+.fixedImage {
+	background-size: cover;
+	background-position: center center;
+}
+
+.templateMedia {
+	padding-top: 75%;
+}
+
+.templateGeneric {
+	padding-top: 50%;
+	display: table;
+	width: 100%;
+}
+
+.templateList {
+	padding-top: 50%;
+}

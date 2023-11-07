@@ -1,0 +1,122 @@
+.wrapper {
+	border-radius: var(--bubble-border-radius);
+	max-width: 295px;
+	position: relative;
+	display: flex;
+}
+
+.srOnly {
+	position: absolute;
+	left: -10000px;
+	width: 1px;
+	height: 1px;
+	top: auto;
+	overflow: hidden;
+}
+
+.controls {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	height: 50px;
+	width: 100%;
+	background-color: var(--white);
+	border-radius: var(--bubble-border-radius);
+	border: 1px solid var(--black-80);
+	padding: 0px 15px;
+}
+
+.playButton {
+	border-radius: 50%;
+	background-color: var(--secondary-color);
+	width: 30px;
+	height: 30px;
+	border: none;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	cursor: pointer;
+}
+.playButton:focus {
+	border: none;
+	outline: none;
+}
+
+.playButton svg {
+	fill: var(--white);
+}
+
+.playIcon {
+	padding-left: 3px;
+	height: 15px;
+	width: 15px;
+}
+
+.pauseIcon {
+	height: 20px;
+	width: 20px;
+}
+
+/*** Custom range input ***/
+.progressBar {
+	display: flex;
+	width: 100%;
+	margin: 0px 15px;
+}
+
+.progressBar input[type="range"] {
+	-webkit-appearance: none;
+	appearance: none;
+	width: 100%;
+	cursor: pointer;
+	outline: none;
+	border-radius: var(--bubble-border-radius);
+	height: 3px;
+	background: var(--black-80);
+}
+
+/* Thumb: Webkit */
+.progressBar input[type="range"]::-webkit-slider-thumb {
+	-webkit-appearance: none;
+	appearance: none;
+	height: 15px;
+	width: 15px;
+	background-color: var(--primary-color);
+	border-radius: 50%;
+	border: none;
+	transition: 0.2s ease-in-out;
+}
+
+/* Thumb: Firefox */
+.progressBar input[type="range"]::-moz-range-thumb {
+	height: 15px;
+	width: 15px;
+	background-color: var(--primary-color);
+	border-radius: 50%;
+	border: none;
+	transition: 0.2s ease-in-out;
+}
+
+/* Hover, active & focus Thumb: Webkit */
+
+.progressBar input[type="range"]::-webkit-slider-thumb:hover {
+	box-shadow: 0 0 0 10px var(--primary-color-opacity-10);
+}
+.progressBar input[type="range"]:active::-webkit-slider-thumb {
+	box-shadow: 0 0 0 13px var(--primary-color-opacity-20);
+}
+.progressBar input[type="range"]:focus::-webkit-slider-thumb {
+	box-shadow: 0 0 0 13px var(--primary-color-opacity-20);
+}
+
+/* Hover, active & focus Thumb: Firefox */
+
+.progressBar input[type="range"]::-moz-range-thumb:hover {
+	box-shadow: 0 0 0 10px var(--primary-color-opacity-10);
+}
+.progressBar input[type="range"]:active::-moz-range-thumb {
+	box-shadow: 0 0 0 13px var(--primary-color-opacity-20);
+}
+.progressBar input[type="range"]:focus::-moz-range-thumb {
+	box-shadow: 0 0 0 13px var(--primary-color-opacity-20);
+}

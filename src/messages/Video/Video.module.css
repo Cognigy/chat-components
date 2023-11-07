@@ -1,0 +1,31 @@
+.wrapper {
+	border-radius: var(--bubble-border-radius);
+	max-width: 295px;
+	position: relative;
+}
+
+.srOnly {
+	position: absolute;
+	left: -10000px;
+	width: 1px;
+	height: 1px;
+	top: auto;
+	overflow: hidden;
+}
+
+.player {
+	aspect-ratio: 16/9;
+	max-width: 295px;
+	object-fit: cover;
+	object-position: left;
+	overflow: hidden;
+	border-radius: var(--bubble-border-radius);
+}
+
+.player > div:first-child {
+	background-color: var(--black-10);
+}
+
+.player > div:first-child:hover {
+	opacity: 0.8;
+}
