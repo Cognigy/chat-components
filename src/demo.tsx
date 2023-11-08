@@ -4,6 +4,9 @@ import ReactDOM from "react-dom/client";
 import "./demo.css";
 import Message, { MessageProps } from "./Message.tsx";
 
+//fixtures
+import listMessage from "test/fixtures/list.json";
+
 const messages: MessageProps[] = [
 	{
 		message: {
@@ -98,6 +101,9 @@ const messages: MessageProps[] = [
 				},
 			},
 		},
+	},
+	{
+		message: listMessage,
 	},
 ];
 

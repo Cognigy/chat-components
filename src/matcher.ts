@@ -2,6 +2,7 @@ import { Text } from "src/messages";
 import Image from "src/messages/Image";
 import Video from "src/messages/Video";
 import Audio from "src/messages/Audio";
+import List from "src/messages/List";
 
 export type MatchConfig = {
 	rule: (message: any) => boolean;
@@ -33,6 +34,12 @@ const defaultConfig = [
 		rule: (message: any) =>
 			message?.data?._cognigy?._webchat?.message?.attachment?.type === "audio",
 		component: Audio,
+	},
+	{
+		rule: (message: any) =>
+			message?.data?._cognigy?._webchat?.message?.attachment?.payload?.template_type ===
+			"list",
+		component: List,
 	},
 ];
 
