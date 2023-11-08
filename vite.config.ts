@@ -1,10 +1,11 @@
 import { defineConfig } from "vitest/config";
 import react from "@vitejs/plugin-react-swc";
+import svgr from "vite-plugin-svgr";
 import cssInjectedByJsPlugin from "vite-plugin-css-injected-by-js";
 import GithubActionsReporter from "vitest-github-actions-reporter";
 
 export default defineConfig({
-	plugins: [react(), cssInjectedByJsPlugin()],
+	plugins: [react(), cssInjectedByJsPlugin(), svgr()],
 	test: {
 		environment: "jsdom",
 		globals: true,
@@ -23,9 +24,20 @@ export default defineConfig({
 			formats: ["es"],
 		},
 		rollupOptions: {
+			external: ["react", "react-dom"],
 			output: {
 				format: "es",
+				globals: {
+					react: "React",
+					"react-dom": "ReactDOM",
+				},
 			},
+		},
+	},
+	resolve: {
+		alias: {
+			src: "/src",
+			test: "/test",
 		},
 	},
 });

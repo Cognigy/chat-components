@@ -1,9 +1,8 @@
 import { FC } from "react";
-
-import { useMessageContext } from "../../hooks";
-
 import classes from "./Text.module.css";
+
 import ChatBubble from "../../common/ChatBubble";
+import { useMessageContext } from "../../hooks";
 
 interface TextProps {
 	content?: string;

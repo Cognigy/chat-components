@@ -33,16 +33,23 @@
 		"eslint-plugin-react-hooks": "^4.6.0",
 		"eslint-plugin-react-refresh": "^0.4.3",
 		"jsdom": "^22.1.0",
+		"react": "^18.2.0",
+		"react-dom": "^18.2.0",
 		"typescript": "^5.2.2",
 		"vite": "^4.5.0",
 		"vite-plugin-css-injected-by-js": "^3.3.0",
 		"vitest": "^0.34.6",
-		"vitest-github-actions-reporter": "^0.10.0"
+		"vitest-github-actions-reporter": "^0.10.0",
+		"vite-plugin-svgr": "^4.1.0"
 	},
 	"dependencies": {
+		"@cognigy/socket-client": "^5.0.0-beta.2",
 		"classnames": "^2.3.2",
 		"dompurify": "^3.0.6",
-		"react": "^18.2.0",
-		"react-dom": "^18.2.0"
+		"react-player": "^2.13.0"
+	},
+	"peerDependencies": {
+		"react": "^17.x || 18.x",
+		"react-dom": "^17.x || 18.x"
 	}
 }

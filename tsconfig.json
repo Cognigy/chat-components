@@ -18,7 +18,14 @@
 		"strict": true,
 		"noUnusedLocals": true,
 		"noUnusedParameters": true,
-		"noFallthroughCasesInSwitch": true
+		"noFallthroughCasesInSwitch": true,
+
+		"types": ["vite/client", "@testing-library/jest-dom"],
+		"baseUrl": "./",
+		"paths": {
+			"src/*": ["./src/*"],
+			"test/*": ["./test/*"]
+		}
 	},
-	"include": ["src", "test/Message.spec.tsx"]
+	"include": ["src", "test/*.spec.tsx"]
 }

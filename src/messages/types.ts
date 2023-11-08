@@ -1,11 +1,20 @@
 // import type { IOutput } from "@cognigy/socket-client";
 
 // TODO publish WebchatMessage in Webchat npm package
+
 export type WebchatMessage = any & {
 	source?: "user" | "bot" | "engagement" | "agent" | string;
 	timestamp?: string;
 	avatarUrl?: string;
 };
+
+export interface IMessageImage {
+	config: IWebchatConfig;
+	url: string;
+	isDownloadable?: boolean;
+	altText?: string;
+	template?: "media" | "list" | "generic";
+}
 
 export interface IPersistentMenuItem {
 	title: string;
