@@ -1,0 +1,14 @@
+name: Run Prettier
+on:
+    pull_request:
+        types:
+            - opened
+jobs:
+    main:
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v4
+            - uses: actionsx/prettier@v2
+              with:
+                  # We should consider autofixing the issues at some point
+                  args: --check .

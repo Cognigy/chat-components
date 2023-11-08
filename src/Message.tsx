@@ -1,44 +1,50 @@
 import { FC } from "react";
 import classnames from "classnames";
 
-import classes from "./Message.module.css";
-import ChatBubble from "./common/ChatBubble";
-import Header from "./common/Header";
+import MessageHeader from "./common/MessageHeader";
 import { match, MatchConfig } from "./matcher";
+import { MessageProvider } from "./context";
+import { IWebchatConfig, WebchatMessage } from "./messages/types";
 
-// TODO
-type MessageContent = any;
-
+import classes from "./Message.module.css";
 export interface MessageProps {
 	action?: (payload: Record<string, unknown>) => void;
 	className?: string;
-	message: MessageContent;
+	config?: IWebchatConfig;
+	message: WebchatMessage;
 	plugins?: MatchConfig[];
 	onEmitAnalytics?: (event: string, payload?: unknown) => void;
-	config?: unknown; // TODO Webchat config type
 }
 
 const Message: FC<MessageProps> = props => {
 	const rootClassName = classnames(
 		"webchat-message-row",
-		props.className,
 		props.message.source,
+		props.className,
 		classes.message,
 	);
 
-	const MessageComponent = match(props.message, props.plugins);
+	const MessageComponent = match(props.message, props.plugins, props.config);
 
+	/**
+	 * No rule matched the message, so we don't render anything.
+	 */
 	if (!MessageComponent) {
 		return null;
 	}
 
 	return (
-		<article className={rootClassName}>
-			<Header />
-			<ChatBubble>
-				<MessageComponent action={props.action} message={props.message} />
-			</ChatBubble>
-		</article>
+		<MessageProvider
+			message={props.message}
+			action={props.action}
+			onEmitAnalytics={props.onEmitAnalytics}
+			config={props.config}
+		>
+			<article className={rootClassName}>
+				<MessageHeader enableAvatar={props.message.source !== "user"} />
+				<MessageComponent />
+			</article>
+		</MessageProvider>
 	);
 };
 

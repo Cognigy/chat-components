@@ -1,16 +1,37 @@
 import { FC } from "react";
-import { MessagePasstroughProps } from "../types";
+
+import Text from "../Text/Text";
+
 import classes from "./TextWithButtons.module.css";
+import { useMessageContext } from "../../hooks";
 
-const TextWithButtons: FC<MessagePasstroughProps> = props => {
-    const text = props.message.data._cognigy._webchat.message.attachment.payload.text;
-    const buttons = props.message.data._cognigy._webchat.message.attachment.payload.buttons;
+import { getChannelPayload } from "../../utils";
+import ActionButtons from "../../common/ActionButtons/ActionButtons";
 
-    const buttonElements = buttons.map((button: any) => {
-        return <button className={classes.button} key={button.title} onClick={() => props.action?.("test")}>{button.title}</button>
-    });
+/**
+ * Combines Text with Buttons + Quick Replies media types as
+ * they are same in Webchat v3
+ */
+const TextWithButtons: FC = () => {
+	const { action, message, config } = useMessageContext();
 
-    return <><div className={classes.text} dangerouslySetInnerHTML={{ __html: text}} /><div className={classes.buttons}>{buttonElements}</div></> ;
-}
+	const payload = getChannelPayload(message, config);
+
+	const text = payload?.message?.attachment?.payload?.text || payload?.message?.text || "";
+	const buttons =
+		payload?.message?.attachment?.payload?.buttons || payload?.message?.quick_replies || "";
+
+	return (
+		<>
+			<Text content={text} />
+			<ActionButtons
+				action={action}
+				buttonClassName={classes.button}
+				containerClassName={classes.buttons}
+				payload={buttons}
+			/>
+		</>
+	);
+};
 
 export default TextWithButtons;

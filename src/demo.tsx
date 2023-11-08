@@ -7,25 +7,36 @@ import Message, { MessageProps } from "./Message.tsx";
 const messages: MessageProps[] = [
 	{
 		message: {
-			source: "bot",
-			text: "Hello, how can I help you?",
+			avatarNane: "Dognigy",
+			text: "",
+			data: {
+				_cognigy: {
+					_webchat: {
+						message: {
+							text: "This uses quick replies",
+							quick_replies: [
+								{
+									content_type: "text",
+									payload: "payload1",
+									title: "Make purchase",
+								},
+								{
+									content_type: "user_phone_number",
+									image_url: "",
+									image_alt_text: "",
+									payload: "0111222333",
+									title: "Call this number",
+								},
+							],
+						},
+					},
+				},
+			},
 		},
 	},
 	{
 		message: {
-			source: "user",
-			text: "I have a problem with my order",
-		},
-	},
-	{
-		message: {
-			source: "bot",
-			text: "Sorry to here that. That sounds like a perfect time to test multiline message rendering, don't you think?",
-		},
-	},
-	{
-		message: {
-			text: null,
+			avatarName: "Cognigy",
 			data: {
 				_cognigy: {
 					_webchat: {
@@ -33,31 +44,25 @@ const messages: MessageProps[] = [
 							attachment: {
 								type: "template",
 								payload: {
-									text: "Text with buttons template. Here goes the text.\n\nThe text can also be multiline with <strong>HTML</strong> content",
+									text: "Hello, Clara! You want to learn more about what we do at Cognigy? Let's have a chat!",
 									template_type: "button",
 									buttons: [
 										{
 											type: "postback",
-											payload: "foobar005b1pb",
-											title: "foobar005b1",
+											payload: "payload11",
+											title: "Who are Cognigy",
 											url: "",
-											webview_height_ratio: "full",
-											messenger_extensions: false,
-										},
-										{
-											type: "web_url",
-											title: "foobar005b2",
-											url: "foobar005b1url1",
-											messenger_extensions: false,
-											webview_height_ratio: "full",
 										},
 										{
 											type: "postback",
-											payload: "",
-											title: "foobar005b3",
+											payload: "payload33",
+											title: "I need technical support",
 											url: "",
-											webview_height_ratio: "full",
-											messenger_extensions: false,
+										},
+										{
+											type: "web_url",
+											title: " View work item",
+											url: "https://google.com",
 										},
 										{
 											title: "foobar005b4",
@@ -71,6 +76,27 @@ const messages: MessageProps[] = [
 					},
 				},
 			},
+		},
+	},
+	{
+		message: {
+			source: "bot",
+			text: "Hello, how can I help you?",
+			avatarName: "Cognigy",
+		},
+	},
+	{
+		message: {
+			source: "user",
+			text: "I have a problem with my order",
+			avatarName: "Cognigy",
+		},
+	},
+	{
+		message: {
+			source: "bot",
+			text: "Here goes the text.\n\nThe text can also be multiline with <strong>HTML</strong> content",
+			avatarName: "Cognigy",
 		},
 	},
 ];

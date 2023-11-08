@@ -1,0 +1,8 @@
+.buttons {
+	align-items: flex-start;
+	display: flex;
+	flex-direction: row;
+	flex-wrap: wrap;
+	margin-top: 10px;
+	max-width: 295px;
+}
