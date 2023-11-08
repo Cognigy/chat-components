@@ -1,4 +1,4 @@
-import type { IOutput } from "@cognigy/socket-client";
+// import type { IOutput } from "@cognigy/socket-client";
 
 // TODO publish WebchatMessage in Webchat npm package
 export type WebchatMessage = any & {
