@@ -7,7 +7,6 @@ import { MessageProvider } from "./context";
 import { IWebchatConfig, MessageSender, WebchatMessage } from "./messages/types";
 
 import "./theme.css";
-import "./main.css";
 import classes from "./Message.module.css";
 
 export interface MessageProps {

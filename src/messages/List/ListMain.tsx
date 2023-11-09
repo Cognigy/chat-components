@@ -3,8 +3,8 @@ import classes from "./List.module.css";
 import { useMessageContext } from "src/hooks";
 import { sanitizeHTML } from "src/sanitize";
 import { useRandomId } from "src/utils";
-import ActionButtons from "src/common/ActionButtons/ActionButtons";
 import { getBackgroundImage } from "src/lib/css";
+import { SingleButton } from "src/common/ActionButtons";
 
 const ListMain: FC<{ element: any }> = props => {
 	const { action, config } = useMessageContext();
@@ -13,7 +13,7 @@ const ListMain: FC<{ element: any }> = props => {
 	console.log("ListMain", default_action);
 	// TODO buttons, default_action
 
-	// const button = buttons && buttons[0];
+	const button = buttons && buttons[0];
 	const headerTitle = title ? title + ". " : "";
 	const ariaLabelForTitle = default_action?.url ? headerTitle + "Opens in new tab" : title;
 	const subtitleId = useRandomId("webchatListTemplateHeaderSubtitle");
@@ -60,7 +60,7 @@ const ListMain: FC<{ element: any }> = props => {
 					id={subtitleId}
 					className={classes.headerSubtitle}
 				/>
-				<ActionButtons action={action} buttonClassName="primary-button" payload={buttons} />
+				<SingleButton type="primary" action={action} button={button} />
 			</div>
 		</div>
 	);

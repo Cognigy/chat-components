@@ -1,10 +1,4 @@
-.divider {
-    border-bottom-width: 1px;
-    border-bottom-style: solid;
-    border-bottom-color: var(--black-80);
-}
-
-.primary-button {
+.primaryButton {
     width: 100%;
     border-radius: 10px;
     background-color: var(--secondary-color);
@@ -14,11 +8,11 @@
     margin: 0px;
 }
 
-.primary-button:hover {
+.primaryButton:hover {
     background-color: var(--secondary-color-hover);
 }
 
-.primary-button:disabled,
-.primary-button[disabled] {
+.primaryButton:disabled,
+.primaryButton[disabled] {
     background-color: var(--secondary-color-disabled);
 }
