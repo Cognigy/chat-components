@@ -13,6 +13,7 @@ export interface MessageProps {
 	action?: MessageSender;
 	className?: string;
 	config?: IWebchatConfig;
+	disableHeader?: boolean;
 	message: WebchatMessage;
 	plugins?: MatchConfig[];
 	onEmitAnalytics?: (event: string, payload?: unknown) => void;
@@ -43,7 +44,9 @@ const Message: FC<MessageProps> = props => {
 			config={props.config}
 		>
 			<article className={rootClassName}>
-				<MessageHeader enableAvatar={props.message.source !== "user"} />
+				{!props.disableHeader && (
+					<MessageHeader enableAvatar={props.message.source !== "user"} />
+				)}
 				<MessageComponent />
 			</article>
 		</MessageProvider>
