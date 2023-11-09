@@ -102,6 +102,14 @@ const messages: MessageProps[] = [
 	},
 	{
 		message: {
+			source: "bot",
+			text: "This messaged is with previous with disableHeader prop",
+			avatarName: "Cognigy",
+		},
+		disableHeader: true,
+	},
+	{
+		message: {
 			text: null,
 			data: {
 				_cognigy: {
