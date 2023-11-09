@@ -5,7 +5,7 @@ import { MessagePasstroughProps } from "../types";
 import { VideoPlayIcon } from "src/assets/svg";
 import { useMessageContext } from "src/hooks";
 
-const Video: FC<MessagePasstroughProps> = props => {
+const Video: FC<MessagePasstroughProps> = () => {
 	const { message } = useMessageContext();
 
 	const { url, altText } = message?.data?._cognigy?._webchat?.message?.attachment?.payload || {};

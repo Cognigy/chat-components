@@ -5,7 +5,7 @@ import Lightbox from "./lightbox/Lightbox";
 import ImageThumb from "./ImageThumb";
 import { useMessageContext } from "src/hooks";
 
-const Image: FC<MessagePasstroughProps> = props => {
+const Image: FC<MessagePasstroughProps> = () => {
 	const { message } = useMessageContext();
 
 	const {
