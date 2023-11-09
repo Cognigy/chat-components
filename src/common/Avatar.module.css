@@ -2,7 +2,7 @@
 	border-radius: 1000px;
 	width: 28px;
 	height: 28px;
-	background-color: #2455e6;
+	background-color: var(--primary-color);
 	box-sizing: border-box;
 	margin: 2px;
 }
@@ -14,7 +14,7 @@
 }
 
 .avatar-name::after {
-	color: #999;
+	color: var(--black-60);
 	content: "•";
 	font-size: 20px;
 	line-height: 0;
