@@ -7,9 +7,10 @@ import classnames from "classnames";
 
 import classes from "./ActionButtons.module.css";
 import { FC } from "react";
+import { MessageProps } from "src/Message";
 
 export interface ActionButtonsProps {
-	action?: (payload: Record<string, unknown>) => void;
+	action?: MessageProps["action"];
 	payload: IWebchatButton[] | IWebchatQuickReply[];
 	containerClassName?: string;
 	buttonClassName?: string;

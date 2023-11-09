@@ -4,12 +4,13 @@ import classnames from "classnames";
 import MessageHeader from "./common/MessageHeader";
 import { match, MatchConfig } from "./matcher";
 import { MessageProvider } from "./context";
-import { IWebchatConfig, WebchatMessage } from "./messages/types";
+import { IWebchatConfig, MessageSender, WebchatMessage } from "./messages/types";
 
 import "./theme.css";
 import classes from "./Message.module.css";
+
 export interface MessageProps {
-	action?: (payload: Record<string, unknown>) => void;
+	action?: MessageSender;
 	className?: string;
 	config?: IWebchatConfig;
 	message: WebchatMessage;

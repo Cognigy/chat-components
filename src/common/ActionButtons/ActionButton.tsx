@@ -23,7 +23,7 @@ interface ActionButtonProps extends React.HTMLAttributes<HTMLDivElement> {
  */
 const ActionButton: FC<ActionButtonProps> = props => {
 	const { button, total, position } = props;
-	const { config } = useMessageContext();
+	const { config, onEmitAnalytics } = useMessageContext();
 
 	const buttonLabel = getWebchatButtonLabel(button) || "";
 	const __html = config?.settings?.disableHtmlContentSanitization
@@ -50,6 +50,8 @@ const ActionButton: FC<ActionButtonProps> = props => {
 	const Component = isPhoneNumber ? (A as any) : Button;
 
 	const onClick = (event: React.MouseEvent) => {
+		onEmitAnalytics?.("action", button);
+
 		if (isPhoneNumber) return;
 
 		if (isWebURL) {
@@ -60,7 +62,12 @@ const ActionButton: FC<ActionButtonProps> = props => {
 		if (props.disabled) return;
 
 		event.preventDefault();
-		props.action?.({ data: button });
+
+		const textMessageInput = document.getElementById("webchatInputMessageInputInTextMode");
+		if (textMessageInput && config?.settings?.focusInputAfterPostback)
+			textMessageInput.focus?.();
+
+		props.action?.(button.payload, null, { label: button.title });
 	};
 
 	return (

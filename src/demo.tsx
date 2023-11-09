@@ -3,6 +3,7 @@ import ReactDOM from "react-dom/client";
 
 import "./demo.css";
 import Message, { MessageProps } from "./Message.tsx";
+import { MessageSender } from "./messages/types.ts";
 
 const messages: MessageProps[] = [
 	{
@@ -177,7 +178,7 @@ const messages: MessageProps[] = [
 	},
 ];
 
-const action = (payload: Record<string, unknown>) => alert(JSON.stringify(payload, null, 2));
+const action: MessageSender = payload => alert(JSON.stringify(payload, null, 2));
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
 	<React.StrictMode>
