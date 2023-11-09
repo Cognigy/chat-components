@@ -1,0 +1,21 @@
+.button {
+	cursor: pointer;
+	display: block;
+	font-weight: 600;
+	font-size: 14px;
+	line-height: 160%;
+	font-family: inherit;
+	padding: 10px;
+	margin-inline-end: 10px;
+	margin-block-end: 8px;
+	text-decoration: none;
+}
+
+.url::after {
+	content: "↗";
+	margin-inline-start: 8px;
+	font-size: 20px;
+	font-weight: 400;
+	position: relative;
+	top: 3px;
+}

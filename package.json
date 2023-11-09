@@ -1,6 +1,6 @@
 {
 	"name": "@cognigy/chat-components",
-	"version": "0.2.5",
+	"version": "0.2.6",
 	"type": "module",
 	"exports": "./dist/chat-components.js",
 	"files": [
@@ -18,8 +18,10 @@
 		"test:watch": "vitest"
 	},
 	"devDependencies": {
+		"@cognigy/socket-client": "^5.0.0-beta.2",
 		"@testing-library/jest-dom": "^6.1.4",
 		"@testing-library/react": "^14.0.0",
+		"@types/dompurify": "^3.0.5",
 		"@types/react": "^18.2.31",
 		"@types/react-dom": "^18.2.14",
 		"@typescript-eslint/eslint-plugin": "^6.9.0",
@@ -36,12 +38,14 @@
 		"typescript": "^5.2.2",
 		"vite": "^4.5.0",
 		"vite-plugin-css-injected-by-js": "^3.3.0",
-		"vite-plugin-svgr": "^4.1.0",
-		"vitest": "^0.34.6"
+		"vitest": "^0.34.6",
+		"vitest-github-actions-reporter": "^0.10.0",
+		"vite-plugin-svgr": "^4.1.0"
 	},
 	"dependencies": {
 		"@cognigy/socket-client": "^5.0.0-beta.2",
 		"classnames": "^2.3.2",
+		"dompurify": "^3.0.6",
 		"react-player": "^2.13.0"
 	},
 	"peerDependencies": {

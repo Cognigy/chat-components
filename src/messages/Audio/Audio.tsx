@@ -4,10 +4,11 @@ import classes from "./Audio.module.css";
 import { MessagePasstroughProps } from "../types";
 import Controls from "./Controls";
 import { OnProgressProps } from "react-player/base";
+import { useMessageContext } from "src/hooks";
 
-const Audio: FC<MessagePasstroughProps> = props => {
-	const { url, altText } =
-		props?.message?.data?._cognigy?._webchat?.message?.attachment?.payload || {};
+const Audio: FC<MessagePasstroughProps> = () => {
+	const { message } = useMessageContext();
+	const { url, altText } = message?.data?._cognigy?._webchat?.message?.attachment?.payload || {};
 
 	const playerRef = useRef<ReactPlayer | null>(null);
 	const [playing, setPlaying] = useState<boolean>(false);

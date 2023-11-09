@@ -7,4 +7,3 @@ export interface IImageContext extends IMessageImage {
 }
 
 export const ImageMessageContext = createContext<IImageContext | null>(null);
- 

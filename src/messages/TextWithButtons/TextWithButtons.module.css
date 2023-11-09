@@ -1,0 +1,24 @@
+.buttons {
+	align-items: flex-start;
+	display: flex;
+	flex-direction: row;
+	flex-wrap: wrap;
+	margin-top: 10px;
+	max-width: 295px;
+}
+
+.button {
+	background: var(--primary-color);
+	color: white;
+	border: none;
+	border-radius: 19px;
+	cursor: pointer;
+	display: block;
+	font-weight: 600;
+	font-size: 14px;
+	line-height: 160%;
+	font-family: inherit;
+	padding: 10px;
+	margin-inline-end: 10px;
+	margin-block-end: 8px;
+}
