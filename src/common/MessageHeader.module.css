@@ -13,5 +13,5 @@
 }
 
 .timestamp {
-	color: #777;
+	color: var(--black-40);
 }

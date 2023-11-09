@@ -1,8 +1,4 @@
 .button {
-	background: blue;
-	color: white;
-	border: none;
-	border-radius: 19px;
 	cursor: pointer;
 	display: block;
 	font-weight: 600;
