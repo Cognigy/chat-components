@@ -1,27 +1,31 @@
-import { FC, useEffect, useMemo } from "react";
-import { MessagePasstroughProps } from "../types";
+import { FC, Fragment, useEffect, useMemo } from "react";
+import ListMain from "./ListMain";
+import { useMessageContext } from "src/hooks";
+import ListRegular from "./ListRegular";
+import classes from "./List.module.css";
 
-const List: FC<MessagePasstroughProps> = props => {
-	const { payload } = props?.message?.data?._cognigy?._webchat?.message?.attachment || {};
+const List: FC = () => {
+	const { message, config } = useMessageContext();
+	const { payload } = message?.data?._cognigy?._webchat?.message?.attachment || {};
 
 	const { elements, top_element_style, buttons } = payload;
 
 	// We support the "large" string to maintain compatibility with old format
-    const showTopElementLarge = top_element_style === "large" || top_element_style === true;
-    
+	const showTopElementLarge = top_element_style === "large" || top_element_style === true;
+
 	const regularElements = showTopElementLarge ? elements.slice(1) : elements;
 	const headerElement = showTopElementLarge ? elements[0] : null;
 	const button = buttons && buttons[0];
 	const listTemplateId = useMemo(() => `webchatListTemplateRoot-${Date.now()}`, []);
 
-    console.log('regularElements', regularElements);
-    console.log('headerElement', headerElement);
-    console.log('button', button);
+	// console.log("regularElements", regularElements);
+	// console.log("headerElement", headerElement);
+	console.log("button", button);
 
 	useEffect(() => {
 		const chatHistory = document.getElementById("webchatChatHistoryWrapperLiveLogPanel");
 
-		// if (!config?.settings.enableAutoFocus) return;
+		if (!config?.settings.enableAutoFocus) return;
 
 		if (!chatHistory?.contains(document.activeElement)) return;
 
@@ -34,11 +38,17 @@ const List: FC<MessagePasstroughProps> = props => {
 		setTimeout(() => {
 			firstFocusable?.focus();
 		}, 200);
-	}, [listTemplateId]);
+	}, [config?.settings.enableAutoFocus, listTemplateId]);
 
 	return (
-		<div className="webchat-list-template-root" role="list" id={listTemplateId}>
-			List
+		<div className={classes.wrapper} role="list" id={listTemplateId}>
+			{headerElement && <ListMain element={headerElement} />}
+			{regularElements.map((element: any, index: number) => (
+				<Fragment key={index}>
+					{index > 0 && <div className="divider" />}
+					<ListRegular element={element} />
+				</Fragment>
+			))}
 		</div>
 	);
 };

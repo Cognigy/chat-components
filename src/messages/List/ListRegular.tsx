@@ -1,9 +1,8 @@
 import { FC } from "react";
-import { MessagePasstroughProps } from "../types";
 
-const ListRegular: FC<MessagePasstroughProps> = props => {
-    console.log(props);
-
+const ListRegular: FC<{element: any}> = (props) => {
+	console.log(props.element);
+	
 	return (
 		<div>ListRegular</div>
 	);
