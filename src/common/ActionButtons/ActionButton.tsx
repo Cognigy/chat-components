@@ -44,10 +44,12 @@ const ActionButton: FC<ActionButtonProps> = props => {
 			? `Item ${position} of ${total}: ${buttonTitleWithTarget}`
 			: buttonTitleWithTarget;
 
-	const A = (props: React.HTMLAttributes<HTMLAnchorElement>) => <a {...props} />;
+	const PhoneNumberAnchor = (props: React.HTMLAttributes<HTMLAnchorElement>) => (
+		<a {...props} href={`tel:${buttonPayload}`} />
+	);
 	const Button = (props: React.HTMLAttributes<HTMLButtonElement>) => <button {...props} />;
 
-	const Component = isPhoneNumber ? (A as any) : Button;
+	const Component = isPhoneNumber ? PhoneNumberAnchor : Button;
 
 	const onClick = (event: React.MouseEvent) => {
 		onEmitAnalytics?.("action", button);
@@ -77,7 +79,6 @@ const ActionButton: FC<ActionButtonProps> = props => {
 			dangerouslySetInnerHTML={{ __html }}
 			role={isWebURL ? "link" : undefined}
 			aria-label={ariaLabel}
-			href={isPhoneNumber ? `tel:${buttonPayload}` : undefined}
 		/>
 	);
 };
