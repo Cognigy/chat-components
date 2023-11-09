@@ -47,7 +47,7 @@ const ActionButton: FC<ActionButtonProps> = props => {
 	const A = (props: React.HTMLAttributes<HTMLAnchorElement>) => <a {...props} />;
 	const Button = (props: React.HTMLAttributes<HTMLButtonElement>) => <button {...props} />;
 
-	const Component = isPhoneNumber ? A : Button;
+	const Component = isPhoneNumber ? (A as any) : Button;
 
 	const onClick = (event: React.MouseEvent) => {
 		if (isPhoneNumber) return;

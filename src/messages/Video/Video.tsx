@@ -3,10 +3,12 @@ import ReactPlayer from "react-player";
 import classes from "./Video.module.css";
 import { MessagePasstroughProps } from "../types";
 import { VideoPlayIcon } from "src/assets/svg";
+import { useMessageContext } from "src/hooks";
 
 const Video: FC<MessagePasstroughProps> = props => {
-	const { url, altText } =
-		props?.message?.data?._cognigy?._webchat?.message?.attachment?.payload || {};
+	const { message } = useMessageContext();
+
+	const { url, altText } = message?.data?._cognigy?._webchat?.message?.attachment?.payload || {};
 
 	const handleFocus = (player: ReactPlayer) => {
 		const chatHistory = document.getElementById("webchatChatHistoryWrapperLiveLogPanel");

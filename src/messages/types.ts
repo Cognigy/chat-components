@@ -1,5 +1,7 @@
 // import type { IOutput } from "@cognigy/socket-client";
 
+import { MessageProps } from "src/Message";
+
 // TODO publish WebchatMessage in Webchat npm package
 
 export type WebchatMessage = any & {
@@ -7,6 +9,7 @@ export type WebchatMessage = any & {
 	timestamp?: string;
 	avatarUrl?: string;
 };
+export type MessagePasstroughProps = Pick<MessageProps, "message" | "action">;
 
 export interface IMessageImage {
 	config: IWebchatConfig;

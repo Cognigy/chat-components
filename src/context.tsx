@@ -9,7 +9,7 @@ interface MessageProviderProps {
 	onEmitAnalytics?: MessageProps["onEmitAnalytics"];
 }
 
-type MessageContextValue = Omit<MessageProviderProps, "children"> | undefined;
+export type MessageContextValue = Omit<MessageProviderProps, "children"> | undefined;
 
 const MessageContext = createContext<MessageContextValue>(undefined);
 

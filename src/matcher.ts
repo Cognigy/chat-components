@@ -10,8 +10,7 @@ import Audio from "src/messages/Audio";
 
 export type MatchConfig = {
 	rule: (message: WebchatMessage, config?: IWebchatConfig) => boolean;
-	// rule: (message: WebchatMessage) => boolean;
-	component: ComponentType;
+	component: ComponentType<any>;
 };
 
 const defaultConfig: MatchConfig[] = [
@@ -21,7 +20,7 @@ const defaultConfig: MatchConfig[] = [
 		component: Text,
 	},
 	{
-		// Text with buttons
+		// Text with buttons / Quick Replies
 		rule: (message, config) => {
 			const channelConfig = getChannelPayload(message, config);
 			if (!channelConfig) return false;
