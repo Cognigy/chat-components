@@ -6,6 +6,7 @@ import { getBackgroundImage } from "src/lib/css";
 import { useRandomId } from "src/utils";
 import { sanitizeHTML } from "src/sanitize";
 import classnames from "classnames";
+import { sanitizeUrl } from "@braintree/sanitize-url";
 
 const ListRegular: FC<{ element: any }> = props => {
 	const { action, config } = useMessageContext();
@@ -25,7 +26,16 @@ const ListRegular: FC<{ element: any }> = props => {
 	};
 
 	const handleClick = () => {
-		console.log("click");
+		if (!default_action?.url) return;
+
+		const url = config?.settings?.disableUrlButtonSanitization
+			? default_action.url
+			: sanitizeUrl(default_action.url);
+
+		// prevent no-ops from sending you to a blank page
+		if (url === "about:blank") return;
+		window.open(url, default_action?.target || "_self");
+		return;
 	};
 
 	const isSanitizeEnabled = !config?.settings.disableHtmlContentSanitization;
