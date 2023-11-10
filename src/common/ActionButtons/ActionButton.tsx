@@ -53,6 +53,7 @@ const ActionButton: FC<ActionButtonProps> = props => {
 	const Component = isPhoneNumber ? PhoneNumberAnchor : Button;
 
 	const onClick = (event: React.MouseEvent) => {
+		event.stopPropagation();
 		onEmitAnalytics?.("action", button);
 
 		if (isPhoneNumber) return;
