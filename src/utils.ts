@@ -32,5 +32,5 @@ export const getWebchatButtonLabel: getWebchatButtonLabel = button => {
 export const useRandomId = (prefix = "") => {
 	const id = self?.crypto?.randomUUID() || Date.now();
 
-    return `${prefix}-${id}`;
-}
+	return `${prefix}-${id}`;
+};

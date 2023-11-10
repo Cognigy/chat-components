@@ -1,35 +1,35 @@
 .primaryButton {
-    width: 100%;
-    border-radius: 10px;
-    background-color: var(--secondary-color);
-    color: var(--white);
-    border: none;
-    outline: none;
-    margin: 0px;
+	width: 100%;
+	border-radius: 10px;
+	background-color: var(--secondary-color);
+	color: var(--white);
+	border: none;
+	outline: none;
+	margin: 0px;
 }
 .primaryButton:hover {
-    background-color: var(--secondary-color-hover);
+	background-color: var(--secondary-color-hover);
 }
 .primaryButton:disabled,
 .primaryButton[disabled] {
-    background-color: var(--secondary-color-disabled);
+	background-color: var(--secondary-color-disabled);
 }
 
 .secondaryButton {
-    width: 100%;
-    border-radius: 10px;
-    background-color: var(--white);
-    color: var(--secondary-color);
-    border: 1px solid var(--secondary-color);
-    outline: none;
-    margin: 0px;
+	width: 100%;
+	border-radius: 10px;
+	background-color: var(--white);
+	color: var(--secondary-color);
+	border: 1px solid var(--secondary-color);
+	outline: none;
+	margin: 0px;
 }
 .secondaryButton:hover {
-    color: var(--secondary-color-hover);
-    border: 1px solid var(--secondary-color-hover);
+	color: var(--secondary-color-hover);
+	border: 1px solid var(--secondary-color-hover);
 }
 .secondaryButton:disabled,
 .secondaryButton[disabled] {
-    color: var(--secondary-color-disabled);
-    border: 1px solid var(--secondary-color-disabled);
+	color: var(--secondary-color-disabled);
+	border: 1px solid var(--secondary-color-disabled);
 }

@@ -1,4 +1,3 @@
-
 import { FC, HTMLAttributes } from "react";
 import classes from "./SingleButton.module.css";
 import classnames from "classnames/bind";
@@ -15,7 +14,7 @@ interface SingleButtonProps extends HTMLAttributes<HTMLDivElement> {
 const cx = classnames.bind(classes);
 
 const SingleButton: FC<SingleButtonProps> = props => {
-	const {button, containerClassName, type, action} = props
+	const { button, containerClassName, type, action } = props;
 	if (!button) return null;
 
 	const buttonClass = cx({
