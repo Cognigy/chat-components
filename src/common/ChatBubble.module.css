@@ -4,6 +4,8 @@
 	padding: 12px;
 	max-width: 295px;
 	width: max-content;
+	box-sizing: border-box;
+	margin-block-end: 12px;
 }
 
 :global(.bot) .bubble {

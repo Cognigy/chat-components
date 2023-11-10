@@ -1,0 +1,17 @@
+.header {
+	display: flex;
+	align-items: center;
+	column-gap: 7px;
+	margin-block-end: 8px;
+	font-size: 12px;
+	line-height: 140%;
+	flex-direction: row;
+}
+
+.outgoing {
+	flex-direction: row-reverse;
+}
+
+.timestamp {
+	color: var(--black-40);
+}

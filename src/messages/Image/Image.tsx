@@ -3,15 +3,18 @@ import { MessagePasstroughProps } from "../types";
 import { ImageMessageContext } from "./context";
 import Lightbox from "./lightbox/Lightbox";
 import ImageThumb from "./ImageThumb";
+import { useMessageContext } from "src/hooks";
 
-const Image: FC<MessagePasstroughProps> = props => {
+const Image: FC<MessagePasstroughProps> = () => {
+	const { message } = useMessageContext();
+
 	const {
 		url,
 		isDownloadable = true,
 		altText,
 		template = "media",
 		config,
-	} = props?.message?.data?._cognigy?._webchat?.message?.attachment?.payload || {};
+	} = message?.data?._cognigy?._webchat?.message?.attachment?.payload || {};
 
 	const [showLightbox, setShowLightbox] = useState(false);
 

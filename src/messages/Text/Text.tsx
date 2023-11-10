@@ -1,13 +1,20 @@
 import { FC } from "react";
-import { MessagePasstroughProps } from "../types";
-import ChatBubble from "src/common/ChatBubble";
+import classes from "./Text.module.css";
 
-const Text: FC<MessagePasstroughProps> = props => {
-	const content = props.message.text;
+import ChatBubble from "../../common/ChatBubble";
+import { useMessageContext } from "../../hooks";
+
+interface TextProps {
+	content?: string;
+}
+
+const Text: FC<TextProps> = props => {
+	const { message } = useMessageContext();
+	const content = props.content || message?.text || "";
 
 	return (
 		<ChatBubble>
-			<div dangerouslySetInnerHTML={{ __html: content }}></div>
+			<div className={classes.text} dangerouslySetInnerHTML={{ __html: content }}></div>
 		</ChatBubble>
 	);
 };

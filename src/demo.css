@@ -1,5 +1,8 @@
+body {
+	background-color: gray;
+}
 #root {
-	border: 1px solid #ccc;
+	background-color: #fff;
 	font-family:
 		Figtree,
 		system-ui,

@@ -1,5 +1,14 @@
-import { MessageProps } from "../Message";
+// import type { IOutput } from "@cognigy/socket-client";
 
+import { MessageProps } from "src/Message";
+
+// TODO publish WebchatMessage in Webchat npm package
+
+export type WebchatMessage = any & {
+	source?: "user" | "bot" | "engagement" | "agent" | string;
+	timestamp?: string;
+	avatarUrl?: string;
+};
 export type MessagePasstroughProps = Pick<MessageProps, "message" | "action">;
 
 export interface IMessageImage {
@@ -138,3 +147,17 @@ export interface IBusinessHours {
 	endTime: string;
 	weekDay: string;
 }
+
+export interface ISendMessageOptions {
+	/** overrides the displayed text within a chat bubble. useful for e.g. buttons */
+	label: string;
+
+	/** marks this message as "collatable", delaying its submission for the enableInputCollation functionality */
+	collate: boolean;
+}
+
+export type MessageSender = (
+	text?: string,
+	data?: Record<string, any> | null,
+	options?: Partial<ISendMessageOptions>,
+) => void;
