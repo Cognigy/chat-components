@@ -18,7 +18,7 @@ const ListRegular: FC<{ element: any }> = props => {
 	const messengerTitle = title ? title + ". " : "";
 	const ariaLabelForTitle = default_action?.url ? messengerTitle + "Opens in new tab" : title;
 
-	const handleKeyDown = (event, default_action) => {
+	const handleKeyDown = (event: any, default_action: any) => {
 		if (default_action && event.key === "Enter") {
 			action?.(event, default_action);
 		}

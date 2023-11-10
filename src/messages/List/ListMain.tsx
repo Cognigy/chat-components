@@ -17,7 +17,7 @@ const ListMain: FC<{ element: any }> = props => {
 	const ariaLabelForTitle = default_action?.url ? headerTitle + "Opens in new tab" : title;
 	const subtitleId = useRandomId("webchatListTemplateHeaderSubtitle");
 
-	const handleKeyDown = (event, default_action) => {
+	const handleKeyDown = (event: any, default_action: any) => {
 		if (default_action && event.key === "Enter") {
 			action?.(event, default_action);
 		}
