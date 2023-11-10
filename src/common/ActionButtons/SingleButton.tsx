@@ -1,30 +1,33 @@
-import { ActionButton } from ".";
-import { FC } from "react";
-import classes from './SingleButton.module.css';
-import classnames from "classnames/bind";
-import { ActionButtonsProps } from "./ActionButtons";
 
-interface SingleButtonProps extends React.HTMLAttributes<HTMLDivElement> {
+import { FC, HTMLAttributes } from "react";
+import classes from "./SingleButton.module.css";
+import classnames from "classnames/bind";
+import ActionButtons, { ActionButtonsProps } from "./ActionButtons";
+import { IWebchatButton } from "@cognigy/socket-client/lib/interfaces/messageData";
+
+interface SingleButtonProps extends HTMLAttributes<HTMLDivElement> {
 	action: ActionButtonsProps["action"];
-	button: ActionButtonsProps["payload"][number];
+	button: IWebchatButton;
 	type: "primary" | "secondary";
+	containerClassName?: string;
 }
 
 const cx = classnames.bind(classes);
 
 const SingleButton: FC<SingleButtonProps> = props => {
+	const {button, containerClassName, type, action} = props
+	if (!button) return null;
+
 	const buttonClass = cx({
-		primaryButton: props.type === "primary",
-		secondaryButton: props.type === "secondary",
-	})
+		primaryButton: type === "primary",
+		secondaryButton: type === "secondary",
+	});
 	return (
-		<ActionButton
-			className={buttonClass}
-			button={props.button}
-			action={props.action}
-			position={1}
-			total={1}
-			disabled={props.action === undefined}
+		<ActionButtons
+			containerClassName={containerClassName}
+			buttonClassName={buttonClass}
+			payload={[button]}
+			action={action}
 		/>
 	);
 };

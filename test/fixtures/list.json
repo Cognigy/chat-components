@@ -10,8 +10,8 @@
 							"template_type": "list",
 							"elements": [
 								{
-									"title": "foobar009l1",
-									"subtitle": "foobar009ls1",
+									"title": "Cognigy.AI",
+									"subtitle": "Find out more about its features",
 									"image_url": "https://placekitten.com/300/300",
 									"buttons": [
 										{
@@ -23,9 +23,54 @@
 								},
 								{
 									"title": "foobar009l2",
-									"subtitle": "",
-									"image_url": "undefined",
+									"subtitle": "Support your customers and agents with Cognigy. AI, powered by Generative and Conversational AI",
+									"image_url": "https://placekitten.com/300/300",
+									"buttons": [
+										{
+											"payload": "foobar009l1b1",
+											"type": "postback",
+											"title": "foobar009l1b1"
+										}
+									],
+									"default_action": {
+										"type": "web_url",
+										"url": "https://example.com"
+									}
+								},
+								{
+									"title": "foobar009l2",
+									"subtitle": "Support your customers and agents with Cognigy. AI, powered by Generative and Conversational AI",
+									"buttons": [
+										{
+											"payload": "foobar009l1b1",
+											"type": "postback",
+											"title": "foobar009l1b1"
+										}
+									],
+									"default_action": {
+										"type": "web_url",
+										"url": "https://example.com"
+									}
+								},
+								{
+									"title": "foobar009l2",
+									"subtitle": "Support your customers and agents with Cognigy. AI, powered by Generative and Conversational AI",
 									"buttons": null,
+									"default_action": {
+										"type": "web_url",
+										"url": "https://example.com"
+									}
+								},
+								{
+									"title": "foobar009l2",
+									"image_url": "https://placekitten.com/300/300",
+									"buttons": [
+										{
+											"payload": "foobar009l1b1",
+											"type": "postback",
+											"title": "foobar009l1b1"
+										}
+									],
 									"default_action": {
 										"type": "web_url",
 										"url": "https://example.com"

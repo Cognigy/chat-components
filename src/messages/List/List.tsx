@@ -2,6 +2,7 @@ import { FC, Fragment, useEffect, useMemo } from "react";
 import ListMain from "./ListMain";
 import { useMessageContext } from "src/hooks";
 import ListRegular from "./ListRegular";
+import mainclasses from "src/main.module.css";
 import classes from "./List.module.css";
 import { SingleButton } from "src/common/ActionButtons";
 
@@ -18,10 +19,6 @@ const List: FC = () => {
 	const headerElement = showTopElementLarge ? elements[0] : null;
 	const button = buttons && buttons[0];
 	const listTemplateId = useMemo(() => `webchatListTemplateRoot-${Date.now()}`, []);
-
-	// console.log("regularElements", regularElements);
-	// console.log("headerElement", headerElement);
-	console.log("button", button);
 
 	useEffect(() => {
 		const chatHistory = document.getElementById("webchatChatHistoryWrapperLiveLogPanel");
@@ -46,11 +43,21 @@ const List: FC = () => {
 			{headerElement && <ListMain element={headerElement} />}
 			{regularElements.map((element: any, index: number) => (
 				<Fragment key={index}>
-					{index > 0 && <div className="divider" />}
+					{index > 0 && <div className={mainclasses.divider} />}
 					<ListRegular element={element} />
+					{button && index === regularElements.length - 1 && (
+						<div className={mainclasses.divider} />
+					)}
 				</Fragment>
 			))}
-			{button && <SingleButton type="primary" action={action} button={button} />}
+			{button && (
+				<SingleButton
+					type="primary"
+					action={action}
+					button={button}
+					containerClassName={classes.mainButtonWrapper}
+				/>
+			)}
 		</div>
 	);
 };

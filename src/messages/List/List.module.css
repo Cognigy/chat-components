@@ -1,9 +1,8 @@
 .wrapper {
-    max-width: 295px;
-    border-radius: var(--bubble-border-radius);
-    overflow: hidden;
-    padding-bottom: 20px;
-    border: 1px solid var(--black-80);
+	max-width: 295px;
+	border-radius: var(--bubble-border-radius);
+	overflow: hidden;
+	border: 1px solid var(--black-80);
 }
 
 .headerWrapper {
@@ -31,31 +30,78 @@
 	bottom: 0;
 	right: 0;
 	padding: 16px;
-}
-
-.headerTitle {
-	margin-top: 0px;
-	margin-bottom: 8px;
-	font-size: 18px;
 	color: var(--white);
+}
+
+.itemTitle {
+	margin-top: 0px;
+	margin-bottom: 0px;
+	font-size: 18px;
 	font-weight: 600;
-    line-height: 130%;
+	line-height: 130%;
 }
 
-.headerSubtitle {
-    margin-top: 0px;
-    margin-bottom: 14px;
-    color: var(--white);
-    font-size: 14px;
-    white-space: pre-line;
+.itemTitleWithSubtitle {
+	margin-bottom: 8px;
 }
 
-.headerSubtitle.ignoreWS {
-    white-space: initial;
+.itemSubtitle {
+	margin-top: 0px;
+	margin-bottom: 0px;
+	font-size: 14px;
+	white-space: pre-line;
+}
+
+.itemSubtitle.ignoreWS {
+	white-space: initial;
 }
 
 .headerImage {
-    aspect-ratio: 16/9;
+	aspect-ratio: 16/9;
 	background-size: cover;
 	background-position: center center;
+}
+
+.listItemWrapper {
+	position: relative;
+	display: flex;
+}
+
+.listItemContent {
+	padding: 16px;
+	overflow-wrap: break-word;
+	display: flex;
+	flex-wrap: wrap;
+	-webkit-box-pack: justify;
+	justify-content: space-between;
+	align-items: center;
+	width: 100%;
+}
+
+.listItemText {
+	width: 100%;
+}
+
+.listItemTextWithImage {
+	padding-right: 10px;
+	max-width: calc(70% - 10px);
+}
+
+.listItemImage {
+	background-size: cover;
+	background-position: center center;
+	border-radius: 10px;
+	width: 30%;
+	height: 100%;
+	min-height: 75px;
+}
+
+.listItemButtonWrapper {
+	padding: 0px 16px 16px;
+	margin-top: 0px;
+}
+
+.mainButtonWrapper {
+	padding: 16px;
+	margin-top: 0px;
 }

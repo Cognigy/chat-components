@@ -5,12 +5,12 @@ import { sanitizeHTML } from "src/sanitize";
 import { useRandomId } from "src/utils";
 import { getBackgroundImage } from "src/lib/css";
 import { SingleButton } from "src/common/ActionButtons";
+import classnames from "classnames";
 
 const ListMain: FC<{ element: any }> = props => {
 	const { action, config } = useMessageContext();
 
 	const { title, subtitle, image_url, image_alt_text, default_action, buttons } = props.element;
-	console.log("ListMain", default_action);
 
 	const button = buttons && buttons[0];
 	const headerTitle = title ? title + ". " : "";
@@ -32,8 +32,6 @@ const ListMain: FC<{ element: any }> = props => {
 	const titleHtml = isSanitizeEnabled ? sanitizeHTML(title) : title;
 	const subtitleHtml = isSanitizeEnabled ? sanitizeHTML(subtitle) : subtitle;
 
-	const backgroundImage = getBackgroundImage(image_url);
-
 	return (
 		<div role="listitem">
 			<div
@@ -46,20 +44,32 @@ const ListMain: FC<{ element: any }> = props => {
 				onKeyDown={e => handleKeyDown(e, default_action)}
 				style={default_action?.url ? { cursor: "pointer" } : {}}
 			>
-				<div className={classes.headerImage} style={{ backgroundImage: backgroundImage }}>
-					<span role="img" aria-label={image_alt_text || "Attachment Image"} />
-				</div>
+				{image_url && (
+					<div
+						className={classes.headerImage}
+						style={{ backgroundImage: getBackgroundImage(image_url) }}
+					>
+						<span role="img" aria-label={image_alt_text || "Attachment Image"} />
+					</div>
+				)}
 				<div className={classes.darkLayer} />
 				<div className={classes.headerContent}>
-					<h2
-						dangerouslySetInnerHTML={{ __html: titleHtml }}
-						className={classes.headerTitle}
-					/>
-					<p
-						dangerouslySetInnerHTML={{ __html: subtitleHtml }}
-						id={subtitleId}
-						className={classes.headerSubtitle}
-					/>
+					{titleHtml && (
+						<h2
+							dangerouslySetInnerHTML={{ __html: titleHtml }}
+							className={classnames(
+								classes.itemTitle,
+								subtitleHtml && classes.itemTitleWithSubtitle,
+							)}
+						/>
+					)}
+					{subtitleHtml && (
+						<p
+							dangerouslySetInnerHTML={{ __html: subtitleHtml }}
+							id={subtitleId}
+							className={classes.itemSubtitle}
+						/>
+					)}
 					<SingleButton type="primary" action={action} button={button} />
 				</div>
 			</div>
