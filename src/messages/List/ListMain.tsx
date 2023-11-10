@@ -11,7 +11,6 @@ const ListMain: FC<{ element: any }> = props => {
 
 	const { title, subtitle, image_url, image_alt_text, default_action, buttons } = props.element;
 	console.log("ListMain", default_action);
-	// TODO buttons, default_action
 
 	const button = buttons && buttons[0];
 	const headerTitle = title ? title + ". " : "";
@@ -36,31 +35,33 @@ const ListMain: FC<{ element: any }> = props => {
 	const backgroundImage = getBackgroundImage(image_url);
 
 	return (
-		<div
-			className={classes.headerWrapper}
-			onClick={default_action && handleClick}
-			role={default_action?.url ? "link" : undefined}
-			aria-label={ariaLabelForTitle}
-			aria-describedby={subtitle ? subtitleId : undefined}
-			tabIndex={default_action?.url ? 0 : -1}
-			onKeyDown={e => handleKeyDown(e, default_action)}
-			style={default_action?.url ? { cursor: "pointer" } : {}}
-		>
-			<div className={classes.headerImage} style={{ backgroundImage: backgroundImage }}>
-				<span role="img" aria-label={image_alt_text || "Attachment Image"} />
-			</div>
-			<div className={classes.darkLayer} />
-			<div className={classes.headerContent}>
-				<h2
-					dangerouslySetInnerHTML={{ __html: titleHtml }}
-					className={classes.headerTitle}
-				/>
-				<p
-					dangerouslySetInnerHTML={{ __html: subtitleHtml }}
-					id={subtitleId}
-					className={classes.headerSubtitle}
-				/>
-				<SingleButton type="primary" action={action} button={button} />
+		<div role="listitem">
+			<div
+				className={classes.headerWrapper}
+				onClick={default_action && handleClick}
+				role={default_action?.url ? "link" : undefined}
+				aria-label={ariaLabelForTitle}
+				aria-describedby={subtitle ? subtitleId : undefined}
+				tabIndex={default_action?.url ? 0 : -1}
+				onKeyDown={e => handleKeyDown(e, default_action)}
+				style={default_action?.url ? { cursor: "pointer" } : {}}
+			>
+				<div className={classes.headerImage} style={{ backgroundImage: backgroundImage }}>
+					<span role="img" aria-label={image_alt_text || "Attachment Image"} />
+				</div>
+				<div className={classes.darkLayer} />
+				<div className={classes.headerContent}>
+					<h2
+						dangerouslySetInnerHTML={{ __html: titleHtml }}
+						className={classes.headerTitle}
+					/>
+					<p
+						dangerouslySetInnerHTML={{ __html: subtitleHtml }}
+						id={subtitleId}
+						className={classes.headerSubtitle}
+					/>
+					<SingleButton type="primary" action={action} button={button} />
+				</div>
 			</div>
 		</div>
 	);

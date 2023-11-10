@@ -3,9 +3,10 @@ import ListMain from "./ListMain";
 import { useMessageContext } from "src/hooks";
 import ListRegular from "./ListRegular";
 import classes from "./List.module.css";
+import { SingleButton } from "src/common/ActionButtons";
 
 const List: FC = () => {
-	const { message, config } = useMessageContext();
+	const { message, config, action } = useMessageContext();
 	const { payload } = message?.data?._cognigy?._webchat?.message?.attachment || {};
 
 	const { elements, top_element_style, buttons } = payload;
@@ -49,6 +50,7 @@ const List: FC = () => {
 					<ListRegular element={element} />
 				</Fragment>
 			))}
+			{button && <SingleButton type="primary" action={action} button={button} />}
 		</div>
 	);
 };
