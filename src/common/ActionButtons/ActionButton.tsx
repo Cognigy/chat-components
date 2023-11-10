@@ -5,7 +5,8 @@ import { ActionButtonsProps } from "./ActionButtons";
 
 import { useMessageContext } from "../../hooks";
 import { getWebchatButtonLabel } from "../../utils";
-import { sanitizeHTML, sanitizeUrl } from "../../sanitize";
+import { sanitizeHTML } from "../../sanitize";
+import { sanitizeUrl } from "@braintree/sanitize-url";
 
 import classes from "./ActionButton.module.css";
 
