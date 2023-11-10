@@ -5,12 +5,13 @@ import ListRegular from "./ListRegular";
 import mainclasses from "src/main.module.css";
 import classes from "./List.module.css";
 import { SingleButton } from "src/common/ActionButtons";
+import { getChannelPayload } from "src/utils";
 
 const List: FC = () => {
 	const { message, config, action } = useMessageContext();
-	const { payload } = message?.data?._cognigy?._webchat?.message?.attachment || {};
+	const payload = getChannelPayload(message, config);
 
-	const { elements, top_element_style, buttons } = payload;
+	const { elements, top_element_style, buttons } = payload.message.attachment.payload;
 
 	// We support the "large" string to maintain compatibility with old format
 	const showTopElementLarge = top_element_style === "large" || top_element_style === true;
