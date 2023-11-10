@@ -6,6 +6,7 @@ import { ActionButtonsProps } from "./ActionButtons";
 import { useMessageContext } from "../../hooks";
 import { getWebchatButtonLabel } from "../../utils";
 import { sanitizeHTML } from "../../sanitize";
+import { sanitizeUrl } from "@braintree/sanitize-url";
 
 import classes from "./ActionButton.module.css";
 
@@ -57,7 +58,13 @@ const ActionButton: FC<ActionButtonProps> = props => {
 		if (isPhoneNumber) return;
 
 		if (isWebURL) {
-			window.open((button as any).url, isWebURLButtonTargetBlank ? "_blank" : "_self");
+			const url = config?.settings?.disableUrlButtonSanitization
+				? (button as any).url
+				: sanitizeUrl((button as any).url);
+
+			// prevent no-ops from sending you to a blank page
+			if (url === "about:blank") return;
+			window.open(url, isWebURLButtonTargetBlank ? "_blank" : "_self");
 			return;
 		}
 
