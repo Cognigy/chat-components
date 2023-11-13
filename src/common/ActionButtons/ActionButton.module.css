@@ -21,7 +21,7 @@ article a.button span {
 article button.button svg,
 article a.button svg,
 article button.button path,
-article a.button svg path{
+article a.button svg path {
 	fill: var(--white);
 	width: 12px;
 }
