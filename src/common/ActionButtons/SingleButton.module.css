@@ -7,7 +7,8 @@ article button.primaryButton {
 	outline: none;
 	height: 44px;
 }
-article button.primaryButton:hover {
+article button.primaryButton:hover,
+article button.primaryButton:focus {
 	background-color: var(--secondary-color-hover);
 }
 article button.primaryButton:disabled,
@@ -24,7 +25,8 @@ article button.secondaryButton {
 	outline: none;
 	height: 44px;
 }
-article button.secondaryButton:hover {
+article button.secondaryButton:hover,
+article button.secondaryButton:focus {
 	color: var(--secondary-color-hover);
 	border: 1px solid var(--secondary-color-hover);
 }

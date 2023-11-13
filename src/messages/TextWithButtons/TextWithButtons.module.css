@@ -15,7 +15,9 @@ article a.button {
 }
 
 article button.button:hover,
-article a.button:hover {
+article a.button:hover,
+article button.button:focus,
+article a.button:focus {
 	background: var(--primary-color-hover);
 }
 
