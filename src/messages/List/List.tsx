@@ -1,7 +1,6 @@
 import { FC, Fragment, useEffect, useMemo } from "react";
-import ListMain from "./ListMain";
+import ListItem from "./ListItem";
 import { useMessageContext } from "src/hooks";
-import ListRegular from "./ListRegular";
 import mainclasses from "src/main.module.css";
 import classes from "./List.module.css";
 import { SingleButton } from "src/common/ActionButtons";
@@ -41,11 +40,11 @@ const List: FC = () => {
 
 	return (
 		<div className={classes.wrapper} role="list" id={listTemplateId}>
-			{headerElement && <ListMain element={headerElement} />}
+			{headerElement && <ListItem element={headerElement} isHeaderElement />}
 			{regularElements.map((element: any, index: number) => (
 				<Fragment key={index}>
 					{index > 0 && <div className={mainclasses.divider} />}
-					<ListRegular element={element} />
+					<ListItem element={element} />
 					{button && index === regularElements.length - 1 && (
 						<div className={mainclasses.divider} />
 					)}

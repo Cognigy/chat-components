@@ -1,3 +1,7 @@
+:global(.bot) .wrapper {
+	background: var(--background-bot-message);
+}
+
 .wrapper {
 	max-width: 295px;
 	border-radius: var(--bubble-border-radius);

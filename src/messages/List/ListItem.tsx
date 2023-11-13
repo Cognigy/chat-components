@@ -1,0 +1,130 @@
+import { FC, useMemo } from "react";
+import classes from "./List.module.css";
+import { useMessageContext } from "src/hooks";
+import { sanitizeHTML } from "src/sanitize";
+import { getRandomId } from "src/utils";
+import { getBackgroundImage } from "src/lib/css";
+import { SingleButton } from "src/common/ActionButtons";
+import classnames from "classnames";
+import { sanitizeUrl } from "@braintree/sanitize-url";
+
+const ListItem: FC<{ element: any; isHeaderElement?: boolean }> = props => {
+	const { action, config } = useMessageContext();
+    const { element, isHeaderElement } = props;
+
+	const { title, subtitle, image_url, image_alt_text, default_action, buttons } = element;
+
+	const button = buttons && buttons[0];
+	const headerTitle = title ? title + ". " : "";
+	const ariaLabelForTitle = default_action?.url ? headerTitle + "Opens in new tab" : title;
+
+	const handleKeyDown = (event: any, default_action: any) => {
+		if (default_action && event.key === "Enter") {
+			action?.(event, default_action);
+		}
+	};
+
+	const handleClick = () => {
+		if (!default_action?.url) return;
+
+		const url = config?.settings?.disableUrlButtonSanitization
+			? default_action.url
+			: sanitizeUrl(default_action.url);
+
+		// prevent no-ops from sending you to a blank page
+		if (url === "about:blank") return;
+		window.open(url, default_action?.target || "_self");
+		return;
+	};
+
+	const isSanitizeEnabled = !config?.settings?.disableHtmlContentSanitization;
+
+	const titleHtml = isSanitizeEnabled ? sanitizeHTML(title) : title;
+    const subtitleHtml = isSanitizeEnabled ? sanitizeHTML(subtitle) : subtitle;
+    const subtitleId = useMemo(() => getRandomId("webchatListTemplateHeaderSubtitle"), []);
+
+	const renderImage = useMemo(() => {
+		if (!image_url) return null;
+		return (
+			<div
+				className={isHeaderElement ? classes.headerImage : classes.listItemImage}
+				style={{ backgroundImage: getBackgroundImage(image_url) }}
+			>
+				<span role="img" aria-label={image_alt_text || "Attachment Image"} />
+			</div>
+		);
+	}, [image_alt_text, image_url, isHeaderElement]);
+
+	const renderTitles = useMemo(() => {
+		if (!titleHtml && !subtitleHtml) return null;
+		return (
+			<>
+				{titleHtml && (
+					<h2
+						dangerouslySetInnerHTML={{ __html: titleHtml }}
+						className={classnames(
+							classes.itemTitle,
+							subtitleHtml && classes.itemTitleWithSubtitle,
+						)}
+					/>
+				)}
+				{subtitleHtml && (
+					<p
+						dangerouslySetInnerHTML={{ __html: subtitleHtml }}
+						id={subtitleId}
+						className={classes.itemSubtitle}
+					/>
+				)}
+			</>
+		);
+	}, [subtitleHtml, subtitleId, titleHtml]);
+
+	return (
+        <div role="listitem">
+			<div
+				className={isHeaderElement ? classes.headerWrapper : classes.listItemWrapper}
+				onClick={default_action && handleClick}
+				role={default_action?.url ? "link" : undefined}
+				aria-label={ariaLabelForTitle}
+				aria-describedby={subtitle ? subtitleId : undefined}
+				tabIndex={default_action?.url ? 0 : -1}
+				onKeyDown={e => handleKeyDown(e, default_action)}
+				style={default_action?.url ? { cursor: "pointer" } : {}}
+			>
+				{isHeaderElement ? (
+					<>
+						{renderImage}
+						<div className={classes.darkLayer} />
+						<div className={classes.headerContent}>
+							{renderTitles}
+							<SingleButton type="primary" action={action} button={button} />
+						</div>
+					</>
+				) : (
+					<>
+						<div className={classes.listItemContent}>
+							<div
+								className={
+									image_url ? classes.listItemTextWithImage : classes.listItemText
+								}
+							>
+								{renderTitles}
+							</div>
+							{renderImage}
+						</div>
+					</>
+				)}
+			</div>
+			{!isHeaderElement && (
+				<SingleButton
+					type="secondary"
+					action={action}
+					button={button}
+					containerClassName={classes.listItemButtonWrapper}
+				/>
+			)}
+		</div>
+	);
+};
+
+export default ListItem;
