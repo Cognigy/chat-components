@@ -1,4 +1,4 @@
-[data-cognigy-webchat-root] button.button {
+article button.button {
 	cursor: pointer;
 	display: block;
 	font-weight: 600;
@@ -11,7 +11,7 @@
 	text-decoration: none;
 }
 
-[data-cognigy-webchat-root] a.url::after {
+article a.url::after {
 	content: "↗";
 	margin-inline-start: 8px;
 	font-size: 20px;
