@@ -97,6 +97,10 @@ article .wrapper {
 	min-height: 75px;
 }
 
+.listHeaderButtonWrapper {
+	padding-top: 10px;
+}
+
 .listItemButtonWrapper {
 	padding: 0px 16px 16px;
 }

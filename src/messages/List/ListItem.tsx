@@ -118,7 +118,12 @@ const ListItem: FC<{ element: IWebchatAttachmentElement; isHeaderElement?: boole
 							)}
 						>
 							{renderTitles}
-							<SingleButton type="primary" action={action} button={button} />
+							<SingleButton
+								type="primary"
+								action={action}
+								button={button}
+								containerClassName={classes.listHeaderButtonWrapper}
+							/>
 						</div>
 					</>
 				) : (
