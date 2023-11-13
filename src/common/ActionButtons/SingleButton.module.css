@@ -5,7 +5,7 @@ article button.primaryButton {
 	color: var(--white);
 	border: none;
 	outline: none;
-	margin: 0px;
+	height: 44px;
 }
 article button.primaryButton:hover {
 	background-color: var(--secondary-color-hover);
@@ -22,7 +22,7 @@ article button.secondaryButton {
 	color: var(--secondary-color);
 	border: 1px solid var(--secondary-color);
 	outline: none;
-	margin: 0px;
+	height: 44px;
 }
 article button.secondaryButton:hover {
 	color: var(--secondary-color-hover);

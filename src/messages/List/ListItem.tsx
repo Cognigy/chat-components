@@ -7,8 +7,9 @@ import { getBackgroundImage } from "src/lib/css";
 import { SingleButton } from "src/common/ActionButtons";
 import classnames from "classnames";
 import { sanitizeUrl } from "@braintree/sanitize-url";
+import { IWebchatAttachmentElement } from "@cognigy/socket-client/lib/interfaces/messageData";
 
-const ListItem: FC<{ element: any; isHeaderElement?: boolean }> = props => {
+const ListItem: FC<{ element: IWebchatAttachmentElement; isHeaderElement?: boolean }> = props => {
 	const { action, config } = useMessageContext();
 	const { element, isHeaderElement } = props;
 
@@ -18,9 +19,12 @@ const ListItem: FC<{ element: any; isHeaderElement?: boolean }> = props => {
 	const headerTitle = title ? title + ". " : "";
 	const ariaLabelForTitle = default_action?.url ? headerTitle + "Opens in new tab" : title;
 
-	const handleKeyDown = (event: any, default_action: any) => {
+	const handleKeyDown = (
+		event: React.KeyboardEvent<HTMLDivElement>,
+		default_action: IWebchatAttachmentElement["default_action"],
+	) => {
 		if (default_action && event.key === "Enter") {
-			action?.(event, default_action);
+			action?.(undefined, default_action);
 		}
 	};
 
@@ -33,7 +37,7 @@ const ListItem: FC<{ element: any; isHeaderElement?: boolean }> = props => {
 
 		// prevent no-ops from sending you to a blank page
 		if (url === "about:blank") return;
-		window.open(url, default_action?.target || "_self");
+		window.open(url); // TODO: define target
 		return;
 	};
 

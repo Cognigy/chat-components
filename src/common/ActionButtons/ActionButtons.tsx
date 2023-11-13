@@ -18,8 +18,11 @@ export interface ActionButtonsProps {
 
 const ActionButtons: FC<ActionButtonsProps> = props => {
 	const buttons = props.payload.filter((button: ActionButtonsProps["payload"][number]) => {
-		if ((button as any).type === "element_share") return false;
-		if ((button as any).content_type === "text" && !button.title) return false;
+		if ("type" in button && !["postback", "web_url", "phone_number"].includes(button.type))
+			return false;
+
+		if ("content_type" in button && button.content_type === "text" && !button.title)
+			return false;
 
 		return true;
 	});

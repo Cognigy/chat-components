@@ -6,6 +6,7 @@ import classes from "./List.module.css";
 import classnames from "classnames";
 import { SingleButton } from "src/common/ActionButtons";
 import { getChannelPayload, getRandomId } from "src/utils";
+import { IWebchatAttachmentElement } from "@cognigy/socket-client/lib/interfaces/messageData";
 
 const List: FC = () => {
 	const { message, config, action } = useMessageContext();
@@ -46,7 +47,7 @@ const List: FC = () => {
 			id={listTemplateId}
 		>
 			{headerElement && <ListItem element={headerElement} isHeaderElement />}
-			{regularElements.map((element: any, index: number) => (
+			{regularElements.map((element: IWebchatAttachmentElement, index: number) => (
 				<Fragment key={index}>
 					{index > 0 && <div className={mainclasses.divider} />}
 					<ListItem element={element} />

@@ -29,7 +29,7 @@ const messages: MessageProps[] = [
 									image_url: "",
 									image_alt_text: "",
 									payload: "0111222333",
-									title: "Call this number",
+									title: "Call us",
 								},
 							],
 						},
@@ -60,7 +60,7 @@ const messages: MessageProps[] = [
 										{
 											type: "postback",
 											payload: "payload33",
-											title: "I need technical support",
+											title: "Tech support",
 											url: "",
 										},
 										{
