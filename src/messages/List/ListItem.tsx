@@ -118,31 +118,29 @@ const ListItem: FC<{ element: any; isHeaderElement?: boolean }> = props => {
 						</div>
 					</>
 				) : (
-					<>
+					<div
+						className={classnames(
+							"webchat-list-template-element-content",
+							classes.listItemContent,
+						)}
+					>
 						<div
-							className={classnames(
-								"webchat-list-template-element-content",
-								classes.listItemContent,
-							)}
+							className={
+								image_url ? classes.listItemTextWithImage : classes.listItemText
+							}
 						>
-							<div
-								className={
-									image_url ? classes.listItemTextWithImage : classes.listItemText
-								}
-							>
-								{renderTitles}
-							</div>
-							{renderImage}
+							{renderTitles}
 						</div>
-					</>
+						{renderImage}
+					</div>
 				)}
 			</div>
 			{!isHeaderElement && (
 				<SingleButton
 					type="secondary"
 					action={action}
-                    button={button}
-                    buttonClassName="webchat-list-template-element-button"
+					button={button}
+					buttonClassName="webchat-list-template-element-button"
 					containerClassName={classes.listItemButtonWrapper}
 				/>
 			)}

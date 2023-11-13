@@ -40,7 +40,11 @@ const List: FC = () => {
 	}, [config?.settings.enableAutoFocus, listTemplateId]);
 
 	return (
-		<div className={classnames("webchat-list-template-root", classes.wrapper)} role="list" id={listTemplateId}>
+		<div
+			className={classnames("webchat-list-template-root", classes.wrapper)}
+			role="list"
+			id={listTemplateId}
+		>
 			{headerElement && <ListItem element={headerElement} isHeaderElement />}
 			{regularElements.map((element: any, index: number) => (
 				<Fragment key={index}>
