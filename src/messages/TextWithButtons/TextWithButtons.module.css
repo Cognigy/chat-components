@@ -12,6 +12,7 @@ article a.button {
 	background: var(--primary-color);
 	color: var(--white);
 	border: none;
+	outline: none;
 }
 
 article button.button:hover,
