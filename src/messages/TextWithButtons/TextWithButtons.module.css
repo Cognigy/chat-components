@@ -13,3 +13,13 @@ article a.button {
 	color: var(--white);
 	border: none;
 }
+
+article button.button:hover,
+article a.button:hover {
+	background: var(--primary-color-hover);
+}
+
+article button.button:disabled,
+article a.button[disabled] {
+	background: var(--primary-color-disabled);
+}
