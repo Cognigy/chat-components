@@ -1,4 +1,4 @@
-.primaryButton {
+[data-cognigy-webchat-root] button.primaryButton {
 	width: 100%;
 	border-radius: 10px;
 	background-color: var(--secondary-color);
@@ -7,15 +7,15 @@
 	outline: none;
 	margin: 0px;
 }
-.primaryButton:hover {
+[data-cognigy-webchat-root] button.primaryButton:hover {
 	background-color: var(--secondary-color-hover);
 }
-.primaryButton:disabled,
-.primaryButton[disabled] {
+[data-cognigy-webchat-root] button.primaryButton:disabled,
+[data-cognigy-webchat-root] button.primaryButton[disabled] {
 	background-color: var(--secondary-color-disabled);
 }
 
-.secondaryButton {
+[data-cognigy-webchat-root] button.secondaryButton {
 	width: 100%;
 	border-radius: 10px;
 	background-color: var(--white);
@@ -24,12 +24,12 @@
 	outline: none;
 	margin: 0px;
 }
-.secondaryButton:hover {
+[data-cognigy-webchat-root] button.secondaryButton:hover {
 	color: var(--secondary-color-hover);
 	border: 1px solid var(--secondary-color-hover);
 }
-.secondaryButton:disabled,
-.secondaryButton[disabled] {
+[data-cognigy-webchat-root] button.secondaryButton:disabled,
+[data-cognigy-webchat-root] button.secondaryButton[disabled] {
 	color: var(--secondary-color-disabled);
 	border: 1px solid var(--secondary-color-disabled);
 }
