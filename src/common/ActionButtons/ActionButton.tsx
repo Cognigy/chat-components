@@ -40,7 +40,7 @@ const ActionButton: FC<ActionButtonProps> = props => {
 	const isWebURLButtonTargetBlank = isWebURL && button.target !== "_self";
 
 	const buttonTitleWithTarget =
-		isWebURL && isWebURLButtonTargetBlank ? buttonTitle + "Opens in new tab" : button.title;
+		isWebURL && isWebURLButtonTargetBlank ? `${buttonTitle} Opens in new tab` : button.title;
 
 	const ariaLabel =
 		total > 1

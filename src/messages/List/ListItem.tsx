@@ -17,7 +17,7 @@ const ListItem: FC<{ element: IWebchatAttachmentElement; isHeaderElement?: boole
 
 	const button = buttons && buttons[0];
 	const headerTitle = title ? title + ". " : "";
-	const ariaLabelForTitle = default_action?.url ? headerTitle + "Opens in new tab" : title;
+	const ariaLabelForTitle = default_action?.url ? `${headerTitle} Opens in new tab` : title;
 
 	const handleKeyDown = (
 		event: React.KeyboardEvent<HTMLDivElement>,
