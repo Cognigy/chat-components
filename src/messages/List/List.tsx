@@ -3,8 +3,9 @@ import ListItem from "./ListItem";
 import { useMessageContext } from "src/hooks";
 import mainclasses from "src/main.module.css";
 import classes from "./List.module.css";
+import classnames from "classnames";
 import { SingleButton } from "src/common/ActionButtons";
-import { getChannelPayload } from "src/utils";
+import { getChannelPayload, getRandomId } from "src/utils";
 
 const List: FC = () => {
 	const { message, config, action } = useMessageContext();
@@ -18,7 +19,7 @@ const List: FC = () => {
 	const regularElements = showTopElementLarge ? elements.slice(1) : elements;
 	const headerElement = showTopElementLarge ? elements[0] : null;
 	const button = buttons && buttons[0];
-	const listTemplateId = useMemo(() => `webchatListTemplateRoot-${Date.now()}`, []);
+	const listTemplateId = useMemo(() => getRandomId("webchatListTemplateRoot"), []);
 
 	useEffect(() => {
 		const chatHistory = document.getElementById("webchatChatHistoryWrapperLiveLogPanel");
@@ -39,7 +40,7 @@ const List: FC = () => {
 	}, [config?.settings.enableAutoFocus, listTemplateId]);
 
 	return (
-		<div className={classes.wrapper} role="list" id={listTemplateId}>
+		<div className={classnames("webchat-list-template-root", classes.wrapper)} role="list" id={listTemplateId}>
 			{headerElement && <ListItem element={headerElement} isHeaderElement />}
 			{regularElements.map((element: any, index: number) => (
 				<Fragment key={index}>
@@ -55,6 +56,7 @@ const List: FC = () => {
 					type="primary"
 					action={action}
 					button={button}
+					buttonClassName="webchat-list-template-global-button"
 					containerClassName={classes.mainButtonWrapper}
 				/>
 			)}

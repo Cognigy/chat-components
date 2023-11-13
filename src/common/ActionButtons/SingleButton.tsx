@@ -8,23 +8,27 @@ interface SingleButtonProps extends HTMLAttributes<HTMLDivElement> {
 	action: ActionButtonsProps["action"];
 	button: IWebchatButton;
 	type: "primary" | "secondary";
+	buttonClassName?: string;
 	containerClassName?: string;
 }
 
 const cx = classnames.bind(classes);
 
 const SingleButton: FC<SingleButtonProps> = props => {
-	const { button, containerClassName, type, action } = props;
+	const { button, containerClassName, buttonClassName, type, action } = props;
 	if (!button) return null;
 
-	const buttonClass = cx({
-		primaryButton: type === "primary",
-		secondaryButton: type === "secondary",
-	});
+	const buttonClasses = cx(
+		{
+			primaryButton: type === "primary",
+			secondaryButton: type === "secondary",
+		},
+		buttonClassName,
+	);
 	return (
 		<ActionButtons
 			containerClassName={containerClassName}
-			buttonClassName={buttonClass}
+			buttonClassName={buttonClasses}
 			payload={[button]}
 			action={action}
 		/>

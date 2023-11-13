@@ -10,7 +10,7 @@ import { sanitizeUrl } from "@braintree/sanitize-url";
 
 const ListItem: FC<{ element: any; isHeaderElement?: boolean }> = props => {
 	const { action, config } = useMessageContext();
-    const { element, isHeaderElement } = props;
+	const { element, isHeaderElement } = props;
 
 	const { title, subtitle, image_url, image_alt_text, default_action, buttons } = element;
 
@@ -40,8 +40,12 @@ const ListItem: FC<{ element: any; isHeaderElement?: boolean }> = props => {
 	const isSanitizeEnabled = !config?.settings?.disableHtmlContentSanitization;
 
 	const titleHtml = isSanitizeEnabled ? sanitizeHTML(title) : title;
-    const subtitleHtml = isSanitizeEnabled ? sanitizeHTML(subtitle) : subtitle;
-    const subtitleId = useMemo(() => getRandomId("webchatListTemplateHeaderSubtitle"), []);
+	const subtitleHtml = isSanitizeEnabled ? sanitizeHTML(subtitle) : subtitle;
+	const subtitleId = useMemo(() => getRandomId("webchatListTemplateHeaderSubtitle"), []);
+
+	const rootClasses = isHeaderElement
+		? classnames("webchat-list-template-header", classes.headerWrapper)
+		: classnames("webchat-list-template-element", classes.listItemWrapper);
 
 	const renderImage = useMemo(() => {
 		if (!image_url) return null;
@@ -63,6 +67,9 @@ const ListItem: FC<{ element: any; isHeaderElement?: boolean }> = props => {
 					<h2
 						dangerouslySetInnerHTML={{ __html: titleHtml }}
 						className={classnames(
+							isHeaderElement
+								? "webchat-list-template-header-title"
+								: "webchat-list-template-element-title",
 							classes.itemTitle,
 							subtitleHtml && classes.itemTitleWithSubtitle,
 						)}
@@ -72,17 +79,22 @@ const ListItem: FC<{ element: any; isHeaderElement?: boolean }> = props => {
 					<p
 						dangerouslySetInnerHTML={{ __html: subtitleHtml }}
 						id={subtitleId}
-						className={classes.itemSubtitle}
+						className={classnames(
+							isHeaderElement
+								? "webchat-list-template-header-subtitle"
+								: "webchat-list-template-element-subtitle",
+							classes.itemSubtitle,
+						)}
 					/>
 				)}
 			</>
 		);
-	}, [subtitleHtml, subtitleId, titleHtml]);
+	}, [subtitleHtml, subtitleId, titleHtml, isHeaderElement]);
 
 	return (
-        <div role="listitem">
+		<div role="listitem">
 			<div
-				className={isHeaderElement ? classes.headerWrapper : classes.listItemWrapper}
+				className={rootClasses}
 				onClick={default_action && handleClick}
 				role={default_action?.url ? "link" : undefined}
 				aria-label={ariaLabelForTitle}
@@ -95,14 +107,24 @@ const ListItem: FC<{ element: any; isHeaderElement?: boolean }> = props => {
 					<>
 						{renderImage}
 						<div className={classes.darkLayer} />
-						<div className={classes.headerContent}>
+						<div
+							className={classnames(
+								"webchat-list-template-header-content",
+								classes.headerContent,
+							)}
+						>
 							{renderTitles}
 							<SingleButton type="primary" action={action} button={button} />
 						</div>
 					</>
 				) : (
 					<>
-						<div className={classes.listItemContent}>
+						<div
+							className={classnames(
+								"webchat-list-template-element-content",
+								classes.listItemContent,
+							)}
+						>
 							<div
 								className={
 									image_url ? classes.listItemTextWithImage : classes.listItemText
@@ -119,7 +141,8 @@ const ListItem: FC<{ element: any; isHeaderElement?: boolean }> = props => {
 				<SingleButton
 					type="secondary"
 					action={action}
-					button={button}
+                    button={button}
+                    buttonClassName="webchat-list-template-element-button"
 					containerClassName={classes.listItemButtonWrapper}
 				/>
 			)}
