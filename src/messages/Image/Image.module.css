@@ -1,24 +1,24 @@
 article .wrapper {
+	position: relative;
 	border-radius: var(--bubble-border-radius);
 	max-width: 295px;
 	width: 100%;
+	outline: none;
 }
 
 article .wrapper img {
 	border-radius: var(--bubble-border-radius);
 	width: 100%;
 	display: block;
+	outline: none;
 }
 
 .wrapperDownloadable {
 	cursor: pointer;
 }
-.wrapperDownloadable:hover {
+.wrapperDownloadable:hover img,
+.wrapperDownloadable:focus img {
 	opacity: 0.8;
-}
-.wrapperDownloadable:focus {
-	opacity: 0.8;
-	outline: none;
 }
 
 article .flexImage img {
@@ -29,4 +29,11 @@ article .flexImage img {
 
 article .fixedImage img {
 	height: auto;
+}
+
+article .downloadButtonWrapper {
+	position: absolute;
+	padding: 16px;
+	bottom: 0px;
+	width: calc(100% - 32px);
 }

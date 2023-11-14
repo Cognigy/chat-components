@@ -1,21 +1,22 @@
-import { FC, HTMLAttributes } from "react";
+import { FC, HTMLAttributes, ReactElement } from "react";
 import classes from "./SingleButton.module.css";
 import classnames from "classnames/bind";
 import ActionButtons, { ActionButtonsProps } from "./ActionButtons";
 import { IWebchatButton } from "@cognigy/socket-client/lib/interfaces/messageData";
 
 interface SingleButtonProps extends HTMLAttributes<HTMLDivElement> {
-	action: ActionButtonsProps["action"];
+	action?: ActionButtonsProps["action"];
 	button: IWebchatButton;
 	type: "primary" | "secondary";
 	buttonClassName?: string;
 	containerClassName?: string;
+	icon?: ReactElement;
 }
 
 const cx = classnames.bind(classes);
 
 const SingleButton: FC<SingleButtonProps> = props => {
-	const { button, containerClassName, buttonClassName, type, action } = props;
+	const { button, containerClassName, buttonClassName, type, action, icon } = props;
 	if (!button) return null;
 
 	const buttonClasses = cx(
@@ -31,6 +32,7 @@ const SingleButton: FC<SingleButtonProps> = props => {
 			buttonClassName={buttonClasses}
 			payload={[button]}
 			action={action}
+			icon={icon}
 		/>
 	);
 };

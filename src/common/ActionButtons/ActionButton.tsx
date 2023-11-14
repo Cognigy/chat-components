@@ -1,4 +1,4 @@
-import { FC } from "react";
+import { FC, ReactElement } from "react";
 import classnames from "classnames";
 import { ActionButtonsProps } from "./ActionButtons";
 import { useMessageContext } from "../../hooks";
@@ -9,19 +9,20 @@ import classes from "./ActionButton.module.css";
 import { LinkIcon } from "src/assets/svg";
 
 interface ActionButtonProps extends React.HTMLAttributes<HTMLDivElement> {
-	action: ActionButtonsProps["action"];
+	action?: ActionButtonsProps["action"];
 	className?: string;
 	button: ActionButtonsProps["payload"][number];
 	total: number;
 	position: number;
 	disabled?: boolean;
+	icon?: ReactElement;
 }
 
 /**
  * Postback, phone number, and URL buttons
  */
 const ActionButton: FC<ActionButtonProps> = props => {
-	const { button, total, position } = props;
+	const { button, total, position, icon } = props;
 	const { config, onEmitAnalytics } = useMessageContext();
 
 	const buttonType =
@@ -89,7 +90,7 @@ const ActionButton: FC<ActionButtonProps> = props => {
 			aria-label={ariaLabel}
 		>
 			<span dangerouslySetInnerHTML={{ __html }} />
-			{isWebURL && <LinkIcon />}
+			{icon ? icon : isWebURL ? <LinkIcon /> : null}
 		</Component>
 	);
 };

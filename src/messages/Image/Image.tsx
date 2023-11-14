@@ -4,15 +4,17 @@ import Lightbox from "./lightbox/Lightbox";
 import ImageThumb from "./ImageThumb";
 import { useMessageContext } from "src/hooks";
 import { getChannelPayload } from "src/utils";
-import { ActionButtonsProps } from "src/common/ActionButtons/ActionButtons";
+import { IWebchatButton } from "@cognigy/socket-client/lib/interfaces/messageData";
 
 const Image: FC = () => {
 	const { message, config } = useMessageContext();
 	const payload = getChannelPayload(message, config);
 	const { url, altText, buttons } = payload.message.attachment.payload;
 
+	const button: IWebchatButton = buttons?.[0];
+
 	const isDownloadable =
-		(buttons as ActionButtonsProps["payload"])?.find(
+		(buttons as IWebchatButton[])?.find(
 			button => "type" in button && button.type === "web_url",
 		) !== undefined;
 
@@ -25,8 +27,9 @@ const Image: FC = () => {
 			url,
 			altText,
 			isDownloadable,
+			button,
 		}),
-		[altText, isDownloadable, url],
+		[altText, button, isDownloadable, url],
 	);
 
 	if (!url) return null;

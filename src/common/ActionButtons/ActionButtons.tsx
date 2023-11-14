@@ -6,7 +6,7 @@ import { ActionButton } from ".";
 import classnames from "classnames";
 
 import classes from "./ActionButtons.module.css";
-import { FC } from "react";
+import { FC, ReactElement } from "react";
 import { MessageProps } from "src/Message";
 
 export interface ActionButtonsProps {
@@ -14,6 +14,7 @@ export interface ActionButtonsProps {
 	payload: IWebchatButton[] | IWebchatQuickReply[];
 	containerClassName?: string;
 	buttonClassName?: string;
+	icon?: ReactElement;
 }
 
 const ActionButtons: FC<ActionButtonsProps> = props => {
@@ -36,6 +37,7 @@ const ActionButtons: FC<ActionButtonsProps> = props => {
 			position={index + 1}
 			total={props.payload.length}
 			disabled={props.action === undefined}
+			icon={props.icon}
 		/>
 	));
 
