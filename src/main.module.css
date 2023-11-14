@@ -1,3 +1,12 @@
+.srOnly {
+	position: absolute;
+	left: -10000px;
+	width: 1px;
+	height: 1px;
+	top: auto;
+	overflow: hidden;
+}
+
 .divider {
 	border-bottom-width: 1px;
 	border-bottom-style: solid;
