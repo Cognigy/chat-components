@@ -1,0 +1,23 @@
+{
+	"text": null,
+	"data": {
+		"_cognigy": {
+			"_default": {
+				"_video": {
+					"type": "video",
+					"videoUrl": "https://youtu.be/4n__f0KfJF4?si=a5vwK93s9jrEWj-J"
+				}
+			},
+			"_webchat": {
+				"message": {
+					"attachment": {
+						"type": "video",
+						"payload": {
+							"url": "https://youtu.be/4n__f0KfJF4?si=a5vwK93s9jrEWj-J"
+						}
+					}
+				}
+			}
+		}
+	}
+}
