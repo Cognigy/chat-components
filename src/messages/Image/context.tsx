@@ -1,9 +1,11 @@
 import { createContext } from "react";
-import { IMessageImage } from "../types";
 
-export interface IImageContext extends IMessageImage {
+export interface IImageContext {
 	onExpand: () => void;
 	onClose: () => void;
+	url: string;
+	altText?: string;
+	isDownloadable: boolean;
 }
 
 export const ImageMessageContext = createContext<IImageContext | null>(null);

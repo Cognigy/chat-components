@@ -117,19 +117,19 @@ const messages: MessageProps[] = [
 		disableHeader: true,
 	},
 	{
-		message: image
+		message: image,
 	},
 	{
-		message: imageDownloadable
+		message: imageDownloadable,
 	},
 	{
-		message: video
+		message: video,
 	},
 	{
-		message: videoYoutube
+		message: videoYoutube,
 	},
 	{
-		message: audio
+		message: audio,
 	},
 	{
 		message: listMessage,

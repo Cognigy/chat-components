@@ -1,7 +1,13 @@
-.wrapper {
+article .wrapper {
 	border-radius: var(--bubble-border-radius);
 	max-width: 295px;
-	width: max-content;
+	width: 100%;
+}
+
+article .wrapper img {
+	border-radius: var(--bubble-border-radius);
+	width: 100%;
+	display: block;
 }
 
 .wrapperDownloadable {
@@ -15,34 +21,12 @@
 	outline: none;
 }
 
-.flexImage {
-	display: block;
-	width: 100%;
-}
-
-.flexImage img {
+article .flexImage img {
 	aspect-ratio: 16/9;
-	width: 100%;
 	object-fit: cover;
 	object-position: left;
-	border-radius: var(--bubble-border-radius);
 }
 
-.fixedImage {
-	background-size: cover;
-	background-position: center center;
-}
-
-.templateMedia {
-	padding-top: 75%;
-}
-
-.templateGeneric {
-	padding-top: 50%;
-	display: table;
-	width: 100%;
-}
-
-.templateList {
-	padding-top: 50%;
+article .fixedImage img {
+	height: auto;
 }
