@@ -1,14 +1,12 @@
 import { FC } from "react";
 import classnames from "classnames";
-
 import { ActionButtonsProps } from "./ActionButtons";
-
 import { useMessageContext } from "../../hooks";
 import { getWebchatButtonLabel } from "../../utils";
 import { sanitizeHTML } from "../../sanitize";
 import { sanitizeUrl } from "@braintree/sanitize-url";
-
 import classes from "./ActionButton.module.css";
+import { LinkIcon } from "src/assets/svg";
 
 interface ActionButtonProps extends React.HTMLAttributes<HTMLDivElement> {
 	action: ActionButtonsProps["action"];
@@ -26,41 +24,45 @@ const ActionButton: FC<ActionButtonProps> = props => {
 	const { button, total, position } = props;
 	const { config, onEmitAnalytics } = useMessageContext();
 
+	const buttonType =
+		"type" in button ? button.type : "content_type" in button ? button.content_type : null;
+	if (!buttonType) return null;
+
 	const buttonLabel = getWebchatButtonLabel(button) || "";
 	const __html = config?.settings?.disableHtmlContentSanitization
 		? buttonLabel
 		: sanitizeHTML(buttonLabel);
-	const buttonType = (button as any).type || (button as any).content_type;
-	const buttonPayload = button.payload;
-	const isPhoneNumber = buttonPayload && buttonType === "phone_number";
+
+	const isPhoneNumber = button.payload && buttonType === "phone_number";
 	const buttonTitle = button.title || "";
 
-	const isWebURLButtonTargetBlank = (button as any).target !== "_self";
-	const isWebURL = buttonType === "web_url";
+	const isWebURL = "type" in button && button.type === "web_url";
+	const isWebURLButtonTargetBlank = isWebURL && button.target !== "_self";
 
 	const buttonTitleWithTarget =
-		isWebURL && isWebURLButtonTargetBlank ? buttonTitle + "Opens in new tab" : button.title;
+		isWebURL && isWebURLButtonTargetBlank ? `${buttonTitle} Opens in new tab` : button.title;
+
 	const ariaLabel =
 		total > 1
 			? `Item ${position} of ${total}: ${buttonTitleWithTarget}`
 			: buttonTitleWithTarget;
 
-	const PhoneNumberAnchor = (props: React.HTMLAttributes<HTMLAnchorElement>) => (
-		<a {...props} href={`tel:${buttonPayload}`} />
-	);
+	const PhoneNumberAnchor = (props: React.HTMLAttributes<HTMLAnchorElement>) =>
+		button.payload ? <a {...props} href={`tel:${button.payload}`} /> : null;
 	const Button = (props: React.HTMLAttributes<HTMLButtonElement>) => <button {...props} />;
 
 	const Component = isPhoneNumber ? PhoneNumberAnchor : Button;
 
 	const onClick = (event: React.MouseEvent) => {
+		event.stopPropagation();
 		onEmitAnalytics?.("action", button);
 
 		if (isPhoneNumber) return;
 
 		if (isWebURL) {
 			const url = config?.settings?.disableUrlButtonSanitization
-				? (button as any).url
-				: sanitizeUrl((button as any).url);
+				? button.url
+				: sanitizeUrl(button.url);
 
 			// prevent no-ops from sending you to a blank page
 			if (url === "about:blank") return;
@@ -83,10 +85,12 @@ const ActionButton: FC<ActionButtonProps> = props => {
 		<Component
 			onClick={onClick}
 			className={classnames(classes.button, isWebURL && classes.url, props.className)}
-			dangerouslySetInnerHTML={{ __html }}
 			role={isWebURL ? "link" : undefined}
 			aria-label={ariaLabel}
-		/>
+		>
+			<span dangerouslySetInnerHTML={{ __html }} />
+			{isWebURL && <LinkIcon />}
+		</Component>
 	);
 };
 

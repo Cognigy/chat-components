@@ -7,18 +7,22 @@
 	max-width: 295px;
 }
 
-.button {
+article button.button,
+article a.button {
 	background: var(--primary-color);
-	color: white;
+	color: var(--white);
 	border: none;
-	border-radius: 19px;
-	cursor: pointer;
-	display: block;
-	font-weight: 600;
-	font-size: 14px;
-	line-height: 160%;
-	font-family: inherit;
-	padding: 10px;
-	margin-inline-end: 10px;
-	margin-block-end: 8px;
+	outline: none;
+}
+
+article button.button:hover,
+article a.button:hover,
+article button.button:focus,
+article a.button:focus {
+	background: var(--primary-color-hover);
+}
+
+article button.button:disabled,
+article a.button[disabled] {
+	background: var(--primary-color-disabled);
 }

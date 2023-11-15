@@ -3,5 +3,7 @@ import DownloadIcon from "./baseline-download-24px.svg?react";
 import VideoPlayIcon from "./video-play-button.svg?react";
 import PlayIcon from "./play_sharp_icon.svg?react";
 import PauseIcon from "./pause_icon.svg?react";
+import LinkIcon from "./link.svg?react";
+import HeaderEllipsis from "./header_ellipsis.svg?react";
 
-export { CloseIcon, DownloadIcon, VideoPlayIcon, PlayIcon, PauseIcon };
+export { CloseIcon, DownloadIcon, VideoPlayIcon, PlayIcon, PauseIcon, LinkIcon, HeaderEllipsis };

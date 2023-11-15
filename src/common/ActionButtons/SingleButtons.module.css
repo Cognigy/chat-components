@@ -1,0 +1,54 @@
+article button.primaryButton {
+	width: 100%;
+	border-radius: 10px;
+	background-color: var(--secondary-color);
+	color: var(--white);
+	border: none;
+	outline: none;
+	height: 44px;
+}
+article button.primaryButton:hover,
+article button.primaryButton:focus {
+	background-color: var(--secondary-color-hover);
+}
+article button.primaryButton:disabled,
+article button.primaryButton[disabled] {
+	background-color: var(--secondary-color-disabled);
+}
+
+article button.secondaryButton {
+	width: 100%;
+	border-radius: 10px;
+	background-color: var(--white);
+	color: var(--secondary-color);
+	border: 1px solid var(--secondary-color);
+	outline: none;
+	height: 44px;
+}
+article button.secondaryButton:hover,
+article button.secondaryButton:focus {
+	color: var(--secondary-color-hover);
+	border: 1px solid var(--secondary-color-hover);
+}
+article button.secondaryButton:disabled,
+article button.secondaryButton[disabled] {
+	color: var(--secondary-color-disabled);
+	border: 1px solid var(--secondary-color-disabled);
+}
+
+article button.secondaryButton svg,
+article button.secondaryButton svg path {
+	fill: var(--secondary-color);
+}
+article button.secondaryButton:hover svg,
+article button.secondaryButton:hover svg path,
+article button.secondaryButton:focus svg,
+article button.secondaryButton:focus svg path {
+	fill: var(--secondary-color-hover);
+}
+article button.secondaryButton:disabled svg,
+article button.secondaryButton:disabled svg path,
+article button.secondaryButton[disabled] svg,
+article button.secondaryButton svg[disabled] path {
+	color: var(--secondary-color-disabled);
+}

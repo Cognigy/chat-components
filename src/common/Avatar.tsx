@@ -25,17 +25,13 @@ const Avatar: FC<AvatarProps> = props => {
 	const isAgent = message?.source === "agent";
 
 	const url = message.avatarUrl || (isAgent ? defaultAgentAvatar : BotAvatar);
-	const avatarName = message?.avatarName || "Bot";
 
 	return (
-		<>
-			<img
-				alt={classnames(message?.source, "webchat-avatar", props.className)}
-				className={classNames}
-				src={url}
-			/>
-			<p className={classes["avatar-name"]}>{avatarName}</p>
-		</>
+		<img
+			alt={classnames(message?.source, "webchat-avatar", props.className)}
+			className={classNames}
+			src={url}
+		/>
 	);
 };
 

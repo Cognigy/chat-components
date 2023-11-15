@@ -1,17 +1,32 @@
-.header {
+article .header {
 	display: flex;
 	align-items: center;
-	column-gap: 7px;
+	column-gap: 12px;
 	margin-block-end: 8px;
-	font-size: 12px;
-	line-height: 140%;
-	flex-direction: row;
 }
 
-.outgoing {
+article .header.ongoing {
+	height: 32px;
+	margin-block-end: 12px;
+}
+
+article .header .headerMeta {
+	font-size: 12px;
+	line-height: 140%;
+	display: flex;
+	gap: 8px;
+	align-items: center;
+}
+
+article .header.outgoing {
 	flex-direction: row-reverse;
 }
 
-.timestamp {
+article .header .timestamp {
 	color: var(--black-40);
+}
+
+article .header .avatar-name {
+	margin: 0;
+	padding: 0;
 }

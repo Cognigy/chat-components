@@ -1,21 +1,27 @@
-.button {
+article button.button,
+article a.button {
+	border-radius: 19px;
+	padding: 8px 10px;
 	cursor: pointer;
-	display: block;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	gap: 10px;
+	text-decoration: none;
+}
+
+article button.button span,
+article a.button span {
 	font-weight: 600;
 	font-size: 14px;
 	line-height: 160%;
 	font-family: inherit;
-	padding: 10px;
-	margin-inline-end: 10px;
-	margin-block-end: 8px;
-	text-decoration: none;
 }
 
-.url::after {
-	content: "↗";
-	margin-inline-start: 8px;
-	font-size: 20px;
-	font-weight: 400;
-	position: relative;
-	top: 3px;
+article button.button svg,
+article a.button svg,
+article button.button path,
+article a.button svg path {
+	fill: var(--white);
+	width: 12px;
 }
