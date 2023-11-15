@@ -4,7 +4,7 @@ import { useMessageContext } from "src/hooks";
 import { sanitizeHTML } from "src/sanitize";
 import { getRandomId } from "src/utils";
 import { getBackgroundImage } from "src/lib/css";
-import { SingleButton } from "src/common/ActionButtons";
+import { PrimaryButton, SecondaryButton } from "src/common/ActionButtons";
 import classnames from "classnames";
 import { sanitizeUrl } from "@braintree/sanitize-url";
 import { IWebchatAttachmentElement } from "@cognigy/socket-client/lib/interfaces/messageData";
@@ -74,7 +74,7 @@ const ListItem: FC<{ element: IWebchatAttachmentElement; isHeaderElement?: boole
 							isHeaderElement
 								? "webchat-list-template-header-title"
 								: "webchat-list-template-element-title",
-							classes.itemTitle,
+							isHeaderElement ? classes.itemTitleHeader : classes.itemTitle,
 							subtitleHtml && classes.itemTitleWithSubtitle,
 						)}
 					/>
@@ -118,10 +118,10 @@ const ListItem: FC<{ element: IWebchatAttachmentElement; isHeaderElement?: boole
 							)}
 						>
 							{renderTitles}
-							<SingleButton
-								type="primary"
+							<PrimaryButton
 								action={action}
 								button={button}
+								buttonClassName="webchat-list-template-element-button"
 								containerClassName={classes.listHeaderButtonWrapper}
 							/>
 						</div>
@@ -133,20 +133,13 @@ const ListItem: FC<{ element: IWebchatAttachmentElement; isHeaderElement?: boole
 							classes.listItemContent,
 						)}
 					>
-						<div
-							className={
-								image_url ? classes.listItemTextWithImage : classes.listItemText
-							}
-						>
-							{renderTitles}
-						</div>
+						<div className={classes.listItemText}>{renderTitles}</div>
 						{renderImage}
 					</div>
 				)}
 			</div>
 			{!isHeaderElement && (
-				<SingleButton
-					type="secondary"
+				<SecondaryButton
 					action={action}
 					button={button}
 					buttonClassName="webchat-list-template-element-button"

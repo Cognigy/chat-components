@@ -3,6 +3,7 @@ import classes from "./MessageHeader.module.css";
 import classnames from "classnames";
 import { useMessageContext } from "../hooks";
 import Avatar from "./Avatar";
+import { HeaderEllipsis } from "src/assets/svg";
 
 interface MessageHeaderProps {
 	enableAvatar?: boolean;
@@ -17,24 +18,38 @@ interface MessageHeaderProps {
 const MessageHeader: FC<MessageHeaderProps> = props => {
 	const { message } = useMessageContext();
 
+	const isUserMessage = message.source === "user";
+
 	const className = classnames(
 		"message-header",
 		props.className,
 		classes.header,
-		message.source === "user" && classes.outgoing,
+		isUserMessage ? classes.outgoing : classes.ongoing,
 	);
 
 	const recievedAt = message?.timestamp ? Number(message.timestamp) : Date.now();
-	const timestamp = (
-		<time className={classes.timestamp}>
-			{new Date(recievedAt).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}
-		</time>
-	);
 
 	return (
 		<header className={className}>
 			{props.enableAvatar && <Avatar />}
-			{timestamp}
+			<div className={classes.headerMeta}>
+				{!isUserMessage && (
+					<>
+						<span className={classes["avatar-name"]}>
+							{message?.avatarName || "Bot"}
+						</span>
+						<HeaderEllipsis />
+					</>
+				)}
+				<span>
+					<time className={classes.timestamp}>
+						{new Date(recievedAt).toLocaleTimeString([], {
+							hour: "2-digit",
+							minute: "2-digit",
+						})}
+					</time>
+				</span>
+			</div>
 		</header>
 	);
 };

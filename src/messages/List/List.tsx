@@ -4,7 +4,7 @@ import { useMessageContext } from "src/hooks";
 import mainclasses from "src/main.module.css";
 import classes from "./List.module.css";
 import classnames from "classnames";
-import { SingleButton } from "src/common/ActionButtons";
+import { PrimaryButton } from "src/common/ActionButtons";
 import { getChannelPayload, getRandomId } from "src/utils";
 import { IWebchatAttachmentElement } from "@cognigy/socket-client/lib/interfaces/messageData";
 
@@ -57,8 +57,7 @@ const List: FC = () => {
 				</Fragment>
 			))}
 			{button && (
-				<SingleButton
-					type="primary"
+				<PrimaryButton
 					action={action}
 					button={button}
 					buttonClassName="webchat-list-template-global-button"

@@ -42,9 +42,9 @@
 									"subtitle": "Support your customers and agents with Cognigy. AI, powered by Generative and Conversational AI",
 									"buttons": [
 										{
-											"payload": "foobar009l1b1",
-											"type": "postback",
-											"title": "foobar009l1b1"
+											"title": "foobar009b1",
+											"type": "web_url",
+											"url": "https://example.com"
 										}
 									],
 									"default_action": {
