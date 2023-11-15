@@ -4,5 +4,4 @@ article .avatar {
 	height: 28px;
 	background-color: var(--primary-color);
 	box-sizing: border-box;
-	margin: 2px;
 }

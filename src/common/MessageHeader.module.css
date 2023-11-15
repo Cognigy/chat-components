@@ -2,8 +2,12 @@ article .header {
 	display: flex;
 	align-items: center;
 	column-gap: 12px;
-	margin-block-end: 12px;
+	margin-block-end: 8px;
+}
+
+article .header.ongoing {
 	height: 32px;
+	margin-block-end: 12px;
 }
 
 article .header .headerMeta {
@@ -14,7 +18,7 @@ article .header .headerMeta {
 	align-items: center;
 }
 
-article .header .outgoing {
+article .header.outgoing {
 	flex-direction: row-reverse;
 }
 

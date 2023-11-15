@@ -22,21 +22,23 @@ const MessageHeader: FC<MessageHeaderProps> = props => {
 		"message-header",
 		props.className,
 		classes.header,
-		message.source === "user" && classes.outgoing,
+		message.source === "user" ? classes.outgoing : classes.ongoing,
 	);
 
 	const recievedAt = message?.timestamp ? Number(message.timestamp) : Date.now();
 
 	return (
 		<header className={className}>
-			{props.enableAvatar && (
-				<span>
-					<Avatar />
-				</span>
-			)}
-			<span className={classes.headerMeta}>
-				<span className={classes["avatar-name"]}>{message?.avatarName || "Bot"}</span>
-				<HeaderEllipsis />
+			{props.enableAvatar && <Avatar />}
+			<div className={classes.headerMeta}>
+				{message.source === "bot" && (
+					<>
+						<span className={classes["avatar-name"]}>
+							{message?.avatarName || "Bot"}
+						</span>
+						<HeaderEllipsis />
+					</>
+				)}
 				<span>
 					<time className={classes.timestamp}>
 						{new Date(recievedAt).toLocaleTimeString([], {
@@ -45,7 +47,7 @@ const MessageHeader: FC<MessageHeaderProps> = props => {
 						})}
 					</time>
 				</span>
-			</span>
+			</div>
 		</header>
 	);
 };
