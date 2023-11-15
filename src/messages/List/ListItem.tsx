@@ -133,11 +133,7 @@ const ListItem: FC<{ element: IWebchatAttachmentElement; isHeaderElement?: boole
 							classes.listItemContent,
 						)}
 					>
-						<div
-							className={classes.listItemText}
-						>
-							{renderTitles}
-						</div>
+						<div className={classes.listItemText}>{renderTitles}</div>
 						{renderImage}
 					</div>
 				)}
