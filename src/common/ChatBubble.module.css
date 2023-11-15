@@ -1,4 +1,4 @@
-.bubble {
+article .bubble {
 	border-radius: 15px;
 	border: 1px solid var(--black-80);
 	padding: 12px;
@@ -8,11 +8,11 @@
 	margin-block-end: 12px;
 }
 
-:global(.bot) .bubble {
+article:not(:global(.user)) .bubble {
 	background: var(--background-bot-message);
 }
 
-:global(.user) .bubble {
+article:global(.user) .bubble {
 	background: var(--background-user-message);
 	border-color: transparent;
 	margin-inline-start: auto;
