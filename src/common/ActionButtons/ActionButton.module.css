@@ -1,7 +1,7 @@
 article button.button,
 article a.button {
 	border-radius: 19px;
-	padding: 8px 12px;
+	padding: 8px 10px;
 	cursor: pointer;
 	display: flex;
 	align-items: center;

@@ -4,7 +4,7 @@ import { useMessageContext } from "src/hooks";
 import { sanitizeHTML } from "src/sanitize";
 import { getRandomId } from "src/utils";
 import { getBackgroundImage } from "src/lib/css";
-import { SingleButton } from "src/common/ActionButtons";
+import { PrimaryButton, SecondaryButton } from "src/common/ActionButtons";
 import classnames from "classnames";
 import { sanitizeUrl } from "@braintree/sanitize-url";
 import { IWebchatAttachmentElement } from "@cognigy/socket-client/lib/interfaces/messageData";
@@ -118,10 +118,10 @@ const ListItem: FC<{ element: IWebchatAttachmentElement; isHeaderElement?: boole
 							)}
 						>
 							{renderTitles}
-							<SingleButton
-								type="primary"
+							<PrimaryButton
 								action={action}
 								button={button}
+								buttonClassName="webchat-list-template-element-button"
 								containerClassName={classes.listHeaderButtonWrapper}
 							/>
 						</div>
@@ -145,8 +145,7 @@ const ListItem: FC<{ element: IWebchatAttachmentElement; isHeaderElement?: boole
 				)}
 			</div>
 			{!isHeaderElement && (
-				<SingleButton
-					type="secondary"
+				<SecondaryButton
 					action={action}
 					button={button}
 					buttonClassName="webchat-list-template-element-button"
