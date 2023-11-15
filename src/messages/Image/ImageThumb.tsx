@@ -2,7 +2,7 @@ import classes from "./Image.module.css";
 import classnames from "classnames/bind";
 import { useImageMessageContext } from "./hooks";
 import { useMessageContext } from "src/hooks";
-import { SingleButton } from "src/common/ActionButtons";
+import { PrimaryButton } from "src/common/ActionButtons";
 import { DownloadIcon } from "src/assets/svg";
 
 const cx = classnames.bind(classes);
@@ -36,8 +36,7 @@ const ImageThumb = () => {
 		>
 			<img src={url} alt={altText || "Attachment Image"} />
 			{button && (
-				<SingleButton
-					type="primary"
+				<PrimaryButton
 					button={button}
 					buttonClassName="webchat-buttons-template-button"
 					containerClassName={classes.downloadButtonWrapper}
