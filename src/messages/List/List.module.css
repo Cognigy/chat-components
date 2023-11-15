@@ -34,12 +34,20 @@ article .wrapper {
 	color: var(--white);
 }
 
-.itemTitle {
+.itemTitleHeader {
 	margin-top: 0px;
 	margin-bottom: 0px;
 	font-size: 18px;
 	font-weight: 600;
 	line-height: 130%;
+}
+
+.itemTitle {
+	margin-top: 0px;
+	margin-bottom: 0px;
+	font-size: 16px;
+	font-weight: 600;
+	line-height: 140%;
 }
 
 .itemTitleWithSubtitle {
@@ -50,7 +58,8 @@ article .wrapper {
 	margin-top: 0px;
 	margin-bottom: 0px;
 	font-size: 14px;
-	white-space: pre-line;
+	font-weight: 400;
+	line-height: 140%;
 }
 
 .itemSubtitle.ignoreWS {
@@ -69,13 +78,13 @@ article .wrapper {
 }
 
 .listItemContent {
-	padding: 16px;
+	padding: 16px 16px 12px 16px;
 	overflow-wrap: break-word;
 	display: flex;
-	flex-wrap: wrap;
 	-webkit-box-pack: justify;
 	justify-content: space-between;
 	align-items: center;
+	gap: 16px;
 	width: 100%;
 }
 
@@ -83,22 +92,17 @@ article .wrapper {
 	width: 100%;
 }
 
-.listItemTextWithImage {
-	padding-right: 10px;
-	max-width: calc(70% - 10px);
-}
-
 .listItemImage {
 	background-size: cover;
 	background-position: center center;
 	border-radius: 10px;
-	width: 30%;
-	height: 100%;
-	min-height: 75px;
+	width: 86px;
+	height: 102px;
+	flex-shrink: 0;
 }
 
 .listHeaderButtonWrapper {
-	padding-top: 10px;
+	padding-top: 12px;
 }
 
 .listItemButtonWrapper {

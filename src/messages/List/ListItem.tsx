@@ -74,7 +74,7 @@ const ListItem: FC<{ element: IWebchatAttachmentElement; isHeaderElement?: boole
 							isHeaderElement
 								? "webchat-list-template-header-title"
 								: "webchat-list-template-element-title",
-							classes.itemTitle,
+							isHeaderElement ? classes.itemTitleHeader : classes.itemTitle,
 							subtitleHtml && classes.itemTitleWithSubtitle,
 						)}
 					/>
@@ -134,9 +134,7 @@ const ListItem: FC<{ element: IWebchatAttachmentElement; isHeaderElement?: boole
 						)}
 					>
 						<div
-							className={
-								image_url ? classes.listItemTextWithImage : classes.listItemText
-							}
+							className={classes.listItemText}
 						>
 							{renderTitles}
 						</div>
