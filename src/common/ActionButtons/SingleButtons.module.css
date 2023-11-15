@@ -35,3 +35,20 @@ article button.secondaryButton[disabled] {
 	color: var(--secondary-color-disabled);
 	border: 1px solid var(--secondary-color-disabled);
 }
+
+article button.secondaryButton svg,
+article button.secondaryButton svg path {
+	fill: var(--secondary-color);
+}
+article button.secondaryButton:hover svg,
+article button.secondaryButton:hover svg path,
+article button.secondaryButton:focus svg,
+article button.secondaryButton:focus svg path {
+	fill: var(--secondary-color-hover);
+}
+article button.secondaryButton:disabled svg,
+article button.secondaryButton:disabled svg path,
+article button.secondaryButton[disabled] svg,
+article button.secondaryButton svg[disabled] path {
+	color: var(--secondary-color-disabled);
+}
