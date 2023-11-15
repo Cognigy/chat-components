@@ -1,4 +1,5 @@
 import ActionButton from "./ActionButton";
-import { PrimaryButton, SecondaryButton } from "./SingleButtons";
+import SecondaryButton from "./SecondaryButton";
+import PrimaryButton from "./PrimaryButton";
 
 export { ActionButton, PrimaryButton, SecondaryButton };
