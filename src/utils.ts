@@ -23,7 +23,7 @@ type getWebchatButtonLabel = (button: ActionButtonsProps["payload"][number]) => 
 export const getWebchatButtonLabel: getWebchatButtonLabel = button => {
 	const { title } = button;
 
-	if (!title && (button as any)?.type === "phone_number") {
+	if (!title && "type" in button && button.type === "phone_number") {
 		return "Call";
 	}
 	return title;
@@ -32,5 +32,5 @@ export const getWebchatButtonLabel: getWebchatButtonLabel = button => {
 export const getRandomId = (prefix = "") => {
 	const id = self?.crypto?.randomUUID() || Date.now();
 
-	return `${prefix}-${id}`;
+	return prefix ? `${prefix}-${id}` : id;
 };
