@@ -18,11 +18,13 @@ interface MessageHeaderProps {
 const MessageHeader: FC<MessageHeaderProps> = props => {
 	const { message } = useMessageContext();
 
+	const isUserMessage = message.source === "user";
+
 	const className = classnames(
 		"message-header",
 		props.className,
 		classes.header,
-		message.source === "user" ? classes.outgoing : classes.ongoing,
+		isUserMessage ? classes.outgoing : classes.ongoing,
 	);
 
 	const recievedAt = message?.timestamp ? Number(message.timestamp) : Date.now();
@@ -31,7 +33,7 @@ const MessageHeader: FC<MessageHeaderProps> = props => {
 		<header className={className}>
 			{props.enableAvatar && <Avatar />}
 			<div className={classes.headerMeta}>
-				{message.source === "bot" && (
+				{!isUserMessage && (
 					<>
 						<span className={classes["avatar-name"]}>
 							{message?.avatarName || "Bot"}
