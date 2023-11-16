@@ -9,7 +9,7 @@ import { getChannelPayload } from "src/utils";
 const Video: FC = () => {
 	const { message, config } = useMessageContext();
 	const payload = getChannelPayload(message, config);
-	const { url, altText } = payload.message.attachment.payload;
+	const { url, altText } = payload.message.attachment?.payload || {};
 
 	const handleFocus = useCallback(
 		(player: ReactPlayer) => {

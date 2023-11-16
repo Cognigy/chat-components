@@ -9,7 +9,7 @@ import { IWebchatButton } from "@cognigy/socket-client/lib/interfaces/messageDat
 const Image: FC = () => {
 	const { message, config } = useMessageContext();
 	const payload = getChannelPayload(message, config);
-	const { url, altText, buttons } = payload.message.attachment.payload;
+	const { url, altText, buttons } = payload.message.attachment?.payload || {};
 
 	const button: IWebchatButton = buttons?.[0];
 
