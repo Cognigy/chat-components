@@ -44,11 +44,7 @@ const ActionButtons: FC<ActionButtonsProps> = props => {
 		/>
 	));
 
-	return (
-		<div className={classnames(classes.buttons, containerClassName)}>
-			{buttonElements}
-		</div>
-	);
+	return <div className={classnames(classes.buttons, containerClassName)}>{buttonElements}</div>;
 };
 
 export default ActionButtons;

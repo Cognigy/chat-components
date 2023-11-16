@@ -51,7 +51,7 @@ article a.secondaryButton svg path {
 article button.secondaryButton:hover svg,
 article button.secondaryButton:hover svg path,
 article button.secondaryButton:focus svg,
-article button.secondaryButton:focus svg path
+article button.secondaryButton:focus svg path,
 article a.secondaryButton:hover svg,
 article a.secondaryButton:hover svg path,
 article a.secondaryButton:focus svg,
@@ -67,5 +67,5 @@ article button.secondaryButton svg[disabled] path {
 
 article a.primaryButton,
 article a.secondaryButton {
-	padding: 0px
+	padding: 0px;
 }

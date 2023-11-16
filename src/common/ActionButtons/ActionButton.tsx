@@ -1,4 +1,4 @@
-import { FC, ReactElement, useMemo } from "react";
+import { FC, ReactElement } from "react";
 import classnames from "classnames";
 import { ActionButtonsProps } from "./ActionButtons";
 import { useMessageContext } from "../../hooks";
@@ -23,20 +23,11 @@ interface ActionButtonProps extends React.HTMLAttributes<HTMLDivElement> {
  * Postback, phone number, and URL buttons
  */
 const ActionButton: FC<ActionButtonProps> = props => {
-	const { button, total, position, customIcon, noIcon } = props;
+	const { button, total, position, noIcon, customIcon } = props;
 	const { config, onEmitAnalytics } = useMessageContext();
 
-	const isWebURL = "type" in button && button.type === "web_url";
 	const buttonType =
 		"type" in button ? button.type : "content_type" in button ? button.content_type : null;
-
-	const renderIcon = useMemo(() => {
-		if (noIcon) return null;
-		if (customIcon) return customIcon;
-		if (isWebURL) return <LinkIcon />;
-		return null;
-	}, [customIcon, isWebURL, noIcon]);
-
 	if (!buttonType) return null;
 
 	const buttonLabel = getWebchatButtonLabel(button) || "";
@@ -47,7 +38,9 @@ const ActionButton: FC<ActionButtonProps> = props => {
 	const isPhoneNumber = button.payload && buttonType === "phone_number";
 	const buttonTitle = button.title || "";
 
+	const isWebURL = "type" in button && button.type === "web_url";
 	const isWebURLButtonTargetBlank = isWebURL && button.target !== "_self";
+
 	const buttonTitleWithTarget =
 		isWebURL && isWebURLButtonTargetBlank ? `${buttonTitle} Opens in new tab` : button.title;
 
@@ -90,6 +83,13 @@ const ActionButton: FC<ActionButtonProps> = props => {
 		props.action?.(button.payload, null, { label: button.title });
 	};
 
+	const renderIcon = () => {
+		if (noIcon) return null;
+		if (customIcon) return customIcon;
+		if (isWebURL) return <LinkIcon />;
+		return null;
+	};
+
 	return (
 		<Component
 			onClick={onClick}
@@ -98,7 +98,7 @@ const ActionButton: FC<ActionButtonProps> = props => {
 			aria-label={ariaLabel}
 		>
 			<span dangerouslySetInnerHTML={{ __html }} />
-			{renderIcon}
+			{renderIcon()}
 		</Component>
 	);
 };
