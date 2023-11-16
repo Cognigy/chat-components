@@ -1,4 +1,4 @@
-import { FC, ReactElement } from "react";
+import { FC, ReactElement, useMemo } from "react";
 import classnames from "classnames";
 import { ActionButtonsProps } from "./ActionButtons";
 import { useMessageContext } from "../../hooks";
@@ -15,18 +15,28 @@ interface ActionButtonProps extends React.HTMLAttributes<HTMLDivElement> {
 	total: number;
 	position: number;
 	disabled?: boolean;
-	icon?: ReactElement;
+	customIcon?: ReactElement;
+	noIcon?: boolean;
 }
 
 /**
  * Postback, phone number, and URL buttons
  */
 const ActionButton: FC<ActionButtonProps> = props => {
-	const { button, total, position, icon } = props;
+	const { button, total, position, customIcon, noIcon } = props;
 	const { config, onEmitAnalytics } = useMessageContext();
 
+	const isWebURL = "type" in button && button.type === "web_url";
 	const buttonType =
 		"type" in button ? button.type : "content_type" in button ? button.content_type : null;
+
+	const renderIcon = useMemo(() => {
+		if (noIcon) return null;
+		if (customIcon) return customIcon;
+		if (isWebURL) return <LinkIcon />;
+		return null;
+	}, [customIcon, isWebURL, noIcon]);
+
 	if (!buttonType) return null;
 
 	const buttonLabel = getWebchatButtonLabel(button) || "";
@@ -37,9 +47,7 @@ const ActionButton: FC<ActionButtonProps> = props => {
 	const isPhoneNumber = button.payload && buttonType === "phone_number";
 	const buttonTitle = button.title || "";
 
-	const isWebURL = "type" in button && button.type === "web_url";
 	const isWebURLButtonTargetBlank = isWebURL && button.target !== "_self";
-
 	const buttonTitleWithTarget =
 		isWebURL && isWebURLButtonTargetBlank ? `${buttonTitle} Opens in new tab` : button.title;
 
@@ -90,7 +98,7 @@ const ActionButton: FC<ActionButtonProps> = props => {
 			aria-label={ariaLabel}
 		>
 			<span dangerouslySetInnerHTML={{ __html }} />
-			{icon ? icon : isWebURL ? <LinkIcon /> : null}
+			{renderIcon}
 		</Component>
 	);
 };

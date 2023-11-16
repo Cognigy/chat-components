@@ -9,11 +9,11 @@ interface PrimaryButtonProps extends HTMLAttributes<HTMLDivElement> {
 	button: IWebchatButton;
 	buttonClassName?: string;
 	containerClassName?: string;
-	icon?: ReactElement;
+	customIcon?: ReactElement;
 }
 
 const PrimaryButton: FC<PrimaryButtonProps> = props => {
-	const { button, icon, containerClassName, buttonClassName, action } = props;
+	const { button, customIcon, containerClassName, buttonClassName, action } = props;
 	if (!button) return null;
 
 	return (
@@ -22,7 +22,7 @@ const PrimaryButton: FC<PrimaryButtonProps> = props => {
 			buttonClassName={classnames(classes.primaryButton, buttonClassName)}
 			payload={[button]}
 			action={action}
-			icon={icon}
+			customIcon={customIcon}
 		/>
 	);
 };

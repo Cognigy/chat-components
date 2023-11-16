@@ -40,7 +40,7 @@ const ImageThumb = () => {
 					button={button}
 					buttonClassName="webchat-buttons-template-button"
 					containerClassName={classes.downloadButtonWrapper}
-					icon={<DownloadIcon />}
+					customIcon={<DownloadIcon />}
 				/>
 			)}
 		</div>

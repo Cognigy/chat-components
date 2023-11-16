@@ -14,11 +14,13 @@ export interface ActionButtonsProps {
 	payload: IWebchatButton[] | IWebchatQuickReply[];
 	containerClassName?: string;
 	buttonClassName?: string;
-	icon?: ReactElement;
+	customIcon?: ReactElement;
+	noIcon?: boolean;
 }
 
 const ActionButtons: FC<ActionButtonsProps> = props => {
-	const buttons = props.payload.filter((button: ActionButtonsProps["payload"][number]) => {
+	const { payload, buttonClassName, containerClassName, action, customIcon, noIcon } = props;
+	const buttons = payload.filter((button: ActionButtonsProps["payload"][number]) => {
 		if ("type" in button && !["postback", "web_url", "phone_number"].includes(button.type))
 			return false;
 
@@ -30,19 +32,20 @@ const ActionButtons: FC<ActionButtonsProps> = props => {
 
 	const buttonElements = buttons.map((button, index: number) => (
 		<ActionButton
-			className={props.buttonClassName}
+			className={buttonClassName}
 			key={index}
 			button={button}
-			action={props.action}
+			action={action}
 			position={index + 1}
-			total={props.payload.length}
-			disabled={props.action === undefined}
-			icon={props.icon}
+			total={payload.length}
+			disabled={action === undefined}
+			customIcon={customIcon}
+			noIcon={noIcon}
 		/>
 	));
 
 	return (
-		<div className={classnames(classes.buttons, props.containerClassName)}>
+		<div className={classnames(classes.buttons, containerClassName)}>
 			{buttonElements}
 		</div>
 	);
