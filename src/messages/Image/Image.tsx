@@ -1,20 +1,22 @@
 import { FC, useMemo, useState } from "react";
-import { MessagePasstroughProps } from "../types";
 import { ImageMessageContext } from "./context";
 import Lightbox from "./lightbox/Lightbox";
 import ImageThumb from "./ImageThumb";
 import { useMessageContext } from "src/hooks";
+import { getChannelPayload } from "src/utils";
+import { IWebchatButton } from "@cognigy/socket-client/lib/interfaces/messageData";
 
-const Image: FC<MessagePasstroughProps> = () => {
-	const { message } = useMessageContext();
+const Image: FC = () => {
+	const { message, config } = useMessageContext();
+	const payload = getChannelPayload(message, config);
+	const { url, altText, buttons } = payload.message.attachment?.payload || {};
 
-	const {
-		url,
-		isDownloadable = true,
-		altText,
-		template = "media",
-		config,
-	} = message?.data?._cognigy?._webchat?.message?.attachment?.payload || {};
+	const button: IWebchatButton = buttons?.[0];
+
+	const isDownloadable =
+		(buttons as IWebchatButton[])?.find(
+			button => "type" in button && button.type === "web_url",
+		) !== undefined;
 
 	const [showLightbox, setShowLightbox] = useState(false);
 
@@ -23,12 +25,11 @@ const Image: FC<MessagePasstroughProps> = () => {
 			onExpand: () => isDownloadable && setShowLightbox(true),
 			onClose: () => setShowLightbox(false),
 			url,
-			isDownloadable,
 			altText,
-			template,
-			config,
+			isDownloadable,
+			button,
 		}),
-		[altText, config, isDownloadable, template, url],
+		[altText, button, isDownloadable, url],
 	);
 
 	if (!url) return null;

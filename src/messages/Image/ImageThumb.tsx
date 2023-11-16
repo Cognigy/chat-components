@@ -1,64 +1,48 @@
 import classes from "./Image.module.css";
 import classnames from "classnames/bind";
-import { getBackgroundImage } from "../../lib/css";
 import { useImageMessageContext } from "./hooks";
+import { useMessageContext } from "src/hooks";
+import { PrimaryButton } from "src/common/ActionButtons";
+import { DownloadIcon } from "src/assets/svg";
 
 const cx = classnames.bind(classes);
 
 const ImageThumb = () => {
-	const { config, url, altText, template, isDownloadable, onExpand } = useImageMessageContext();
-
-	const divTabIndex = isDownloadable ? 0 : -1;
-	const divRole = isDownloadable ? "button" : undefined;
-	const divAriaLabel = isDownloadable ? "View Image in fullsize" : undefined;
+	const { config } = useMessageContext();
+	const { url, altText, isDownloadable, onExpand, button } = useImageMessageContext();
 
 	const handleKeyDown = (event: React.KeyboardEvent<HTMLDivElement>) => {
 		event.key === "Enter" && onExpand && onExpand();
 	};
 
-	const isDynamicRatio = !config?.settings?.dynamicImageAspectRatio; // temp
+	const isDynamicRatio = !!config?.settings?.dynamicImageAspectRatio;
 
-	const flexImageClasses = cx({
-		flexImage: true,
+	const imageClasses = cx({
 		wrapper: true,
+		flexImage: !isDynamicRatio,
+		fixedImage: isDynamicRatio,
 		wrapperDownloadable: isDownloadable,
 	});
 
-	const fixedImageClasses = cx({
-		fixedImage: true,
-		wrapper: true,
-		wrapperDownloadable: isDownloadable,
-		templateMedia: template === "media",
-		templateGeneric: template === "generic",
-		templateList: template === "list",
-	});
-
-	const backgroundImage = getBackgroundImage(url);
-
-	return isDynamicRatio ? (
+	return (
 		<div
-			className={flexImageClasses}
+			className={imageClasses}
 			onClick={() => onExpand()}
 			onKeyDown={handleKeyDown}
-			tabIndex={divTabIndex}
-			role={divRole}
-			aria-label={divAriaLabel}
+			tabIndex={isDownloadable ? 0 : -1}
+			role={isDownloadable ? "button" : undefined}
+			aria-label={isDownloadable ? "View Image in fullsize" : undefined}
 			data-testid="image-message"
 		>
 			<img src={url} alt={altText || "Attachment Image"} />
-		</div>
-	) : (
-		<div
-			className={fixedImageClasses}
-			style={{ backgroundImage: backgroundImage }}
-			onClick={() => onExpand()}
-			onKeyDown={handleKeyDown}
-			tabIndex={divTabIndex}
-			role={divRole}
-			aria-label={divAriaLabel}
-			data-testid="image-message"
-		>
-			<span role="img" aria-label={altText || "Attachment Image"} />
+			{button && (
+				<PrimaryButton
+					button={button}
+					buttonClassName="webchat-buttons-template-button"
+					containerClassName={classes.downloadButtonWrapper}
+					customIcon={<DownloadIcon />}
+				/>
+			)}
 		</div>
 	);
 };

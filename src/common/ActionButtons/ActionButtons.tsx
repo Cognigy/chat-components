@@ -6,7 +6,7 @@ import { ActionButton } from ".";
 import classnames from "classnames";
 
 import classes from "./ActionButtons.module.css";
-import { FC } from "react";
+import { FC, ReactElement } from "react";
 import { MessageProps } from "src/Message";
 
 export interface ActionButtonsProps {
@@ -14,10 +14,13 @@ export interface ActionButtonsProps {
 	payload: IWebchatButton[] | IWebchatQuickReply[];
 	containerClassName?: string;
 	buttonClassName?: string;
+	customIcon?: ReactElement;
+	noIcon?: boolean;
 }
 
 const ActionButtons: FC<ActionButtonsProps> = props => {
-	const buttons = props.payload.filter((button: ActionButtonsProps["payload"][number]) => {
+	const { payload, buttonClassName, containerClassName, action, customIcon, noIcon } = props;
+	const buttons = payload.filter((button: ActionButtonsProps["payload"][number]) => {
 		if ("type" in button && !["postback", "web_url", "phone_number"].includes(button.type))
 			return false;
 
@@ -29,21 +32,19 @@ const ActionButtons: FC<ActionButtonsProps> = props => {
 
 	const buttonElements = buttons.map((button, index: number) => (
 		<ActionButton
-			className={props.buttonClassName}
+			className={buttonClassName}
 			key={index}
 			button={button}
-			action={props.action}
+			action={action}
 			position={index + 1}
-			total={props.payload.length}
-			disabled={props.action === undefined}
+			total={payload.length}
+			disabled={action === undefined}
+			customIcon={customIcon}
+			noIcon={noIcon}
 		/>
 	));
 
-	return (
-		<div className={classnames(classes.buttons, props.containerClassName)}>
-			{buttonElements}
-		</div>
-	);
+	return <div className={classnames(classes.buttons, containerClassName)}>{buttonElements}</div>;
 };
 
 export default ActionButtons;

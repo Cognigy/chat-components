@@ -12,7 +12,7 @@ const List: FC = () => {
 	const { message, config, action } = useMessageContext();
 	const payload = getChannelPayload(message, config);
 
-	const { elements, top_element_style, buttons } = payload.message.attachment.payload;
+	const { elements, top_element_style, buttons } = payload.message.attachment?.payload || {};
 
 	// We support the "large" string to maintain compatibility with old format
 	const showTopElementLarge = top_element_style === "large" || top_element_style === true;
@@ -39,6 +39,8 @@ const List: FC = () => {
 			firstFocusable?.focus();
 		}, 200);
 	}, [config?.settings.enableAutoFocus, listTemplateId]);
+
+	if (elements.length === 0) return null;
 
 	return (
 		<div

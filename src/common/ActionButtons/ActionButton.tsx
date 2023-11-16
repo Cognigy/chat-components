@@ -1,4 +1,4 @@
-import { FC } from "react";
+import { FC, ReactElement } from "react";
 import classnames from "classnames";
 import { ActionButtonsProps } from "./ActionButtons";
 import { useMessageContext } from "../../hooks";
@@ -9,19 +9,21 @@ import classes from "./ActionButton.module.css";
 import { LinkIcon } from "src/assets/svg";
 
 interface ActionButtonProps extends React.HTMLAttributes<HTMLDivElement> {
-	action: ActionButtonsProps["action"];
+	action?: ActionButtonsProps["action"];
 	className?: string;
 	button: ActionButtonsProps["payload"][number];
 	total: number;
 	position: number;
 	disabled?: boolean;
+	customIcon?: ReactElement;
+	noIcon?: boolean;
 }
 
 /**
  * Postback, phone number, and URL buttons
  */
 const ActionButton: FC<ActionButtonProps> = props => {
-	const { button, total, position } = props;
+	const { button, total, position, noIcon, customIcon } = props;
 	const { config, onEmitAnalytics } = useMessageContext();
 
 	const buttonType =
@@ -81,6 +83,13 @@ const ActionButton: FC<ActionButtonProps> = props => {
 		props.action?.(button.payload, null, { label: button.title });
 	};
 
+	const renderIcon = () => {
+		if (noIcon) return null;
+		if (customIcon) return customIcon;
+		if (isWebURL) return <LinkIcon />;
+		return null;
+	};
+
 	return (
 		<Component
 			onClick={onClick}
@@ -89,7 +98,7 @@ const ActionButton: FC<ActionButtonProps> = props => {
 			aria-label={ariaLabel}
 		>
 			<span dangerouslySetInnerHTML={{ __html }} />
-			{isWebURL && <LinkIcon />}
+			{renderIcon()}
 		</Component>
 	);
 };
