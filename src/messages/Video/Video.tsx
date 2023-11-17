@@ -37,7 +37,7 @@ const Video: FC = () => {
 				playing
 				controls
 				className={classes.player}
-				playIcon={<VideoPlayIcon width="45px" />}
+				playIcon={<VideoPlayIcon width="35px" height="35px" />}
 				width="unset"
 				height="unset"
 				onReady={handleFocus}
