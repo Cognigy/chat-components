@@ -41,13 +41,13 @@ article button.playButton svg {
 
 .playIcon {
 	padding-left: 3px;
-	height: 15px;
-	width: 15px;
+	height: 13px;
+	width: 13px;
 }
 
 .pauseIcon {
-	height: 20px;
-	width: 20px;
+	height: 15px;
+	width: 15px;
 }
 
 /*** Custom range input ***/
