@@ -12,12 +12,17 @@ article .wrapper img {
 	display: block;
 	outline: none;
 }
+article .wrapper.wrapperDownloadable img {
+	border-bottom-left-radius: 0px;
+	border-bottom-right-radius: 0px;
+}
 
 .wrapperDownloadable {
 	cursor: pointer;
+	border: 1px solid var(--black-80);
 }
-.wrapperDownloadable:hover img,
-.wrapperDownloadable:focus img {
+.wrapperDownloadable img:hover,
+.wrapperDownloadable img:focus {
 	opacity: 0.8;
 }
 
@@ -32,8 +37,5 @@ article .fixedImage img {
 }
 
 article .downloadButtonWrapper {
-	position: absolute;
 	padding: 16px;
-	bottom: 0px;
-	width: calc(100% - 32px);
 }
