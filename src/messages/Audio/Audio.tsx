@@ -65,6 +65,7 @@ const Audio: FC = () => {
 				height={0}
 				width={0}
 				style={{ display: "none" }}
+				progressInterval={0.1}
 			/>
 			<Controls
 				playerRef={playerRef}

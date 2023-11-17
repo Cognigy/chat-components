@@ -27,7 +27,6 @@ const Controls: FC<ControlsProps> = props => {
 	};
 
 	const handleSeekMouseDown = () => {
-		handlePause();
 		setSeeking(true);
 	};
 
