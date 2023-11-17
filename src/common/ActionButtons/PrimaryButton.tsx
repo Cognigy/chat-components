@@ -23,6 +23,7 @@ const PrimaryButton: FC<PrimaryButtonProps> = props => {
 			payload={[button]}
 			action={action}
 			customIcon={customIcon}
+			noIcon={!customIcon}
 		/>
 	);
 };
