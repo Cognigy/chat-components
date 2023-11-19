@@ -28,6 +28,7 @@ const Controls: FC<ControlsProps> = props => {
 
 	const handleSeekMouseDown = () => {
 		setSeeking(true);
+		handlePause();
 	};
 
 	const handleSeekChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -37,6 +38,7 @@ const Controls: FC<ControlsProps> = props => {
 
 	const handleSeekMouseUp = () => {
 		setSeeking(false);
+		handlePlay();
 	};
 
 	useEffect(() => {
