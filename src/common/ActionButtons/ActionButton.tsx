@@ -1,9 +1,9 @@
 import { FC, ReactElement } from "react";
 import classnames from "classnames";
 import { ActionButtonsProps } from "./ActionButtons";
-import { useMessageContext } from "../../hooks";
-import { getWebchatButtonLabel } from "../../utils";
-import { sanitizeHTML } from "../../sanitize";
+import { useMessageContext } from "src/messages/hooks";
+import { getWebchatButtonLabel } from "src/utils";
+import { sanitizeHTML } from "src/sanitize";
 import { sanitizeUrl } from "@braintree/sanitize-url";
 import classes from "./ActionButton.module.css";
 import { LinkIcon } from "src/assets/svg";

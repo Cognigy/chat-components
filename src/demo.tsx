@@ -2,7 +2,7 @@ import React from "react";
 import ReactDOM from "react-dom/client";
 
 import "./demo.css";
-import Message, { MessageProps } from "./Message.tsx";
+import Message, { MessageProps } from "./messages/Message.tsx";
 import { MessageSender } from "./messages/types.ts";
 
 //fixtures

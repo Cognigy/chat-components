@@ -1,13 +1,14 @@
+import { FC } from "react";
 import classes from "./Image.module.css";
 import classnames from "classnames/bind";
 import { useImageMessageContext } from "./hooks";
-import { useMessageContext } from "src/hooks";
+import { useMessageContext } from "src/messages/hooks";
 import { PrimaryButton } from "src/common/ActionButtons";
 import { DownloadIcon } from "src/assets/svg";
 
 const cx = classnames.bind(classes);
 
-const ImageThumb = () => {
+const ImageThumb: FC = () => {
 	const { config } = useMessageContext();
 	const { url, altText, isDownloadable, onExpand, button } = useImageMessageContext();
 

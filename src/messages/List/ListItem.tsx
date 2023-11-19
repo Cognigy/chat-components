@@ -1,9 +1,9 @@
 import { FC, useMemo } from "react";
 import classes from "./List.module.css";
-import { useMessageContext } from "src/hooks";
+import { useMessageContext } from "src/messages/hooks";
 import { sanitizeHTML } from "src/sanitize";
 import { getRandomId } from "src/utils";
-import { getBackgroundImage } from "src/lib/css";
+import { getBackgroundImage } from "src/utils";
 import { PrimaryButton, SecondaryButton } from "src/common/ActionButtons";
 import classnames from "classnames";
 import { sanitizeUrl } from "@braintree/sanitize-url";

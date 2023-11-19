@@ -7,7 +7,7 @@ import classnames from "classnames";
 
 import classes from "./ActionButtons.module.css";
 import { FC, ReactElement } from "react";
-import { MessageProps } from "src/Message";
+import { MessageProps } from "src/messages/Message";
 
 export interface ActionButtonsProps {
 	action?: MessageProps["action"];

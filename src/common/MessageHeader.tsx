@@ -1,7 +1,7 @@
 import { FC } from "react";
 import classes from "./MessageHeader.module.css";
 import classnames from "classnames";
-import { useMessageContext } from "../hooks";
+import { useMessageContext } from "src/messages/hooks";
 import Avatar from "./Avatar";
 import { HeaderEllipsis } from "src/assets/svg";
 
