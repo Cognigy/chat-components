@@ -19,6 +19,7 @@ const ImageThumb: FC = () => {
 	const isDynamicRatio = !!config?.settings?.dynamicImageAspectRatio;
 
 	const imageClasses = cx({
+		"webchat-media-template-image": true,
 		wrapper: true,
 		flexImage: !isDynamicRatio,
 		fixedImage: isDynamicRatio,
