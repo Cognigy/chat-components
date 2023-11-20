@@ -80,7 +80,7 @@
 							"top_element_style": "large",
 							"buttons": [
 								{
-									"title": "foobar009b1",
+									"title": "Global Button",
 									"type": "web_url",
 									"url": "https://example.com",
 									"payload": "",

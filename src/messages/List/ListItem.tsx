@@ -57,6 +57,7 @@ const ListItem: FC<{ element: IWebchatAttachmentElement; isHeaderElement?: boole
 			<div
 				className={isHeaderElement ? classes.headerImage : classes.listItemImage}
 				style={{ backgroundImage: getBackgroundImage(image_url) }}
+				data-testid={isHeaderElement ? "header-image" : "regular-image"}
 			>
 				<span role="img" aria-label={image_alt_text || "Attachment Image"} />
 			</div>
@@ -121,7 +122,7 @@ const ListItem: FC<{ element: IWebchatAttachmentElement; isHeaderElement?: boole
 							<PrimaryButton
 								action={action}
 								button={button}
-								buttonClassName="webchat-list-template-element-button"
+								buttonClassName="webchat-list-template-header-button"
 								containerClassName={classes.listHeaderButtonWrapper}
 							/>
 						</div>

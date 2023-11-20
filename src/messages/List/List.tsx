@@ -47,6 +47,7 @@ const List: FC = () => {
 			className={classnames("webchat-list-template-root", classes.wrapper)}
 			role="list"
 			id={listTemplateId}
+			data-testid="list-message"
 		>
 			{headerElement && <ListItem element={headerElement} isHeaderElement />}
 			{regularElements.map((element: IWebchatAttachmentElement, index: number) => (
