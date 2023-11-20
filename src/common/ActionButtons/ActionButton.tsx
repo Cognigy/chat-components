@@ -16,14 +16,14 @@ interface ActionButtonProps extends React.HTMLAttributes<HTMLDivElement> {
 	position: number;
 	disabled?: boolean;
 	customIcon?: ReactElement;
-	noIcon?: boolean;
+	showUrlIcon?: boolean;
 }
 
 /**
  * Postback, phone number, and URL buttons
  */
 const ActionButton: FC<ActionButtonProps> = props => {
-	const { button, total, position, noIcon, customIcon } = props;
+	const { button, total, position, showUrlIcon, customIcon } = props;
 	const { config, onEmitAnalytics } = useMessageContext();
 
 	const buttonType =
@@ -84,9 +84,8 @@ const ActionButton: FC<ActionButtonProps> = props => {
 	};
 
 	const renderIcon = () => {
-		if (noIcon) return null;
 		if (customIcon) return customIcon;
-		if (isWebURL) return <LinkIcon />;
+		if (isWebURL && showUrlIcon) return <LinkIcon />;
 		return null;
 	};
 

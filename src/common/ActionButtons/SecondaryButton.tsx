@@ -23,7 +23,6 @@ const SecondaryButton: FC<SecondaryButtonProps> = props => {
 			payload={[button]}
 			action={action}
 			customIcon={customIcon}
-			noIcon={!customIcon}
 		/>
 	);
 };

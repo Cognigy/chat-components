@@ -29,6 +29,7 @@ const TextWithButtons: FC = () => {
 				buttonClassName={classes.button}
 				containerClassName={classes.buttons}
 				payload={buttons}
+				showUrlIcon
 			/>
 		</>
 	);
