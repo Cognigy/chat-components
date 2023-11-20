@@ -72,16 +72,4 @@ describe("Message List", () => {
 		expect(screen.getByRole("list")).toBeInTheDocument();
 		expect(screen.getAllByRole("listitem")).toHaveLength(5);
 	});
-
-	// TODO: make module css working
-	// it("renders list header image in a fixed aspect ratio", async () => {
-	// 	await waitFor(() => {
-	// 		render(<Message message={list} />);
-	// 	});
-
-	// 	const image = screen.queryByTestId("header-image") as Element;
-	// 	// const compStyles = window.getComputedStyle(image);
-
-	// 	expect(image).toHaveStyle({ aspectRatio: "16/9" });
-	// });
 });

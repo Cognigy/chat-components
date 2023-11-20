@@ -1,4 +1,10 @@
-import { render, waitFor, screen, fireEvent, waitForElementToBeRemoved } from "@testing-library/react";
+import {
+	render,
+	waitFor,
+	screen,
+	fireEvent,
+	waitForElementToBeRemoved,
+} from "@testing-library/react";
 import { it, describe, expect } from "vitest";
 import Message from "src/messages/Message";
 import image from "test/fixtures/image.json";
@@ -48,13 +54,10 @@ describe("Message Image", () => {
 
 		fireEvent.click(screen.getByRole("button"));
 
-		waitFor(() =>
-			expect(screen.getByLabelText("Lightbox")).toBeInTheDocument(),
-		);
+		waitFor(() => expect(screen.getByLabelText("Lightbox")).toBeInTheDocument());
 
 		waitForElementToBeRemoved(screen.queryByLabelText("Lightbox"));
 
 		fireEvent.click(screen.getByLabelText("Close fullsize image modal"));
 	});
-
 });

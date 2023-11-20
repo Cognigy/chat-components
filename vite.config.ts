@@ -10,6 +10,11 @@ export default defineConfig({
 		environment: "jsdom",
 		globals: true,
 		setupFiles: "./test/setup.js",
+		css: {
+			modules: {
+				classNameStrategy: "non-scoped",
+			},
+		},
 		reporters: process.env.GITHUB_ACTIONS
 			? ["default", new GithubActionsReporter()]
 			: "default",

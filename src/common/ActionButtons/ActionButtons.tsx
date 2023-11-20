@@ -44,7 +44,15 @@ const ActionButtons: FC<ActionButtonsProps> = props => {
 		/>
 	));
 
-	return <div className={classnames(classes.buttons, containerClassName)}>{buttonElements}</div>;
+	return (
+		<div
+			className={classnames(classes.buttons, containerClassName)}
+			role={buttons.length > 1 ? "group" : undefined}
+			data-testid="action-buttons"
+		>
+			{buttonElements}
+		</div>
+	);
 };
 
 export default ActionButtons;
