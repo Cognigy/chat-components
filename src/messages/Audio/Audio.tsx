@@ -4,7 +4,7 @@ import classes from "./Audio.module.css";
 import mainClasses from "src/main.module.css";
 import Controls from "./Controls";
 import { OnProgressProps } from "react-player/base";
-import { useMessageContext } from "src/hooks";
+import { useMessageContext } from "src/messages/hooks";
 import { getChannelPayload } from "src/utils";
 
 const Audio: FC = () => {
@@ -65,6 +65,7 @@ const Audio: FC = () => {
 				height={0}
 				width={0}
 				style={{ display: "none" }}
+				progressInterval={0.1}
 			/>
 			<Controls
 				playerRef={playerRef}

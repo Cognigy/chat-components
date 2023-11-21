@@ -1,12 +1,12 @@
 import { FC } from "react";
 
-import Text from "../Text/Text";
+import { Text } from "src/messages";
 
 import classes from "./TextWithButtons.module.css";
-import { useMessageContext } from "../../hooks";
+import { useMessageContext } from "../hooks";
 
-import { getChannelPayload } from "../../utils";
-import ActionButtons from "../../common/ActionButtons/ActionButtons";
+import { getChannelPayload } from "src/utils";
+import ActionButtons from "src/common/ActionButtons/ActionButtons";
 
 /**
  * Combines Text with Buttons + Quick Replies media types as
@@ -29,6 +29,7 @@ const TextWithButtons: FC = () => {
 				buttonClassName={classes.button}
 				containerClassName={classes.buttons}
 				payload={buttons}
+				showUrlIcon
 			/>
 		</>
 	);

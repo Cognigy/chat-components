@@ -20,5 +20,10 @@ article .player > div:first-child {
 
 article .player > div:first-child:hover,
 article .player > div:first-child:focus {
-	opacity: 0.8;
+	opacity: 0.85;
+}
+
+article .player > div:first-child:hover svg circle,
+article .player > div:first-child:focus svg circle {
+	fill-opacity: 1;
 }

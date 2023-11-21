@@ -2,7 +2,7 @@ import { FC, useMemo, useState } from "react";
 import { ImageMessageContext } from "./context";
 import Lightbox from "./lightbox/Lightbox";
 import ImageThumb from "./ImageThumb";
-import { useMessageContext } from "src/hooks";
+import { useMessageContext } from "src/messages/hooks";
 import { getChannelPayload } from "src/utils";
 import { IWebchatButton } from "@cognigy/socket-client/lib/interfaces/messageData";
 

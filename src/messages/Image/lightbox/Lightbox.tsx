@@ -1,9 +1,9 @@
-import { useEffect } from "react";
+import { FC, useEffect } from "react";
 import { useImageMessageContext } from "../hooks";
 import classes from "./Lightbox.module.css";
 import LightboxHeader from "./LightboxHeader";
 
-const Lightbox = () => {
+const Lightbox: FC = () => {
 	const { url, altText, onClose } = useImageMessageContext();
 
 	useEffect(() => {

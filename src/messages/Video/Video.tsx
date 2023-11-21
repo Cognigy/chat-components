@@ -3,7 +3,7 @@ import ReactPlayer from "react-player";
 import classes from "./Video.module.css";
 import mainClasses from "src/main.module.css";
 import { VideoPlayIcon } from "src/assets/svg";
-import { useMessageContext } from "src/hooks";
+import { useMessageContext } from "src/messages/hooks";
 import { getChannelPayload } from "src/utils";
 
 const Video: FC = () => {
@@ -37,7 +37,7 @@ const Video: FC = () => {
 				playing
 				controls
 				className={classes.player}
-				playIcon={<VideoPlayIcon width="45px" />}
+				playIcon={<VideoPlayIcon width="35px" height="35px" />}
 				width="unset"
 				height="unset"
 				onReady={handleFocus}

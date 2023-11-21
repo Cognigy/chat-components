@@ -7,7 +7,7 @@ import classnames from "classnames";
 
 import classes from "./ActionButtons.module.css";
 import { FC, ReactElement } from "react";
-import { MessageProps } from "src/Message";
+import { MessageProps } from "src/messages/Message";
 
 export interface ActionButtonsProps {
 	action?: MessageProps["action"];
@@ -15,11 +15,11 @@ export interface ActionButtonsProps {
 	containerClassName?: string;
 	buttonClassName?: string;
 	customIcon?: ReactElement;
-	noIcon?: boolean;
+	showUrlIcon?: boolean;
 }
 
 const ActionButtons: FC<ActionButtonsProps> = props => {
-	const { payload, buttonClassName, containerClassName, action, customIcon, noIcon } = props;
+	const { payload, buttonClassName, containerClassName, action, customIcon, showUrlIcon } = props;
 	const buttons = payload.filter((button: ActionButtonsProps["payload"][number]) => {
 		if ("type" in button && !["postback", "web_url", "phone_number"].includes(button.type))
 			return false;
@@ -40,11 +40,19 @@ const ActionButtons: FC<ActionButtonsProps> = props => {
 			total={payload.length}
 			disabled={action === undefined}
 			customIcon={customIcon}
-			noIcon={noIcon}
+			showUrlIcon={showUrlIcon}
 		/>
 	));
 
-	return <div className={classnames(classes.buttons, containerClassName)}>{buttonElements}</div>;
+	return (
+		<div
+			className={classnames(classes.buttons, containerClassName)}
+			role={buttons.length > 1 ? "group" : undefined}
+			data-testid="action-buttons"
+		>
+			{buttonElements}
+		</div>
+	);
 };
 
 export default ActionButtons;

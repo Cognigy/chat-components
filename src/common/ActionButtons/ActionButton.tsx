@@ -1,9 +1,9 @@
 import { FC, ReactElement } from "react";
 import classnames from "classnames";
 import { ActionButtonsProps } from "./ActionButtons";
-import { useMessageContext } from "../../hooks";
-import { getWebchatButtonLabel } from "../../utils";
-import { sanitizeHTML } from "../../sanitize";
+import { useMessageContext } from "src/messages/hooks";
+import { getWebchatButtonLabel } from "src/utils";
+import { sanitizeHTML } from "src/sanitize";
 import { sanitizeUrl } from "@braintree/sanitize-url";
 import classes from "./ActionButton.module.css";
 import { LinkIcon } from "src/assets/svg";
@@ -16,14 +16,14 @@ interface ActionButtonProps extends React.HTMLAttributes<HTMLDivElement> {
 	position: number;
 	disabled?: boolean;
 	customIcon?: ReactElement;
-	noIcon?: boolean;
+	showUrlIcon?: boolean;
 }
 
 /**
  * Postback, phone number, and URL buttons
  */
 const ActionButton: FC<ActionButtonProps> = props => {
-	const { button, total, position, noIcon, customIcon } = props;
+	const { button, total, position, showUrlIcon, customIcon } = props;
 	const { config, onEmitAnalytics } = useMessageContext();
 
 	const buttonType =
@@ -84,9 +84,8 @@ const ActionButton: FC<ActionButtonProps> = props => {
 	};
 
 	const renderIcon = () => {
-		if (noIcon) return null;
 		if (customIcon) return customIcon;
-		if (isWebURL) return <LinkIcon />;
+		if (isWebURL && showUrlIcon) return <LinkIcon />;
 		return null;
 	};
 

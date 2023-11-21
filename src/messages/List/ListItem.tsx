@@ -1,9 +1,9 @@
 import { FC, useMemo } from "react";
 import classes from "./List.module.css";
-import { useMessageContext } from "src/hooks";
+import { useMessageContext } from "src/messages/hooks";
 import { sanitizeHTML } from "src/sanitize";
 import { getRandomId } from "src/utils";
-import { getBackgroundImage } from "src/lib/css";
+import { getBackgroundImage } from "src/utils";
 import { PrimaryButton, SecondaryButton } from "src/common/ActionButtons";
 import classnames from "classnames";
 import { sanitizeUrl } from "@braintree/sanitize-url";
@@ -57,6 +57,7 @@ const ListItem: FC<{ element: IWebchatAttachmentElement; isHeaderElement?: boole
 			<div
 				className={isHeaderElement ? classes.headerImage : classes.listItemImage}
 				style={{ backgroundImage: getBackgroundImage(image_url) }}
+				data-testid={isHeaderElement ? "header-image" : "regular-image"}
 			>
 				<span role="img" aria-label={image_alt_text || "Attachment Image"} />
 			</div>
@@ -121,7 +122,7 @@ const ListItem: FC<{ element: IWebchatAttachmentElement; isHeaderElement?: boole
 							<PrimaryButton
 								action={action}
 								button={button}
-								buttonClassName="webchat-list-template-element-button"
+								buttonClassName="webchat-list-template-header-button"
 								containerClassName={classes.listHeaderButtonWrapper}
 							/>
 						</div>

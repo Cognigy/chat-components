@@ -6,7 +6,7 @@ import {
 	waitForElementToBeRemoved,
 } from "@testing-library/react";
 import { it, describe, expect } from "vitest";
-import Message from "src/Message";
+import Message from "src/messages/Message";
 import video from "test/fixtures/video.json";
 
 describe("Message Video", () => {

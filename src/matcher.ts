@@ -1,17 +1,12 @@
-import { ComponentType } from "react";
-import { Text } from "./messages";
+import { FunctionComponent } from "react";
+import { Text, Image, Video, Audio, List, TextWithButtons } from "./messages";
 import { IWebchatConfig, WebchatMessage } from "./messages/types";
-import TextWithButtons from "./messages/TextWithButtons/TextWithButtons";
 import { getChannelPayload } from "./utils";
 import { IWebchatTemplateAttachment } from "@cognigy/socket-client/lib/interfaces/messageData";
-import Image from "src/messages/Image";
-import Video from "src/messages/Video";
-import Audio from "src/messages/Audio";
-import List from "src/messages/List";
 
 export type MatchConfig = {
 	rule: (message: WebchatMessage, config?: IWebchatConfig) => boolean;
-	component: ComponentType<any>;
+	component: FunctionComponent;
 };
 
 const defaultConfig: MatchConfig[] = [
@@ -38,21 +33,39 @@ const defaultConfig: MatchConfig[] = [
 		component: TextWithButtons,
 	},
 	{
-		rule: message => message?.data?._cognigy?._webchat?.message?.attachment?.type === "image",
+		rule: (message, config) => {
+			const channelConfig = getChannelPayload(message, config);
+			if (!channelConfig) return false;
+
+			return channelConfig?.message?.attachment?.type === "image";
+		},
 		component: Image,
 	},
 	{
-		rule: message => message?.data?._cognigy?._webchat?.message?.attachment?.type === "video",
+		rule: (message, config) => {
+			const channelConfig = getChannelPayload(message, config);
+			if (!channelConfig) return false;
+
+			return channelConfig?.message?.attachment?.type === "video";
+		},
 		component: Video,
 	},
 	{
-		rule: message => message?.data?._cognigy?._webchat?.message?.attachment?.type === "audio",
+		rule: (message, config) => {
+			const channelConfig = getChannelPayload(message, config);
+			if (!channelConfig) return false;
+
+			return channelConfig?.message?.attachment?.type === "audio";
+		},
 		component: Audio,
 	},
 	{
-		rule: (message: any) =>
-			message?.data?._cognigy?._webchat?.message?.attachment?.payload?.template_type ===
-			"list",
+		rule: (message, config) => {
+			const channelConfig = getChannelPayload(message, config);
+			if (!channelConfig) return false;
+
+			return channelConfig?.message?.attachment?.payload?.template_type === "list";
+		},
 		component: List,
 	},
 ];
