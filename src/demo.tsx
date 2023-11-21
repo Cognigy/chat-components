@@ -7,6 +7,7 @@ import { MessageSender } from "./messages/types.ts";
 
 //fixtures
 import listMessage from "test/fixtures/list.json";
+import gallery from "test/fixtures/gallery.json";
 import image from "test/fixtures/image.json";
 import imageDownloadable from "test/fixtures/image-downloadable.json";
 import video from "test/fixtures/video.json";
@@ -133,6 +134,9 @@ const messages: MessageProps[] = [
 	},
 	{
 		message: listMessage,
+	},
+	{
+		message: gallery,
 	},
 ];
 

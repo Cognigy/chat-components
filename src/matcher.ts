@@ -1,5 +1,5 @@
 import { FunctionComponent } from "react";
-import { Text, Image, Video, Audio, List, TextWithButtons } from "./messages";
+import { Text, Image, Video, Audio, List, Gallery, TextWithButtons } from "./messages";
 import { IWebchatConfig, WebchatMessage } from "./messages/types";
 import { getChannelPayload } from "./utils";
 import { IWebchatTemplateAttachment } from "@cognigy/socket-client/lib/interfaces/messageData";
@@ -67,6 +67,15 @@ const defaultConfig: MatchConfig[] = [
 			return channelConfig?.message?.attachment?.payload?.template_type === "list";
 		},
 		component: List,
+	},
+	{
+		rule: (message, config) => {
+			const channelConfig = getChannelPayload(message, config);
+			if (!channelConfig) return false;
+
+			return channelConfig?.message?.attachment?.payload?.template_type === "generic";
+		},
+		component: Gallery,
 	},
 ];
 

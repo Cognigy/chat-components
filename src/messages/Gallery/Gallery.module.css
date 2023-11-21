@@ -1,0 +1,7 @@
+article .wrapper {
+	max-width: 295px;
+	border-radius: var(--bubble-border-radius);
+	overflow: hidden;
+	border: 1px solid var(--black-80);
+	background-color: var(--white);
+}
