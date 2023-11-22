@@ -30,4 +30,12 @@
 	--text-light: var(--webchat-text-light, --white);
 
 	--bubble-border-radius: var(--webchat-bubble-border-radius, 15px);
+
+	/* Swiper Gallery */
+	--swiper-theme-color: var(--primary-color);
+	--swiper-pagination-bullet-size: 6px;
+	--swiper-pagination-bullet-inactive-color: var(--black-80);
+	--swiper-pagination-bullet-inactive-opacity: 1;
+	--swiper-navigation-top-offset: calc(50% - 15px);
+	--swiper-navigation-size: 20px;
 }

@@ -45,7 +45,48 @@
 							"template_type": "generic",
 							"elements": [
 								{
-									"title": "foobar004g1",
+									"title": "Cat 1",
+									"subtitle": "Deliver first class service experiences.",
+									"image_url": "https://placekitten.com/300/300",
+									"buttons": [
+										{
+											"type": "postback",
+											"payload": "sw",
+											"title": "foobar004g1b1"
+										},
+										{
+											"type": "postback",
+											"payload": "sw",
+											"title": "foobar004g1b2"
+										}
+									]
+								},
+								{
+									"title": "Cat 2",
+									"subtitle": "foobar004g2sub1\nfoobar004g2sub2",
+									"image_url": "https://placekitten.com/300/300",
+									"buttons": []
+								},
+								{
+									"title": "Cat 3",
+									"subtitle": "",
+									"image_url": "https://placekitten.com/300/300",
+									"buttons": [
+										{
+											"type": "postback",
+											"payload": "sw",
+											"title": "foobar004g1b1"
+										}
+									]
+								},
+								{
+									"title": "Cat 4",
+									"subtitle": "foobar004g2sub1\nfoobar004g2sub2",
+									"image_url": "https://placekitten.com/300/300",
+									"buttons": []
+								},
+								{
+									"title": "Cat 5",
 									"subtitle": "",
 									"image_url": "https://placekitten.com/300/300",
 									"buttons": [
@@ -58,29 +99,19 @@
 											"type": "postback",
 											"payload": "sw",
 											"title": "foobar004g1b2"
-										},
-										{
-											"type": "postback",
-											"payload": "sw",
-											"title": "foobar004g1b3"
-										},
-										{
-											"type": "postback",
-											"payload": "sw",
-											"title": "foobar004g1b4"
 										}
 									]
 								},
 								{
-									"title": "foobar004g2",
+									"title": "Cat 6",
 									"subtitle": "foobar004g2sub1\nfoobar004g2sub2",
 									"image_url": "https://placekitten.com/300/300",
 									"buttons": []
 								},
 								{
-									"title": "foobar004g3",
+									"title": "Cat 7",
 									"subtitle": "",
-									"image_url": "",
+									"image_url": "https://placekitten.com/300/300",
 									"buttons": []
 								}
 							]

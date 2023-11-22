@@ -137,7 +137,7 @@ const messages: MessageProps[] = [
 	},
 	{
 		message: gallery,
-	},
+	}
 ];
 
 const action: MessageSender = payload => alert(JSON.stringify(payload, null, 2));
