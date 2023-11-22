@@ -1,6 +1,6 @@
 import { ChangeEvent, FC, MutableRefObject } from "react";
 import classes from "./Audio.module.css";
-import { PlayIcon, PauseIcon } from "src/assets/svg";
+import { AudioPause, AudioPlay } from "src/assets/svg";
 import ReactPlayer from "react-player";
 
 type ControlsProps = {
@@ -78,9 +78,9 @@ const Controls: FC<ControlsProps> = props => {
 			<div className="buttons">
 				<button className={classes.playButton} onClick={togglePlayAndPause}>
 					{playing ? (
-						<PauseIcon className={classes.pauseIcon} />
+						<AudioPause className={classes.pauseIcon} />
 					) : (
-						<PlayIcon className={classes.playIcon} />
+						<AudioPlay className={classes.playIcon} />
 					)}
 				</button>
 			</div>

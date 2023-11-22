@@ -1,7 +1,7 @@
 import CloseIcon from "./close.svg?react";
 import DownloadIcon from "./download.svg?react";
-import PlayIcon from "./play_icon.svg?react";
-import PauseIcon from "./pause_icon.svg?react";
+import AudioPlay from "./audio_play.svg?react";
+import AudioPause from "./audio_pause.svg?react";
 import VideoPlayIconBlack from "./video_play_black.svg?react";
 import VideoPlayIcon from "./video_play_white.svg?react";
 import LinkIcon from "./link.svg?react";
@@ -13,8 +13,8 @@ export {
 	DownloadIcon,
 	VideoPlayIconBlack,
 	VideoPlayIcon,
-	PlayIcon,
-	PauseIcon,
+	AudioPlay,
+	AudioPause,
 	LinkIcon,
 	HeaderEllipsis,
 	ArrowBack,
