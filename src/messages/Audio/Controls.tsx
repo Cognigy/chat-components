@@ -23,7 +23,7 @@ const Controls: FC<ControlsProps> = props => {
 		}
 	};
 
-	const handleSeekMouseDown = () => {
+	const handleSeekStart = () => {
 		handlePause();
 	};
 
@@ -31,7 +31,7 @@ const Controls: FC<ControlsProps> = props => {
 		playerRef.current?.seekTo(parseFloat(e.target.value));
 	};
 
-	const handleSeekMouseUp = () => {
+	const handleSeekEnd = () => {
 		handlePlay();
 	};
 
@@ -64,9 +64,11 @@ const Controls: FC<ControlsProps> = props => {
 					max={0.999999}
 					step="any"
 					value={progress}
-					onMouseDown={handleSeekMouseDown}
+					onMouseDown={handleSeekStart}
+					onTouchStart={handleSeekStart}
 					onChange={handleSeekChange}
-					onMouseUp={handleSeekMouseUp}
+					onMouseUp={handleSeekEnd}
+					onTouchEnd={handleSeekEnd}
 					style={{
 						background: `linear-gradient(to right, var(--primary-color) ${
 							progress * 100

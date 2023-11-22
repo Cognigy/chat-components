@@ -5,7 +5,7 @@ article .wrapper {
 	display: flex;
 }
 
-article .controls {
+.controls {
 	display: flex;
 	align-items: center;
 	justify-content: space-between;
@@ -19,35 +19,15 @@ article .controls {
 }
 
 article button.playButton {
-	border-radius: 50%;
-	background-color: var(--secondary-color);
-	width: 30px;
-	height: 30px;
-	border: none;
-	outline: none;
-	display: flex;
-	align-items: center;
-	justify-content: center;
+	all: unset;
+  	outline: revert;
+	display: block;
 	cursor: pointer;
 }
-article button.playButton:focus,
-article button.playButton:hover {
-	background-color: var(--secondary-color-hover);
-}
 
-article button.playButton svg {
-	fill: var(--white);
-}
-
-.playIcon {
-	padding-left: 3px;
-	height: 13px;
-	width: 13px;
-}
-
-.pauseIcon {
-	height: 15px;
-	width: 15px;
+article button.playButton:focus svg circle,
+article button.playButton:hover svg circle {
+	fill-opacity: 85%;
 }
 
 /*** Custom range input ***/
