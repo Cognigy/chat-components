@@ -26,6 +26,11 @@ article button.playButton {
 	cursor: pointer;
 }
 
+article button.playButton:hover,
+article button.playButton:focus {
+	outline: none;
+}
+
 article button.playButton:focus svg circle,
 article button.playButton:hover svg circle {
 	fill-opacity: 85%;
