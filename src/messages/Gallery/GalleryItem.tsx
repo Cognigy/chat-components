@@ -1,5 +1,5 @@
 import { IWebchatAttachmentElement } from "@cognigy/socket-client/lib/interfaces/messageData";
-import { FC, KeyboardEvent, useMemo } from "react";
+import { FC, KeyboardEvent, useMemo, useState } from "react";
 import classes from "./Gallery.module.css";
 import buttonClasses from "src/common/ActionButtons/SingleButtons.module.css";
 import { useMessageContext } from "../hooks";
@@ -16,9 +16,10 @@ export interface GallerySlideProps {
 
 const GalleryItem: FC<GallerySlideProps> = props => {
 	const { slide, contentId } = props;
-	const { title, subtitle, image_url, buttons, default_action } = slide;
+	const { title, subtitle, image_url, image_alt_text, buttons, default_action } = slide;
 	const { action, config } = useMessageContext();
 	const hasExtraInfo = subtitle || buttons.length > 0;
+	const [isImageBroken, setImageBroken] = useState(false);
 
 	const isSanitizeEnabled = !config?.settings?.disableHtmlContentSanitization;
 	const titleHtml = isSanitizeEnabled ? sanitizeHTML(title) : title;
@@ -40,9 +41,7 @@ const GalleryItem: FC<GallerySlideProps> = props => {
 		return;
 	};
 
-	const handleKeyDown = (
-		event: KeyboardEvent
-	) => {
+	const handleKeyDown = (event: KeyboardEvent) => {
 		if (default_action && event.key === "Enter") {
 			handleClick();
 		}
@@ -56,7 +55,16 @@ const GalleryItem: FC<GallerySlideProps> = props => {
 					className="webchat-carousel-template-title"
 					id={titleId}
 				/>
-				<img src={image_url} className={classes.slideImage} />
+				{isImageBroken ? (
+					<span className={classes.brokenImage} />
+				) : (
+					<img
+						src={image_url}
+						alt={image_alt_text || "Attachment Image"}
+						className={classes.slideImage}
+						onError={() => setImageBroken(true)}
+					/>
+				)}
 			</div>
 			{hasExtraInfo && (
 				<div
@@ -76,7 +84,7 @@ const GalleryItem: FC<GallerySlideProps> = props => {
 							className="webchat-carousel-template-subtitle"
 						/>
 					)}
-					{buttons.length > 0 && (
+					{buttons?.length > 0 && (
 						<ActionButtons
 							buttonClassName={classnames(
 								buttonClasses.primaryButton,

@@ -31,8 +31,18 @@
 	outline: none;
 }
 
+.slideItem .brokenImage {
+	aspect-ratio: 206/150;
+	width: 100%;
+	display: block;
+	outline: none;
+	border-radius: var(--bubble-border-radius);
+	background-color: var(--black-80);
+}
+
 .slideItem .hasExtraInfo,
-.slideItem .hasExtraInfo img {
+.slideItem .hasExtraInfo img,
+.slideItem .brokenImage {
 	border-bottom-left-radius: 0px;
 	border-bottom-right-radius: 0px;
 }

@@ -12,7 +12,7 @@ article .wrapper img {
 	display: block;
 	outline: none;
 }
-article .wrapper.wrapperDownloadable img {
+.wrapper.wrapperDownloadable img {
 	border-bottom-left-radius: 0px;
 	border-bottom-right-radius: 0px;
 }
@@ -26,16 +26,25 @@ article .wrapper.wrapperDownloadable img {
 	opacity: 0.8;
 }
 
-article .flexImage img {
+.flexImage img {
 	aspect-ratio: 16/9;
 	object-fit: cover;
 	object-position: left;
 }
 
-article .fixedImage img {
+.fixedImage img {
 	height: auto;
 }
 
-article .downloadButtonWrapper {
+.downloadButtonWrapper {
 	padding: 16px;
+}
+
+.brokenImage {
+	aspect-ratio: 16/9;
+	width: 100%;
+	display: block;
+	outline: none;
+	border-radius: var(--bubble-border-radius);
+	background-color: var(--black-80);
 }

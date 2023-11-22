@@ -19,22 +19,22 @@ const Gallery: FC = () => {
 	useEffect(() => {
 		const chatHistory = document.getElementById("webchatChatHistoryWrapperLiveLogPanel");
 
-            const firstCardContent = document.getElementById(`${carouselContentId}-0`);
-            const firstButton = firstCardContent?.getElementsByTagName("button")?.[0];
+		const firstCardContent = document.getElementById(`${carouselContentId}-0`);
+		const firstButton = firstCardContent?.getElementsByTagName("button")?.[0];
 
-            if (!config?.settings.enableAutoFocus) return;
+		if (!config?.settings.enableAutoFocus) return;
 
-            if(!chatHistory?.contains(document.activeElement)) return;
+		if (!chatHistory?.contains(document.activeElement)) return;
 
-            if(firstCardContent?.getAttribute("role") === "link") {
-                setTimeout(() => {
-                    firstCardContent?.focus();
-                }, 200);
-            } else if(firstButton) {
-                setTimeout(() => {
-                    firstButton?.focus();
-                }, 200);
-            }    
+		if (firstCardContent?.getAttribute("role") === "link") {
+			setTimeout(() => {
+				firstCardContent?.focus();
+			}, 200);
+		} else if (firstButton) {
+			setTimeout(() => {
+				firstButton?.focus();
+			}, 200);
+		}
 	}, [carouselContentId, config?.settings.enableAutoFocus]);
 
 	if (elements.length === 0) return null;

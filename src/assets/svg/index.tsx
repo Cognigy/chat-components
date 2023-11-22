@@ -17,5 +17,5 @@ export {
 	PauseIcon,
 	LinkIcon,
 	HeaderEllipsis,
-	ArrowBack
+	ArrowBack,
 };

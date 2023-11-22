@@ -28,9 +28,7 @@ const ListItem: FC<{ element: IWebchatAttachmentElement; isHeaderElement?: boole
 		return;
 	};
 
-	const handleKeyDown = (
-		event: KeyboardEvent
-	) => {
+	const handleKeyDown = (event: KeyboardEvent) => {
 		if (default_action && event.key === "Enter") {
 			handleClick();
 		}
