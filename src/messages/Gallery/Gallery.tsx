@@ -3,7 +3,7 @@ import { useMessageContext } from "src/messages/hooks";
 import classes from "./Gallery.module.css";
 import classnames from "classnames";
 import { getChannelPayload, getRandomId } from "src/utils";
-import { ArrowBack } from "src/assets/svg";
+import { ArrowBack as ArrowNavIcon } from "src/assets/svg";
 import { Navigation, Pagination, A11y } from "swiper/modules";
 import { Swiper, SwiperSlide } from "swiper/react";
 import GalleryItem from "./GalleryItem";
@@ -54,8 +54,8 @@ const Gallery: FC = () => {
 				</SwiperSlide>
 			))}
 
-			<ArrowBack className="gallery-button-prev" />
-			<ArrowBack className="gallery-button-next" />
+			<span className="gallery-button-prev"><ArrowNavIcon /></span>
+			<span className="gallery-button-next"><ArrowNavIcon /></span>
 		</Swiper>
 	);
 };

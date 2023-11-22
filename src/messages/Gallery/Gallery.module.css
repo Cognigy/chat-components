@@ -123,7 +123,6 @@ article :global(.swiper).wrapper :global(.gallery-button-prev),
 article :global(.swiper).wrapper :global(.gallery-button-next) {
 	position: absolute;
 	top: calc(150px / 2 - 8px);
-	margin-top: calc(0px - (20px / 2));
 	z-index: 10;
 	cursor: pointer;
 }
