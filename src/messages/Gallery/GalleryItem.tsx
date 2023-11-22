@@ -7,6 +7,7 @@ import classnames from "classnames";
 import ActionButtons from "src/common/ActionButtons/ActionButtons";
 import { sanitizeHTML } from "src/sanitize";
 import { getRandomId } from "src/utils";
+import { sanitizeUrl } from "@braintree/sanitize-url";
 
 export interface GallerySlideProps {
 	slide: IWebchatAttachmentElement;
@@ -26,14 +27,25 @@ const GalleryItem: FC<GallerySlideProps> = props => {
 	const titleId = useMemo(() => getRandomId("webchatCarouselTemplateTitle"), []);
 	const subtitleId = useMemo(() => getRandomId("webchatCarouselTemplateSubtitle"), []);
 
-	const handleKeyDown = (event: KeyboardEvent) => {
-		if (default_action && event.key === "Enter") {
-			action && action(undefined, default_action);
-		}
+	const handleClick = () => {
+		if (!default_action?.url) return;
+
+		const url = config?.settings?.disableUrlButtonSanitization
+			? default_action.url
+			: sanitizeUrl(default_action.url);
+
+		// prevent no-ops from sending you to a blank page
+		if (url === "about:blank") return;
+		window.open(url);
+		return;
 	};
 
-	const handleClick = () => {
-		default_action && action && action(undefined, default_action);
+	const handleKeyDown = (
+		event: KeyboardEvent
+	) => {
+		if (default_action && event.key === "Enter") {
+			handleClick();
+		}
 	};
 
 	return (
@@ -50,8 +62,8 @@ const GalleryItem: FC<GallerySlideProps> = props => {
 				<div
 					className={classnames("webchat-carousel-template-content", classes.bottom)}
 					onClick={handleClick}
-					role={default_action?.url ? "link" : undefined}
 					onKeyDown={handleKeyDown}
+					role={default_action?.url ? "link" : undefined}
 					id={contentId}
 					aria-describedby={subtitle ? subtitleId : undefined}
 					aria-labelledby={title ? titleId : undefined}
