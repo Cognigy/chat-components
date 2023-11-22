@@ -4,12 +4,9 @@ import classes from "./Gallery.module.css";
 import classnames from "classnames";
 import { getChannelPayload, getRandomId } from "src/utils";
 import { ArrowBack } from "src/assets/svg";
-
 import { Navigation, Pagination, A11y } from "swiper/modules";
 import { Swiper, SwiperSlide } from "swiper/react";
 import GalleryItem from "./GalleryItem";
-
-import "./swiper.css";
 import { IWebchatAttachmentElement } from "@cognigy/socket-client/lib/interfaces/messageData";
 
 const Gallery: FC = () => {
@@ -38,7 +35,7 @@ const Gallery: FC = () => {
                     firstButton?.focus();
                 }, 200);
             }    
-	}, []);
+	}, [carouselContentId, config?.settings.enableAutoFocus]);
 
 	if (elements.length === 0) return null;
 

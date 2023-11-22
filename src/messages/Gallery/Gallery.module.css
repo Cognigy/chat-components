@@ -1,24 +1,16 @@
-article .wrapper {
-	margin-left: -20px;
-	margin-right: -20px;
-	padding-left: 20px;
-	padding-right: 20px;
-	padding-bottom: 18px;
-}
-
-.slide {
+.slideItem {
 	position: relative;
 	width: 206px;
 	/* height: 150px; */
 	overflow: hidden;
 }
 
-.slide .top {
+.slideItem .top {
 	position: relative;
 	border-radius: var(--bubble-border-radius);
 }
 
-.slide .bottom {
+.slideItem .bottom {
 	border-bottom-left-radius: var(--bubble-border-radius);
 	border-bottom-right-radius: var(--bubble-border-radius);
 	border: 1px solid var(--black-80);
@@ -29,7 +21,7 @@ article .wrapper {
 	padding: 8px;
 }
 
-.slide .top img {
+.slideItem .top img {
 	aspect-ratio: 206/150;
 	object-fit: cover;
 	object-position: left;
@@ -39,13 +31,13 @@ article .wrapper {
 	outline: none;
 }
 
-.slide .hasExtraInfo,
-.slide .hasExtraInfo img {
+.slideItem .hasExtraInfo,
+.slideItem .hasExtraInfo img {
 	border-bottom-left-radius: 0px;
 	border-bottom-right-radius: 0px;
 }
 
-.slide .top h2 {
+.slideItem .top h2 {
 	position: absolute;
 	margin: 0px;
 	left: 8px;
@@ -56,7 +48,7 @@ article .wrapper {
 	color: var(--white);
 }
 
-.slide .bottom p {
+.slideItem .bottom p {
 	padding: 0px;
 	margin: 0px;
 	font-size: 14px;
@@ -64,24 +56,132 @@ article .wrapper {
 	line-height: 140%;
 }
 
-:global(article .gallery-button-prev),
-:global(article .gallery-button-next) {
+/* 
+** SWIPER MAIN
+** The following styles are a porting from the original swiper/css and related modules.
+** The idea is to integrate with modules CSS in order to increase the specificity
+** and avoid conflicts on consumer apps
+*/
+article :global(.swiper).wrapper {
+	margin-left: -20px;
+	margin-right: -20px;
+	padding-left: 20px;
+	padding-right: 20px;
+	padding-bottom: 18px;
+	padding-top: 0px;
+	position: relative;
+	overflow: hidden;
+	list-style: none;
+	/* Fix of Webkit flickering */
+	z-index: 1;
+	display: block;
+}
+article :global(.swiper).wrapper :global(.swiper-wrapper) {
+	position: relative;
+	width: 100%;
+	/* height: 100%; */
+	z-index: 1;
+	display: flex;
+	transition-property: transform;
+	transition-timing-function: initial;
+	box-sizing: content-box;
+}
+article :global(.swiper).wrapper :global(.swiper-android .swiper-slide),
+article :global(.swiper).wrapper :global(.swiper-ios .swiper-slide),
+article :global(.swiper).wrapper :global(.swiper-wrapper) {
+	transform: translate3d(0px, 0, 0);
+}
+article :global(.swiper).wrapper :global(.swiper-horizontal) {
+	touch-action: pan-y;
+}
+article :global(.swiper).wrapper :global(.swiper-slide) {
+	flex-shrink: 0;
+	width: 100%;
+	height: 100%;
+	position: relative;
+	transition-property: transform;
+	display: block;
+}
+article :global(.swiper).wrapper :global(.swiper-slide-invisible-blank) {
+	visibility: hidden;
+}
+
+/*
+** SWIPER PAGINATION
+*/
+article :global(.swiper).wrapper :global(.gallery-button-prev),
+article :global(.swiper).wrapper :global(.gallery-button-next) {
 	position: absolute;
 	top: calc(150px / 2 - 8px);
-	margin-top: calc(0px - (var(--swiper-navigation-size) / 2));
+	margin-top: calc(0px - (20px / 2));
 	z-index: 10;
 	cursor: pointer;
 }
-
-:global(article .gallery-button-prev) {
+article :global(.swiper).wrapper :global(.gallery-button-prev) {
 	left: 20px;
 }
-
-:global(article .gallery-button-next) {
+article :global(.swiper).wrapper :global(.gallery-button-next) {
 	right: 20px;
 	transform: rotate(180deg);
 }
-
-:global(article .swiper-button-disabled) {
+article :global(.swiper).wrapper :global(.swiper-button-disabled) {
 	opacity: 0;
+}
+
+/*
+** SWIPER NAVIGATION
+*/
+article :global(.swiper).wrapper :global(.swiper-pagination) {
+	position: absolute;
+	text-align: center;
+	transition: 300ms opacity;
+	transform: translate3d(0, 0, 0);
+	z-index: 10;
+}
+article :global(.swiper).wrapper :global(.swiper-pagination.swiper-pagination-hidden) {
+	opacity: 0;
+}
+article :global(.swiper).wrapper :global(.swiper-pagination-disabled > .swiper-pagination),
+article :global(.swiper).wrapper :global(.swiper-pagination.swiper-pagination-disabled) {
+	display: none !important;
+}
+article :global(.swiper).wrapper :global(.swiper-horizontal > .swiper-pagination-bullets),
+article :global(.swiper).wrapper :global(.swiper-pagination-bullets.swiper-pagination-horizontal) {
+	bottom: 0px;
+	left: 0;
+	width: 100%;
+}
+article :global(.swiper).wrapper :global(.swiper-pagination-bullet) {
+	width: 6px;
+	height: 6px;
+	display: inline-block;
+	border-radius: 50%;
+	background: var(--black-80);
+	opacity: 1;
+}
+article :global(.swiper).wrapper :global(button.swiper-pagination-bullet) {
+	border: none;
+	margin: 0;
+	padding: 0;
+	box-shadow: none;
+	-webkit-appearance: none;
+	appearance: none;
+}
+article :global(.swiper).wrapper :global(.swiper-pagination-clickable .swiper-pagination-bullet) {
+	cursor: pointer;
+}
+article :global(.swiper).wrapper :global(.swiper-pagination-bullet:only-child) {
+	display: none !important;
+}
+article :global(.swiper).wrapper :global(.swiper-pagination-bullet-active) {
+	opacity: 1;
+	background: var(--primary-color);
+}
+article
+	:global(.swiper).wrapper
+	:global(.swiper-horizontal > .swiper-pagination-bullets .swiper-pagination-bullet),
+article
+	:global(.swiper).wrapper
+	:global(.swiper-pagination-horizontal.swiper-pagination-bullets .swiper-pagination-bullet) {
+	margin: 0 4px;
 }

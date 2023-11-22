@@ -37,7 +37,7 @@ const GalleryItem: FC<GallerySlideProps> = props => {
 	};
 
 	return (
-		<div className={classnames("webchat-carousel-template-frame", classes.slide)}>
+		<div className={classnames("webchat-carousel-template-frame", classes.slideItem)}>
 			<div className={classnames(classes.top, hasExtraInfo && classes.hasExtraInfo)}>
 				<h2
 					dangerouslySetInnerHTML={{ __html: titleHtml }}
