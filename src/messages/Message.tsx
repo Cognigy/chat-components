@@ -27,7 +27,7 @@ const Message: FC<MessageProps> = props => {
 		classes.message,
 	);
 
-	const MessageComponent = match(props.message, props.plugins, props.config);
+	const MessageComponent = match(props.message, props.config, props.plugins);
 
 	/**
 	 * No rule matched the message, so we don't render anything.

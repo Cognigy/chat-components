@@ -1,4 +1,4 @@
-import { FC, useMemo } from "react";
+import { FC, useMemo, KeyboardEvent } from "react";
 import classes from "./List.module.css";
 import { useMessageContext } from "src/messages/hooks";
 import { sanitizeHTML } from "src/sanitize";
@@ -12,21 +12,8 @@ import { IWebchatAttachmentElement } from "@cognigy/socket-client/lib/interfaces
 const ListItem: FC<{ element: IWebchatAttachmentElement; isHeaderElement?: boolean }> = props => {
 	const { action, config } = useMessageContext();
 	const { element, isHeaderElement } = props;
-
 	const { title, subtitle, image_url, image_alt_text, default_action, buttons } = element;
-
 	const button = buttons && buttons[0];
-	const headerTitle = title ? title + ". " : "";
-	const ariaLabelForTitle = default_action?.url ? `${headerTitle} Opens in new tab` : title;
-
-	const handleKeyDown = (
-		event: React.KeyboardEvent<HTMLDivElement>,
-		default_action: IWebchatAttachmentElement["default_action"],
-	) => {
-		if (default_action && event.key === "Enter") {
-			action?.(undefined, default_action);
-		}
-	};
 
 	const handleClick = () => {
 		if (!default_action?.url) return;
@@ -37,8 +24,14 @@ const ListItem: FC<{ element: IWebchatAttachmentElement; isHeaderElement?: boole
 
 		// prevent no-ops from sending you to a blank page
 		if (url === "about:blank") return;
-		window.open(url); // TODO: define target
+		window.open(url);
 		return;
+	};
+
+	const handleKeyDown = (event: KeyboardEvent) => {
+		if (default_action && event.key === "Enter") {
+			handleClick();
+		}
 	};
 
 	const isSanitizeEnabled = !config?.settings?.disableHtmlContentSanitization;
@@ -100,12 +93,12 @@ const ListItem: FC<{ element: IWebchatAttachmentElement; isHeaderElement?: boole
 		<div role="listitem">
 			<div
 				className={rootClasses}
-				onClick={default_action && handleClick}
+				onClick={handleClick}
+				onKeyDown={handleKeyDown}
 				role={default_action?.url ? "link" : undefined}
-				aria-label={ariaLabelForTitle}
+				aria-label={default_action?.url ? `${titleHtml}. Opens in new tab` : undefined}
 				aria-describedby={subtitle ? subtitleId : undefined}
 				tabIndex={default_action?.url ? 0 : -1}
-				onKeyDown={e => handleKeyDown(e, default_action)}
 				style={default_action?.url ? { cursor: "pointer" } : {}}
 			>
 				{isHeaderElement ? (

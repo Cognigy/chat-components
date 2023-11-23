@@ -1,5 +1,5 @@
 import { FunctionComponent } from "react";
-import { Text, Image, Video, Audio, List, TextWithButtons } from "./messages";
+import { Text, Image, Video, Audio, List, Gallery, TextWithButtons } from "./messages";
 import { IWebchatConfig, WebchatMessage } from "./messages/types";
 import { getChannelPayload } from "./utils";
 import { IWebchatTemplateAttachment } from "@cognigy/socket-client/lib/interfaces/messageData";
@@ -12,7 +12,17 @@ export type MatchConfig = {
 const defaultConfig: MatchConfig[] = [
 	{
 		// Text message
-		rule: message => !!message.text,
+		rule: (message, config) => {
+			// do not render engagement messages unless configured!
+			if (
+				message?.source === "engagement" &&
+				!config?.settings?.showEngagementMessagesInChat
+			) {
+				return false;
+			}
+
+			return !!message?.text;
+		},
 		component: Text,
 	},
 	{
@@ -68,6 +78,15 @@ const defaultConfig: MatchConfig[] = [
 		},
 		component: List,
 	},
+	{
+		rule: (message, config) => {
+			const channelConfig = getChannelPayload(message, config);
+			if (!channelConfig) return false;
+
+			return channelConfig?.message?.attachment?.payload?.template_type === "generic";
+		},
+		component: Gallery,
+	},
 ];
 
 /**
@@ -76,8 +95,8 @@ const defaultConfig: MatchConfig[] = [
  */
 export function match(
 	message: WebchatMessage,
-	configExtended: MatchConfig[] = [],
 	webchatConfig?: IWebchatConfig,
+	configExtended: MatchConfig[] = [],
 ) {
 	const config = [...configExtended, ...defaultConfig];
 

@@ -1,6 +1,6 @@
 <svg width="30" height="30" viewBox="0 0 30 30" fill="none" xmlns="http://www.w3.org/2000/svg">
-    <g id="Group 162">
-        <circle id="Ellipse 26" cx="15" cy="15" r="15" fill="#1A1A1A" fill-opacity="85%" />
-        <path id="Rectangle 108" d="M12.5 10L20 15L12.5 20V10Z" fill="white"/>
+    <g>
+        <circle cx="15" cy="15" r="15" fill="#1A1A1A" fill-opacity="85%" />
+        <path d="M12.5 10L20 15L12.5 20V10Z" fill="#FFFFFF"/>
     </g>
 </svg>

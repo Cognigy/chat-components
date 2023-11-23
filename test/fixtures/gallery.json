@@ -1,0 +1,127 @@
+{
+	"text": null,
+	"data": {
+		"_cognigy": {
+			"_default": {
+				"_gallery": {
+					"type": "carousel",
+					"items": [
+						{
+							"title": "foobar004g1",
+							"subtitle": "",
+							"imageUrl": "https://placekitten.com/300/300",
+							"buttons": [
+								{
+									"id": 0.9601740794827666,
+									"payload": "sw",
+									"type": "postback",
+									"title": "test"
+								}
+							],
+							"id": 0.5123901431260184
+						},
+						{
+							"title": "foobar004g2",
+							"subtitle": "foobar004g2sub1\nfoobar004g2sub2",
+							"imageUrl": "https://placekitten.com/300/300",
+							"buttons": [],
+							"id": 0.9969017542005371
+						},
+						{
+							"title": "foobar004g3",
+							"subtitle": "",
+							"imageUrl": "",
+							"buttons": [],
+							"id": 0.2782939283042508
+						}
+					]
+				}
+			},
+			"_webchat": {
+				"message": {
+					"attachment": {
+						"type": "template",
+						"payload": {
+							"template_type": "generic",
+							"elements": [
+								{
+									"title": "Cat 1",
+									"subtitle": "Deliver first class service experiences.",
+									"image_url": "https://placekitten.com/300/300",
+									"buttons": [
+										{
+											"type": "postback",
+											"payload": "sw",
+											"title": "foobar004g1b1"
+										},
+										{
+											"type": "postback",
+											"payload": "sw",
+											"title": "foobar004g1b2"
+										}
+									]
+								},
+								{
+									"title": "Cat 2",
+									"subtitle": "foobar004g2sub1\nfoobar004g2sub2",
+									"image_url": "https://placekitten.com/300/300",
+									"buttons": []
+								},
+								{
+									"title": "Cat 3",
+									"subtitle": "",
+									"image_url": "https://placekitten.com/300/300",
+									"buttons": [
+										{
+											"type": "postback",
+											"payload": "sw",
+											"title": "foobar004g1b1"
+										}
+									]
+								},
+								{
+									"title": "Cat 4",
+									"subtitle": "foobar004g2sub1\nfoobar004g2sub2",
+									"image_url": "https://placekitten.com/300/300",
+									"buttons": []
+								},
+								{
+									"title": "Cat 5",
+									"subtitle": "",
+									"image_url": "https://placekitten.com/300/300",
+									"buttons": [
+										{
+											"type": "postback",
+											"payload": "sw",
+											"title": "foobar004g1b1"
+										},
+										{
+											"type": "postback",
+											"payload": "sw",
+											"title": "foobar004g1b2"
+										}
+									]
+								},
+								{
+									"title": "Cat 6",
+									"subtitle": "foobar004g2sub1\nfoobar004g2sub2",
+									"image_url": "https://placekitten.com/300/300",
+									"buttons": []
+								},
+								{
+									"title": "Cat 7",
+									"subtitle": "",
+									"image_url": "https://placekitten.com/300/300",
+									"buttons": []
+								}
+							]
+						}
+					}
+				}
+			}
+		}
+	},
+	"traceId": "endpoint-realtimeClient-98112b29-c8d0-4066-83fc-9aad91c4be0e",
+	"disableSensitiveLogging": false,
+	"source": "bot"
+}

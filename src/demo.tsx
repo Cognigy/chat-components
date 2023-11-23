@@ -7,8 +7,10 @@ import { MessageSender } from "./messages/types.ts";
 
 //fixtures
 import listMessage from "test/fixtures/list.json";
+import gallery from "test/fixtures/gallery.json";
 import image from "test/fixtures/image.json";
 import imageDownloadable from "test/fixtures/image-downloadable.json";
+import imageBroken from "test/fixtures/imageBroken.json";
 import video from "test/fixtures/video.json";
 import videoYoutube from "test/fixtures/videoYoutube.json";
 import audio from "test/fixtures/audio.json";
@@ -98,7 +100,6 @@ const messages: MessageProps[] = [
 		message: {
 			source: "user",
 			text: "I have a problem with my order",
-			avatarName: "Cognigy",
 		},
 	},
 	{
@@ -120,6 +121,22 @@ const messages: MessageProps[] = [
 		message: image,
 	},
 	{
+		message: {
+			source: "user",
+			text: "Nice cat. What about broken images?",
+		},
+	},
+	{
+		message: {
+			source: "bot",
+			text: "The following is a broken Image",
+			avatarName: "Cognigy",
+		},
+	},
+	{
+		message: imageBroken,
+	},
+	{
 		message: imageDownloadable,
 	},
 	{
@@ -133,6 +150,9 @@ const messages: MessageProps[] = [
 	},
 	{
 		message: listMessage,
+	},
+	{
+		message: gallery,
 	},
 ];
 

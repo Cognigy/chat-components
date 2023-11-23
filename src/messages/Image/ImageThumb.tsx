@@ -1,4 +1,4 @@
-import { FC } from "react";
+import { FC, useState } from "react";
 import classes from "./Image.module.css";
 import classnames from "classnames/bind";
 import { useImageMessageContext } from "./hooks";
@@ -11,6 +11,7 @@ const cx = classnames.bind(classes);
 const ImageThumb: FC = () => {
 	const { config } = useMessageContext();
 	const { url, altText, isDownloadable, onExpand, button } = useImageMessageContext();
+	const [isImageBroken, setImageBroken] = useState(false);
 
 	const handleKeyDown = (event: React.KeyboardEvent<HTMLDivElement>) => {
 		event.key === "Enter" && onExpand && onExpand();
@@ -36,7 +37,15 @@ const ImageThumb: FC = () => {
 			aria-label={isDownloadable ? "View Image in fullsize" : undefined}
 			data-testid="image-message"
 		>
-			<img src={url} alt={altText || "Attachment Image"} />
+			{isImageBroken ? (
+				<span className={classes.brokenImage} />
+			) : (
+				<img
+					src={url}
+					alt={altText || "Attachment Image"}
+					onError={() => setImageBroken(true)}
+				/>
+			)}
 			{button && (
 				<PrimaryButton
 					button={button}

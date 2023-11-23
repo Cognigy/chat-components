@@ -16,6 +16,8 @@ article .player {
 article .player > div:first-child {
 	background-color: var(--black-10);
 	outline: none;
+	aspect-ratio: 16/9;
+	height: auto !important;
 }
 
 article .player > div:first-child:hover,
