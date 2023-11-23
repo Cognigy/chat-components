@@ -7,8 +7,10 @@ import VideoPlayIcon from "./video_play_white.svg?react";
 import LinkIcon from "./link.svg?react";
 import HeaderEllipsis from "./header_ellipsis.svg?react";
 import ArrowBack from "./arrow_back.svg?react";
+import BotAvatar from "./bot.svg?react";
 
 export {
+	BotAvatar,
 	CloseIcon,
 	DownloadIcon,
 	VideoPlayIconBlack,

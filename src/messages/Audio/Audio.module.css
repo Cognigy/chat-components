@@ -20,7 +20,7 @@ article .wrapper {
 
 article button.playButton {
 	all: unset;
-  	outline: revert;
+	outline: revert;
 	line-height: 0;
 	display: block;
 	cursor: pointer;

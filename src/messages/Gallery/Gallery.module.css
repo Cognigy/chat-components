@@ -171,7 +171,7 @@ article :global(.swiper).wrapper :global(.swiper-pagination-bullet) {
 article :global(.swiper).wrapper :global(.swiper-pagination-bullet):focus,
 article :global(.swiper).wrapper :global(.swiper-pagination-bullet):focus-visible {
 	box-shadow: 0 0 0 4px var(--primary-color-opacity-10);
-    outline: none;
+	outline: none;
 }
 article :global(.swiper).wrapper :global(button.swiper-pagination-bullet) {
 	border: none;

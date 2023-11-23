@@ -1,10 +1,8 @@
 import { FC } from "react";
-import classnames from "classnames";
-
-import BotAvatar from "../assets/bot.svg";
-import { useMessageContext } from "src/messages/hooks";
-
 import classes from "./Avatar.module.css";
+import classnames from "classnames";
+import { useMessageContext } from "src/messages/hooks";
+import { BotAvatar } from "src/assets/svg";
 interface AvatarProps {
 	className?: string;
 }
