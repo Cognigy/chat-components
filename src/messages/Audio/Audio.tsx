@@ -2,6 +2,7 @@ import { FC, useCallback, useRef, useState } from "react";
 import ReactPlayer from "react-player";
 import classes from "./Audio.module.css";
 import mainClasses from "src/main.module.css";
+import classnames from "classnames";
 import Controls from "./Controls";
 import { OnProgressProps } from "react-player/base";
 import { useMessageContext } from "src/messages/hooks";
@@ -51,7 +52,10 @@ const Audio: FC = () => {
 	if (!url) return null;
 
 	return (
-		<div className={classes.wrapper} data-testid="audio-message">
+		<div
+			className={classnames("webchat-media-template-audio", classes.wrapper)}
+			data-testid="audio-message"
+		>
 			<span className={mainClasses.srOnly}>{altText || "Attachment Audio"}</span>
 			<ReactPlayer
 				url={url}
