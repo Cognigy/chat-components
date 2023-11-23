@@ -12,7 +12,18 @@ export type MatchConfig = {
 const defaultConfig: MatchConfig[] = [
 	{
 		// Text message
-		rule: message => !!message.text,
+		rule: (message, config) => {
+			// do not render engagement messages unless configured!
+			if (
+				message?.source === "engagement" &&
+				typeof config?.settings?.showEngagementMessagesInChat === "boolean" &&
+				config.settings.showEngagementMessagesInChat === false
+			) {
+				return false;
+			}
+
+			return !!message?.text;
+		},
 		component: Text,
 	},
 	{
