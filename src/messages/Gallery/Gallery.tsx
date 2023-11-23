@@ -41,7 +41,10 @@ const Gallery: FC = () => {
 
 	if (elements.length === 1)
 		return (
-			<div className={classnames("webchat-carousel-template-root", classes.wrapper)}>
+			<div
+				className={classnames("webchat-carousel-template-root", classes.wrapper)}
+				data-testid="gallery-message"
+			>
 				<GalleryItem slide={elements[0]} contentId={`${carouselContentId}-0`} />
 			</div>
 		);
@@ -54,6 +57,7 @@ const Gallery: FC = () => {
 			navigation={{ prevEl: ".gallery-button-prev", nextEl: ".gallery-button-next" }}
 			pagination={{ clickable: true }}
 			className={classnames("webchat-carousel-template-root", classes.wrapper)}
+			data-testid="gallery-message"
 		>
 			{elements.map((element: IWebchatAttachmentElement, i: number) => (
 				<SwiperSlide key={i} style={{ width: "206px" }}>
