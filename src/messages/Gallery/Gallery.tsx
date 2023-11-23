@@ -39,6 +39,13 @@ const Gallery: FC = () => {
 
 	if (elements.length === 0) return null;
 
+	if (elements.length === 1)
+		return (
+			<div className={classnames("webchat-carousel-template-root", classes.wrapper)}>
+				<GalleryItem slide={elements[0]} contentId={`${carouselContentId}-0`} />
+			</div>
+		);
+
 	return (
 		<Swiper
 			modules={[Navigation, Pagination, A11y]}
