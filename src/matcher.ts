@@ -95,8 +95,8 @@ const defaultConfig: MatchConfig[] = [
  */
 export function match(
 	message: WebchatMessage,
-	configExtended: MatchConfig[] = [],
 	webchatConfig?: IWebchatConfig,
+	configExtended: MatchConfig[] = [],
 ) {
 	const config = [...configExtended, ...defaultConfig];
 
