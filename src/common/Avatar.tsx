@@ -1,8 +1,8 @@
-import { FC } from "react";
+import { FC, useEffect, useState } from "react";
 import classes from "./Avatar.module.css";
 import classnames from "classnames";
 import { useMessageContext } from "src/messages/hooks";
-import { BotAvatar } from "src/assets/svg";
+import botAvatar from "src/assets/svg/bot.svg";
 interface AvatarProps {
 	className?: string;
 }
@@ -12,6 +12,15 @@ const defaultAgentAvatar =
 
 const Avatar: FC<AvatarProps> = props => {
 	const { message } = useMessageContext();
+	const [avatarUrl, setAvatarUrl] = useState(defaultAgentAvatar);
+
+	useEffect(() => {
+		if (message?.avatarUrl) {
+			setAvatarUrl(message.avatarUrl);
+		} else if (message?.source !== "agent") {
+			setAvatarUrl(botAvatar);
+		}
+	}, [message?.avatarUrl, message?.source]);
 
 	const classNames = classnames(
 		classes.avatar,
@@ -20,15 +29,12 @@ const Avatar: FC<AvatarProps> = props => {
 		message?.source,
 	);
 
-	const isAgent = message?.source === "agent";
-
-	const url = message.avatarUrl || (isAgent ? defaultAgentAvatar : BotAvatar);
-
 	return (
 		<img
-			alt={classnames(message?.source, "webchat-avatar", props.className)}
+			alt={`${message?.source} avatar`}
 			className={classNames}
-			src={url}
+			src={avatarUrl}
+			onError={() => setAvatarUrl(defaultAgentAvatar)}
 		/>
 	);
 };
