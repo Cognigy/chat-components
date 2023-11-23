@@ -16,8 +16,7 @@ const defaultConfig: MatchConfig[] = [
 			// do not render engagement messages unless configured!
 			if (
 				message?.source === "engagement" &&
-				typeof config?.settings?.showEngagementMessagesInChat === "boolean" &&
-				config.settings.showEngagementMessagesInChat === false
+				!config?.settings?.showEngagementMessagesInChat
 			) {
 				return false;
 			}
