@@ -19,6 +19,7 @@
 	},
 	"devDependencies": {
 		"@cognigy/socket-client": "^5.0.0-beta.2",
+		"@fontsource/figtree": "5.0.17",
 		"@testing-library/jest-dom": "^6.1.4",
 		"@testing-library/react": "^14.0.0",
 		"@types/dompurify": "^3.0.5",
