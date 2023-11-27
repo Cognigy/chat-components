@@ -47,7 +47,18 @@
 								{
 									"title": "Cat 1",
 									"image_url": "https://placekitten.com/300/300",
-									"buttons": null
+									"buttons": [
+										{
+											"type": "postback",
+											"payload": "sw",
+											"title": "foobar004g1b1"
+										},
+										{
+											"type": "postback",
+											"payload": "sw",
+											"title": "foobar004g1b2"
+										}
+									]
 								},
 								{
 									"title": "Cat 2",
