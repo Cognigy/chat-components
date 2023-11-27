@@ -20,6 +20,9 @@ export interface ActionButtonsProps {
 
 const ActionButtons: FC<ActionButtonsProps> = props => {
 	const { payload, buttonClassName, containerClassName, action, customIcon, showUrlIcon } = props;
+
+	if (payload?.length === 0) return null;
+
 	const buttons = payload.filter((button: ActionButtonsProps["payload"][number]) => {
 		if ("type" in button && !["postback", "web_url", "phone_number"].includes(button.type))
 			return false;

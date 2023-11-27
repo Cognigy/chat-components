@@ -19,7 +19,7 @@ const TextWithButtons: FC = () => {
 
 	const text = payload?.message?.attachment?.payload?.text || payload?.message?.text || "";
 	const buttons =
-		payload?.message?.attachment?.payload?.buttons || payload?.message?.quick_replies || "";
+		payload?.message?.attachment?.payload?.buttons || payload?.message?.quick_replies || [];
 
 	return (
 		<>
