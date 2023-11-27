@@ -17,9 +17,9 @@ const List: FC = () => {
 	// We support the "large" string to maintain compatibility with old format
 	const showTopElementLarge = top_element_style === "large" || top_element_style === true;
 
-	const regularElements = showTopElementLarge ? elements.slice(1) : elements;
-	const headerElement = showTopElementLarge ? elements[0] : null;
-	const button = buttons && buttons[0];
+	const regularElements = showTopElementLarge ? elements?.slice(1) : elements;
+	const headerElement = showTopElementLarge ? elements?.[0] : null;
+	const button = buttons && buttons?.[0];
 	const listTemplateId = useMemo(() => getRandomId("webchatListTemplateRoot"), []);
 
 	useEffect(() => {
@@ -40,7 +40,7 @@ const List: FC = () => {
 		}, 200);
 	}, [config?.settings.enableAutoFocus, listTemplateId]);
 
-	if (elements.length === 0) return null;
+	if (!elements || elements.length === 0) return null;
 
 	return (
 		<div
