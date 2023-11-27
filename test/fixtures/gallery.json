@@ -46,20 +46,8 @@
 							"elements": [
 								{
 									"title": "Cat 1",
-									"subtitle": "Deliver first class service experiences.",
 									"image_url": "https://placekitten.com/300/300",
-									"buttons": [
-										{
-											"type": "postback",
-											"payload": "sw",
-											"title": "foobar004g1b1"
-										},
-										{
-											"type": "postback",
-											"payload": "sw",
-											"title": "foobar004g1b2"
-										}
-									]
+									"buttons": null
 								},
 								{
 									"title": "Cat 2",
@@ -112,7 +100,11 @@
 									"title": "Cat 7",
 									"subtitle": "",
 									"image_url": "https://placekitten.com/300/300",
-									"buttons": []
+									"buttons": null
+								},
+								{
+									"title": "Cat 8",
+									"image_url": "https://placekitten.com/300/300"
 								}
 							]
 						}

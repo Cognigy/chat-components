@@ -18,7 +18,7 @@ const GalleryItem: FC<GallerySlideProps> = props => {
 	const { slide, contentId } = props;
 	const { title, subtitle, image_url, image_alt_text, buttons, default_action } = slide;
 	const { action, config } = useMessageContext();
-	const hasExtraInfo = subtitle || buttons.length > 0;
+	const hasExtraInfo = subtitle || buttons?.length > 0;
 	const [isImageBroken, setImageBroken] = useState(false);
 
 	const isSanitizeEnabled = !config?.settings?.disableHtmlContentSanitization;
