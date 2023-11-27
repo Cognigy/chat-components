@@ -10,33 +10,33 @@ describe("Message Gallery", () => {
 		});
 
 		expect(screen.getByTestId("gallery-message")).toBeInTheDocument();
-    });
-    
-    it("renders images inside gallery", async () => {
+	});
+
+	it("renders images inside gallery", async () => {
 		await waitFor(() => {
 			render(<Message message={gallery} />);
 		});
 
 		expect(screen.getAllByAltText("Attachment Image")).toHaveLength(7);
-    });
-    
-    it("renders subtitles", async () => {
+	});
+
+	it("renders subtitles", async () => {
 		await waitFor(() => {
 			render(<Message message={gallery} />);
 		});
 
 		expect(screen.getAllByText(/foobar004g2/i)).toHaveLength(3);
-    });
-    
-    it("renders with navigation arrows", async () => {
+	});
+
+	it("renders with navigation arrows", async () => {
 		await waitFor(() => {
 			render(<Message message={gallery} />);
 		});
 
 		expect(screen.getByLabelText("Next slide")).toBeVisible();
-    });
-    
-    it("renders with pagination bullets", async () => {
+	});
+
+	it("renders with pagination bullets", async () => {
 		await waitFor(() => {
 			render(<Message message={gallery} />);
 		});
