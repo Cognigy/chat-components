@@ -75,8 +75,8 @@ const defaultConfig: MatchConfig[] = [
 			if (!channelConfig) return false;
 
 			return (
-				(channelConfig.message?.attachment as IWebchatTemplateAttachment).payload
-					.template_type === "list"
+				(channelConfig.message?.attachment as IWebchatTemplateAttachment)?.payload
+					?.template_type === "list"
 			);
 		},
 		component: List,
@@ -87,8 +87,8 @@ const defaultConfig: MatchConfig[] = [
 			if (!channelConfig) return false;
 
 			return (
-				(channelConfig.message?.attachment as IWebchatTemplateAttachment).payload
-					.template_type === "generic"
+				(channelConfig.message?.attachment as IWebchatTemplateAttachment)?.payload
+					?.template_type === "generic"
 			);
 		},
 		component: Gallery,
