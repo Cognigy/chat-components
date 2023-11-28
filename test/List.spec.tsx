@@ -2,11 +2,14 @@ import { render, waitFor, screen } from "@testing-library/react";
 import { it, describe, expect } from "vitest";
 import Message from "src/messages/Message";
 import list from "test/fixtures/list.json";
+import { IMessage } from "@cognigy/socket-client";
 
 describe("Message List", () => {
+	const message = list as unknown as IMessage;
+
 	it("renders List message", async () => {
 		await waitFor(() => {
-			render(<Message message={list} />);
+			render(<Message message={message} />);
 		});
 
 		expect(screen.getByTestId("list-message")).toBeInTheDocument();
@@ -14,7 +17,7 @@ describe("Message List", () => {
 
 	it("renders List message with large header", async () => {
 		await waitFor(() => {
-			render(<Message message={list} />);
+			render(<Message message={message} />);
 		});
 
 		expect(screen.getByTestId("header-image")).toBeInTheDocument();
@@ -24,7 +27,7 @@ describe("Message List", () => {
 	it("renders top element of the list small", async () => {
 		list.data._cognigy._webchat.message.attachment.payload.top_element_style = "compact";
 		await waitFor(() => {
-			render(<Message message={list} />);
+			render(<Message message={message} />);
 		});
 
 		expect(screen.queryByTestId("header-image")).not.toBeInTheDocument();
@@ -34,7 +37,7 @@ describe("Message List", () => {
 
 	it("renders 'global' button", async () => {
 		await waitFor(() => {
-			render(<Message message={list} />);
+			render(<Message message={message} />);
 		});
 
 		expect(screen.getByText("Global Button")).toBeInTheDocument();
@@ -42,7 +45,7 @@ describe("Message List", () => {
 
 	it("should have static class names", async () => {
 		await waitFor(() => {
-			render(<Message message={list} />);
+			render(<Message message={message} />);
 		});
 
 		expect(document.querySelector(".webchat-list-template-root")).toBeInTheDocument();
@@ -66,7 +69,7 @@ describe("Message List", () => {
 
 	it("renders list and list items with correct roles", async () => {
 		await waitFor(() => {
-			render(<Message message={list} />);
+			render(<Message message={message} />);
 		});
 
 		expect(screen.getByRole("list")).toBeInTheDocument();

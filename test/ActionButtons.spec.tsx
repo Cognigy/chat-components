@@ -2,11 +2,14 @@ import { render, waitFor, screen } from "@testing-library/react";
 import { it, describe, expect } from "vitest";
 import Message from "src/messages/Message";
 import buttons from "test/fixtures/action-buttons.json";
+import { IMessage } from "@cognigy/socket-client";
 
 describe("Action Buttons", () => {
+	const message = buttons as unknown as IMessage;
+
 	it("renders Action Buttons component", async () => {
 		await waitFor(() => {
-			render(<Message message={buttons} />);
+			render(<Message message={message} />);
 		});
 
 		expect(screen.getByTestId("action-buttons")).toBeInTheDocument();
@@ -14,7 +17,7 @@ describe("Action Buttons", () => {
 
 	it("renders buttons with proper role", async () => {
 		await waitFor(() => {
-			render(<Message message={buttons} />);
+			render(<Message message={message} />);
 		});
 
 		expect(screen.getByRole("group")).toBeInTheDocument();
@@ -24,7 +27,7 @@ describe("Action Buttons", () => {
 
 	it("renders buttons in group with 'aria-label' attribute and position", async () => {
 		await waitFor(() => {
-			render(<Message message={buttons} />);
+			render(<Message message={message} />);
 		});
 
 		expect(screen.getAllByLabelText(/Item (1|2|3|4) of 4: foobar005b(1|2|3|4)/)).toHaveLength(
@@ -34,7 +37,7 @@ describe("Action Buttons", () => {
 
 	it("renders phone number button as anchor element with 'href' attribute", async () => {
 		await waitFor(() => {
-			render(<Message message={buttons} />);
+			render(<Message message={message} />);
 		});
 
 		const phoneButton = screen.getByLabelText(/Item 4 of 4: foobar005b4/);

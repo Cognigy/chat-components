@@ -1,11 +1,11 @@
 import { FunctionComponent } from "react";
 import { Text, Image, Video, Audio, List, Gallery, TextWithButtons } from "./messages";
-import { IWebchatConfig, WebchatMessage } from "./messages/types";
+import { IWebchatConfig } from "./messages/types";
 import { getChannelPayload } from "./utils";
-import { IWebchatTemplateAttachment } from "@cognigy/socket-client/lib/interfaces/messageData";
+import { IMessage, IWebchatTemplateAttachment } from "@cognigy/socket-client";
 
 export type MatchConfig = {
-	rule: (message: WebchatMessage, config?: IWebchatConfig) => boolean;
+	rule: (message: IMessage, config?: IWebchatConfig) => boolean;
 	component: FunctionComponent;
 };
 
@@ -74,7 +74,10 @@ const defaultConfig: MatchConfig[] = [
 			const channelConfig = getChannelPayload(message, config);
 			if (!channelConfig) return false;
 
-			return channelConfig?.message?.attachment?.payload?.template_type === "list";
+			return (
+				(channelConfig.message?.attachment as IWebchatTemplateAttachment)?.payload
+					?.template_type === "list"
+			);
 		},
 		component: List,
 	},
@@ -83,7 +86,10 @@ const defaultConfig: MatchConfig[] = [
 			const channelConfig = getChannelPayload(message, config);
 			if (!channelConfig) return false;
 
-			return channelConfig?.message?.attachment?.payload?.template_type === "generic";
+			return (
+				(channelConfig.message?.attachment as IWebchatTemplateAttachment)?.payload
+					?.template_type === "generic"
+			);
 		},
 		component: Gallery,
 	},
@@ -94,7 +100,7 @@ const defaultConfig: MatchConfig[] = [
  * Accepts `configExtended` to extend with custom rules.
  */
 export function match(
-	message: WebchatMessage,
+	message: IMessage,
 	webchatConfig?: IWebchatConfig,
 	configExtended: MatchConfig[] = [],
 ) {

@@ -4,17 +4,19 @@ import classnames from "classnames";
 import MessageHeader from "../common/MessageHeader";
 import { match, MatchConfig } from "../matcher";
 import { MessageProvider } from "./context";
-import { IWebchatConfig, MessageSender, WebchatMessage } from "./types";
+import { IWebchatConfig, MessageSender } from "./types";
 
 import "src/theme.css";
 import classes from "./Message.module.css";
 import { isMessageCollatable } from "../utils";
+import { IMessage } from "@cognigy/socket-client";
 
 export interface MessageProps {
 	action?: MessageSender;
 	className?: string;
 	config?: IWebchatConfig;
-	message: WebchatMessage;
+	disableHeader?: boolean;
+	message: IMessage;
 	onEmitAnalytics?: (event: string, payload?: unknown) => void;
 	plugins?: MatchConfig[];
 	prevMessage?: WebchatMessage;

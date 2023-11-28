@@ -13,6 +13,7 @@ import imageBroken from "test/fixtures/imageBroken.json";
 import video from "test/fixtures/video.json";
 import videoYoutube from "test/fixtures/videoYoutube.json";
 import audio from "test/fixtures/audio.json";
+import { IMessage } from "@cognigy/socket-client";
 
 const messages: MessageProps[] = [
 	{
@@ -36,7 +37,7 @@ const messages: MessageProps[] = [
 	},
 	{
 		message: {
-			avatarNane: "Dognigy",
+			avatarName: "Cognigy",
 			text: "",
 			source: "bot",
 			data: {
@@ -139,6 +140,7 @@ const messages: MessageProps[] = [
 						_image: {
 							type: "image",
 							imageUrl: "https://placekitten.com/300/300",
+							imageAltText: "Kitten",
 						},
 					},
 					_webchat: {
@@ -147,7 +149,9 @@ const messages: MessageProps[] = [
 								type: "image",
 								payload: {
 									url: "https://picsum.photos/500/500",
+									altText: "Random image",
 								},
+
 							},
 						},
 					},
@@ -163,25 +167,25 @@ const messages: MessageProps[] = [
 		},
 	},
 	{
-		message: imageBroken,
+		message: imageBroken as IMessage,
 	},
 	{
-		message: imageDownloadable,
+		message: imageDownloadable as IMessage,
 	},
 	{
-		message: video,
+		message: video as IMessage,
 	},
 	{
-		message: videoYoutube,
+		message: videoYoutube as IMessage,
 	},
 	{
-		message: audio,
+		message: audio as IMessage,
 	},
 	{
-		message: listMessage,
+		message: listMessage as IMessage,
 	},
 	{
-		message: gallery,
+		message: gallery as IMessage,
 	},
 ];
 

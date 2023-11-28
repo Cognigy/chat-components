@@ -1,4 +1,4 @@
-import { IWebchatAttachmentElement } from "@cognigy/socket-client/lib/interfaces/messageData";
+import { IWebchatAttachmentElement } from "@cognigy/socket-client";
 import { FC, KeyboardEvent, useMemo, useState } from "react";
 import classes from "./Gallery.module.css";
 import buttonClasses from "src/common/ActionButtons/SingleButtons.module.css";
@@ -18,7 +18,7 @@ const GalleryItem: FC<GallerySlideProps> = props => {
 	const { slide, contentId } = props;
 	const { title, subtitle, image_url, image_alt_text, buttons, default_action } = slide;
 	const { action, config } = useMessageContext();
-	const hasExtraInfo = subtitle || buttons.length > 0;
+	const hasExtraInfo = subtitle || (buttons && buttons?.length > 0);
 	const [isImageBroken, setImageBroken] = useState(false);
 
 	const isSanitizeEnabled = !config?.settings?.disableHtmlContentSanitization;
@@ -84,7 +84,7 @@ const GalleryItem: FC<GallerySlideProps> = props => {
 							className="webchat-carousel-template-subtitle"
 						/>
 					)}
-					{buttons?.length > 0 && (
+					{buttons && buttons?.length > 0 && (
 						<ActionButtons
 							buttonClassName={classnames(
 								buttonClasses.primaryButton,
