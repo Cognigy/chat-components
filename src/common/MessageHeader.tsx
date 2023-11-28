@@ -30,7 +30,7 @@ const MessageHeader: FC<MessageHeaderProps> = props => {
 	const recievedAt = message?.timestamp ? Number(message.timestamp) : Date.now();
 
 	return (
-		<header className={className}>
+		<header className={className} data-testid="message-header">
 			{props.enableAvatar && <Avatar />}
 			<div className={classes.headerMeta}>
 				{!isUserMessage && (
