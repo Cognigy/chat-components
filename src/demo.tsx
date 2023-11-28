@@ -3,7 +3,7 @@ import ReactDOM from "react-dom/client";
 
 import "./demo.css";
 import Message, { MessageProps } from "./messages/Message.tsx";
-import { MessageSender } from "./messages/types.ts";
+import { MessageSender, WebchatMessage } from "./messages/types.ts";
 
 //fixtures
 import listMessage from "test/fixtures/list.json";
@@ -18,7 +18,7 @@ import audio from "test/fixtures/audio.json";
 const messages: MessageProps[] = [
 	{
 		message: {
-			avatarNane: "Dognigy",
+			avatarName: "Cognigy",
 			text: "",
 			data: {
 				_cognigy: {
@@ -118,7 +118,7 @@ const messages: MessageProps[] = [
 		disableHeader: true,
 	},
 	{
-		message: image,
+		message: image as WebchatMessage,
 	},
 	{
 		message: {
@@ -134,25 +134,25 @@ const messages: MessageProps[] = [
 		},
 	},
 	{
-		message: imageBroken,
+		message: imageBroken as WebchatMessage,
 	},
 	{
-		message: imageDownloadable,
+		message: imageDownloadable as WebchatMessage,
 	},
 	{
-		message: video,
+		message: video as WebchatMessage,
 	},
 	{
-		message: videoYoutube,
+		message: videoYoutube as WebchatMessage,
 	},
 	{
-		message: audio,
+		message: audio as WebchatMessage,
 	},
 	{
-		message: listMessage,
+		message: listMessage as WebchatMessage,
 	},
 	{
-		message: gallery,
+		message: gallery as WebchatMessage,
 	},
 ];
 

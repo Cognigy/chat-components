@@ -8,11 +8,14 @@ import {
 import { it, describe, expect } from "vitest";
 import Message from "src/messages/Message";
 import video from "test/fixtures/video.json";
+import { WebchatMessage } from "src/messages/types";
 
 describe("Message Video", () => {
+	const message = video as unknown as WebchatMessage;
+
 	it("renders video message", async () => {
 		await waitFor(() => {
-			render(<Message message={video} />);
+			render(<Message message={message} />);
 		});
 
 		expect(screen.getByTestId("video-message")).toBeInTheDocument();
@@ -20,7 +23,7 @@ describe("Message Video", () => {
 
 	it("renders video message in preview/poster mode", async () => {
 		await waitFor(() => {
-			render(<Message message={video} />);
+			render(<Message message={message} />);
 		});
 
 		expect(
@@ -30,7 +33,7 @@ describe("Message Video", () => {
 
 	it("on click the video is rendered replacing the preview", async () => {
 		await waitFor(() => {
-			render(<Message message={video} />);
+			render(<Message message={message} />);
 		});
 
 		expect(

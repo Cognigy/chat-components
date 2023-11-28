@@ -6,13 +6,18 @@ import classes from "./List.module.css";
 import classnames from "classnames";
 import { PrimaryButton } from "src/common/ActionButtons";
 import { getChannelPayload, getRandomId } from "src/utils";
-import { IWebchatAttachmentElement } from "@cognigy/socket-client/lib/interfaces/messageData";
+import {
+	IWebchatAttachmentElement,
+	IWebchatTemplateAttachment,
+} from "@cognigy/socket-client/lib/interfaces/messageData";
 
 const List: FC = () => {
 	const { message, config, action } = useMessageContext();
 	const payload = getChannelPayload(message, config);
 
-	const { elements, top_element_style, buttons } = payload.message.attachment?.payload || {};
+	const { elements, top_element_style, buttons } = (
+		payload?.message?.attachment as IWebchatTemplateAttachment
+	).payload;
 
 	// We support the "large" string to maintain compatibility with old format
 	const showTopElementLarge = top_element_style === "large" || top_element_style === true;
@@ -50,7 +55,7 @@ const List: FC = () => {
 			data-testid="list-message"
 		>
 			{headerElement && <ListItem element={headerElement} isHeaderElement />}
-			{regularElements.map((element: IWebchatAttachmentElement, index: number) => (
+			{regularElements?.map((element: IWebchatAttachmentElement, index: number) => (
 				<Fragment key={index}>
 					{index > 0 && <div className={mainclasses.divider} />}
 					<ListItem element={element} />

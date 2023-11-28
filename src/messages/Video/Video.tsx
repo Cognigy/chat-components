@@ -6,11 +6,12 @@ import classnames from "classnames";
 import { VideoPlayIcon } from "src/assets/svg";
 import { useMessageContext } from "src/messages/hooks";
 import { getChannelPayload } from "src/utils";
+import { IWebchatVideoAttachment } from "@cognigy/socket-client/lib/interfaces/messageData";
 
 const Video: FC = () => {
 	const { message, config } = useMessageContext();
 	const payload = getChannelPayload(message, config);
-	const { url, altText } = payload.message.attachment?.payload || {};
+	const { url, altText } = (payload?.message?.attachment as IWebchatVideoAttachment).payload;
 
 	const handleFocus = useCallback(
 		(player: ReactPlayer) => {

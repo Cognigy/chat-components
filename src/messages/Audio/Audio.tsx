@@ -7,16 +7,17 @@ import Controls from "./Controls";
 import { OnProgressProps } from "react-player/base";
 import { useMessageContext } from "src/messages/hooks";
 import { getChannelPayload } from "src/utils";
+import { IWebchatAudioAttachment } from "@cognigy/socket-client/lib/interfaces/messageData";
 
 const Audio: FC = () => {
 	const { message, config } = useMessageContext();
 	const payload = getChannelPayload(message, config);
-	const { url, altText } = payload.message.attachment?.payload || {};
+	const { url, altText } = (payload?.message?.attachment as IWebchatAudioAttachment).payload;
 
 	const playerRef = useRef<ReactPlayer | null>(null);
-	const [playing, setPlaying] = useState<boolean>(false);
-	const [progress, setProgress] = useState<number>(0);
-	const [duration, setDuration] = useState<number>(0);
+	const [playing, setPlaying] = useState(false);
+	const [progress, setProgress] = useState(0);
+	const [duration, setDuration] = useState(0);
 
 	const handleFocus = useCallback(
 		(player: ReactPlayer) => {

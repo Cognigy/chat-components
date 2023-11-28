@@ -7,6 +7,7 @@ import { useMessageContext } from "../hooks";
 
 import { getChannelPayload } from "src/utils";
 import ActionButtons from "src/common/ActionButtons/ActionButtons";
+import { IWebchatTemplateAttachment } from "@cognigy/socket-client/lib/interfaces/messageData";
 
 /**
  * Combines Text with Buttons + Quick Replies media types as
@@ -17,9 +18,9 @@ const TextWithButtons: FC = () => {
 
 	const payload = getChannelPayload(message, config);
 
-	const text = payload?.message?.attachment?.payload?.text || payload?.message?.text || "";
-	const buttons =
-		payload?.message?.attachment?.payload?.buttons || payload?.message?.quick_replies || [];
+	const attachments = payload?.message?.attachment as IWebchatTemplateAttachment;
+	const text = attachments?.payload?.text || payload?.message?.text || "";
+	const buttons = attachments?.payload?.buttons || payload?.message?.quick_replies || [];
 
 	return (
 		<>
