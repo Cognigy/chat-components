@@ -8,7 +8,7 @@ import { IWebchatConfig, MessageSender, WebchatMessage } from "./types";
 
 import "src/theme.css";
 import classes from "./Message.module.css";
-import { isMessageCollatable } from "./utils";
+import { isMessageCollatable } from "../utils";
 
 export interface MessageProps {
 	action?: MessageSender;
