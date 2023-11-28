@@ -6,7 +6,7 @@ import classnames from "classnames";
 import { VideoPlayIcon } from "src/assets/svg";
 import { useMessageContext } from "src/messages/hooks";
 import { getChannelPayload } from "src/utils";
-import { IWebchatVideoAttachment } from "@cognigy/socket-client/lib/interfaces/messageData";
+import { IWebchatVideoAttachment } from "@cognigy/socket-client";
 
 const Video: FC = () => {
 	const { message, config } = useMessageContext();

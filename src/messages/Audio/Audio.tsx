@@ -7,7 +7,7 @@ import Controls from "./Controls";
 import { OnProgressProps } from "react-player/base";
 import { useMessageContext } from "src/messages/hooks";
 import { getChannelPayload } from "src/utils";
-import { IWebchatAudioAttachment } from "@cognigy/socket-client/lib/interfaces/messageData";
+import { IWebchatAudioAttachment } from "@cognigy/socket-client";
 
 const Audio: FC = () => {
 	const { message, config } = useMessageContext();

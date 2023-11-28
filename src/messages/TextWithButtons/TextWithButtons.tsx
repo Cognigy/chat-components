@@ -7,7 +7,7 @@ import { useMessageContext } from "../hooks";
 
 import { getChannelPayload } from "src/utils";
 import ActionButtons from "src/common/ActionButtons/ActionButtons";
-import { IWebchatTemplateAttachment } from "@cognigy/socket-client/lib/interfaces/messageData";
+import { IWebchatTemplateAttachment } from "@cognigy/socket-client";
 
 /**
  * Combines Text with Buttons + Quick Replies media types as

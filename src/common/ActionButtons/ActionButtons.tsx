@@ -1,7 +1,4 @@
-import {
-	IWebchatButton,
-	IWebchatQuickReply,
-} from "@cognigy/socket-client/lib/interfaces/messageData";
+import { IWebchatButton, IWebchatQuickReply } from "@cognigy/socket-client";
 import { ActionButton } from ".";
 import classnames from "classnames";
 

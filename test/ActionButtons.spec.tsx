@@ -2,10 +2,10 @@ import { render, waitFor, screen } from "@testing-library/react";
 import { it, describe, expect } from "vitest";
 import Message from "src/messages/Message";
 import buttons from "test/fixtures/action-buttons.json";
-import { WebchatMessage } from "src/messages/types";
+import { IMessage } from "@cognigy/socket-client";
 
 describe("Action Buttons", () => {
-	const message = buttons as unknown as WebchatMessage;
+	const message = buttons as unknown as IMessage;
 
 	it("renders Action Buttons component", async () => {
 		await waitFor(() => {

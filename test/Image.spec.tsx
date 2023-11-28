@@ -9,11 +9,11 @@ import { it, describe, expect } from "vitest";
 import Message from "src/messages/Message";
 import image from "test/fixtures/image.json";
 import imageDownloadable from "test/fixtures/image-downloadable.json";
-import { WebchatMessage } from "src/messages/types";
+import { IMessage } from "@cognigy/socket-client";
 
 describe("Message Image", () => {
-	const message = image as unknown as WebchatMessage;
-	const messageDownloadable = imageDownloadable as unknown as WebchatMessage;
+	const message = image as unknown as IMessage;
+	const messageDownloadable = imageDownloadable as unknown as IMessage;
 
 	it("renders image message", async () => {
 		await waitFor(() => {

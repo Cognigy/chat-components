@@ -1,11 +1,11 @@
-import { IWebchatMessage } from "@cognigy/socket-client/lib/interfaces/messageData";
-import { IWebchatConfig, WebchatMessage } from "./messages/types";
+import { IMessage, IWebchatMessage } from "@cognigy/socket-client";
+import { IWebchatConfig } from "./messages/types";
 import { ActionButtonsProps } from "./common/ActionButtons/ActionButtons";
 
 /**
  * Decides between _webchat and _facebook payload.
  */
-export function getChannelPayload(message: WebchatMessage, config?: IWebchatConfig) {
+export function getChannelPayload(message: IMessage, config?: IWebchatConfig) {
 	const { _facebook, _webchat } = message?.data?._cognigy || {};
 
 	if (

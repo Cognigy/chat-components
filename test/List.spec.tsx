@@ -2,10 +2,10 @@ import { render, waitFor, screen } from "@testing-library/react";
 import { it, describe, expect } from "vitest";
 import Message from "src/messages/Message";
 import list from "test/fixtures/list.json";
-import { WebchatMessage } from "src/messages/types";
+import { IMessage } from "@cognigy/socket-client";
 
 describe("Message List", () => {
-	const message = list as unknown as WebchatMessage;
+	const message = list as unknown as IMessage;
 
 	it("renders List message", async () => {
 		await waitFor(() => {

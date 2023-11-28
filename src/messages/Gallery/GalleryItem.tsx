@@ -1,4 +1,4 @@
-import { IWebchatAttachmentElement } from "@cognigy/socket-client/lib/interfaces/messageData";
+import { IWebchatAttachmentElement } from "@cognigy/socket-client";
 import { FC, KeyboardEvent, useMemo, useState } from "react";
 import classes from "./Gallery.module.css";
 import buttonClasses from "src/common/ActionButtons/SingleButtons.module.css";

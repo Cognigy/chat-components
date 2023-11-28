@@ -3,7 +3,7 @@ import ReactDOM from "react-dom/client";
 
 import "./demo.css";
 import Message, { MessageProps } from "./messages/Message.tsx";
-import { MessageSender, WebchatMessage } from "./messages/types.ts";
+import { MessageSender } from "./messages/types.ts";
 
 //fixtures
 import listMessage from "test/fixtures/list.json";
@@ -14,6 +14,7 @@ import imageBroken from "test/fixtures/imageBroken.json";
 import video from "test/fixtures/video.json";
 import videoYoutube from "test/fixtures/videoYoutube.json";
 import audio from "test/fixtures/audio.json";
+import { IMessage } from "@cognigy/socket-client";
 
 const messages: MessageProps[] = [
 	{
@@ -118,7 +119,7 @@ const messages: MessageProps[] = [
 		disableHeader: true,
 	},
 	{
-		message: image as WebchatMessage,
+		message: image as IMessage,
 	},
 	{
 		message: {
@@ -134,25 +135,25 @@ const messages: MessageProps[] = [
 		},
 	},
 	{
-		message: imageBroken as WebchatMessage,
+		message: imageBroken as IMessage,
 	},
 	{
-		message: imageDownloadable as WebchatMessage,
+		message: imageDownloadable as IMessage,
 	},
 	{
-		message: video as WebchatMessage,
+		message: video as IMessage,
 	},
 	{
-		message: videoYoutube as WebchatMessage,
+		message: videoYoutube as IMessage,
 	},
 	{
-		message: audio as WebchatMessage,
+		message: audio as IMessage,
 	},
 	{
-		message: listMessage as WebchatMessage,
+		message: listMessage as IMessage,
 	},
 	{
-		message: gallery as WebchatMessage,
+		message: gallery as IMessage,
 	},
 ];
 

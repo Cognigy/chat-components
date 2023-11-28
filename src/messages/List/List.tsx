@@ -6,10 +6,7 @@ import classes from "./List.module.css";
 import classnames from "classnames";
 import { PrimaryButton } from "src/common/ActionButtons";
 import { getChannelPayload, getRandomId } from "src/utils";
-import {
-	IWebchatAttachmentElement,
-	IWebchatTemplateAttachment,
-} from "@cognigy/socket-client/lib/interfaces/messageData";
+import { IWebchatAttachmentElement, IWebchatTemplateAttachment } from "@cognigy/socket-client";
 
 const List: FC = () => {
 	const { message, config, action } = useMessageContext();

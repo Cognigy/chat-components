@@ -7,7 +7,7 @@ import { getBackgroundImage } from "src/utils";
 import { PrimaryButton, SecondaryButton } from "src/common/ActionButtons";
 import classnames from "classnames";
 import { sanitizeUrl } from "@braintree/sanitize-url";
-import { IWebchatAttachmentElement } from "@cognigy/socket-client/lib/interfaces/messageData";
+import { IWebchatAttachmentElement } from "@cognigy/socket-client";
 
 const ListItem: FC<{ element: IWebchatAttachmentElement; isHeaderElement?: boolean }> = props => {
 	const { action, config } = useMessageContext();

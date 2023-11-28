@@ -4,10 +4,7 @@ import Lightbox from "./lightbox/Lightbox";
 import ImageThumb from "./ImageThumb";
 import { useMessageContext } from "src/messages/hooks";
 import { getChannelPayload } from "src/utils";
-import {
-	IWebchatButton,
-	IWebchatImageAttachment,
-} from "@cognigy/socket-client/lib/interfaces/messageData";
+import { IWebchatButton, IWebchatImageAttachment } from "@cognigy/socket-client";
 
 const Image: FC = () => {
 	const { message, config } = useMessageContext();

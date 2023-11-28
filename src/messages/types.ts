@@ -1,20 +1,7 @@
 // import type { IOutput } from "@cognigy/socket-client";
 
-import { IMessageData } from "@cognigy/socket-client/lib/interfaces/messageData";
 import { MessageProps } from "src/messages/Message";
 
-// TODO publish WebchatMessage in Webchat npm package
-
-export type WebchatMessage = {
-	text?: string | null;
-	data?: IMessageData;
-	source?: "user" | "bot" | "engagement" | "agent" | string;
-	timestamp?: string;
-	avatarUrl?: string;
-	avatarName?: string;
-	disableSensitiveLogging?: boolean;
-	traceId?: string;
-};
 export type MessagePasstroughProps = Pick<MessageProps, "message" | "action">;
 
 export interface IPersistentMenuItem {
@@ -154,6 +141,7 @@ export interface ISendMessageOptions {
 	collate: boolean;
 }
 
+// TODO: move this one SocketClient repo or reuse an existing interface (IProcessOutputData?)
 export type MessageSender = (
 	text?: string,
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any

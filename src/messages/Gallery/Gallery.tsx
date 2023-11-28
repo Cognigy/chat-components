@@ -7,10 +7,7 @@ import { ArrowBack as ArrowNavIcon } from "src/assets/svg";
 import { Navigation, Pagination, A11y } from "swiper/modules";
 import { Swiper, SwiperSlide } from "swiper/react";
 import GalleryItem from "./GalleryItem";
-import {
-	IWebchatAttachmentElement,
-	IWebchatTemplateAttachment,
-} from "@cognigy/socket-client/lib/interfaces/messageData";
+import { IWebchatAttachmentElement, IWebchatTemplateAttachment } from "@cognigy/socket-client";
 
 const Gallery: FC = () => {
 	const { message, config } = useMessageContext();

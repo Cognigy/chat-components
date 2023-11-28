@@ -8,10 +8,10 @@ import {
 import { it, describe, expect } from "vitest";
 import Message from "src/messages/Message";
 import video from "test/fixtures/video.json";
-import { WebchatMessage } from "src/messages/types";
+import { IMessage } from "@cognigy/socket-client";
 
 describe("Message Video", () => {
-	const message = video as unknown as WebchatMessage;
+	const message = video as unknown as IMessage;
 
 	it("renders video message", async () => {
 		await waitFor(() => {
