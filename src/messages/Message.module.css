@@ -18,5 +18,5 @@
 }
 
 .collated {
-	margin-block-start: calc(var(--webchat-message-margin-block, 24px) * -0.66);
+	margin-block-start: calc(var(--webchat-message-margin-block, 24px) * -0.5);
 }
