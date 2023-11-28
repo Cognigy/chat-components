@@ -28,3 +28,14 @@ export const getWebchatButtonLabel: getWebchatButtonLabel = button => {
 	}
 	return title;
 };
+
+export const isMessageCollatable = (message: WebchatMessage, prevMessage?: WebchatMessage) => {
+	const COLLATION_LIMIT = 1000 * 60; // 60 sec
+
+	const difference = Number(message?.timestamp) - Number(prevMessage?.timestamp);
+	return (
+		isNaN(difference) === false &&
+		difference < COLLATION_LIMIT &&
+		prevMessage.source === message.source
+	);
+};

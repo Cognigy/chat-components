@@ -8,23 +8,27 @@ import { IWebchatConfig, MessageSender, WebchatMessage } from "./messages/types"
 
 import "./theme.css";
 import classes from "./Message.module.css";
+import { isMessageCollatable } from "./utils";
 
 export interface MessageProps {
 	action?: MessageSender;
 	className?: string;
 	config?: IWebchatConfig;
-	disableHeader?: boolean;
 	message: WebchatMessage;
-	plugins?: MatchConfig[];
 	onEmitAnalytics?: (event: string, payload?: unknown) => void;
+	plugins?: MatchConfig[];
+	prevMessage?: WebchatMessage;
 }
 
 const Message: FC<MessageProps> = props => {
+	const shouldCollate = isMessageCollatable(props.message, props.prevMessage);
+
 	const rootClassName = classnames(
 		"webchat-message-row",
 		props.message.source,
 		props.className,
 		classes.message,
+		shouldCollate && classes.collated,
 	);
 
 	const MessageComponent = match(props.message, props.plugins, props.config);
@@ -44,9 +48,7 @@ const Message: FC<MessageProps> = props => {
 			config={props.config}
 		>
 			<article className={rootClassName}>
-				{!props.disableHeader && (
-					<MessageHeader enableAvatar={props.message.source !== "user"} />
-				)}
+				{!shouldCollate && <MessageHeader enableAvatar={props.message.source !== "user"} />}
 				<MessageComponent />
 			</article>
 		</MessageProvider>
