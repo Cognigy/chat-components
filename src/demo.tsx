@@ -8,8 +8,28 @@ import { MessageSender } from "./messages/types.ts";
 const messages: MessageProps[] = [
 	{
 		message: {
+			text: "First message",
+			source: "bot",
+			timestamp: "1701163314138",
+		},
+	},
+	{
+		message: {
+			text: "Second message",
+			source: "bot",
+			timestamp: "1701163319138",
+		},
+		prevMessage: {
+			text: "Firts message",
+			source: "bot",
+			timestamp: "1701163314138",
+		},
+	},
+	{
+		message: {
 			avatarNane: "Dognigy",
 			text: "",
+			source: "bot",
 			data: {
 				_cognigy: {
 					_webchat: {
@@ -38,6 +58,8 @@ const messages: MessageProps[] = [
 	{
 		message: {
 			avatarName: "Cognigy",
+			source: "bot",
+
 			data: {
 				_cognigy: {
 					_webchat: {
@@ -99,14 +121,6 @@ const messages: MessageProps[] = [
 			text: "Here goes the text.\n\nThe text can also be multiline with <strong>HTML</strong> content",
 			avatarName: "Cognigy",
 		},
-	},
-	{
-		message: {
-			source: "bot",
-			text: "This messaged is with previous with disableHeader prop",
-			avatarName: "Cognigy",
-		},
-		disableHeader: true,
 	},
 	{
 		message: {
