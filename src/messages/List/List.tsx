@@ -41,7 +41,7 @@ const List: FC = () => {
 		}, 200);
 	}, [config?.settings.enableAutoFocus, listTemplateId]);
 
-	if (!elements || elements.length === 0) return null;
+	if (!elements || elements?.length === 0) return null;
 
 	return (
 		<div
@@ -51,7 +51,7 @@ const List: FC = () => {
 			data-testid="list-message"
 		>
 			{headerElement && <ListItem element={headerElement} isHeaderElement />}
-			{regularElements?.map((element: IWebchatAttachmentElement, index: number) => (
+			{regularElements && regularElements.map((element: IWebchatAttachmentElement, index: number) => (
 				<Fragment key={index}>
 					{index > 0 && <div className={mainclasses.divider} />}
 					<ListItem element={element} />

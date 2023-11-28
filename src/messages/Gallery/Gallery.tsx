@@ -38,7 +38,7 @@ const Gallery: FC = () => {
 		}
 	}, [carouselContentId, config?.settings.enableAutoFocus]);
 
-	if (!elements || elements.length === 0) return null;
+	if (!elements || elements?.length === 0) return null;
 
 	if (elements.length === 1)
 		return (
