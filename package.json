@@ -1,6 +1,6 @@
 {
 	"name": "@cognigy/chat-components",
-	"version": "0.2.6",
+	"version": "0.3.0",
 	"type": "module",
 	"exports": "./dist/chat-components.js",
 	"files": [
@@ -47,7 +47,8 @@
 		"@cognigy/socket-client": "^5.0.0-beta.2",
 		"classnames": "^2.3.2",
 		"dompurify": "^3.0.6",
-		"react-player": "^2.13.0"
+		"react-player": "^2.13.0",
+		"swiper": "^11.0.4"
 	},
 	"peerDependencies": {
 		"react": "^17.x || 18.x",

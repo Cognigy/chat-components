@@ -1,6 +1,6 @@
 // import type { IOutput } from "@cognigy/socket-client";
 
-import { MessageProps } from "src/Message";
+import { MessageProps } from "src/messages/Message";
 
 // TODO publish WebchatMessage in Webchat npm package
 

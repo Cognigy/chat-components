@@ -1,12 +1,12 @@
 import { FC } from "react";
 import classnames from "classnames";
 
-import MessageHeader from "./common/MessageHeader";
-import { match, MatchConfig } from "./matcher";
+import MessageHeader from "../common/MessageHeader";
+import { match, MatchConfig } from "../matcher";
 import { MessageProvider } from "./context";
-import { IWebchatConfig, MessageSender, WebchatMessage } from "./messages/types";
+import { IWebchatConfig, MessageSender, WebchatMessage } from "./types";
 
-import "./theme.css";
+import "src/theme.css";
 import classes from "./Message.module.css";
 import { isMessageCollatable } from "./utils";
 
@@ -31,7 +31,7 @@ const Message: FC<MessageProps> = props => {
 		shouldCollate && classes.collated,
 	);
 
-	const MessageComponent = match(props.message, props.plugins, props.config);
+	const MessageComponent = match(props.message, props.config, props.plugins);
 
 	/**
 	 * No rule matched the message, so we don't render anything.

@@ -6,7 +6,7 @@ describe("Message Matcher", () => {
 	it("matches text message", () => {
 		const message = { text: "Hello World" };
 		const matchResult = match(message);
-		expect(matchResult.name).toBe("Text");
+		expect(matchResult?.name).toBe("Text");
 	});
 	it("matches nothing if unknown", () => {
 		const message = { text: null, __bogus: {} };
@@ -17,11 +17,11 @@ describe("Message Matcher", () => {
 		const message = { text: null, __plugin: true };
 		const config: MatchConfig[] = [
 			{
-				rule: (message: any) => message.__plugin,
-				component: createElement("div", null),
+				rule: message => message.__plugin,
+				component: () => createElement("div", null),
 			},
 		];
-		const matchResult = match(message, config);
-		expect(matchResult.type).toBe("div");
+		const matchResult = match(message, undefined, config);
+		expect(matchResult?.name).toBe("component");
 	});
 });

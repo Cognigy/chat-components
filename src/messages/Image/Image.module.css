@@ -1,48 +1,50 @@
-.wrapper {
+article .wrapper {
+	position: relative;
 	border-radius: var(--bubble-border-radius);
 	max-width: 295px;
-	width: max-content;
+	width: 100%;
+	outline: none;
+}
+
+article .wrapper img {
+	border-radius: var(--bubble-border-radius);
+	width: 100%;
+	display: block;
+	outline: none;
+}
+.wrapper.wrapperDownloadable img {
+	border-bottom-left-radius: 0px;
+	border-bottom-right-radius: 0px;
 }
 
 .wrapperDownloadable {
 	cursor: pointer;
+	border: 1px solid var(--black-80);
 }
-.wrapperDownloadable:hover {
+.wrapperDownloadable img:hover,
+.wrapperDownloadable img:focus {
 	opacity: 0.8;
-}
-.wrapperDownloadable:focus {
-	opacity: 0.8;
-	outline: none;
-}
-
-.flexImage {
-	display: block;
-	width: 100%;
 }
 
 .flexImage img {
 	aspect-ratio: 16/9;
-	width: 100%;
 	object-fit: cover;
 	object-position: left;
-	border-radius: var(--bubble-border-radius);
 }
 
-.fixedImage {
-	background-size: cover;
-	background-position: center center;
+.fixedImage img {
+	height: auto;
 }
 
-.templateMedia {
-	padding-top: 75%;
+.downloadButtonWrapper {
+	padding: 16px;
 }
 
-.templateGeneric {
-	padding-top: 50%;
-	display: table;
+.brokenImage {
+	aspect-ratio: 16/9;
 	width: 100%;
-}
-
-.templateList {
-	padding-top: 50%;
+	display: block;
+	outline: none;
+	border-radius: var(--bubble-border-radius);
+	background-color: var(--black-80);
 }

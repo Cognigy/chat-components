@@ -1,6 +1,6 @@
 import { render } from "@testing-library/react";
 import { it, describe } from "vitest";
-import Message from "../src/Message";
+import Message from "../src/messages/Message";
 
 describe("Message", () => {
 	it("renders text message", () => {

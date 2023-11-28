@@ -1,22 +1,28 @@
-import { ComponentType } from "react";
-import { Text } from "./messages";
+import { FunctionComponent } from "react";
+import { Text, Image, Video, Audio, List, Gallery, TextWithButtons } from "./messages";
 import { IWebchatConfig, WebchatMessage } from "./messages/types";
-import TextWithButtons from "./messages/TextWithButtons/TextWithButtons";
 import { getChannelPayload } from "./utils";
 import { IWebchatTemplateAttachment } from "@cognigy/socket-client/lib/interfaces/messageData";
-import Image from "src/messages/Image";
-import Video from "src/messages/Video";
-import Audio from "src/messages/Audio";
 
 export type MatchConfig = {
 	rule: (message: WebchatMessage, config?: IWebchatConfig) => boolean;
-	component: ComponentType<any>;
+	component: FunctionComponent;
 };
 
 const defaultConfig: MatchConfig[] = [
 	{
 		// Text message
-		rule: message => !!message.text,
+		rule: (message, config) => {
+			// do not render engagement messages unless configured!
+			if (
+				message?.source === "engagement" &&
+				!config?.settings?.showEngagementMessagesInChat
+			) {
+				return false;
+			}
+
+			return !!message?.text;
+		},
 		component: Text,
 	},
 	{
@@ -37,16 +43,49 @@ const defaultConfig: MatchConfig[] = [
 		component: TextWithButtons,
 	},
 	{
-		rule: message => message?.data?._cognigy?._webchat?.message?.attachment?.type === "image",
+		rule: (message, config) => {
+			const channelConfig = getChannelPayload(message, config);
+			if (!channelConfig) return false;
+
+			return channelConfig?.message?.attachment?.type === "image";
+		},
 		component: Image,
 	},
 	{
-		rule: message => message?.data?._cognigy?._webchat?.message?.attachment?.type === "video",
+		rule: (message, config) => {
+			const channelConfig = getChannelPayload(message, config);
+			if (!channelConfig) return false;
+
+			return channelConfig?.message?.attachment?.type === "video";
+		},
 		component: Video,
 	},
 	{
-		rule: message => message?.data?._cognigy?._webchat?.message?.attachment?.type === "audio",
+		rule: (message, config) => {
+			const channelConfig = getChannelPayload(message, config);
+			if (!channelConfig) return false;
+
+			return channelConfig?.message?.attachment?.type === "audio";
+		},
 		component: Audio,
+	},
+	{
+		rule: (message, config) => {
+			const channelConfig = getChannelPayload(message, config);
+			if (!channelConfig) return false;
+
+			return channelConfig?.message?.attachment?.payload?.template_type === "list";
+		},
+		component: List,
+	},
+	{
+		rule: (message, config) => {
+			const channelConfig = getChannelPayload(message, config);
+			if (!channelConfig) return false;
+
+			return channelConfig?.message?.attachment?.payload?.template_type === "generic";
+		},
+		component: Gallery,
 	},
 ];
 
@@ -56,8 +95,8 @@ const defaultConfig: MatchConfig[] = [
  */
 export function match(
 	message: WebchatMessage,
-	configExtended: MatchConfig[] = [],
 	webchatConfig?: IWebchatConfig,
+	configExtended: MatchConfig[] = [],
 ) {
 	const config = [...configExtended, ...defaultConfig];
 

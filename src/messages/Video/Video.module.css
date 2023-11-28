@@ -1,19 +1,10 @@
-.wrapper {
+article .wrapper {
 	border-radius: var(--bubble-border-radius);
 	max-width: 295px;
 	position: relative;
 }
 
-.srOnly {
-	position: absolute;
-	left: -10000px;
-	width: 1px;
-	height: 1px;
-	top: auto;
-	overflow: hidden;
-}
-
-.player {
+article .player {
 	aspect-ratio: 16/9;
 	max-width: 295px;
 	object-fit: cover;
@@ -22,10 +13,19 @@
 	border-radius: var(--bubble-border-radius);
 }
 
-.player > div:first-child {
+article .player > div:first-child {
 	background-color: var(--black-10);
+	outline: none;
+	aspect-ratio: 16/9;
+	height: auto !important;
 }
 
-.player > div:first-child:hover {
-	opacity: 0.8;
+article .player > div:first-child:hover,
+article .player > div:first-child:focus {
+	opacity: 0.85;
+}
+
+article .player > div:first-child:hover svg circle,
+article .player > div:first-child:focus svg circle {
+	fill-opacity: 1;
 }

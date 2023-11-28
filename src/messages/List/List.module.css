@@ -1,0 +1,114 @@
+article .wrapper {
+	max-width: 295px;
+	border-radius: var(--bubble-border-radius);
+	overflow: hidden;
+	border: 1px solid var(--black-80);
+	background-color: var(--white);
+}
+
+.headerWrapper {
+	position: relative;
+}
+
+.headerWrapper:focus {
+	opacity: 0.85;
+}
+
+.darkLayer {
+	display: block;
+	content: " ";
+	position: absolute;
+	left: 0;
+	top: 0;
+	right: 0;
+	bottom: 0;
+	background-color: hsla(0, 0%, 0%, 0.3);
+}
+
+.headerContent {
+	position: absolute;
+	left: 0;
+	bottom: 0;
+	right: 0;
+	padding: 16px;
+	color: var(--white);
+}
+
+.itemTitleHeader {
+	margin-top: 0px;
+	margin-bottom: 0px;
+	font-size: 18px;
+	font-weight: 600;
+	line-height: 130%;
+}
+
+.itemTitle {
+	margin-top: 0px;
+	margin-bottom: 0px;
+	font-size: 16px;
+	font-weight: 600;
+	line-height: 140%;
+}
+
+.itemTitleWithSubtitle {
+	margin-bottom: 8px;
+}
+
+.itemSubtitle {
+	margin-top: 0px;
+	margin-bottom: 0px;
+	font-size: 14px;
+	font-weight: 400;
+	line-height: 140%;
+}
+
+.itemSubtitle.ignoreWS {
+	white-space: initial;
+}
+
+.headerImage {
+	aspect-ratio: 16/9;
+	background-size: cover;
+	background-position: center center;
+}
+
+.listItemWrapper {
+	position: relative;
+	display: flex;
+}
+
+.listItemContent {
+	padding: 16px 16px 12px 16px;
+	overflow-wrap: break-word;
+	display: flex;
+	-webkit-box-pack: justify;
+	justify-content: space-between;
+	align-items: center;
+	gap: 16px;
+	width: 100%;
+}
+
+.listItemText {
+	width: 100%;
+}
+
+.listItemImage {
+	background-size: cover;
+	background-position: center center;
+	border-radius: 10px;
+	width: 86px;
+	height: 102px;
+	flex-shrink: 0;
+}
+
+.listHeaderButtonWrapper {
+	padding-top: 12px;
+}
+
+.listItemButtonWrapper {
+	padding: 0px 16px 16px;
+}
+
+.mainButtonWrapper {
+	padding: 16px;
+}

@@ -1,0 +1,97 @@
+{
+	"text": null,
+	"data": {
+		"_cognigy": {
+			"_webchat": {
+				"message": {
+					"attachment": {
+						"type": "template",
+						"payload": {
+							"template_type": "list",
+							"elements": [
+								{
+									"title": "Cognigy.AI",
+									"subtitle": "Find out more about its features",
+									"image_url": "https://placekitten.com/300/300",
+									"buttons": [
+										{
+											"payload": "foobar009l1b1",
+											"type": "postback",
+											"title": "foobar009l1b1"
+										}
+									],
+									"default_action": {
+										"type": "web_url",
+										"url": "https://example.com"
+									}
+								},
+								{
+									"title": "foobar009l2",
+									"subtitle": "Support your customers and agents with Cognigy. AI, powered by Generative and Conversational AI",
+									"image_url": "https://placekitten.com/300/300",
+									"buttons": [
+										{
+											"payload": "foobar009l1b1",
+											"type": "postback",
+											"title": "foobar009l1b1"
+										}
+									]
+								},
+								{
+									"title": "foobar009l2",
+									"subtitle": "Support your customers and agents with Cognigy. AI, powered by Generative and Conversational AI",
+									"buttons": [
+										{
+											"title": "foobar009b1",
+											"type": "web_url",
+											"url": "https://example.com"
+										}
+									],
+									"default_action": {
+										"type": "web_url",
+										"url": "https://example.com"
+									}
+								},
+								{
+									"title": "foobar009l2",
+									"subtitle": "Support your customers and agents with Cognigy. AI, powered by Generative and Conversational AI",
+									"buttons": null,
+									"default_action": {
+										"type": "web_url",
+										"url": "https://example.com"
+									}
+								},
+								{
+									"title": "foobar009l2",
+									"image_url": "https://placekitten.com/300/300",
+									"buttons": [
+										{
+											"payload": "foobar009l1b1",
+											"type": "postback",
+											"title": "foobar009l1b1"
+										}
+									],
+									"default_action": {
+										"type": "web_url",
+										"url": "https://example.com"
+									}
+								}
+							],
+							"top_element_style": "large",
+							"buttons": [
+								{
+									"title": "Global Button",
+									"type": "web_url",
+									"url": "https://example.com",
+									"payload": "",
+									"messenger_extensions": false,
+									"webview_height_ratio": "full"
+								}
+							]
+						}
+					}
+				}
+			}
+		}
+	}
+}

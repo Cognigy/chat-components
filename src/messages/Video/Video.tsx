@@ -1,39 +1,47 @@
-import { FC } from "react";
+import { FC, useCallback } from "react";
 import ReactPlayer from "react-player";
 import classes from "./Video.module.css";
-import { MessagePasstroughProps } from "../types";
+import mainClasses from "src/main.module.css";
+import classnames from "classnames";
 import { VideoPlayIcon } from "src/assets/svg";
-import { useMessageContext } from "src/hooks";
+import { useMessageContext } from "src/messages/hooks";
+import { getChannelPayload } from "src/utils";
 
-const Video: FC<MessagePasstroughProps> = () => {
-	const { message } = useMessageContext();
+const Video: FC = () => {
+	const { message, config } = useMessageContext();
+	const payload = getChannelPayload(message, config);
+	const { url, altText } = payload.message.attachment?.payload || {};
 
-	const { url, altText } = message?.data?._cognigy?._webchat?.message?.attachment?.payload || {};
+	const handleFocus = useCallback(
+		(player: ReactPlayer) => {
+			const chatHistory = document.getElementById("webchatChatHistoryWrapperLiveLogPanel");
 
-	const handleFocus = (player: ReactPlayer) => {
-		const chatHistory = document.getElementById("webchatChatHistoryWrapperLiveLogPanel");
+			if (!config?.settings.enableAutoFocus) return;
 
-		// if(!config?.settings.enableAutoFocus) return;
+			if (!chatHistory?.contains(document.activeElement)) return;
 
-		if (!chatHistory?.contains(document.activeElement)) return;
-
-		setTimeout(() => {
-			player.getInternalPlayer()?.focus();
-		}, 100);
-	};
+			setTimeout(() => {
+				player.getInternalPlayer()?.focus();
+			}, 100);
+		},
+		[config?.settings.enableAutoFocus],
+	);
 
 	if (!url) return null;
 
 	return (
-		<div className={classes.wrapper} data-testid="video-message">
-			<span className={classes.srOnly}>{altText || "Attachment Video"}</span>
+		<div
+			className={classnames(classes.wrapper, "webchat-media-template-video")}
+			data-testid="video-message"
+		>
+			<span className={mainClasses.srOnly}>{altText || "Attachment Video"}</span>
 			<ReactPlayer
 				url={url}
 				light
 				playing
 				controls
 				className={classes.player}
-				playIcon={<VideoPlayIcon width="50px" height="50px" />}
+				playIcon={<VideoPlayIcon width="35px" height="35px" />}
 				width="unset"
 				height="unset"
 				onReady={handleFocus}

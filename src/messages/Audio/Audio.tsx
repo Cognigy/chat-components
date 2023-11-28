@@ -1,31 +1,37 @@
 import { FC, useCallback, useRef, useState } from "react";
 import ReactPlayer from "react-player";
 import classes from "./Audio.module.css";
-import { MessagePasstroughProps } from "../types";
+import mainClasses from "src/main.module.css";
+import classnames from "classnames";
 import Controls from "./Controls";
 import { OnProgressProps } from "react-player/base";
-import { useMessageContext } from "src/hooks";
+import { useMessageContext } from "src/messages/hooks";
+import { getChannelPayload } from "src/utils";
 
-const Audio: FC<MessagePasstroughProps> = () => {
-	const { message } = useMessageContext();
-	const { url, altText } = message?.data?._cognigy?._webchat?.message?.attachment?.payload || {};
+const Audio: FC = () => {
+	const { message, config } = useMessageContext();
+	const payload = getChannelPayload(message, config);
+	const { url, altText } = payload.message.attachment?.payload || {};
 
 	const playerRef = useRef<ReactPlayer | null>(null);
 	const [playing, setPlaying] = useState<boolean>(false);
 	const [progress, setProgress] = useState<number>(0);
 	const [duration, setDuration] = useState<number>(0);
 
-	const handleFocus = useCallback((player: ReactPlayer) => {
-		const chatHistory = document.getElementById("webchatChatHistoryWrapperLiveLogPanel");
+	const handleFocus = useCallback(
+		(player: ReactPlayer) => {
+			const chatHistory = document.getElementById("webchatChatHistoryWrapperLiveLogPanel");
 
-		// if(!config?.settings.enableAutoFocus) return;
+			if (!config?.settings.enableAutoFocus) return;
 
-		if (!chatHistory?.contains(document.activeElement)) return;
+			if (!chatHistory?.contains(document.activeElement)) return;
 
-		setTimeout(() => {
-			player.getInternalPlayer()?.focus();
-		}, 100);
-	}, []);
+			setTimeout(() => {
+				player.getInternalPlayer()?.focus();
+			}, 100);
+		},
+		[config?.settings.enableAutoFocus],
+	);
 
 	const handlePlay = useCallback(() => {
 		setPlaying(true);
@@ -46,8 +52,11 @@ const Audio: FC<MessagePasstroughProps> = () => {
 	if (!url) return null;
 
 	return (
-		<div className={classes.wrapper} data-testid="audio-message">
-			<span className={classes.srOnly}>{altText || "Attachment Audio"}</span>
+		<div
+			className={classnames("webchat-media-template-audio", classes.wrapper)}
+			data-testid="audio-message"
+		>
+			<span className={mainClasses.srOnly}>{altText || "Attachment Audio"}</span>
 			<ReactPlayer
 				url={url}
 				onReady={handleFocus}
@@ -60,6 +69,7 @@ const Audio: FC<MessagePasstroughProps> = () => {
 				height={0}
 				width={0}
 				style={{ display: "none" }}
+				progressInterval={0.1}
 			/>
 			<Controls
 				playerRef={playerRef}

@@ -1,6 +1,6 @@
-import { ChangeEvent, FC, MutableRefObject, useEffect, useState } from "react";
+import { ChangeEvent, FC, MutableRefObject } from "react";
 import classes from "./Audio.module.css";
-import { PlayIcon, PauseIcon } from "src/assets/svg";
+import { AudioPause, AudioPlay } from "src/assets/svg";
 import ReactPlayer from "react-player";
 
 type ControlsProps = {
@@ -15,9 +15,6 @@ type ControlsProps = {
 const Controls: FC<ControlsProps> = props => {
 	const { playerRef, playing, progress, duration, handlePlay, handlePause } = props;
 
-	const [played, setPlayed] = useState(0);
-	const [seeking, setSeeking] = useState(false);
-
 	const togglePlayAndPause = () => {
 		if (playing) {
 			handlePause();
@@ -26,35 +23,24 @@ const Controls: FC<ControlsProps> = props => {
 		}
 	};
 
-	const handleSeekMouseDown = () => {
+	const handleSeekStart = () => {
 		handlePause();
-		setSeeking(true);
 	};
 
 	const handleSeekChange = (e: ChangeEvent<HTMLInputElement>) => {
 		playerRef.current?.seekTo(parseFloat(e.target.value));
-		setPlayed(parseFloat(e.target.value));
 	};
 
-	const handleSeekMouseUp = () => {
-		setSeeking(false);
+	const handleSeekEnd = () => {
+		handlePlay();
 	};
-
-	useEffect(() => {
-		setPlayed(prevPlayed => {
-			if (!seeking && prevPlayed !== progress) {
-				return progress;
-			}
-			return prevPlayed;
-		});
-	}, [progress, seeking]);
 
 	const formatTime = () => {
 		const padString = (string: number) => {
 			return ("0" + string).slice(-2);
 		};
 
-		const seconds = duration * (1 - played);
+		const seconds = duration * (1 - progress);
 		const date = new Date(seconds * 1000);
 		const hh = date.getUTCHours();
 		const mm = date.getUTCMinutes();
@@ -77,10 +63,12 @@ const Controls: FC<ControlsProps> = props => {
 					min={0}
 					max={0.999999}
 					step="any"
-					value={played}
-					onMouseDown={handleSeekMouseDown}
+					value={progress}
+					onMouseDown={handleSeekStart}
+					onTouchStart={handleSeekStart}
 					onChange={handleSeekChange}
-					onMouseUp={handleSeekMouseUp}
+					onMouseUp={handleSeekEnd}
+					onTouchEnd={handleSeekEnd}
 					style={{
 						background: `linear-gradient(to right, var(--primary-color) ${
 							progress * 100
@@ -91,11 +79,7 @@ const Controls: FC<ControlsProps> = props => {
 
 			<div className="buttons">
 				<button className={classes.playButton} onClick={togglePlayAndPause}>
-					{playing ? (
-						<PauseIcon className={classes.pauseIcon} />
-					) : (
-						<PlayIcon className={classes.playIcon} />
-					)}
+					{playing ? <AudioPause /> : <AudioPlay />}
 				</button>
 			</div>
 		</div>

@@ -2,8 +2,17 @@ import React from "react";
 import ReactDOM from "react-dom/client";
 
 import "./demo.css";
-import Message, { MessageProps } from "./Message.tsx";
+import Message, { MessageProps } from "./messages/Message.tsx";
 import { MessageSender } from "./messages/types.ts";
+
+//fixtures
+import listMessage from "test/fixtures/list.json";
+import gallery from "test/fixtures/gallery.json";
+import imageDownloadable from "test/fixtures/image-downloadable.json";
+import imageBroken from "test/fixtures/imageBroken.json";
+import video from "test/fixtures/video.json";
+import videoYoutube from "test/fixtures/videoYoutube.json";
+import audio from "test/fixtures/audio.json";
 
 const messages: MessageProps[] = [
 	{
@@ -46,7 +55,7 @@ const messages: MessageProps[] = [
 									image_url: "",
 									image_alt_text: "",
 									payload: "0111222333",
-									title: "Call this number",
+									title: "Call us",
 								},
 							],
 						},
@@ -79,7 +88,7 @@ const messages: MessageProps[] = [
 										{
 											type: "postback",
 											payload: "payload33",
-											title: "I need technical support",
+											title: "Tech support",
 											url: "",
 										},
 										{
@@ -112,7 +121,6 @@ const messages: MessageProps[] = [
 		message: {
 			source: "user",
 			text: "I have a problem with my order",
-			avatarName: "Cognigy",
 		},
 	},
 	{
@@ -149,54 +157,31 @@ const messages: MessageProps[] = [
 	},
 	{
 		message: {
-			text: null,
-			data: {
-				_cognigy: {
-					_default: {
-						_video: {
-							type: "video",
-							videoUrl:
-								"http://s3.amazonaws.com/akamai.netstorage/HD_downloads/Orion_SM.mp4",
-						},
-					},
-					_webchat: {
-						message: {
-							attachment: {
-								type: "video",
-								payload: {
-									url: "https://youtu.be/4n__f0KfJF4?si=a5vwK93s9jrEWj-J",
-								},
-							},
-						},
-					},
-				},
-			},
+			source: "bot",
+			text: "The following is a broken Image",
+			avatarName: "Cognigy",
 		},
 	},
 	{
-		message: {
-			text: null,
-			data: {
-				_cognigy: {
-					_default: {
-						_audio: {
-							type: "audio",
-							audioUrl: "https://www.winhistory.de/more/winstart/mp3/winxp.mp3",
-						},
-					},
-					_webchat: {
-						message: {
-							attachment: {
-								type: "audio",
-								payload: {
-									url: "https://www.winhistory.de/more/winstart/mp3/winxp.mp3",
-								},
-							},
-						},
-					},
-				},
-			},
-		},
+		message: imageBroken,
+	},
+	{
+		message: imageDownloadable,
+	},
+	{
+		message: video,
+	},
+	{
+		message: videoYoutube,
+	},
+	{
+		message: audio,
+	},
+	{
+		message: listMessage,
+	},
+	{
+		message: gallery,
 	},
 ];
 

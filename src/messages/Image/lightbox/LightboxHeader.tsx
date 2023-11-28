@@ -1,9 +1,9 @@
-import { KeyboardEvent, useRef } from "react";
+import { FC, KeyboardEvent, useRef } from "react";
 import { useImageMessageContext } from "../hooks";
 import classes from "./Lightbox.module.css";
 import { CloseIcon, DownloadIcon } from "src/assets/svg";
 
-const LightboxHeader = () => {
+const LightboxHeader: FC = () => {
 	const { url, altText, onClose } = useImageMessageContext();
 
 	const firstButton = useRef<HTMLButtonElement>(null);
