@@ -7,12 +7,13 @@ import { ArrowBack as ArrowNavIcon } from "src/assets/svg";
 import { Navigation, Pagination, A11y } from "swiper/modules";
 import { Swiper, SwiperSlide } from "swiper/react";
 import GalleryItem from "./GalleryItem";
-import { IWebchatAttachmentElement } from "@cognigy/socket-client/lib/interfaces/messageData";
+import { IWebchatAttachmentElement, IWebchatTemplateAttachment } from "@cognigy/socket-client";
 
 const Gallery: FC = () => {
 	const { message, config } = useMessageContext();
 	const payload = getChannelPayload(message, config);
-	const { elements } = payload.message.attachment?.payload || {};
+	const { elements } =
+		(payload?.message?.attachment as IWebchatTemplateAttachment)?.payload || {};
 
 	const carouselContentId = useMemo(() => getRandomId("webchatCarouselContentButton"), []);
 
@@ -37,7 +38,7 @@ const Gallery: FC = () => {
 		}
 	}, [carouselContentId, config?.settings.enableAutoFocus]);
 
-	if (elements.length === 0) return null;
+	if (!elements || elements?.length === 0) return null;
 
 	if (elements.length === 1)
 		return (

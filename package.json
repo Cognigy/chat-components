@@ -1,6 +1,6 @@
 {
 	"name": "@cognigy/chat-components",
-	"version": "0.3.0",
+	"version": "0.3.1",
 	"type": "module",
 	"exports": "./dist/chat-components.js",
 	"files": [
@@ -18,7 +18,7 @@
 		"test:watch": "vitest"
 	},
 	"devDependencies": {
-		"@cognigy/socket-client": "^5.0.0-beta.2",
+		"@cognigy/socket-client": "^5.0.0-beta.5",
 		"@testing-library/jest-dom": "^6.1.4",
 		"@testing-library/react": "^14.0.0",
 		"@types/dompurify": "^3.0.5",
@@ -44,7 +44,6 @@
 	},
 	"dependencies": {
 		"@braintree/sanitize-url": "^6.0.4",
-		"@cognigy/socket-client": "^5.0.0-beta.2",
 		"classnames": "^2.3.2",
 		"dompurify": "^3.0.6",
 		"react-player": "^2.13.0",

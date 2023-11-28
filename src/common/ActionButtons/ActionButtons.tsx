@@ -1,7 +1,4 @@
-import {
-	IWebchatButton,
-	IWebchatQuickReply,
-} from "@cognigy/socket-client/lib/interfaces/messageData";
+import { IWebchatButton, IWebchatQuickReply } from "@cognigy/socket-client";
 import { ActionButton } from ".";
 import classnames from "classnames";
 
@@ -20,6 +17,9 @@ export interface ActionButtonsProps {
 
 const ActionButtons: FC<ActionButtonsProps> = props => {
 	const { payload, buttonClassName, containerClassName, action, customIcon, showUrlIcon } = props;
+
+	if (!payload || payload?.length === 0) return null;
+
 	const buttons = payload.filter((button: ActionButtonsProps["payload"][number]) => {
 		if ("type" in button && !["postback", "web_url", "phone_number"].includes(button.type))
 			return false;

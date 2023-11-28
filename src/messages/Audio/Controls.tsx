@@ -40,7 +40,7 @@ const Controls: FC<ControlsProps> = props => {
 			return ("0" + string).slice(-2);
 		};
 
-		const seconds = duration * (1 - progress);
+		const seconds = duration * (1 - Math.min(1, progress));
 		const date = new Date(seconds * 1000);
 		const hh = date.getUTCHours();
 		const mm = date.getUTCMinutes();

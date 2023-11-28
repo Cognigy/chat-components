@@ -4,14 +4,15 @@ import Lightbox from "./lightbox/Lightbox";
 import ImageThumb from "./ImageThumb";
 import { useMessageContext } from "src/messages/hooks";
 import { getChannelPayload } from "src/utils";
-import { IWebchatButton } from "@cognigy/socket-client/lib/interfaces/messageData";
+import { IWebchatButton, IWebchatImageAttachment } from "@cognigy/socket-client";
 
 const Image: FC = () => {
 	const { message, config } = useMessageContext();
 	const payload = getChannelPayload(message, config);
-	const { url, altText, buttons } = payload.message.attachment?.payload || {};
+	const { url, altText, buttons } =
+		(payload?.message?.attachment as IWebchatImageAttachment)?.payload || {};
 
-	const button: IWebchatButton = buttons?.[0];
+	const button = buttons?.[0];
 
 	const isDownloadable =
 		(buttons as IWebchatButton[])?.find(
