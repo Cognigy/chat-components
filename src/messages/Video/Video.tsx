@@ -11,7 +11,8 @@ import { IWebchatVideoAttachment } from "@cognigy/socket-client";
 const Video: FC = () => {
 	const { message, config } = useMessageContext();
 	const payload = getChannelPayload(message, config);
-	const { url, altText } = (payload?.message?.attachment as IWebchatVideoAttachment).payload;
+	const { url, altText } =
+		(payload?.message?.attachment as IWebchatVideoAttachment)?.payload || {};
 
 	const handleFocus = useCallback(
 		(player: ReactPlayer) => {

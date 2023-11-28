@@ -12,7 +12,8 @@ import { IWebchatAttachmentElement, IWebchatTemplateAttachment } from "@cognigy/
 const Gallery: FC = () => {
 	const { message, config } = useMessageContext();
 	const payload = getChannelPayload(message, config);
-	const { elements } = (payload?.message?.attachment as IWebchatTemplateAttachment).payload;
+	const { elements } =
+		(payload?.message?.attachment as IWebchatTemplateAttachment)?.payload || {};
 
 	const carouselContentId = useMemo(() => getRandomId("webchatCarouselContentButton"), []);
 

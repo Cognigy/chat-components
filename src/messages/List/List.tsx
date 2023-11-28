@@ -12,9 +12,8 @@ const List: FC = () => {
 	const { message, config, action } = useMessageContext();
 	const payload = getChannelPayload(message, config);
 
-	const { elements, top_element_style, buttons } = (
-		payload?.message?.attachment as IWebchatTemplateAttachment
-	).payload;
+	const { elements, top_element_style, buttons } =
+		(payload?.message?.attachment as IWebchatTemplateAttachment)?.payload || {};
 
 	// We support the "large" string to maintain compatibility with old format
 	const showTopElementLarge = top_element_style === "large" || top_element_style === true;

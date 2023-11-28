@@ -12,7 +12,8 @@ import { IWebchatAudioAttachment } from "@cognigy/socket-client";
 const Audio: FC = () => {
 	const { message, config } = useMessageContext();
 	const payload = getChannelPayload(message, config);
-	const { url, altText } = (payload?.message?.attachment as IWebchatAudioAttachment).payload;
+	const { url, altText } =
+		(payload?.message?.attachment as IWebchatAudioAttachment)?.payload || {};
 
 	const playerRef = useRef<ReactPlayer | null>(null);
 	const [playing, setPlaying] = useState(false);
