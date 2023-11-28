@@ -13,7 +13,7 @@ const ListItem: FC<{ element: IWebchatAttachmentElement; isHeaderElement?: boole
 	const { action, config } = useMessageContext();
 	const { element, isHeaderElement } = props;
 	const { title, subtitle, image_url, image_alt_text, default_action, buttons } = element;
-	const button = buttons && buttons[0];
+	const button = buttons && buttons?.[0];
 
 	const handleClick = () => {
 		if (!default_action?.url) return;
