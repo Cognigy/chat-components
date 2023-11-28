@@ -6,7 +6,7 @@ import { IWebchatButton } from "@cognigy/socket-client";
 
 interface PrimaryButtonProps extends HTMLAttributes<HTMLDivElement> {
 	action?: ActionButtonsProps["action"];
-	button: IWebchatButton;
+	button?: IWebchatButton | null;
 	buttonClassName?: string;
 	containerClassName?: string;
 	customIcon?: ReactElement;
