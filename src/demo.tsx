@@ -9,6 +9,7 @@ import { MessageSender } from "./messages/types.ts";
 import listMessage from "test/fixtures/list.json";
 import gallery from "test/fixtures/gallery.json";
 import imageDownloadable from "test/fixtures/image-downloadable.json";
+import image from "test/fixtures/image.json";
 import imageBroken from "test/fixtures/imageBroken.json";
 import video from "test/fixtures/video.json";
 import videoYoutube from "test/fixtures/videoYoutube.json";
@@ -132,32 +133,7 @@ const messages: MessageProps[] = [
 		},
 	},
 	{
-		message: {
-			text: null,
-			data: {
-				_cognigy: {
-					_default: {
-						_image: {
-							type: "image",
-							imageUrl: "https://placekitten.com/300/300",
-							imageAltText: "Kitten",
-						},
-					},
-					_webchat: {
-						message: {
-							attachment: {
-								type: "image",
-								payload: {
-									url: "https://picsum.photos/500/500",
-									altText: "Random image",
-								},
-
-							},
-						},
-					},
-				},
-			},
-		},
+		message: image as IMessage,
 	},
 	{
 		message: {
