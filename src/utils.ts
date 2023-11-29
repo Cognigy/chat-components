@@ -29,7 +29,7 @@ export const getWebchatButtonLabel: getWebchatButtonLabel = button => {
 	return title;
 };
 
-export const isMessageCollatable = (message: WebchatMessage, prevMessage?: WebchatMessage) => {
+export const isMessageCollatable = (message: IMessage, prevMessage?: IMessage) => {
 	const COLLATION_LIMIT = 1000 * 60; // 60 sec
 
 	const difference = Number(message?.timestamp) - Number(prevMessage?.timestamp);

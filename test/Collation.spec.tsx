@@ -1,14 +1,19 @@
 import { render } from "@testing-library/react";
 import { it, describe, expect } from "vitest";
 import Message from "../src/messages/Message";
+import { IMessage } from "@cognigy/socket-client";
 
 describe("Collation", () => {
 	it("collates if timestamp is in limit", () => {
-		const message1 = { text: "Hello", source: "bot", timestamp: Date.now() - 1000 * 50 };
-		const message2 = {
+		const message1: IMessage = {
+			text: "Hello",
+			source: "bot",
+			timestamp: String(Date.now() - 1000 * 50),
+		};
+		const message2: IMessage = {
 			text: "World",
 			source: "bot",
-			timestamp: Date.now(),
+			timestamp: String(Date.now()),
 		};
 
 		const { getAllByTestId } = render(
@@ -23,11 +28,15 @@ describe("Collation", () => {
 	});
 
 	it("does NOT collate if timestamp is NOT in limit", () => {
-		const message1 = { text: "Hello", source: "bot", timestamp: Date.now() - 1000 * 120 };
-		const message2 = {
+		const message1: IMessage = {
+			text: "Hello",
+			source: "bot",
+			timestamp: String(Date.now() - 1000 * 120),
+		};
+		const message2: IMessage = {
 			text: "World",
 			source: "bot",
-			timestamp: Date.now(),
+			timestamp: String(Date.now()),
 		};
 
 		const { getAllByTestId } = render(
@@ -42,11 +51,15 @@ describe("Collation", () => {
 	});
 
 	it("does NOT collate if source is different", () => {
-		const message1 = { text: "Hello", source: "bot", timestamp: Date.now() - 1000 };
-		const message2 = {
+		const message1: IMessage = {
+			text: "Hello",
+			source: "bot",
+			timestamp: String(Date.now() - 1000),
+		};
+		const message2: IMessage = {
 			text: "World",
 			source: "user",
-			timestamp: Date.now(),
+			timestamp: String(Date.now()),
 		};
 
 		const { getAllByTestId } = render(
@@ -61,21 +74,21 @@ describe("Collation", () => {
 	});
 
 	it("collates multiple if all are in limit", () => {
-		const message1 = { text: "Hello", source: "user", timestamp: Date.now() };
-		const message2 = {
+		const message1: IMessage = { text: "Hello", source: "user", timestamp: String(Date.now()) };
+		const message2: IMessage = {
 			text: "World",
 			source: "user",
-			timestamp: Date.now(),
+			timestamp: String(Date.now()),
 		};
-		const message3 = {
+		const message3: IMessage = {
 			text: "World2",
 			source: "user",
-			timestamp: Date.now(),
+			timestamp: String(Date.now()),
 		};
-		const message4 = {
+		const message4: IMessage = {
 			text: "World3",
 			source: "user",
-			timestamp: Date.now(),
+			timestamp: String(Date.now()),
 		};
 
 		const { getAllByTestId } = render(

@@ -19,7 +19,7 @@ export interface MessageProps {
 	message: IMessage;
 	onEmitAnalytics?: (event: string, payload?: unknown) => void;
 	plugins?: MatchConfig[];
-	prevMessage?: WebchatMessage;
+	prevMessage?: IMessage;
 }
 
 const Message: FC<MessageProps> = props => {
