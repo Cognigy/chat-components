@@ -34,9 +34,10 @@ export const isMessageCollatable = (message: WebchatMessage, prevMessage?: Webch
 
 	const difference = Number(message?.timestamp) - Number(prevMessage?.timestamp);
 	return (
+		prevMessage &&
 		isNaN(difference) === false &&
 		difference < COLLATION_LIMIT &&
-		prevMessage.source === message.source
+		prevMessage?.source === message?.source
 	);
 };
 
