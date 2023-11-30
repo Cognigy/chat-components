@@ -29,6 +29,18 @@ export const getWebchatButtonLabel: getWebchatButtonLabel = button => {
 	return title;
 };
 
+export const isMessageCollatable = (message: IMessage, prevMessage?: IMessage) => {
+	const COLLATION_LIMIT = 1000 * 60; // 60 sec
+
+	const difference = Number(message?.timestamp) - Number(prevMessage?.timestamp);
+	return (
+		prevMessage &&
+		isNaN(difference) === false &&
+		difference < COLLATION_LIMIT &&
+		prevMessage?.source === message?.source
+	);
+};
+
 export const getBackgroundImage = (url: string) => {
 	if (!url) return undefined;
 

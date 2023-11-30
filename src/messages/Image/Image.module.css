@@ -18,6 +18,7 @@ article .wrapper img {
 }
 
 .wrapperDownloadable {
+	background-color: var(--white);
 	cursor: pointer;
 	border: 1px solid var(--black-80);
 }

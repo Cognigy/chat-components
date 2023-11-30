@@ -8,8 +8,8 @@ import { MessageSender } from "./messages/types.ts";
 //fixtures
 import listMessage from "test/fixtures/list.json";
 import gallery from "test/fixtures/gallery.json";
-import image from "test/fixtures/image.json";
 import imageDownloadable from "test/fixtures/image-downloadable.json";
+import image from "test/fixtures/image.json";
 import imageBroken from "test/fixtures/imageBroken.json";
 import video from "test/fixtures/video.json";
 import videoYoutube from "test/fixtures/videoYoutube.json";
@@ -19,8 +19,28 @@ import { IMessage } from "@cognigy/socket-client";
 const messages: MessageProps[] = [
 	{
 		message: {
+			text: "First message",
+			source: "bot",
+			timestamp: "1701163314138",
+		},
+	},
+	{
+		message: {
+			text: "Second message",
+			source: "bot",
+			timestamp: "1701163319138",
+		},
+		prevMessage: {
+			text: "Firts message",
+			source: "bot",
+			timestamp: "1701163314138",
+		},
+	},
+	{
+		message: {
 			avatarName: "Cognigy",
 			text: "",
+			source: "bot",
 			data: {
 				_cognigy: {
 					_webchat: {
@@ -49,6 +69,8 @@ const messages: MessageProps[] = [
 	{
 		message: {
 			avatarName: "Cognigy",
+			source: "bot",
+
 			data: {
 				_cognigy: {
 					_webchat: {
@@ -111,21 +133,7 @@ const messages: MessageProps[] = [
 		},
 	},
 	{
-		message: {
-			source: "bot",
-			text: "This messaged is with previous with disableHeader prop",
-			avatarName: "Cognigy",
-		},
-		disableHeader: true,
-	},
-	{
 		message: image as IMessage,
-	},
-	{
-		message: {
-			source: "user",
-			text: "Nice cat. What about broken images?",
-		},
 	},
 	{
 		message: {

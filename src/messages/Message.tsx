@@ -8,6 +8,7 @@ import { IWebchatConfig, MessageSender } from "./types";
 
 import "src/theme.css";
 import classes from "./Message.module.css";
+import { isMessageCollatable } from "../utils";
 import { IMessage } from "@cognigy/socket-client";
 
 export interface MessageProps {
@@ -16,16 +17,20 @@ export interface MessageProps {
 	config?: IWebchatConfig;
 	disableHeader?: boolean;
 	message: IMessage;
-	plugins?: MatchConfig[];
 	onEmitAnalytics?: (event: string, payload?: unknown) => void;
+	plugins?: MatchConfig[];
+	prevMessage?: IMessage;
 }
 
 const Message: FC<MessageProps> = props => {
+	const shouldCollate = isMessageCollatable(props.message, props.prevMessage);
+
 	const rootClassName = classnames(
 		"webchat-message-row",
 		props.message.source,
 		props.className,
 		classes.message,
+		shouldCollate && classes.collated,
 	);
 
 	const MessageComponent = match(props.message, props.config, props.plugins);
@@ -45,9 +50,7 @@ const Message: FC<MessageProps> = props => {
 			config={props.config}
 		>
 			<article className={rootClassName}>
-				{!props.disableHeader && (
-					<MessageHeader enableAvatar={props.message.source !== "user"} />
-				)}
+				{!shouldCollate && <MessageHeader enableAvatar={props.message.source !== "user"} />}
 				<MessageComponent />
 			</article>
 		</MessageProvider>
