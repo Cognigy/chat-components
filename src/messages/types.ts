@@ -2,22 +2,7 @@
 
 import { MessageProps } from "src/messages/Message";
 
-// TODO publish WebchatMessage in Webchat npm package
-
-export type WebchatMessage = any & {
-	source?: "user" | "bot" | "engagement" | "agent" | string;
-	timestamp?: string;
-	avatarUrl?: string;
-};
 export type MessagePasstroughProps = Pick<MessageProps, "message" | "action">;
-
-export interface IMessageImage {
-	config: IWebchatConfig;
-	url: string;
-	isDownloadable?: boolean;
-	altText?: string;
-	template?: "media" | "list" | "generic";
-}
 
 export interface IPersistentMenuItem {
 	title: string;
@@ -156,8 +141,10 @@ export interface ISendMessageOptions {
 	collate: boolean;
 }
 
+// TODO: move this one SocketClient repo or reuse an existing interface (IProcessOutputData?)
 export type MessageSender = (
 	text?: string,
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	data?: Record<string, any> | null,
 	options?: Partial<ISendMessageOptions>,
 ) => void;

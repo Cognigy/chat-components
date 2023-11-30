@@ -1,4 +1,4 @@
-import { IWebchatButton } from "@cognigy/socket-client/lib/interfaces/messageData";
+import { IWebchatButton } from "@cognigy/socket-client";
 import { createContext } from "react";
 
 export interface IImageContext {

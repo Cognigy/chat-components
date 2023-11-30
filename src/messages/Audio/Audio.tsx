@@ -2,20 +2,23 @@ import { FC, useCallback, useRef, useState } from "react";
 import ReactPlayer from "react-player";
 import classes from "./Audio.module.css";
 import mainClasses from "src/main.module.css";
+import classnames from "classnames";
 import Controls from "./Controls";
 import { OnProgressProps } from "react-player/base";
 import { useMessageContext } from "src/messages/hooks";
 import { getChannelPayload } from "src/utils";
+import { IWebchatAudioAttachment } from "@cognigy/socket-client";
 
 const Audio: FC = () => {
 	const { message, config } = useMessageContext();
 	const payload = getChannelPayload(message, config);
-	const { url, altText } = payload.message.attachment?.payload || {};
+	const { url, altText } =
+		(payload?.message?.attachment as IWebchatAudioAttachment)?.payload || {};
 
 	const playerRef = useRef<ReactPlayer | null>(null);
-	const [playing, setPlaying] = useState<boolean>(false);
-	const [progress, setProgress] = useState<number>(0);
-	const [duration, setDuration] = useState<number>(0);
+	const [playing, setPlaying] = useState(false);
+	const [progress, setProgress] = useState(0);
+	const [duration, setDuration] = useState(0);
 
 	const handleFocus = useCallback(
 		(player: ReactPlayer) => {
@@ -51,7 +54,10 @@ const Audio: FC = () => {
 	if (!url) return null;
 
 	return (
-		<div className={classes.wrapper} data-testid="audio-message">
+		<div
+			className={classnames("webchat-media-template-audio", classes.wrapper)}
+			data-testid="audio-message"
+		>
 			<span className={mainClasses.srOnly}>{altText || "Attachment Audio"}</span>
 			<ReactPlayer
 				url={url}

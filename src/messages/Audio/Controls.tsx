@@ -1,6 +1,6 @@
 import { ChangeEvent, FC, MutableRefObject } from "react";
 import classes from "./Audio.module.css";
-import { PlayIcon, PauseIcon } from "src/assets/svg";
+import { AudioPause, AudioPlay } from "src/assets/svg";
 import ReactPlayer from "react-player";
 
 type ControlsProps = {
@@ -23,7 +23,7 @@ const Controls: FC<ControlsProps> = props => {
 		}
 	};
 
-	const handleSeekMouseDown = () => {
+	const handleSeekStart = () => {
 		handlePause();
 	};
 
@@ -31,7 +31,7 @@ const Controls: FC<ControlsProps> = props => {
 		playerRef.current?.seekTo(parseFloat(e.target.value));
 	};
 
-	const handleSeekMouseUp = () => {
+	const handleSeekEnd = () => {
 		handlePlay();
 	};
 
@@ -40,7 +40,7 @@ const Controls: FC<ControlsProps> = props => {
 			return ("0" + string).slice(-2);
 		};
 
-		const seconds = duration * (1 - progress);
+		const seconds = duration * (1 - Math.min(1, progress));
 		const date = new Date(seconds * 1000);
 		const hh = date.getUTCHours();
 		const mm = date.getUTCMinutes();
@@ -64,9 +64,11 @@ const Controls: FC<ControlsProps> = props => {
 					max={0.999999}
 					step="any"
 					value={progress}
-					onMouseDown={handleSeekMouseDown}
+					onMouseDown={handleSeekStart}
+					onTouchStart={handleSeekStart}
 					onChange={handleSeekChange}
-					onMouseUp={handleSeekMouseUp}
+					onMouseUp={handleSeekEnd}
+					onTouchEnd={handleSeekEnd}
 					style={{
 						background: `linear-gradient(to right, var(--primary-color) ${
 							progress * 100
@@ -77,11 +79,7 @@ const Controls: FC<ControlsProps> = props => {
 
 			<div className="buttons">
 				<button className={classes.playButton} onClick={togglePlayAndPause}>
-					{playing ? (
-						<PauseIcon className={classes.pauseIcon} />
-					) : (
-						<PlayIcon className={classes.playIcon} />
-					)}
+					{playing ? <AudioPause /> : <AudioPlay />}
 				</button>
 			</div>
 		</div>

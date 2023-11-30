@@ -1,18 +1,28 @@
 import { FunctionComponent } from "react";
-import { Text, Image, Video, Audio, List, TextWithButtons } from "./messages";
-import { IWebchatConfig, WebchatMessage } from "./messages/types";
+import { Text, Image, Video, Audio, List, Gallery, TextWithButtons } from "./messages";
+import { IWebchatConfig } from "./messages/types";
 import { getChannelPayload } from "./utils";
-import { IWebchatTemplateAttachment } from "@cognigy/socket-client/lib/interfaces/messageData";
+import { IMessage, IWebchatTemplateAttachment } from "@cognigy/socket-client";
 
 export type MatchConfig = {
-	rule: (message: WebchatMessage, config?: IWebchatConfig) => boolean;
+	rule: (message: IMessage, config?: IWebchatConfig) => boolean;
 	component: FunctionComponent;
 };
 
 const defaultConfig: MatchConfig[] = [
 	{
 		// Text message
-		rule: message => !!message.text,
+		rule: (message, config) => {
+			// do not render engagement messages unless configured!
+			if (
+				message?.source === "engagement" &&
+				!config?.settings?.showEngagementMessagesInChat
+			) {
+				return false;
+			}
+
+			return !!message?.text;
+		},
 		component: Text,
 	},
 	{
@@ -64,9 +74,24 @@ const defaultConfig: MatchConfig[] = [
 			const channelConfig = getChannelPayload(message, config);
 			if (!channelConfig) return false;
 
-			return channelConfig?.message?.attachment?.payload?.template_type === "list";
+			return (
+				(channelConfig.message?.attachment as IWebchatTemplateAttachment)?.payload
+					?.template_type === "list"
+			);
 		},
 		component: List,
+	},
+	{
+		rule: (message, config) => {
+			const channelConfig = getChannelPayload(message, config);
+			if (!channelConfig) return false;
+
+			return (
+				(channelConfig.message?.attachment as IWebchatTemplateAttachment)?.payload
+					?.template_type === "generic"
+			);
+		},
+		component: Gallery,
 	},
 ];
 
@@ -75,9 +100,9 @@ const defaultConfig: MatchConfig[] = [
  * Accepts `configExtended` to extend with custom rules.
  */
 export function match(
-	message: WebchatMessage,
-	configExtended: MatchConfig[] = [],
+	message: IMessage,
 	webchatConfig?: IWebchatConfig,
+	configExtended: MatchConfig[] = [],
 ) {
 	const config = [...configExtended, ...defaultConfig];
 

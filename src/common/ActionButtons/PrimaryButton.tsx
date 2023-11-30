@@ -2,11 +2,11 @@ import { FC, HTMLAttributes, ReactElement } from "react";
 import classes from "./SingleButtons.module.css";
 import classnames from "classnames";
 import ActionButtons, { ActionButtonsProps } from "./ActionButtons";
-import { IWebchatButton } from "@cognigy/socket-client/lib/interfaces/messageData";
+import { IWebchatButton } from "@cognigy/socket-client";
 
 interface PrimaryButtonProps extends HTMLAttributes<HTMLDivElement> {
 	action?: ActionButtonsProps["action"];
-	button: IWebchatButton;
+	button?: IWebchatButton | null;
 	buttonClassName?: string;
 	containerClassName?: string;
 	customIcon?: ReactElement;

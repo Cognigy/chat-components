@@ -2,14 +2,17 @@ import { FC, useCallback } from "react";
 import ReactPlayer from "react-player";
 import classes from "./Video.module.css";
 import mainClasses from "src/main.module.css";
+import classnames from "classnames";
 import { VideoPlayIcon } from "src/assets/svg";
 import { useMessageContext } from "src/messages/hooks";
 import { getChannelPayload } from "src/utils";
+import { IWebchatVideoAttachment } from "@cognigy/socket-client";
 
 const Video: FC = () => {
 	const { message, config } = useMessageContext();
 	const payload = getChannelPayload(message, config);
-	const { url, altText } = payload.message.attachment?.payload || {};
+	const { url, altText } =
+		(payload?.message?.attachment as IWebchatVideoAttachment)?.payload || {};
 
 	const handleFocus = useCallback(
 		(player: ReactPlayer) => {
@@ -29,7 +32,10 @@ const Video: FC = () => {
 	if (!url) return null;
 
 	return (
-		<div className={classes.wrapper} data-testid="video-message">
+		<div
+			className={classnames(classes.wrapper, "webchat-media-template-video")}
+			data-testid="video-message"
+		>
 			<span className={mainClasses.srOnly}>{altText || "Attachment Video"}</span>
 			<ReactPlayer
 				url={url}
