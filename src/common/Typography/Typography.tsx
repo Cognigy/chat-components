@@ -1,7 +1,7 @@
 import { FC, ReactNode } from "react";
 import classnames from "classnames";
 
-import classes from "./Avatar.module.css";
+import classes from "./Typography.module.css";
 
 type TagVariants = 
 	"h1-semibold" |
