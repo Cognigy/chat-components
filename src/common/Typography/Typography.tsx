@@ -3,6 +3,13 @@ import classnames from "classnames";
 
 import classes from "./Typography.module.css";
 
+interface TypographyProps extends CSSProperties{
+	variant?: TagVariants,
+	children: ReactNode,
+	className?: string,
+	component?: keyof JSX.IntrinsicElements,
+}
+
 type TagVariants = 
 	"h1-semibold" |
 	"h2-regular" |
@@ -17,13 +24,6 @@ type TagVariants =
 	"cta-semibold";
 
 type ColorVariants = "primary" | "secondary";
-
-interface TypographyProps extends CSSProperties{
-	variant?: TagVariants,
-	children: ReactNode,
-	className?: string,
-	component?: keyof JSX.IntrinsicElements,
-}
 
 // Create a mapping between the variants and the html tags
 const variantsMapping: Record<TagVariants, keyof JSX.IntrinsicElements> = {
