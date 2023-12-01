@@ -1,5 +1,6 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
+import "@fontsource/figtree";
 
 import "./demo.css";
 import Message, { MessageProps } from "./messages/Message.tsx";
