@@ -1,4 +1,4 @@
-import { FC, ReactNode } from "react";
+import { CSSProperties, FC, ReactNode } from "react";
 import classnames from "classnames";
 
 import classes from "./Typography.module.css";
@@ -16,7 +16,9 @@ type TagVariants =
 	"copy-medium" |
 	"cta-semibold";
 
-type TypographyProps = {
+type ColorVariants = "primary" | "secondary";
+
+interface TypographyProps extends CSSProperties{
 	variant?: TagVariants,
 	children: ReactNode,
 	className?: string,
@@ -38,12 +40,21 @@ const variantsMapping: Record<TagVariants, keyof JSX.IntrinsicElements> = {
 	"cta-semibold": "p",
 };
 
+const colorsMapping: Record<"primary" | "secondary", string> = {
+	primary: "var(--primary-color)",
+	secondary: "var(--secondary-color)",
+};
+
 const Typography: FC<TypographyProps> = (props) => {
-	const { variant="body-regular", children, component, className, ...restProps } = props;
+	const { variant="body-regular", children, component, className, color, ...restProps } = props;
 	const Component = component ?? variantsMapping[variant];
+	const typographyColor = colorsMapping[color as ColorVariants] ?? color;
 
 	return (
-		<Component className={classnames(classes[variant], className)} {...restProps}>
+		<Component 
+			className={classnames(classes[variant], className, color)} 
+			style={{color: typographyColor, ...restProps}}
+		>
 			{children}
 		</Component>
 	);
