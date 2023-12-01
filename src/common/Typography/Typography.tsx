@@ -39,7 +39,7 @@ const variantsMapping: Record<TagVariants, keyof JSX.IntrinsicElements> = {
 	"cta-semibold": "p",
 };
 
-const colorsMapping: Record<"primary" | "secondary", string> = {
+const colorsMapping: Record<ColorVariants, string> = {
 	primary: "var(--primary-color)",
 	secondary: "var(--secondary-color)",
 };
