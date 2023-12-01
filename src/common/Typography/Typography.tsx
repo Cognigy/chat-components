@@ -1,7 +1,6 @@
 import { CSSProperties, FC, ReactNode } from "react";
-import classnames from "classnames";
-
 import classes from "./Typography.module.css";
+import classnames from "classnames";
 
 interface TypographyProps extends CSSProperties{
 	variant?: TagVariants,
