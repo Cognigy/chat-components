@@ -17,7 +17,7 @@ export interface GallerySlideProps {
 const GalleryItem: FC<GallerySlideProps> = props => {
 	const { slide, contentId } = props;
 	const { title, subtitle, image_url, image_alt_text, buttons, default_action } = slide;
-	const { action, config } = useMessageContext();
+	const { action, config, onEmitAnalytics } = useMessageContext();
 	const hasExtraInfo = subtitle || (buttons && buttons?.length > 0);
 	const [isImageBroken, setImageBroken] = useState(false);
 
@@ -92,6 +92,8 @@ const GalleryItem: FC<GallerySlideProps> = props => {
 							)}
 							payload={buttons}
 							action={action}
+							config={config}
+							onEmitAnalytics={onEmitAnalytics}
 						/>
 					)}
 				</div>

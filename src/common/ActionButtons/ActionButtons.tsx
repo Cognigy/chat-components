@@ -3,7 +3,7 @@ import { ActionButton } from ".";
 import classnames from "classnames";
 
 import classes from "./ActionButtons.module.css";
-import { FC, ReactElement } from "react";
+import { ReactElement } from "react";
 import { MessageProps } from "src/messages/Message";
 
 export interface ActionButtonsProps {
@@ -13,10 +13,13 @@ export interface ActionButtonsProps {
 	buttonClassName?: string;
 	customIcon?: ReactElement;
 	showUrlIcon?: boolean;
+	config: MessageProps["config"];
+	onEmitAnalytics: MessageProps["onEmitAnalytics"];
+	size?: "small" | "large";
 }
 
-const ActionButtons: FC<ActionButtonsProps> = props => {
-	const { payload, buttonClassName, containerClassName, action, customIcon, showUrlIcon } = props;
+export const ActionButtons = (props: ActionButtonsProps) => {
+	const { payload, buttonClassName, containerClassName, action, customIcon, showUrlIcon, config, onEmitAnalytics, size } = props;
 
 	if (!payload || payload?.length === 0) return null;
 
@@ -41,6 +44,9 @@ const ActionButtons: FC<ActionButtonsProps> = props => {
 			disabled={action === undefined}
 			customIcon={customIcon}
 			showUrlIcon={showUrlIcon}
+			config={config}
+			onEmitAnalytics={onEmitAnalytics}
+			size={size ? size : "small"}
 		/>
 	));
 
