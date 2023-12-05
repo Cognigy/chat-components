@@ -1,7 +1,7 @@
 :root {
 	--primary-color: var(--webchat-primary-color, #2455e6);
 	--primary-color-hover: color-mix(in srgb, var(--primary-color), #000 20%);
-	--primary-color-disabled: color-mix(in srgb, var(--primary-color), #fff 90%);
+	--primary-color-disabled: color-mix(in srgb, var(--primary-color), #fff 80%);
 	--primary-color-opacity-10: color-mix(in srgb, var(--primary-color) 10%, transparent);
 	--primary-color-opacity-20: color-mix(in srgb, var(--primary-color) 20%, transparent);
 
