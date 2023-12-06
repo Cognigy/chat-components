@@ -1,7 +1,5 @@
-article button.button,
-article a.button,
-:global(.webchat-homescreen-buttons) button.button,
-:global(.webchat-homescreen-buttons) a.button {
+button.button,
+a.button {
 	border-radius: 19px;
 	padding: 8px 10px;
 	cursor: pointer;
@@ -10,55 +8,43 @@ article a.button,
 	justify-content: center;
 	gap: 10px;
 	text-decoration: none;
-}
-:global(.webchat-homescreen-buttons) button.button,
-:global(.webchat-homescreen-buttons) a.button {
 	background: var(--primary-color);
 	color: var(--white);
 	border: none;
 	outline: none;
 }
 
-article button.button span,
-article a.button span,
-:global(.webchat-homescreen-buttons) button.button span,
-:global(.webchat-homescreen-buttons) a.button span {
+button.button span,
+a.button span {
 	font-weight: 600;
 	font-size: 14px;
 	line-height: 160%;
 	font-family: inherit;
 }
 
-article button.button.large span,
-article a.button.large span,
-:global(.webchat-homescreen-buttons) button.button span,
-:global(.webchat-homescreen-buttons) a.button span {
+button.button.large span,
+a.button.large span {
 	font-size: 16px;
 	font-style: normal;
 	line-height: 140%;
 }
 
-article button.button svg,
-article a.button svg,
-article button.button path,
-article a.button svg path,
-:global(.webchat-homescreen-buttons) button.button svg,
-:global(.webchat-homescreen-buttons) a.button svg,
-:global(.webchat-homescreen-buttons) button.button path,
-:global(.webchat-homescreen-buttons) a.button svg path {
+button.button svg,
+a.button svg,
+button.button path,
+a.button svg path {
 	fill: var(--white);
 	width: 12px;
 }
 
-
-:global(.webchat-homescreen-buttons) button.button:hover,
-:global(.webchat-homescreen-buttons) a.button:hover,
-:global(.webchat-homescreen-buttons) button.button:focus,
-:global(.webchat-homescreen-buttons) a.button:focus {
+button.button:hover,
+a.button:hover,
+button.button:focus,
+a.button:focus {
 	background: var(--primary-color-hover);
 }
 
-:global(.webchat-homescreen-buttons) button.button:disabled,
-:global(.webchat-homescreen-buttons) a.button[disabled] {
+button.button:disabled,
+a.button[disabled] {
 	background: var(--primary-color-disabled);
 }
