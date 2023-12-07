@@ -26,7 +26,17 @@ interface ActionButtonProps extends React.HTMLAttributes<HTMLButtonElement> {
  * Postback, phone number, and URL buttons
  */
 const ActionButton: FC<ActionButtonProps> = props => {
-	const { button, disabled, total, position, showUrlIcon, customIcon, config, onEmitAnalytics, size } = props;
+	const {
+		button,
+		disabled,
+		total,
+		position,
+		showUrlIcon,
+		customIcon,
+		config,
+		onEmitAnalytics,
+		size,
+	} = props;
 
 	const buttonType =
 		"type" in button ? button.type : "content_type" in button ? button.content_type : null;
@@ -96,7 +106,12 @@ const ActionButton: FC<ActionButtonProps> = props => {
 	return (
 		<Component
 			onClick={onClick}
-			className={classnames(classes.button, isWebURL && classes.url, size === "large" && classes.large, props.className)}
+			className={classnames(
+				classes.button,
+				isWebURL && classes.url,
+				size === "large" && classes.large,
+				props.className,
+			)}
 			aria-label={ariaLabel}
 			aria-disabled={disabled}
 			role={isWebURL ? "link" : undefined}

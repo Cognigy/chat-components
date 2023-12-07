@@ -19,7 +19,17 @@ export interface ActionButtonsProps {
 }
 
 export const ActionButtons = (props: ActionButtonsProps) => {
-	const { payload, buttonClassName, containerClassName, action, customIcon, showUrlIcon, config, onEmitAnalytics, size } = props;
+	const {
+		payload,
+		buttonClassName,
+		containerClassName,
+		action,
+		customIcon,
+		showUrlIcon,
+		config,
+		onEmitAnalytics,
+		size,
+	} = props;
 
 	if (!payload || payload?.length === 0) return null;
 
