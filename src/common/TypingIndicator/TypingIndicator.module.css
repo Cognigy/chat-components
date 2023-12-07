@@ -25,7 +25,7 @@
 .dot:nth-child(1),
 .dot:nth-child(2),
 .dot:nth-child(3) {
-	animation-duration: 0.9s;
+	animation-duration: 1.2s;
 	animation-timing-function: ease-in-out;
 	animation-fill-mode: both;
 	animation-iteration-count: infinite;
@@ -54,19 +54,19 @@
 	0% {
 		transform: translateY(0);
 	}
+	10% {
+		transform: translateY(-3px);
+	}
 	20% {
+		transform: translateY(-6px);
+	}
+	30% {
 		transform: translateY(-3px);
 	}
 	40% {
-		transform: translateY(-6px);
-	}
-	60% {
-		transform: translateY(-3px);
-	}
-	80% {
 		transform: translateY(0);
 	}
-	100% {
+	50% {
 		transform: translateY(0);
 	}
 }
@@ -75,19 +75,19 @@
 	0% {
 		transform: translateY(0);
 	}
-	20% {
+	10% {
 		transform: translateY(0);
+	}
+	20% {
+		transform: translateY(-3px);
+	}
+	30% {
+		transform: translateY(-6px);
 	}
 	40% {
 		transform: translateY(-3px);
 	}
-	60% {
-		transform: translateY(-6px);
-	}
-	80% {
-		transform: translateY(-3px);
-	}
-	100% {
+	50% {
 		transform: translateY(0);
 	}
 }
@@ -96,19 +96,22 @@
 	0% {
 		transform: translateY(0);
 	}
+	10% {
+		transform: translateY(0);
+	}
 	20% {
 		transform: translateY(0);
 	}
-	40% {
-		transform: translateY(0);
-	}
-	60% {
+	30% {
 		transform: translateY(-3px);
 	}
-	80% {
+	40% {
 		transform: translateY(-6px);
 	}
-	100% {
+	50% {
 		transform: translateY(-3px);
+	}
+	65% {
+		transform: translateY(0);
 	}
 }
