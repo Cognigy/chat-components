@@ -15,6 +15,7 @@ import video from "test/fixtures/video.json";
 import videoYoutube from "test/fixtures/videoYoutube.json";
 import audio from "test/fixtures/audio.json";
 import { IMessage } from "@cognigy/socket-client";
+import { TypingIndicator } from "./index.ts";
 
 const messages: MessageProps[] = [
 	{
@@ -169,6 +170,7 @@ const action: MessageSender = payload => alert(JSON.stringify(payload, null, 2))
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
 	<React.StrictMode>
+		<TypingIndicator />
 		{messages.map((message, index) => (
 			<Message key={index} {...message} action={action} />
 		))}
