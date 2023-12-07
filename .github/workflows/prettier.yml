@@ -1,9 +1,7 @@
 name: Run Prettier
 on:
     pull_request:
-        types:
-            - opened
-            - edited
+        types: [opened, synchronize, reopened]
 jobs:
     main:
         runs-on: ubuntu-latest
