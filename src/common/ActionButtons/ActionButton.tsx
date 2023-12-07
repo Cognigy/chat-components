@@ -8,7 +8,7 @@ import classes from "./ActionButton.module.css";
 import { LinkIcon } from "src/assets/svg";
 import { MessageProps } from "src/index";
 
-interface ActionButtonProps extends React.HTMLAttributes<HTMLDivElement> {
+interface ActionButtonProps extends React.HTMLAttributes<HTMLButtonElement> {
 	action?: ActionButtonsProps["action"];
 	className?: string;
 	button: ActionButtonsProps["payload"][number];
@@ -26,7 +26,7 @@ interface ActionButtonProps extends React.HTMLAttributes<HTMLDivElement> {
  * Postback, phone number, and URL buttons
  */
 const ActionButton: FC<ActionButtonProps> = props => {
-	const { button, total, position, showUrlIcon, customIcon, config, onEmitAnalytics, size } = props;
+	const { button, disabled, total, position, showUrlIcon, customIcon, config, onEmitAnalytics, size } = props;
 
 	const buttonType =
 		"type" in button ? button.type : "content_type" in button ? button.content_type : null;
@@ -53,7 +53,9 @@ const ActionButton: FC<ActionButtonProps> = props => {
 
 	const PhoneNumberAnchor = (props: React.HTMLAttributes<HTMLAnchorElement>) =>
 		button.payload ? <a {...props} href={`tel:${button.payload}`} /> : null;
-	const Button = (props: React.HTMLAttributes<HTMLButtonElement>) => <button {...props} />;
+	const Button = (props: React.HTMLAttributes<HTMLButtonElement>) => (
+		<button {...props} disabled={disabled} aria-disabled={disabled} />
+	);
 
 	const Component = isPhoneNumber ? PhoneNumberAnchor : Button;
 
@@ -74,7 +76,7 @@ const ActionButton: FC<ActionButtonProps> = props => {
 			return;
 		}
 
-		if (props.disabled) return;
+		if (disabled) return;
 
 		event.preventDefault();
 
@@ -95,8 +97,9 @@ const ActionButton: FC<ActionButtonProps> = props => {
 		<Component
 			onClick={onClick}
 			className={classnames(classes.button, isWebURL && classes.url, size === "large" && classes.large, props.className)}
-			role={isWebURL ? "link" : undefined}
 			aria-label={ariaLabel}
+			aria-disabled={disabled}
+			role={isWebURL ? "link" : undefined}
 		>
 			<span dangerouslySetInnerHTML={{ __html }} />
 			{renderIcon()}

@@ -6,6 +6,9 @@ interface MessageProviderProps {
 	children: ReactNode;
 	config?: MessageProps["config"];
 	message: MessageProps["message"];
+	messageParams?: {
+		isLast: MessageProps["isLast"];
+	};
 	onEmitAnalytics?: MessageProps["onEmitAnalytics"];
 }
 
@@ -21,6 +24,7 @@ const MessageContext = createContext<MessageContextValue>(undefined);
  * - action
  * - onEmitAnalytics
  * - config
+ * - messageParams
  */
 const MessageProvider: FC<MessageProviderProps> = props => {
 	const { message, action, onEmitAnalytics, config } = props;
