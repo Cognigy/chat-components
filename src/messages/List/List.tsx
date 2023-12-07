@@ -51,15 +51,16 @@ const List: FC = () => {
 			data-testid="list-message"
 		>
 			{headerElement && <ListItem element={headerElement} isHeaderElement />}
-			{regularElements && regularElements.map((element: IWebchatAttachmentElement, index: number) => (
-				<Fragment key={index}>
-					{index > 0 && <div className={mainclasses.divider} />}
-					<ListItem element={element} />
-					{button && index === regularElements.length - 1 && (
-						<div className={mainclasses.divider} />
-					)}
-				</Fragment>
-			))}
+			{regularElements &&
+				regularElements.map((element: IWebchatAttachmentElement, index: number) => (
+					<Fragment key={index}>
+						{index > 0 && <div className={mainclasses.divider} />}
+						<ListItem element={element} />
+						{button && index === regularElements.length - 1 && (
+							<div className={mainclasses.divider} />
+						)}
+					</Fragment>
+				))}
 			{button && (
 				<PrimaryButton
 					action={action}
