@@ -35,11 +35,13 @@ article a.secondaryButton:hover,
 article a.secondaryButton:focus {
 	color: var(--secondary-color-hover);
 	border: 1px solid var(--secondary-color-hover);
+	background-color: var(--white);
 }
 article button.secondaryButton:disabled,
 article button.secondaryButton[disabled] {
 	color: var(--secondary-color-disabled);
 	border: 1px solid var(--secondary-color-disabled);
+	background-color: var(--white);
 }
 
 article button.secondaryButton svg,
