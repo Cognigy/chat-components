@@ -3,9 +3,17 @@ import react from "@vitejs/plugin-react-swc";
 import svgr from "vite-plugin-svgr";
 import cssInjectedByJsPlugin from "vite-plugin-css-injected-by-js";
 import GithubActionsReporter from "vitest-github-actions-reporter";
+import dts from "vite-plugin-dts";
 
 export default defineConfig({
-	plugins: [react(), cssInjectedByJsPlugin(), svgr()],
+	plugins: [
+		react(),
+		cssInjectedByJsPlugin(),
+		svgr(),
+		dts({
+			insertTypesEntry: true,
+		}),
+	],
 	test: {
 		environment: "jsdom",
 		globals: true,

@@ -3,6 +3,7 @@
 	"version": "0.6.0",
 	"type": "module",
 	"exports": "./dist/chat-components.js",
+	"types": "./dist/index.d.ts",
 	"files": [
 		"./dist/**/*",
 		"./src/**/*"
@@ -38,17 +39,18 @@
 		"typescript": "^5.2.2",
 		"vite": "^4.5.0",
 		"vite-plugin-css-injected-by-js": "^3.3.0",
+		"vite-plugin-dts": "^3.6.4",
 		"vite-plugin-svgr": "^4.1.0",
 		"vitest": "^0.34.6",
 		"vitest-github-actions-reporter": "^0.10.0"
 	},
 	"dependencies": {
 		"@braintree/sanitize-url": "^6.0.4",
+		"@fontsource/figtree": "5.0.17",
 		"classnames": "^2.3.2",
 		"dompurify": "^3.0.6",
 		"react-player": "^2.13.0",
-		"swiper": "^11.0.4",
-		"@fontsource/figtree": "5.0.17"
+		"swiper": "^11.0.4"
 	},
 	"peerDependencies": {
 		"react": "^17.x || 18.x",
