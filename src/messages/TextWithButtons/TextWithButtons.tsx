@@ -14,7 +14,7 @@ import { IWebchatTemplateAttachment } from "@cognigy/socket-client";
  * they are same in Webchat v3
  */
 const TextWithButtons: FC = () => {
-	const { action, message, config, messageParams } = useMessageContext();
+	const { action, message, config, onEmitAnalytics, messageParams } = useMessageContext();
 
 	const payload = getChannelPayload(message, config);
 
@@ -37,6 +37,8 @@ const TextWithButtons: FC = () => {
 				containerClassName={classes.buttons}
 				payload={buttons}
 				showUrlIcon
+				config={config}
+				onEmitAnalytics={onEmitAnalytics}
 			/>
 		</>
 	);

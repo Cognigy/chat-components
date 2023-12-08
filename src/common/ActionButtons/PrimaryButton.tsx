@@ -3,6 +3,7 @@ import classes from "./SingleButtons.module.css";
 import classnames from "classnames";
 import ActionButtons, { ActionButtonsProps } from "./ActionButtons";
 import { IWebchatButton } from "@cognigy/socket-client";
+import { useMessageContext } from "src/messages/hooks";
 
 interface PrimaryButtonProps extends HTMLAttributes<HTMLDivElement> {
 	action?: ActionButtonsProps["action"];
@@ -14,6 +15,9 @@ interface PrimaryButtonProps extends HTMLAttributes<HTMLDivElement> {
 
 const PrimaryButton: FC<PrimaryButtonProps> = props => {
 	const { button, customIcon, containerClassName, buttonClassName, action } = props;
+
+	const { config, onEmitAnalytics } = useMessageContext();
+
 	if (!button) return null;
 
 	return (
@@ -23,6 +27,8 @@ const PrimaryButton: FC<PrimaryButtonProps> = props => {
 			payload={[button]}
 			action={action}
 			customIcon={customIcon}
+			config={config}
+			onEmitAnalytics={onEmitAnalytics}
 		/>
 	);
 };

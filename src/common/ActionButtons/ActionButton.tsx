@@ -1,12 +1,12 @@
 import { FC, ReactElement } from "react";
 import classnames from "classnames";
 import { ActionButtonsProps } from "./ActionButtons";
-import { useMessageContext } from "src/messages/hooks";
 import { getWebchatButtonLabel } from "src/utils";
 import { sanitizeHTML } from "src/sanitize";
 import { sanitizeUrl } from "@braintree/sanitize-url";
 import classes from "./ActionButton.module.css";
 import { LinkIcon } from "src/assets/svg";
+import { MessageProps } from "src/index";
 
 interface ActionButtonProps extends React.HTMLAttributes<HTMLButtonElement> {
 	action?: ActionButtonsProps["action"];
@@ -17,14 +17,26 @@ interface ActionButtonProps extends React.HTMLAttributes<HTMLButtonElement> {
 	disabled?: boolean;
 	customIcon?: ReactElement;
 	showUrlIcon?: boolean;
+	config: MessageProps["config"];
+	onEmitAnalytics: MessageProps["onEmitAnalytics"];
+	size?: "small" | "large";
 }
 
 /**
  * Postback, phone number, and URL buttons
  */
 const ActionButton: FC<ActionButtonProps> = props => {
-	const { button, disabled, total, position, showUrlIcon, customIcon } = props;
-	const { config, onEmitAnalytics } = useMessageContext();
+	const {
+		button,
+		disabled,
+		total,
+		position,
+		showUrlIcon,
+		customIcon,
+		config,
+		onEmitAnalytics,
+		size,
+	} = props;
 
 	const buttonType =
 		"type" in button ? button.type : "content_type" in button ? button.content_type : null;
@@ -93,9 +105,14 @@ const ActionButton: FC<ActionButtonProps> = props => {
 
 	return (
 		<Component
-			aria-label={ariaLabel}
-			className={classnames(classes.button, isWebURL && classes.url, props.className)}
 			onClick={onClick}
+			className={classnames(
+				classes.button,
+				isWebURL && classes.url,
+				size === "large" && classes.large,
+				props.className,
+			)}
+			aria-label={ariaLabel}
 			aria-disabled={disabled}
 			role={isWebURL ? "link" : undefined}
 		>

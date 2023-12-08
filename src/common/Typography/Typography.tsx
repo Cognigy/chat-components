@@ -2,25 +2,25 @@ import { CSSProperties, FC, ReactNode } from "react";
 import classes from "./Typography.module.css";
 import classnames from "classnames";
 
-interface TypographyProps extends CSSProperties{
-	variant?: TagVariants,
-	children: ReactNode,
-	className?: string,
-	component?: keyof JSX.IntrinsicElements,
+interface TypographyProps extends CSSProperties {
+	variant?: TagVariants;
+	children: ReactNode;
+	className?: string;
+	component?: keyof JSX.IntrinsicElements;
 }
 
-type TagVariants = 
-	"h1-semibold" |
-	"h2-regular" |
-	"h2-semibold" |
-	"title1-semibold" |
-	"title1-regular" |
-	"title2-semibold" |
-	"title2-regular" |
-	"body-regular" |
-	"body-semibold" |
-	"copy-medium" |
-	"cta-semibold";
+type TagVariants =
+	| "h1-semibold"
+	| "h2-regular"
+	| "h2-semibold"
+	| "title1-semibold"
+	| "title1-regular"
+	| "title2-semibold"
+	| "title2-regular"
+	| "body-regular"
+	| "body-semibold"
+	| "copy-medium"
+	| "cta-semibold";
 
 type ColorVariants = "primary" | "secondary";
 
@@ -44,15 +44,15 @@ const colorsMapping: Record<ColorVariants, string> = {
 	secondary: "var(--secondary-color)",
 };
 
-const Typography: FC<TypographyProps> = (props) => {
-	const { variant="body-regular", children, component, className, color, ...restProps } = props;
+const Typography: FC<TypographyProps> = props => {
+	const { variant = "body-regular", children, component, className, color, ...restProps } = props;
 	const Component = component ?? variantsMapping[variant];
 	const typographyColor = colorsMapping[color as ColorVariants] ?? color;
 
 	return (
-		<Component 
-			className={classnames(classes[variant], className, color)} 
-			style={{color: typographyColor, ...restProps}}
+		<Component
+			className={classnames(classes[variant], className, color)}
+			style={{ color: typographyColor, ...restProps }}
 		>
 			{children}
 		</Component>

@@ -1,5 +1,5 @@
-article button.button,
-article a.button {
+button.button,
+a.button {
 	border-radius: 19px;
 	padding: 8px 10px;
 	cursor: pointer;
@@ -8,20 +8,43 @@ article a.button {
 	justify-content: center;
 	gap: 10px;
 	text-decoration: none;
+	background: var(--primary-color);
+	color: var(--white);
+	border: none;
+	outline: none;
 }
 
-article button.button span,
-article a.button span {
+button.button span,
+a.button span {
 	font-weight: 600;
 	font-size: 14px;
 	line-height: 160%;
 	font-family: inherit;
 }
 
-article button.button svg,
-article a.button svg,
-article button.button path,
-article a.button svg path {
+button.button.large span,
+a.button.large span {
+	font-size: 16px;
+	font-style: normal;
+	line-height: 140%;
+}
+
+button.button svg,
+a.button svg,
+button.button path,
+a.button svg path {
 	fill: var(--white);
 	width: 12px;
+}
+
+button.button:hover,
+a.button:hover,
+button.button:focus,
+a.button:focus {
+	background: var(--primary-color-hover);
+}
+
+button.button:disabled,
+a.button[disabled] {
+	background: var(--primary-color-disabled);
 }

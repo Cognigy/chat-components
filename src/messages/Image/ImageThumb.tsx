@@ -9,7 +9,7 @@ import { DownloadIcon } from "src/assets/svg";
 const cx = classnames.bind(classes);
 
 const ImageThumb: FC = () => {
-	const { config } = useMessageContext();
+	const { config, action } = useMessageContext();
 	const { url, altText, isDownloadable, onExpand, button } = useImageMessageContext();
 	const [isImageBroken, setImageBroken] = useState(false);
 
@@ -52,6 +52,7 @@ const ImageThumb: FC = () => {
 					buttonClassName="webchat-buttons-template-button"
 					containerClassName={classes.downloadButtonWrapper}
 					customIcon={<DownloadIcon />}
+					action={action}
 				/>
 			)}
 		</div>
