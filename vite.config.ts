@@ -12,6 +12,7 @@ export default defineConfig({
 		svgr(),
 		dts({
 			insertTypesEntry: true,
+			include: ["src"],
 		}),
 	],
 	test: {
