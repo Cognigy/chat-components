@@ -4,9 +4,11 @@ import classnames from "classnames";
 
 interface TypographyProps extends CSSProperties {
 	variant?: TagVariants;
-	children: ReactNode;
+	children?: ReactNode;
 	className?: string;
 	component?: keyof JSX.IntrinsicElements;
+	dangerouslySetInnerHTML?: { __html: string | TrustedHTML; } | undefined;
+	id?: string;
 }
 
 type TagVariants =
@@ -45,7 +47,7 @@ const colorsMapping: Record<ColorVariants, string> = {
 };
 
 const Typography: FC<TypographyProps> = props => {
-	const { variant = "body-regular", children, component, className, color, ...restProps } = props;
+	const { variant = "body-regular", children, component, className, color, dangerouslySetInnerHTML, ...restProps } = props;
 	const Component = component ?? variantsMapping[variant];
 	const typographyColor = colorsMapping[color as ColorVariants] ?? color;
 
@@ -53,6 +55,7 @@ const Typography: FC<TypographyProps> = props => {
 		<Component
 			className={classnames(classes[variant], className, color)}
 			style={{ color: typographyColor, ...restProps }}
+			dangerouslySetInnerHTML={dangerouslySetInnerHTML}
 		>
 			{children}
 		</Component>

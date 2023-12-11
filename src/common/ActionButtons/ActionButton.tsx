@@ -6,7 +6,7 @@ import { sanitizeHTML } from "src/sanitize";
 import { sanitizeUrl } from "@braintree/sanitize-url";
 import classes from "./ActionButton.module.css";
 import { LinkIcon } from "src/assets/svg";
-import { MessageProps } from "src/index";
+import { MessageProps, Typography } from "src/index";
 
 interface ActionButtonProps extends React.HTMLAttributes<HTMLButtonElement> {
 	action?: ActionButtonsProps["action"];
@@ -109,14 +109,17 @@ const ActionButton: FC<ActionButtonProps> = props => {
 			className={classnames(
 				classes.button,
 				isWebURL && classes.url,
-				size === "large" && classes.large,
 				props.className,
 			)}
 			aria-label={ariaLabel}
 			aria-disabled={disabled}
 			role={isWebURL ? "link" : undefined}
 		>
-			<span dangerouslySetInnerHTML={{ __html }} />
+			<Typography 
+				variant={size === "large" ? "title1-regular": "cta-semibold"}
+				component="span"
+				dangerouslySetInnerHTML={{ __html }}
+			/>
 			{renderIcon()}
 		</Component>
 	);
