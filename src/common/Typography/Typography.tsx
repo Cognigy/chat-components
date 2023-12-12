@@ -7,7 +7,7 @@ export interface TypographyProps extends CSSProperties {
 	children?: ReactNode;
 	className?: string;
 	component?: keyof JSX.IntrinsicElements;
-	dangerouslySetInnerHTML?: { __html: string | TrustedHTML; } | undefined;
+	dangerouslySetInnerHTML?: { __html: string | TrustedHTML } | undefined;
 	id?: string;
 }
 
@@ -47,7 +47,15 @@ const colorsMapping: Record<ColorVariants, string> = {
 };
 
 const Typography: FC<TypographyProps> = props => {
-	const { variant = "body-regular", children, component, className, color, dangerouslySetInnerHTML, ...restProps } = props;
+	const {
+		variant = "body-regular",
+		children,
+		component,
+		className,
+		color,
+		dangerouslySetInnerHTML,
+		...restProps
+	} = props;
 	const Component = component ?? variantsMapping[variant];
 	const typographyColor = colorsMapping[color as ColorVariants] ?? color;
 

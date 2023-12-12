@@ -106,17 +106,13 @@ const ActionButton: FC<ActionButtonProps> = props => {
 	return (
 		<Component
 			onClick={onClick}
-			className={classnames(
-				classes.button,
-				isWebURL && classes.url,
-				props.className,
-			)}
+			className={classnames(classes.button, isWebURL && classes.url, props.className)}
 			aria-label={ariaLabel}
 			aria-disabled={disabled}
 			role={isWebURL ? "link" : undefined}
 		>
-			<Typography 
-				variant={size === "large" ? "title1-regular": "cta-semibold"}
+			<Typography
+				variant={size === "large" ? "title1-regular" : "cta-semibold"}
 				component="span"
 				dangerouslySetInnerHTML={{ __html }}
 			/>
