@@ -77,7 +77,7 @@ const messages: MessageProps[] = [
 				_cognigy: {
 					_webchat: {
 						message: {
-							text: "This QR should be disabled",
+							text: "This QR should be disabled.",
 							quick_replies: [
 								{
 									content_type: "text",
