@@ -6,6 +6,7 @@ export interface TypographyProps extends CSSProperties {
 	variant?: TagVariants;
 	children?: ReactNode;
 	className?: string;
+	style?: CSSProperties;
 	component?: keyof JSX.IntrinsicElements;
 	dangerouslySetInnerHTML?: { __html: string | TrustedHTML } | undefined;
 	id?: string;
@@ -52,8 +53,10 @@ const Typography: FC<TypographyProps> = props => {
 		children,
 		component,
 		className,
+		style,
 		color,
 		dangerouslySetInnerHTML,
+		id,
 		...restProps
 	} = props;
 	const Component = component ?? variantsMapping[variant];
@@ -62,8 +65,9 @@ const Typography: FC<TypographyProps> = props => {
 	return (
 		<Component
 			className={classnames(classes[variant], className, color)}
-			style={{ color: typographyColor, ...restProps }}
+			style={{ color: typographyColor, ...style, ...restProps }}
 			dangerouslySetInnerHTML={dangerouslySetInnerHTML}
+			id={id}
 		>
 			{children}
 		</Component>
