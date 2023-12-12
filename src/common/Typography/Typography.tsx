@@ -2,7 +2,7 @@ import { CSSProperties, FC, ReactNode } from "react";
 import classes from "./Typography.module.css";
 import classnames from "classnames";
 
-interface TypographyProps extends CSSProperties {
+export interface TypographyProps extends CSSProperties {
 	variant?: TagVariants;
 	children?: ReactNode;
 	className?: string;
