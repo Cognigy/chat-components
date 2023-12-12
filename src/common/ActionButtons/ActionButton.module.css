@@ -45,6 +45,6 @@ a.button:focus {
 }
 
 button.button:disabled,
-a.button[disabled] {
-	background: var(--primary-color-disabled);
+a.button.disabled {
+	background: var(--primary-color-disabled) !important;
 }
