@@ -11,8 +11,6 @@ article .header.ongoing {
 }
 
 article .header .headerMeta {
-	font-size: 12px;
-	line-height: 140%;
 	display: flex;
 	gap: 8px;
 	align-items: center;
