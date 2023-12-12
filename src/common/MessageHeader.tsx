@@ -4,6 +4,7 @@ import classnames from "classnames";
 import { useMessageContext } from "src/messages/hooks";
 import Avatar from "./Avatar";
 import { HeaderEllipsis } from "src/assets/svg";
+import Typography from "./Typography/Typography";
 
 interface MessageHeaderProps {
 	enableAvatar?: boolean;
@@ -32,7 +33,7 @@ const MessageHeader: FC<MessageHeaderProps> = props => {
 	return (
 		<header className={className} data-testid="message-header">
 			{props.enableAvatar && <Avatar />}
-			<div className={classes.headerMeta}>
+			<Typography variant="title2-regular" component="div" className={classes.headerMeta}>
 				{!isUserMessage && (
 					<>
 						<span className={classes["avatar-name"]}>
@@ -49,7 +50,7 @@ const MessageHeader: FC<MessageHeaderProps> = props => {
 						})}
 					</time>
 				</span>
-			</div>
+			</Typography>
 		</header>
 	);
 };
