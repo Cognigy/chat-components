@@ -8,6 +8,7 @@ import ActionButtons from "src/common/ActionButtons/ActionButtons";
 import { sanitizeHTML } from "src/sanitize";
 import { getRandomId } from "src/utils";
 import { sanitizeUrl } from "@braintree/sanitize-url";
+import { Typography } from "src/index";
 
 export interface GallerySlideProps {
 	slide: IWebchatAttachmentElement;
@@ -50,7 +51,9 @@ const GalleryItem: FC<GallerySlideProps> = props => {
 	return (
 		<div className={classnames("webchat-carousel-template-frame", classes.slideItem)}>
 			<div className={classnames(classes.top, hasExtraInfo && classes.hasExtraInfo)}>
-				<h2
+				<Typography
+					variant="body-semibold"
+					component="h2"
 					dangerouslySetInnerHTML={{ __html: titleHtml }}
 					className="webchat-carousel-template-title"
 					id={titleId}
@@ -78,7 +81,8 @@ const GalleryItem: FC<GallerySlideProps> = props => {
 					aria-label={default_action?.url ? `${titleHtml}. Opens in new tab` : undefined}
 				>
 					{subtitle && (
-						<p
+						<Typography
+							variant="body-regular"
 							dangerouslySetInnerHTML={{ __html: subtitleHtml }}
 							id={subtitleId}
 							className="webchat-carousel-template-subtitle"

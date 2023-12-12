@@ -34,32 +34,19 @@ article .wrapper {
 	color: var(--white);
 }
 
-.itemTitleHeader {
-	margin-top: 0px;
-	margin-bottom: 0px;
-	font-size: 18px;
-	font-weight: 600;
-	line-height: 130%;
-}
-
 .itemTitle {
 	margin-top: 0px;
 	margin-bottom: 0px;
-	font-size: 16px;
-	font-weight: 600;
-	line-height: 140%;
 }
 
 .itemTitleWithSubtitle {
+	margin-top: 0px;
 	margin-bottom: 8px;
 }
 
 .itemSubtitle {
 	margin-top: 0px;
 	margin-bottom: 0px;
-	font-size: 14px;
-	font-weight: 400;
-	line-height: 140%;
 }
 
 .itemSubtitle.ignoreWS {

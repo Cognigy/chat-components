@@ -8,6 +8,7 @@ import { PrimaryButton, SecondaryButton } from "src/common/ActionButtons";
 import classnames from "classnames";
 import { sanitizeUrl } from "@braintree/sanitize-url";
 import { IWebchatAttachmentElement } from "@cognigy/socket-client";
+import { Typography } from "src/index";
 
 const ListItem: FC<{ element: IWebchatAttachmentElement; isHeaderElement?: boolean }> = props => {
 	const { action, config } = useMessageContext();
@@ -62,19 +63,21 @@ const ListItem: FC<{ element: IWebchatAttachmentElement; isHeaderElement?: boole
 		return (
 			<>
 				{titleHtml && (
-					<h2
+					<Typography
+						variant={isHeaderElement ? "h2-semibold" : "title1-semibold"}
+						component="h2"
 						dangerouslySetInnerHTML={{ __html: titleHtml }}
 						className={classnames(
 							isHeaderElement
 								? "webchat-list-template-header-title"
 								: "webchat-list-template-element-title",
-							isHeaderElement ? classes.itemTitleHeader : classes.itemTitle,
-							subtitleHtml && classes.itemTitleWithSubtitle,
+							subtitleHtml ? classes.itemTitleWithSubtitle : classes.itemTitle,
 						)}
 					/>
 				)}
 				{subtitleHtml && (
-					<p
+					<Typography
+						variant="body-regular"
 						dangerouslySetInnerHTML={{ __html: subtitleHtml }}
 						id={subtitleId}
 						className={classnames(
