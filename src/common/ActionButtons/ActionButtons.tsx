@@ -3,7 +3,7 @@ import { ActionButton } from ".";
 import classnames from "classnames";
 
 import classes from "./ActionButtons.module.css";
-import { ReactElement } from "react";
+import { FC, ReactElement } from "react";
 import { MessageProps } from "src/messages/Message";
 
 export interface ActionButtonsProps {
@@ -18,7 +18,7 @@ export interface ActionButtonsProps {
 	size?: "small" | "large";
 }
 
-export const ActionButtons = (props: ActionButtonsProps) => {
+export const ActionButtons: FC<ActionButtonsProps> = props => {
 	const {
 		payload,
 		buttonClassName,
