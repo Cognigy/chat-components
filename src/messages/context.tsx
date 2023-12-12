@@ -7,7 +7,7 @@ interface MessageProviderProps {
 	config?: MessageProps["config"];
 	message: MessageProps["message"];
 	messageParams?: {
-		isLast: MessageProps["isLast"];
+		hasReply: MessageProps["hasReply"];
 	};
 	onEmitAnalytics?: MessageProps["onEmitAnalytics"];
 }
@@ -27,11 +27,11 @@ const MessageContext = createContext<MessageContextValue>(undefined);
  * - messageParams
  */
 const MessageProvider: FC<MessageProviderProps> = props => {
-	const { message, action, onEmitAnalytics, config } = props;
+	const { message, messageParams, action, onEmitAnalytics, config } = props;
 
 	const contextValue = useMemo(
-		() => ({ message, action, onEmitAnalytics, config }),
-		[message, action, onEmitAnalytics, config],
+		() => ({ message, action, onEmitAnalytics, config, messageParams }),
+		[message, action, onEmitAnalytics, config, messageParams],
 	);
 
 	return <MessageContext.Provider value={contextValue}>{props.children}</MessageContext.Provider>;

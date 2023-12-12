@@ -16,7 +16,7 @@ export interface MessageProps {
 	className?: string;
 	config?: IWebchatConfig;
 	disableHeader?: boolean;
-	isLast?: boolean;
+	hasReply?: boolean;
 	message: IMessage;
 	onEmitAnalytics?: (event: string, payload?: unknown) => void;
 	plugins?: MatchConfig[];
@@ -36,7 +36,7 @@ const Message: FC<MessageProps> = props => {
 
 	const MessageComponent = match(props.message, props.config, props.plugins);
 
-	const messageParams = useMemo(() => ({ isLast: props.isLast }), [props.isLast]);
+	const messageParams = useMemo(() => ({ hasReply: props.hasReply }), [props.hasReply]);
 
 	/**
 	 * No rule matched the message, so we don't render anything.

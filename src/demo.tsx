@@ -68,6 +68,37 @@ const messages: MessageProps[] = [
 		},
 	},
 	{
+		hasReply: true,
+		message: {
+			avatarName: "Cognigy",
+			text: "",
+			source: "bot",
+			data: {
+				_cognigy: {
+					_webchat: {
+						message: {
+							text: "This QR should be disabled.",
+							quick_replies: [
+								{
+									content_type: "text",
+									payload: "payload1",
+									title: "Make purchase",
+								},
+								{
+									content_type: "user_phone_number",
+									image_url: "",
+									image_alt_text: "",
+									payload: "0111222333",
+									title: "Call us",
+								},
+							],
+						},
+					},
+				},
+			},
+		},
+	},
+	{
 		message: {
 			avatarName: "Cognigy",
 			source: "bot",

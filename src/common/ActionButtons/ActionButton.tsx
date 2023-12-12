@@ -47,7 +47,8 @@ const ActionButton: FC<ActionButtonProps> = props => {
 		? buttonLabel
 		: sanitizeHTML(buttonLabel);
 
-	const isPhoneNumber = button.payload && buttonType === "phone_number";
+	const isPhoneNumber =
+		button.payload && (buttonType === "phone_number" || buttonType === "user_phone_number");
 	const buttonTitle = button.title || "";
 
 	const isWebURL = "type" in button && button.type === "web_url";
@@ -73,7 +74,13 @@ const ActionButton: FC<ActionButtonProps> = props => {
 		event.stopPropagation();
 		onEmitAnalytics?.("action", button);
 
-		if (isPhoneNumber) return;
+		if (isPhoneNumber) {
+			if (disabled) {
+				event.preventDefault();
+			}
+
+			return;
+		}
 
 		if (isWebURL) {
 			const url = config?.settings?.disableUrlButtonSanitization
@@ -106,7 +113,12 @@ const ActionButton: FC<ActionButtonProps> = props => {
 	return (
 		<Component
 			onClick={onClick}
-			className={classnames(classes.button, isWebURL && classes.url, props.className)}
+			className={classnames(
+				classes.button,
+				isWebURL && classes.url,
+				props.className,
+				disabled && classes.disabled,
+			)}
 			aria-label={ariaLabel}
 			aria-disabled={disabled}
 			role={isWebURL ? "link" : undefined}
