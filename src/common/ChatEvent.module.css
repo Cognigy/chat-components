@@ -1,0 +1,15 @@
+.eventPill {
+	display: flex;
+	max-width: 250px;
+	justify-content: center;
+	align-items: center;
+	gap: 10px;
+	margin: auto;
+}
+
+.eventPillTextWrapper {
+	border-radius: 15px;
+	background: var(--black-80);
+	color: var(--black-20);
+	padding: 8px 12px;
+}
