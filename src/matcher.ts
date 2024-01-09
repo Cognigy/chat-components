@@ -1,5 +1,5 @@
 import { FunctionComponent } from "react";
-import { Text, Image, Video, Audio, List, Gallery, TextWithButtons } from "./messages";
+import { Text, Image, Video, Audio, List, Gallery, TextWithButtons, DatePicker } from "./messages";
 import { IWebchatConfig } from "./messages/types";
 import { getChannelPayload } from "./utils";
 import { IMessage, IWebchatTemplateAttachment } from "@cognigy/socket-client";
@@ -24,6 +24,14 @@ const defaultConfig: MatchConfig[] = [
 			return !!message?.text;
 		},
 		component: Text,
+	},
+	{
+		// Datepicker
+		rule: (message) => {
+			// @ts-expect-error -> need to update IMessage type on socketclient
+			return message?.data?._plugin?.type === "date-picker";
+		},
+		component: DatePicker,
 	},
 	{
 		// Text with buttons / Quick Replies

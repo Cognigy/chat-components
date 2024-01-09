@@ -4,6 +4,7 @@ import Video from "./Video";
 import Audio from "./Audio";
 import List from "./List";
 import Gallery from "./Gallery";
+import DatePicker from "./DatePicker";
 import TextWithButtons from "./TextWithButtons/TextWithButtons";
 
-export { Text, Image, Video, Audio, List, Gallery, TextWithButtons };
+export { Text, Image, Video, Audio, List, Gallery, DatePicker, TextWithButtons };

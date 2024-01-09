@@ -14,6 +14,7 @@ import imageBroken from "test/fixtures/imageBroken.json";
 import video from "test/fixtures/video.json";
 import videoYoutube from "test/fixtures/videoYoutube.json";
 import audio from "test/fixtures/audio.json";
+import datePicker from "test/fixtures/date-picker.json";
 import { IMessage } from "@cognigy/socket-client";
 import { ChatEvent, TypingIndicator } from "./index.ts";
 
@@ -195,16 +196,22 @@ const messages: MessageProps[] = [
 	{
 		message: gallery as IMessage,
 	},
+	{
+		// @ts-expect-error -> need to update IMessage type on socketclient
+		message: datePicker as IMessage,
+	},
 ];
 
 const action: MessageSender = payload => alert(JSON.stringify(payload, null, 2));
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
 	<React.StrictMode>
-		<TypingIndicator />
-		<ChatEvent text="Conversation started" />
-		{messages.map((message, index) => (
-			<Message key={index} {...message} action={action} />
-		))}
+		<div data-cognigy-webchat>
+			<TypingIndicator />
+			<ChatEvent text="Conversation started" />
+			{messages.map((message, index) => (
+				<Message key={index} {...message} action={action} />
+			))}
+		</div>
 	</React.StrictMode>,
 );

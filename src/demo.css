@@ -1,5 +1,6 @@
 body {
 	background-color: gray;
+	margin: 0;
 }
 #root {
 	background-color: #d9d9d9;
@@ -7,9 +8,19 @@ body {
 		Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
 	margin-inline: auto;
 	width: 375px;
-	height: 620px;
-	overflow-y: auto;
+	height: 812px;
+	overflow: hidden;
 	resize: both;
+	display: flex;
+	flex-direction: column;
+}
+
+[data-cognigy-webchat-root] {
+	position: relative;
+}
+
+[data-cognigy-webchat] {
+	overflow-y: auto;
 }
 
 /** the following is a copy from normalize.css on WebChat repo **/

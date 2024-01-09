@@ -1,0 +1,33 @@
+{
+	"text": "",
+	"data": {
+		"_plugin": {
+			"type": "date-picker",
+			"data": 
+			{
+				"eventName": "title",
+				"locale": "en",
+				"enableTime": "true",
+				"defaultDate": null,
+				"mode": "range",
+				"wantDisable": null,
+				"enable_disable": null,
+				"function_enable_disable": "",
+				"minDate": null,
+				"maxDate": "",
+				"openPickerButtonText": "open text",
+				"cancelButtonText": "cancel text",
+				"submitButtonText": "submit text",
+				"time_24hr": "",
+				"dateFormat": "",
+				"defaultHour": 12,
+				"defaultMinute": 30,
+				"enableSeconds": false,
+				"hourIncrement": 1,
+				"minuteIncrement": 5,
+				"noCalendar": false,
+				"weekNumbers": false
+			}
+		}
+	}
+}
