@@ -55,3 +55,586 @@
     align-items: center;
     margin-top: 40px;
 }
+
+/* 
+** FLATPICKR
+** The following styles are a porting from the original flatpickr.css
+** The idea is to integrate with modules CSS in order to increase the specificity
+** and avoid conflicts on consumer apps
+*/
+article .wrapper .content :global(.flatpickr-calendar) {
+	font-size: 16px;
+}
+
+article .wrapper .content :global(.flatpickr-calendar.open),
+article .wrapper .content :global(.flatpickr-calendar.inline) {
+	opacity: 1;
+	visibility: visible;
+}
+
+article .wrapper .content :global(.flatpickr-calendar.open) {
+	display: inline-block;
+	z-index: 99999;
+}
+
+article .wrapper .content :global(.flatpickr-calendar.inline) {
+	display: flex;
+	flex-direction: column;
+	position: relative;
+	width: 100%;
+}
+
+article .wrapper .content :global(.flatpickr-calendar.static) {
+	position: absolute;
+	top: calc(100% + 2px);
+}
+
+article .wrapper .content :global(.flatpickr-calendar.static.open) {
+	z-index: 999;
+	display: block;
+}
+
+article .wrapper .content :global(.flatpickr-calendar .hasWeeks .dayContainer),
+article .wrapper .content :global(.flatpickr-calendar .hasTime .dayContainer) {
+	border-bottom: 0;
+	border-bottom-right-radius: 0;
+	border-bottom-left-radius: 0;
+}
+
+article .wrapper .content :global(.flatpickr-calendar .hasWeeks .dayContainer) {
+	border-left: 0;
+}
+
+article .wrapper .content :global(.flatpickr-calendar:focus) {
+	outline: 0;
+}
+
+article .wrapper .content :global(.flatpickr-wrapper) {
+	width: 100%;
+	display: flex;
+}
+
+article .wrapper .content :global(.flatpickr-months) {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	padding: 0px 10px;
+	height: 44px;
+	margin-bottom: 24px;
+}
+
+/* article .wrapper .content :global.flatpickr-months .flatpickr-month {
+} */
+
+article .wrapper .content :global(.flatpickr-months .flatpickr-prev-month),
+article .wrapper .content :global(.flatpickr-months .flatpickr-next-month) {
+	text-decoration: none;
+	cursor: pointer;
+	display: inline-flex;
+	z-index: 3;
+}
+
+article .wrapper .content :global(.flatpickr-months .flatpickr-prev-month.disabled),
+article .wrapper .content :global(.flatpickr-months .flatpickr-next-month.disabled) {
+	display: none;
+}
+
+article .wrapper .content :global(.flatpickr-months .flatpickr-prev-month i),
+article .wrapper .content :global(.flatpickr-months .flatpickr-next-month i) {
+	position: relative;
+}
+
+article .wrapper .content :global(.flatpickr-months .flatpickr-prev-month.flatpickr-prev-month),
+article .wrapper .content :global(.flatpickr-months .flatpickr-next-month.flatpickr-prev-month) {
+	left: 0;
+}
+
+article .wrapper .content :global(.flatpickr-months .flatpickr-prev-month.flatpickr-next-month),
+article .wrapper .content :global(.flatpickr-months .flatpickr-next-month.flatpickr-next-month) {
+	right: 0;
+}
+
+article .wrapper .content :global(.flatpickr-months .flatpickr-prev-month svg path),
+article .wrapper .content :global(.flatpickr-months .flatpickr-next-month svg path) {
+	fill: var(--black-10);
+}
+article .wrapper .content :global(.flatpickr-months .flatpickr-next-month svg) {
+	transform: rotate(180deg);
+}
+
+article .wrapper .content :global(.numInputWrapper) {
+	position: relative;
+	height: auto;
+}
+
+article .wrapper .content :global(.numInputWrapper input),
+article .wrapper .content :global(.numInputWrapper span) {
+	display: inline-block;
+}
+
+article .wrapper .content :global(.numInputWrapper input) {
+	width: 100%;
+	-moz-appearance: textfield;
+	appearance: textfield;
+}
+
+article .wrapper .content :global(.numInputWrapper input::-ms-clear) {
+	display: none;
+}
+
+article .wrapper .content :global(.numInputWrapper input::-webkit-outer-spin-button),
+article .wrapper .content :global(.numInputWrapper input::-webkit-inner-spin-button) {
+	margin: 0;
+	-webkit-appearance: none;
+}
+
+article .wrapper .content :global(.flatpickr-current-month span.cur-month),
+article .wrapper .content :global(.flatpickr-current-month .flatpickr-monthDropdown-months) {
+	display: none;
+}
+
+article .wrapper .content :global(.flatpickr-current-month .numInputWrapper) {
+	width: 60px;
+	height: 44px;
+}
+
+article .wrapper .content :global(.flatpickr-current-month .numInputWrapper span.arrowUp),
+article .wrapper .content :global(.flatpickr-current-month .numInputWrapper span.arrowDown) {
+	display: none;
+}
+
+article .wrapper .content :global(.flatpickr-current-month input.cur-year) {
+	border-radius: 10px;
+	border: 1px solid var(--black-60, #999);
+	background: var(--white, #fff);
+	display: flex;
+	padding: 12px;
+	justify-content: center;
+	align-items: center;
+	gap: 10px;
+	height: 100%;
+	font-size: 14px;
+	box-sizing: border-box;
+}
+
+article .wrapper .content :global(.flatpickr-current-month input.cur-year:focus) {
+	outline: 0;
+}
+
+article .wrapper .content :global(.flatpickr-current-month input.cur-year[disabled]),
+article .wrapper .content :global(.flatpickr-current-month input.cur-year[disabled]:hover) {
+	pointer-events: none;
+}
+
+article .wrapper .content :global(.flatpickr-weekdays) {
+	background: transparent;
+	text-align: center;
+	overflow: hidden;
+	width: 100%;
+	display: -webkit-box;
+	display: -webkit-flex;
+	display: -ms-flexbox;
+	display: flex;
+	-webkit-box-align: center;
+	-webkit-align-items: center;
+	-ms-flex-align: center;
+	align-items: center;
+	height: 28px;
+}
+
+article .wrapper .content :global(.flatpickr-weekdays .flatpickr-weekdaycontainer) {
+	display: -webkit-box;
+	display: -webkit-flex;
+	display: -ms-flexbox;
+	display: flex;
+	-webkit-box-flex: 1;
+	-webkit-flex: 1;
+	-ms-flex: 1;
+	flex: 1;
+}
+
+article .wrapper .content :global(span.flatpickr-weekday) {
+	cursor: default;
+	background: transparent;
+	color: var(--black-40);
+	line-height: 140%;
+	margin: 0;
+	text-align: center;
+	display: block;
+	flex: 1;
+	font-weight: 400;
+}
+
+article .wrapper .content :global(.dayContainer),
+article .wrapper .content :global(.flatpickr-weeks) {
+	padding: 1px 0 0 0;
+}
+
+article .wrapper .content :global(.flatpickr-days) {
+	position: relative;
+	overflow: visible;
+	width: 100%;
+	text-align: center;
+}
+
+article .wrapper .content :global(.flatpickr-days:focus) {
+	outline: 0;
+}
+
+article .wrapper .content :global(.dayContainer) {
+	padding: 0;
+	outline: 0;
+	text-align: left;
+	-webkit-box-sizing: border-box;
+	box-sizing: border-box;
+	display: inline-block;
+	display: -ms-flexbox;
+	display: -webkit-box;
+	display: -webkit-flex;
+	display: flex;
+	-webkit-flex-wrap: wrap;
+	flex-wrap: wrap;
+	-ms-flex-wrap: wrap;
+	-ms-flex-pack: justify;
+	-webkit-justify-content: space-around;
+	justify-content: space-around;
+	-webkit-transform: translate3d(0px, 0px, 0px);
+	transform: translate3d(0px, 0px, 0px);
+	opacity: 1;
+}
+
+article .wrapper .content :global(.dayContainer + .dayContainer) {
+	-webkit-box-shadow: -1px 0 0 #e6e6e6;
+	box-shadow: -1px 0 0 #e6e6e6;
+}
+
+article .wrapper .content :global(.flatpickr-day) {
+	background: none;
+	-webkit-box-sizing: border-box;
+	box-sizing: border-box;
+	color: #393939;
+	cursor: pointer;
+	font-weight: 600;
+
+	-webkit-flex-basis: 14.2857143%;
+	-ms-flex-preferred-size: 14.2857143%;
+	flex-basis: 14.2857143%;
+	margin: 0;
+
+	display: inline-flex;
+	position: relative;
+	justify-content: center;
+	align-items: center;
+
+	aspect-ratio: 1/1;
+}
+
+article .wrapper .content :global(.flatpickr-day .dayInner) {
+	width: 32px;
+	height: 32px;
+	border-radius: 10px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+article .wrapper .content :global(.flatpickr-day:hover .dayInner),
+article .wrapper .content :global(.flatpickr-day.nextMonthDay:hover .dayInner),
+article .wrapper .content :global(.flatpickr-day.prevMonthDay:hover .dayInner),
+article .wrapper .content :global(.flatpickr-day:focus .dayInner),
+article .wrapper .content :global(.flatpickr-day.prevMonthDay:focus .dayInner),
+article .wrapper .content :global(.flatpickr-day.nextMonthDay:focus .dayInner) {
+	background-color: var(--black-95);
+}
+
+article .wrapper .content :global(.flatpickr-day.today .dayInner) {
+	background-color: var(--primary-color-opacity-20);
+}
+
+article .wrapper .content :global(.flatpickr-day.selected .dayInner) {
+	background-color: var(--primary-color);
+	color: var(--white);
+}
+
+article .wrapper .content :global(.flatpickr-day.inRange .dayInner),
+article .wrapper .content :global(.flatpickr-day.inRange:hover .dayInner),
+article .wrapper .content :global(.flatpickr-day.prevMonthDay.inRange .dayInner),
+article .wrapper .content :global(.flatpickr-day.nextMonthDay.inRange .dayInner),
+article .wrapper .content :global(.flatpickr-day.today.inRange .dayInner),
+article .wrapper .content :global(.flatpickr-day.prevMonthDay.today.inRange .dayInner),
+article .wrapper .content :global(.flatpickr-day.nextMonthDay.today.inRange .dayInner) {
+	width: 100%;
+	background-color: var(--primary-color);
+	color: var(--white);
+}
+
+article .wrapper .content :global(.flatpickr-day.startRange .dayInner),
+article .wrapper .content :global(.flatpickr-day.startRange:hover .dayInner),
+article .wrapper .content :global(.flatpickr-day.endRange .dayInner),
+article .wrapper .content :global(.flatpickr-day.endRange:hover .dayInner) {
+	background-color: var(--primary-color);
+	color: var(--white);
+}
+
+article .wrapper .content :global(.flatpickr-day.startRange:not(.endRange) .dayInner) {
+	border-top-right-radius: unset;
+	border-bottom-right-radius: unset;
+}
+
+article .wrapper .content :global(.flatpickr-day.endRange:not(.startRange) .dayInner) {
+	border-top-left-radius: unset;
+	border-bottom-left-radius: unset;
+}
+
+article .wrapper .content :global(.flatpickr-day.inRange .dayInner::after),
+article .wrapper .content :global(.flatpickr-day.startRange:not(.endRange) .dayInner::after),
+article .wrapper .content :global(.flatpickr-day.inRange .dayInner::before),
+article .wrapper .content :global(.flatpickr-day.endRange:not(.startRange) .dayInner::before) {
+	content: "";
+	height: 32px;
+	width: 32px;
+	position: absolute;
+	background-color: var(--primary-color);
+	z-index: -1;
+}
+article .wrapper .content :global(.flatpickr-day.inRange .dayInner::after),
+article .wrapper .content :global(.flatpickr-day.startRange:not(.endRange) .dayInner::after) {
+	right: -10px;
+}
+article .wrapper .content :global(.flatpickr-day.inRange .dayInner::before),
+article .wrapper .content :global(.flatpickr-day.endRange:not(.startRange) .dayInner::before) {
+	left: -10px;
+}
+
+article .wrapper .content :global(.flatpickr-day.disabled),
+article .wrapper .content :global(.flatpickr-disabled.flatpickr-day),
+article .wrapper .content :global(.flatpickr-day.disabled:hover),
+article .wrapper .content :global(.flatpickr-day.prevMonthDay),
+article .wrapper .content :global(.flatpickr-day.nextMonthDay),
+article .wrapper .content :global(.flatpickr-day.notAllowed),
+article .wrapper .content :global(.flatpickr-day.notAllowed.prevMonthDay),
+article .wrapper .content :global(.flatpickr-day.notAllowed.nextMonthDay) {
+	color: rgba(57, 57, 57, 0.3);
+	background: transparent;
+	border-color: transparent;
+	cursor: default;
+}
+
+article .wrapper .content :global(.flatpickr-day.disabled),
+article .wrapper .content :global(.flatpickr-day.disabled:hover) {
+	cursor: not-allowed;
+	color: rgba(57, 57, 57, 0.1);
+}
+
+article .wrapper .content :global(.flatpickr-day.hidden) {
+	visibility: hidden;
+}
+
+article .wrapper .content :global(.rangeMode .flatpickr-day) {
+	margin-top: 1px;
+}
+
+article .wrapper .content :global(.flatpickr-weekwrapper .flatpickr-weekday) {
+	background: transparent;
+	text-align: center;
+	overflow: hidden;
+	width: 100%;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	height: 28px;
+}
+
+article .wrapper .content :global(.flatpickr-weekwrapper span.flatpickr-day),
+article .wrapper .content :global(.flatpickr-weekwrapper span.flatpickr-day:hover) {
+	background: none;
+	-webkit-box-sizing: border-box;
+	box-sizing: border-box;
+	color: var(--black-60);
+	cursor: pointer;
+	font-weight: 600;
+	-webkit-flex-basis: 14.2857143%;
+	-ms-flex-preferred-size: 14.2857143%;
+	flex-basis: 14.2857143%;
+	margin: 0;
+	display: inline-flex;
+	position: relative;
+	justify-content: center;
+	align-items: center;
+	aspect-ratio: 1/1;
+	width: 100%;
+}
+
+article .wrapper .content :global(.flatpickr-weekwrapper span.flatpickr-day span.weekdayInner) {
+	width: 27px;
+	height: 100%;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	background-color: var(--black-80);
+}
+article .wrapper .content :global(.flatpickr-weekwrapper span.flatpickr-day span.weekdayInner.currentWeek) {
+	color: var(--black-40);
+}
+
+article .wrapper .content :global(.flatpickr-weekwrapper span.flatpickr-day:first-child span.weekdayInner) {
+	height: 27px;
+	border-top-right-radius: 10px;
+	border-top-left-radius: 10px;
+}
+[data-cognigy-webchat-root]
+	.flatpickr-weekwrapper
+	span.flatpickr-day:first-child
+	span.weekdayInner::after {
+	content: "";
+	width: 27px;
+	height: calc((100% - 27px) / 2);
+	position: absolute;
+	bottom: 0;
+	background-color: var(--black-80);
+}
+
+article .wrapper .content :global(.flatpickr-weekwrapper span.flatpickr-day:last-child span.weekdayInner) {
+	height: 27px;
+	border-bottom-right-radius: 10px;
+	border-bottom-left-radius: 10px;
+}
+article .wrapper .content :global(.flatpickr-weekwrapper span.flatpickr-day:last-child span.weekdayInner::after) {
+	content: "";
+	width: 27px;
+	height: calc((100% - 27px) / 2);
+	position: absolute;
+	top: 0;
+	background-color: var(--black-80);
+}
+
+article .wrapper .content :global(.flatpickr-weekwrapper) {
+	float: left;
+	width: 12.7%;
+	position: relative;
+	z-index: 1;
+}
+
+article .wrapper .content :global(.flatpickr-rContainer) {
+	display: flex;
+	flex-direction: column;
+	flex-grow: 1;
+}
+
+article .wrapper .content :global(.flatpickr-time) {
+	text-align: center;
+	outline: 0;
+	height: 116px;
+	margin: 12px 10px 0px 10px;
+	padding-top: 24px;
+	box-sizing: border-box;
+	border-top: 1px solid var(--black-80);
+	overflow: hidden;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+article .wrapper .content :global(.flatpickr-time:after) {
+	content: "";
+	display: table;
+	clear: both;
+}
+
+article .wrapper .content :global(.flatpickr-time .numInputWrapper) {
+	width: 44px;
+	height: 100%;
+	position: relative;
+	display: flex;
+    align-items: center;
+}
+
+article .wrapper .content :global(.flatpickr-time span.arrowUp:after),
+article .wrapper .content :global(.flatpickr-time span.arrowDown:after) {
+	display: none;
+}
+
+article .wrapper .content :global(.flatpickr-time span.arrowUp),
+article .wrapper .content :global(.flatpickr-time span.arrowDown) {
+	position: absolute;
+	width: 44px;
+    display: flex;
+    justify-content: center;
+	cursor: pointer;
+}
+
+article .wrapper .content :global(.flatpickr-time span.arrowUp.disabled),
+article .wrapper .content :global(.flatpickr-time span.arrowDown.disabled) {
+	cursor: default;
+}
+
+article .wrapper .content :global(.flatpickr-time svg) {
+	pointer-events: none;
+}
+
+article .wrapper .content :global(.flatpickr-time svg path) {
+	fill: var(--black-10);
+}
+
+article .wrapper .content :global(.flatpickr-time span.disabled svg path) {
+	fill: var(--black-80);
+}
+
+article .wrapper .content :global(.flatpickr-time span.arrowUp) {
+	top: 0;
+	transform: rotate(90deg);
+}
+article .wrapper .content :global(.flatpickr-time span.arrowDown) {
+	bottom: 0;
+	transform: rotate(270deg);
+}
+
+article .wrapper .content :global(.flatpickr-time input) {
+	border-radius: 10px;
+	border: 1px solid var(--black-60, #999);
+	background: var(--white, #fff);
+	display: flex;
+	padding: 12px;
+	justify-content: center;
+	align-items: center;
+	gap: 10px;
+	height: 100%;
+	font-size: 14px;
+	box-sizing: border-box;
+	height: 44px;
+	width: 44px;
+}
+
+article .wrapper .content :global(.flatpickr-time input.flatpickr-minute),
+article .wrapper .content :global(.flatpickr-time input.flatpickr-second) {
+	font-weight: 400;
+}
+
+article .wrapper .content :global(.flatpickr-time input:focus) {
+	outline: 0;
+}
+
+article .wrapper .content :global(.flatpickr-time .flatpickr-time-separator) {
+	width: 20px;
+}
+
+article .wrapper .content :global(.flatpickr-time .flatpickr-am-pm) {
+	font-size: 14px;
+	outline: 0;
+	cursor: pointer;
+	position: relative;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	width: 41px;
+    height: 100%;
+	margin-left: 24px;
+}
+
+article .wrapper .content :global(.flatpickr-time .flatpickr-am-pm span:not(.disabled)) {
+	pointer-events: none;
+}
+
+article .wrapper .content :global(.flatpickr-input) {
+	display: none;
+}

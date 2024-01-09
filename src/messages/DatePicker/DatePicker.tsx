@@ -3,7 +3,6 @@ import classes from "./DatePicker.module.css";
 import classnames from "classnames";
 
 import Flatpickr from "react-flatpickr";
-import "./flatpickr.css";
 // import PrimaryButton from "src/common/ActionButtons/PrimaryButton";
 import { useMessageContext } from "src/messages/hooks";
 import { getOptionsFromMessage } from "./helpers";
