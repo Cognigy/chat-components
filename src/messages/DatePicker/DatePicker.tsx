@@ -5,7 +5,7 @@ import classnames from "classnames";
 import Flatpickr from "react-flatpickr";
 import "./flatpickr.css";
 // import PrimaryButton from "src/common/ActionButtons/PrimaryButton";
-import { useMessageContext } from "../hooks";
+import { useMessageContext } from "src/messages/hooks";
 import { getOptionsFromMessage } from "./helpers";
 import { CloseIcon } from "src/assets/svg";
 import Typography from "src/common/Typography";
@@ -21,13 +21,17 @@ const DatePicker: FC = () => {
 		action && action(currentDate);
 	};
 
-	const handleClose = () => {
+	const handleOpen= () => {
+		setShowPicker(true);
+    };
+    
+    const handleClose = () => {
 		setShowPicker(false);
 	};
 
 	return (
 		<>
-			<button onClick={() => setShowPicker(true)} disabled={!!messageParams?.hasReply}>
+			<button onClick={handleOpen} disabled={!!messageParams?.hasReply}>
 				Show Picker
 			</button>
 			{showPicker && (
