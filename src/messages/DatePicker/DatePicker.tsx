@@ -68,32 +68,6 @@ const DatePicker: FC = () => {
 							onChange={(_date: Date[], dateString: string) => {
 								setCurrentDate(dateString);
 							}}
-							onDayCreate={(_dObj, _dStr, fp, dayElem) => {
-								dayElem.innerHTML = `<span class='dayInner'>${dayElem.innerHTML}</span>`;
-
-								// weeks
-								const weekContainer = fp?.weekNumbers;
-								const weekItem =
-									weekContainer?.getElementsByClassName("flatpickr-day");
-
-								if (weekItem) {
-									for (let index = 0; index < weekItem.length; index++) {
-										// we skip it if is already created
-										const weekdayInner =
-											weekItem[index]?.getElementsByClassName("weekdayInner");
-										if (weekdayInner.length === 0) {
-											// TODO: check also current year
-											const currentWeek =
-												fp?.config?.getWeek(new Date()) || 0;
-											weekItem[index].innerHTML = `<span class='weekdayInner${
-												weekItem[index].innerHTML === currentWeek.toString()
-													? " currentWeek"
-													: ""
-											}'>${weekItem[index].innerHTML}</span>`;
-										}
-									}
-								}
-							}}
 							options={getOptionsFromMessage(message)}
 						/>
 					</div>

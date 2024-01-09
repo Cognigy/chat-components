@@ -2,9 +2,8 @@ import moment from "moment";
 import l10n from "flatpickr/dist/l10n";
 import { key as LocaleKey } from "flatpickr/dist/types/locale";
 import { IMessage } from "@cognigy/socket-client";
-import customPlugin from "./customPlugin";
-
-const arrowIcon = '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16" fill="none"><path fill-rule="evenodd" clip-rule="evenodd" d="M11.7578 1.34923C12.1172 1.76855 12.0687 2.39985 11.6494 2.75927L5.53516 8.00002L11.6494 13.2408C12.0687 13.6002 12.1172 14.2315 11.7578 14.6508C11.3984 15.0701 10.7671 15.1187 10.3478 14.7593L4.23357 9.51853C3.30235 8.72034 3.30235 7.2797 4.23357 6.4815L10.3478 1.24076C10.7671 0.881339 11.3984 0.929901 11.7578 1.34923Z" fill="white"/></svg>';
+import customElements from "./flatpickr-plugins/customElements";
+import arrowIcon from "src/assets/svg/arrow_back.svg?raw";
 
 export const getOptionsFromMessage = (message: IMessage) => {
     // @ts-expect-error -> need to update IMessage type on socketclient
@@ -109,7 +108,7 @@ export const getOptionsFromMessage = (message: IMessage) => {
                         .locale(momentLocaleId)
                         .format(enableTime ? "L LT" : "L")
             : undefined,
-        plugins: [customPlugin({arrowIcon: arrowIcon})]
+        plugins: [customElements({arrowIcon: arrowIcon})]
     };
 
     const mask = [...(data.enable_disable || [])]
@@ -143,8 +142,6 @@ export const getOptionsFromMessage = (message: IMessage) => {
             options.disable = mask as never;
         }
     }
-
-    // console.log(options);
 
     return options;
 };
