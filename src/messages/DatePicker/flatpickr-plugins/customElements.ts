@@ -14,6 +14,7 @@ function customElements(pluginConfig: Config): Plugin {
 		const { arrowIcon } = pluginConfig;
 
 		function buildTimeArrows() {
+			if (!fp?.config?.enableTime) return;
 			const arrowUp = fp?.timeContainer?.getElementsByClassName("arrowUp");
 			const arrowDown = fp?.timeContainer?.getElementsByClassName("arrowDown");
 			if (arrowUp) {
@@ -29,6 +30,7 @@ function customElements(pluginConfig: Config): Plugin {
 		}
 
 		function upsertTimeArrows() {
+			if (!fp?.config?.enableTime) return;
 			const amPm = fp?.timeContainer?.querySelector("span.flatpickr-am-pm");
 			if (amPm) {
 				const hasArrows = amPm.querySelector("span.arrowUp");
@@ -51,6 +53,7 @@ function customElements(pluginConfig: Config): Plugin {
 		}
 
 		function handleWeekNumbers() {
+			if (!fp?.config?.weekNumbers) return;
 			const weekItem = fp?.weekNumbers?.getElementsByClassName("flatpickr-day");
 			if (weekItem) {
 				for (let index = 0; index < weekItem.length; index++) {
