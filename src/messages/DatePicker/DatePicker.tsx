@@ -1,4 +1,4 @@
-import { FC, useRef, useState } from "react";
+import { FC, useState } from "react";
 import classes from "./DatePicker.module.css";
 import classnames from "classnames";
 
@@ -13,13 +13,7 @@ import Typography from "src/common/Typography";
 const DatePicker: FC = () => {
 	const [showPicker, setShowPicker] = useState(false);
 	const [currentDate, setCurrentDate] = useState("");
-	const fp = useRef<Flatpickr>(null);
 	const { action, message, messageParams } = useMessageContext();
-
-	const handleSubmit = () => {
-		setShowPicker(false);
-		action && action(currentDate);
-	};
 
 	const handleOpen= () => {
 		setShowPicker(true);
@@ -27,6 +21,11 @@ const DatePicker: FC = () => {
     
     const handleClose = () => {
 		setShowPicker(false);
+    };
+    
+    const handleSubmit = () => {
+		setShowPicker(false);
+		action && action(currentDate);
 	};
 
 	return (
@@ -68,8 +67,7 @@ const DatePicker: FC = () => {
 						)}
 					>
 						<Flatpickr
-							ref={fp}
-							onChange={(_date: Date[], dateString: string) => {
+							onChange={(_date, dateString: string) => {
 								setCurrentDate(dateString);
 							}}
 							options={getOptionsFromMessage(message)}

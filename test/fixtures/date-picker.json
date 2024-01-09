@@ -22,7 +22,6 @@
 				"dateFormat": "",
 				"defaultHour": 12,
 				"defaultMinute": 30,
-				"enableSeconds": false,
 				"hourIncrement": 1,
 				"minuteIncrement": 5,
 				"noCalendar": false,

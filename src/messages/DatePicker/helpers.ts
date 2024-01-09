@@ -74,8 +74,7 @@ export const getOptionsFromMessage = (message: IMessage) => {
 	let locale = l10n[flatpickrLocaleId];
 	const enableTime = !!data.enableTime;
 	const timeTemp = data.time_24hr ? "H:i" : "h:i"; //12-hour format without AM/PM
-	const timeWithSeconds = data.enableSeconds ? `${timeTemp}:S` : timeTemp;
-	const timeFormat = data.time_24hr ? timeWithSeconds : `${timeWithSeconds} K`; //12-hour format with AM/PM
+	const timeFormat = data.time_24hr ? timeTemp : `${timeTemp} K`; //12-hour format with AM/PM
 
 	if (localeId === "gb") locale = { ...locale, firstDayOfWeek: 1 };
 	const options = {
@@ -83,7 +82,6 @@ export const getOptionsFromMessage = (message: IMessage) => {
 		prevArrow: arrowIcon,
 		defaultHour: data.defaultHour || 12,
 		defaultMinute: data.defaultMinute || 0,
-		enableSeconds: data.enableSeconds || false,
 		hourIncrement: data.hourIncrement || 1,
 		minuteIncrement: data.minuteIncrement || 5,
 		noCalendar: data.noCalendar || false,
