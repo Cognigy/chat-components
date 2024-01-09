@@ -6,8 +6,8 @@ export interface Config {
 }
 
 /**
- * This plugin adds some DOM elements we need for the new v3 design
- * It handles timeContainer, weekNumbers and dayElemets
+ * Custom flatpickr plugin that adds some DOM elements for webchat v3 design
+ * It handles timeContainer, weekNumbers and dayElements
  */
 function customElements(pluginConfig: Config): Plugin {
 	return function (fp: Instance) {
