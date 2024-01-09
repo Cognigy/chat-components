@@ -16,7 +16,7 @@ import videoYoutube from "test/fixtures/videoYoutube.json";
 import audio from "test/fixtures/audio.json";
 import AdaptiveCardPayloads from "test/fixtures/adaptiveCards.json";
 import { IMessage } from "@cognigy/socket-client";
-import { TypingIndicator, Typography } from "../src/index.ts";
+import { ChatEvent, TypingIndicator, Typography } from "../src/index.ts";
 
 const messages = [
 	{
@@ -139,8 +139,8 @@ const screens: TScreen[] = [
 		],
 	},
 	{
-		title: "Typing Indicator",
-		anchor: "typing-indicator",
+		title: "UI Components",
+		anchor: "ui",
 		messages: [
 			{
 				message: {
@@ -150,7 +150,7 @@ const screens: TScreen[] = [
 				},
 			},
 		],
-		content: [<TypingIndicator />],
+		content: [<TypingIndicator />, <ChatEvent text="Conversation started" />],
 	},
 	{
 		title: "Text messages",
