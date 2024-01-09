@@ -44,11 +44,10 @@ body {
 h1 {
 	text-align: center;
 	color: inherit !important;
-	width: 100% !important;
-	font-family: monospace !important;
+	width: 375px !important;
 	font-weight: 300 !important;
-	font-size: 17pt !important;
-	margin: 1em !important;
+	font-size: 37px !important;
+	margin: 1em 0 0.125em !important;
 }
 
 nav {
@@ -56,7 +55,7 @@ nav {
 	box-sizing: border-box;
 	color: var(--black-10);
 	font-family: Figtree;
-	font-size: 18px;
+	font-size: 15px;
 	font-weight: 700;
 	line-height: 140%;
 	padding: 0 16px;
@@ -80,16 +79,17 @@ nav a {
 	cursor: default;
 	text-decoration: none;
 	color: inherit;
-	display: block;
-	padding-block: 0.175em;
+	/* display: block; */
+	/* padding-block: 0.175em; */
 	padding-inline: 0.75em;
-	margin: 0.75em 0.25em;
+	/* margin: 0.75em 0.25em; */
 	/* display: block; */
 	font-weight: 300;
 	text-align: center;
 	height: 100%;
+	line-height: 1.6;
 	user-select: none;
-	width: 100%;
+	/* width: 100%; */
 }
 
 nav .current {
@@ -99,10 +99,13 @@ nav .current {
 }
 
 h1 {
-	font-size: 1.25em;
-	margin: 0;
-	color: lightgray;
-	font-weight: 300;
+	text-align: left;
+	color: inherit !important;
+	width: 375px !important;
+	/* font-family: monospace !important; */
+	/* font-weight: 300 !important; */
+	font-size: 19px !important;
+	margin: 1em 0 0.125em !important;
 }
 
 h2 {
