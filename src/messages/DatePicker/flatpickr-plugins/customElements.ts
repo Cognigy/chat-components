@@ -54,12 +54,13 @@ function customElements(pluginConfig: Config): Plugin {
 					// we skip it if is already created
 					const weekdayInner = weekItem[index]?.getElementsByClassName("weekdayInner");
 					if (weekdayInner.length === 0) {
-						// TODO: check also current year
 						const currentWeek = fp?.config?.getWeek(new Date()) || 0;
+						const isCurrentWeekYear =
+							weekItem[index].innerHTML === currentWeek.toString() &&
+							fp?.currentYear === new Date().getFullYear();
+
 						weekItem[index].innerHTML = `<span class='weekdayInner${
-							weekItem[index].innerHTML === currentWeek.toString()
-								? " currentWeek"
-								: ""
+							isCurrentWeekYear ? " currentWeek" : ""
 						}'>${weekItem[index].innerHTML}</span>`;
 					}
 				}
