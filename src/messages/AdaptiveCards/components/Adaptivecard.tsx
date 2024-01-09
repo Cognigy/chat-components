@@ -1,5 +1,3 @@
-import { useCallback } from "react";
-
 import { FC, useEffect, useRef } from "react";
 import { Action, AdaptiveCard as MSAdaptiveCard, HostConfig } from "adaptivecards";
 import { Remarkable } from "remarkable";
@@ -7,7 +5,7 @@ import { sanitizeHTML } from "src/sanitize";
 
 interface IAdaptiveCardProps {
 	hostConfig?: Partial<HostConfig>;
-	onExecuteAction?: (actionJson: any) => void;
+	onExecuteAction?: (acion: Action) => void;
 	payload?: boolean;
 }
 
@@ -41,16 +39,14 @@ const AdaptiveCard: FC<IAdaptiveCardProps> = props => {
 	const targetRef = useRef<HTMLDivElement>(null);
 	const cardRef = useRef<MSAdaptiveCard>(new MSAdaptiveCard());
 
-	const executeAction = useCallback(
-		(a: Action) => {
-			onExecuteAction?.(a);
-		},
-		[onExecuteAction],
-	);
+	const executeAction = (action: Action) => {
+		onExecuteAction?.(action);
+	};
 
 	useEffect(() => {
 		cardRef.current.onExecuteAction = executeAction;
-	}, [executeAction]);
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, []);
 
 	useEffect(() => {
 		cardRef.current.hostConfig = new HostConfig(hostConfig);

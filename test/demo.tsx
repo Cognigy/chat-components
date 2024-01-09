@@ -18,6 +18,7 @@ import AdaptiveCardPayloads from "test/fixtures/adaptiveCards.json";
 import { IMessage } from "@cognigy/socket-client";
 import { ChatEvent, TypingIndicator, Typography } from "../src/index.ts";
 
+//@ts-ignore
 const messages = [
 	{
 		message: {
@@ -72,7 +73,8 @@ const messages = [
 	},
 ];
 
-const action: MessageSender = payload => alert(JSON.stringify(payload, null, 2));
+const action: MessageSender = (text, data) =>
+	alert("Text: " + JSON.stringify(text, null, 2) + " Data: " + JSON.stringify(data, null, 2));
 
 type TScreen = {
 	title: string;
@@ -283,7 +285,11 @@ const screens: TScreen[] = [
 	},
 ];
 
-export const Menu = props => {
+interface MenuProps {
+	currentScreen: string;
+	setCurrentScreen: (anchor: string) => void;
+}
+export const Menu = (props: MenuProps) => {
 	const { currentScreen, setCurrentScreen } = props;
 
 	return (

@@ -1,4 +1,4 @@
-import { FC, FunctionComponent } from "react";
+import { FC } from "react";
 import {
 	Text,
 	Image,
@@ -12,10 +12,11 @@ import {
 import { IWebchatConfig } from "./messages/types";
 import { getChannelPayload } from "./utils";
 import { IMessage, IWebchatTemplateAttachment } from "@cognigy/socket-client";
+import { IAdaptiveCardMessage } from "@cognigy/socket-client/lib/interfaces/messageData";
 
 export type MatchConfig = {
 	rule: (message: IMessage, config?: IWebchatConfig) => boolean;
-	component: FC<any>;
+	component: FC;
 };
 
 const defaultConfig: MatchConfig[] = [
@@ -109,11 +110,16 @@ const defaultConfig: MatchConfig[] = [
 	},
 	{
 		rule: (message, config) => {
-			const _webchat = message?.data?._cognigy?._webchat?.adaptiveCard;
+			// Rest of the code...
+			const _webchat = (message?.data?._cognigy?._webchat as IAdaptiveCardMessage)
+				?.adaptiveCard;
+			//@ts-ignore
 			const _defaultPreview = message?.data?._cognigy?._defaultPreview?.adaptiveCard;
+			//@ts-ignore
 			const _plugin = message?.data?._plugin?.type === "adaptivecards";
 			const defaultPreviewEnabled = config?.settings?.enableDefaultPreview;
 
+			//@ts-ignore
 			if (message.data?._cognigy?._defaultPreview?.message && defaultPreviewEnabled) {
 				return false;
 			}

@@ -7,7 +7,7 @@ import styles from "./styles.module.css";
 
 import type { IMessage } from "@cognigy/socket-client";
 import ChatBubble from "src/common/ChatBubble";
-import { HostConfig } from "adaptivecards";
+import { Action, HostConfig } from "adaptivecards";
 
 const adaptiveCardsHostConfig: HostConfig = {
 	fontFamily: "inherit",
@@ -33,18 +33,12 @@ const adaptiveCardsHostConfig: HostConfig = {
 
 	containerStyles: {
 		default: {
-			backgroundColor: "#fff0",
+			backgroundColor: "#fff",
 			foregroundColors: {
-				default: "var(--black-10)",
-				subtle: "var(--black-40)",
-			},
-		},
-		emphasis: {
-			backgroundColor: "#F0F0F0",
-			foregroundColors: {
+				//@ts-ignore
 				default: {
-					default: "#333333",
-					subtle: "#EE333333",
+					default: "var(--black-10)",
+					subtle: "var(--black-40)",
 				},
 			},
 		},
@@ -55,8 +49,11 @@ export const AdaptiveCards = () => {
 	const { message, action: onSendMessage, config } = useMessageContext();
 
 	const getCardPayload = (message: IMessage) => {
+		//@ts-ignore
 		const _webchat = message?.data?._cognigy?._webchat?.adaptiveCard;
+		//@ts-ignore
 		const _defaultPreview = message?.data?._cognigy?._defaultPreview?.adaptiveCard;
+		//@ts-ignore
 		const _plugin = message?.data?._plugin?.payload;
 		const defaultPreviewEnabled = config?.settings?.enableDefaultPreview;
 
@@ -72,11 +69,15 @@ export const AdaptiveCards = () => {
 	const cardPayload = getCardPayload(message);
 
 	const onExecuteAction = useCallback(
-		action => {
+		(action: Action) => {
+			console.log("onExecuteAction", action);
+			//@ts-ignore
 			switch (action._propertyBag?.type) {
 				case "Action.Submit": {
 					onSendMessage?.("", {
+						//@ts-ignore
 						adaptivecards: action._processedData,
+						//@ts-ignore
 						request: { value: action._processedData },
 					});
 
@@ -84,6 +85,7 @@ export const AdaptiveCards = () => {
 				}
 
 				case "Action.OpenUrl": {
+					//@ts-ignore
 					const url = action._propertyBag?.url;
 					window.open(url, "_blank");
 
