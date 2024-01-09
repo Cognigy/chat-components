@@ -1,12 +1,21 @@
-import { FunctionComponent } from "react";
-import { Text, Image, Video, Audio, List, Gallery, TextWithButtons } from "./messages";
+import { FC, FunctionComponent } from "react";
+import {
+	Text,
+	Image,
+	Video,
+	Audio,
+	List,
+	Gallery,
+	TextWithButtons,
+	AdaptiveCard,
+} from "./messages";
 import { IWebchatConfig } from "./messages/types";
 import { getChannelPayload } from "./utils";
 import { IMessage, IWebchatTemplateAttachment } from "@cognigy/socket-client";
 
 export type MatchConfig = {
 	rule: (message: IMessage, config?: IWebchatConfig) => boolean;
-	component: FunctionComponent;
+	component: FC<any>;
 };
 
 const defaultConfig: MatchConfig[] = [
@@ -43,6 +52,7 @@ const defaultConfig: MatchConfig[] = [
 		component: TextWithButtons,
 	},
 	{
+		// Image
 		rule: (message, config) => {
 			const channelConfig = getChannelPayload(message, config);
 			if (!channelConfig) return false;
@@ -52,6 +62,7 @@ const defaultConfig: MatchConfig[] = [
 		component: Image,
 	},
 	{
+		// Video
 		rule: (message, config) => {
 			const channelConfig = getChannelPayload(message, config);
 			if (!channelConfig) return false;
@@ -61,6 +72,7 @@ const defaultConfig: MatchConfig[] = [
 		component: Video,
 	},
 	{
+		// Audio
 		rule: (message, config) => {
 			const channelConfig = getChannelPayload(message, config);
 			if (!channelConfig) return false;
@@ -70,6 +82,7 @@ const defaultConfig: MatchConfig[] = [
 		component: Audio,
 	},
 	{
+		// List
 		rule: (message, config) => {
 			const channelConfig = getChannelPayload(message, config);
 			if (!channelConfig) return false;
@@ -82,6 +95,7 @@ const defaultConfig: MatchConfig[] = [
 		component: List,
 	},
 	{
+		// Gallery
 		rule: (message, config) => {
 			const channelConfig = getChannelPayload(message, config);
 			if (!channelConfig) return false;
@@ -92,6 +106,30 @@ const defaultConfig: MatchConfig[] = [
 			);
 		},
 		component: Gallery,
+	},
+	{
+		rule: (message, config) => {
+			const _webchat = message?.data?._cognigy?._webchat?.adaptiveCard;
+			const _defaultPreview = message?.data?._cognigy?._defaultPreview?.adaptiveCard;
+			const _plugin = message?.data?._plugin?.type === "adaptivecards";
+			const defaultPreviewEnabled = config?.settings?.enableDefaultPreview;
+
+			if (message.data?._cognigy?._defaultPreview?.message && defaultPreviewEnabled) {
+				return false;
+			}
+
+			if (
+				(_defaultPreview && defaultPreviewEnabled) ||
+				(_webchat && _defaultPreview && !defaultPreviewEnabled) ||
+				_webchat ||
+				_plugin
+			) {
+				return true;
+			}
+
+			return false;
+		},
+		component: AdaptiveCard,
 	},
 ];
 
