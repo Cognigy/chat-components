@@ -16,7 +16,9 @@ const DatePicker: FC = () => {
 	// @ts-expect-error -> need to update IMessage type on socketclient
 	const dateButtonText = message?.data?._plugin?.data?.openPickerButtonText || "Pick date";
 	// @ts-expect-error -> need to update IMessage type on socketclient
-	const submitButtonText = message?.data?._plugin?.data?.submitButtonText || "Confirm Selection";
+    const submitButtonText = message?.data?._plugin?.data?.submitButtonText || "Confirm Selection";
+    // @ts-expect-error -> need to update IMessage type on socketclient
+    const hasTime = !!message?.data?._plugin?.data?.enableTime;
 
 	const handleOpen = () => {
 		setShowPicker(true);
@@ -77,7 +79,7 @@ const DatePicker: FC = () => {
 						/>
 					</div>
 					<div
-						className={classnames(classes.footer, "webchat-plugin-date-picker-footer")}
+						className={classnames(classes.footer, "webchat-plugin-date-picker-footer", hasTime && classes.hasTime)}
 					>
 						<PrimaryButton onClick={handleSubmit} disabled={!currentDate}>
 							{submitButtonText}

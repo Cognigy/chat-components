@@ -54,6 +54,11 @@
 	justify-content: center;
 	align-items: center;
 	margin-top: 40px;
+    padding: 0px 20px;
+}
+
+.footer.hasTime {
+	margin-top: 30px;
 }
 
 /* 
@@ -307,15 +312,21 @@
 	color: #393939;
 	cursor: pointer;
 	font-weight: 600;
-	-webkit-flex-basis: 14.2857143%;
-	-ms-flex-preferred-size: 14.2857143%;
-	flex-basis: 14.2857143%;
+	-webkit-flex-basis: 13%;
+	-ms-flex-preferred-size: 13%;
+	flex-basis: 13%;
 	margin: 0;
 	display: inline-flex;
 	position: relative;
 	justify-content: center;
 	align-items: center;
 	aspect-ratio: 1/1;
+}
+
+.wrapper .content :global(.hasWeeks .flatpickr-day) {
+	-webkit-flex-basis: 14.2857143%;
+	-ms-flex-preferred-size: 14.2857143%;
+	flex-basis: 14.2857143%;
 }
 
 .wrapper .content :global(.flatpickr-day .dayInner) {
@@ -388,11 +399,11 @@
 }
 .wrapper .content :global(.flatpickr-day.inRange .dayInner::after),
 .wrapper .content :global(.flatpickr-day.startRange:not(.endRange) .dayInner::after) {
-	right: -10px;
+	right: -12px;
 }
 .wrapper .content :global(.flatpickr-day.inRange .dayInner::before),
 .wrapper .content :global(.flatpickr-day.endRange:not(.startRange) .dayInner::before) {
-	left: -10px;
+	left: -12px;
 }
 
 .wrapper .content :global(.flatpickr-day.disabled),
@@ -442,9 +453,9 @@
 	color: var(--black-60);
 	cursor: pointer;
 	font-weight: 600;
-	-webkit-flex-basis: 14.2857143%;
-	-ms-flex-preferred-size: 14.2857143%;
-	flex-basis: 14.2857143%;
+	-webkit-flex-basis: 13%;
+	-ms-flex-preferred-size: 13%;
+	flex-basis: 13%;
 	margin: 0;
 	display: inline-flex;
 	position: relative;
@@ -452,6 +463,13 @@
 	align-items: center;
 	aspect-ratio: 1/1;
 	width: 100%;
+}
+
+.wrapper .content :global(.hasWeeks .flatpickr-weekwrapper span.flatpickr-day),
+.wrapper .content :global(.hasWeeks .flatpickr-weekwrapper span.flatpickr-day:hover) {
+	-webkit-flex-basis: 14.2857143%;
+	-ms-flex-preferred-size: 14.2857143%;
+	flex-basis: 14.2857143%;
 }
 
 .wrapper .content :global(.flatpickr-weekwrapper span.flatpickr-day span.weekdayInner) {
@@ -471,10 +489,7 @@
 	border-top-right-radius: 10px;
 	border-top-left-radius: 10px;
 }
-[data-cognigy-webchat-root]
-	.flatpickr-weekwrapper
-	span.flatpickr-day:first-child
-	span.weekdayInner::after {
+.wrapper .content :global(.flatpickr-weekwrapper span.flatpickr-day:first-child span.weekdayInner::after) {
 	content: "";
 	width: 27px;
 	height: calc((100% - 27px) / 2);
