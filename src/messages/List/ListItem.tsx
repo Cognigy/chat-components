@@ -11,7 +11,7 @@ import { IWebchatAttachmentElement } from "@cognigy/socket-client";
 import { Typography } from "src/index";
 
 const ListItem: FC<{ element: IWebchatAttachmentElement; isHeaderElement?: boolean }> = props => {
-	const { action, config } = useMessageContext();
+	const { action, config, onEmitAnalytics } = useMessageContext();
 	const { element, isHeaderElement } = props;
 	const { title, subtitle, image_url, image_alt_text, default_action, buttons } = element;
 	const button = buttons && buttons?.[0];
@@ -121,6 +121,8 @@ const ListItem: FC<{ element: IWebchatAttachmentElement; isHeaderElement?: boole
 								button={button}
 								buttonClassName="webchat-list-template-header-button"
 								containerClassName={classes.listHeaderButtonWrapper}
+								config={config}
+								onEmitAnalytics={onEmitAnalytics}
 							/>
 						</div>
 					</>
@@ -143,6 +145,8 @@ const ListItem: FC<{ element: IWebchatAttachmentElement; isHeaderElement?: boole
 					button={button}
 					buttonClassName="webchat-list-template-element-button"
 					containerClassName={classes.listItemButtonWrapper}
+					config={config}
+					onEmitAnalytics={onEmitAnalytics}
 				/>
 			)}
 		</div>
