@@ -2,35 +2,40 @@ import { FC, useState } from "react";
 import classes from "./DatePicker.module.css";
 import classnames from "classnames";
 import Flatpickr from "react-flatpickr";
-// import PrimaryButton from "src/common/ActionButtons/PrimaryButton";
 import { useMessageContext } from "src/messages/hooks";
 import { getOptionsFromMessage } from "./helpers";
 import { CloseIcon } from "src/assets/svg";
 import Typography from "src/common/Typography";
+import { PrimaryButton } from "src/common/Buttons";
 
 const DatePicker: FC = () => {
 	const [showPicker, setShowPicker] = useState(false);
 	const [currentDate, setCurrentDate] = useState("");
 	const { action, message, messageParams } = useMessageContext();
 
-	const handleOpen= () => {
+	// @ts-expect-error -> need to update IMessage type on socketclient
+	const dateButtonText = message?.data?._plugin?.data?.openPickerButtonText || "Pick date";
+	// @ts-expect-error -> need to update IMessage type on socketclient
+	const submitButtonText = message?.data?._plugin?.data?.submitButtonText || "Confirm Selection";
+
+	const handleOpen = () => {
 		setShowPicker(true);
-    };
-    
-    const handleClose = () => {
+	};
+
+	const handleClose = () => {
 		setShowPicker(false);
-    };
-    
-    const handleSubmit = () => {
+	};
+
+	const handleSubmit = () => {
 		setShowPicker(false);
 		action && action(currentDate);
 	};
 
 	return (
 		<>
-			<button onClick={handleOpen} disabled={!!messageParams?.hasReply}>
-				Show Picker
-			</button>
+			<PrimaryButton onClick={handleOpen} disabled={!!messageParams?.hasReply}>
+				{dateButtonText}
+			</PrimaryButton>
 			{showPicker && (
 				<div
 					className={classnames(classes.wrapper, "webchat-plugin-date-picker")}
@@ -74,9 +79,9 @@ const DatePicker: FC = () => {
 					<div
 						className={classnames(classes.footer, "webchat-plugin-date-picker-footer")}
 					>
-						<button onClick={handleSubmit} disabled={!currentDate}>
-							Confirm Selection
-						</button>
+						<PrimaryButton onClick={handleSubmit} disabled={!currentDate}>
+							{submitButtonText}
+						</PrimaryButton>
 					</div>
 				</div>
 			)}
