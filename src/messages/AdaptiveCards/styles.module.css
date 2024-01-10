@@ -60,6 +60,10 @@
 	line-height: 140%;
 }
 
+.adaptivecard-wrapper :global(.ac-container) {
+	border-radius: 15px;
+}
+
 .adaptivecard-wrapper input,
 .adaptivecard-wrapper textarea,
 .adaptivecard-wrapper select {
