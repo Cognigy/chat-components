@@ -33,6 +33,15 @@ export const isMessageCollatable = (message: IMessage, prevMessage?: IMessage) =
 	const COLLATION_LIMIT = 1000 * 60; // 60 sec
 
 	const difference = Number(message?.timestamp) - Number(prevMessage?.timestamp);
+
+	// if the previous message was a rating message that displays an event status pill, don't collate
+	if (
+		prevMessage?.source === "user" &&
+		prevMessage?.data?._cognigy?.controlCommands?.[0]?.type === "setRating" &&
+		prevMessage?.data?._cognigy?.controlCommands?.[0]?.parameters?.showRatingStatus === true
+	)
+		return false;
+
 	return (
 		prevMessage &&
 		isNaN(difference) === false &&
