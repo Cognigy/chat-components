@@ -1,0 +1,76 @@
+button.button {
+	max-width: 295px;
+}
+
+button.button,
+button.actionButton {
+	padding: 0px;
+	cursor: pointer;
+	text-decoration: none;
+}
+
+/* Primary Button */
+button.primaryButton.actionButton,
+a.primaryButton.actionButton,
+button.primaryButton.button,
+a.primaryButton.button {
+	width: 100%;
+	border-radius: 10px;
+	background-color: var(--secondary-color);
+	color: var(--white);
+	border: none;
+	outline: none;
+	height: 44px;
+}
+button.primaryButton.actionButton:hover,
+button.primaryButton.actionButton:focus,
+a.primaryButton.actionButton:hover,
+a.primaryButton.actionButton:focus,
+button.primaryButton.button:hover,
+button.primaryButton.button:focus,
+a.primaryButton.button:hover,
+a.primaryButton.button:focus {
+	background-color: var(--secondary-color-hover);
+}
+button.primaryButton.actionButton:disabled,
+button.primaryButton.actionButton[disabled],
+button.primaryButton.button:disabled,
+button.primaryButton.button[disabled] {
+	cursor: default;
+	background-color: var(--secondary-color-disabled);
+}
+
+/* Secondary Button */
+button.secondaryButton.actionButton,
+a.secondaryButton.actionButton,
+button.secondaryButton.button,
+a.secondaryButton.button {
+	width: 100%;
+	border-radius: 10px;
+	background-color: var(--white);
+	color: var(--secondary-color);
+	border: 1px solid var(--secondary-color);
+	outline: none;
+	height: 44px;
+}
+button.secondaryButton.actionButton:hover,
+button.secondaryButton.actionButton:focus,
+a.secondaryButton.actionButton:hover,
+a.secondaryButton.actionButton:focus,
+button.secondaryButton.button:hover,
+button.secondaryButton.button:focus,
+a.secondaryButton.button:hover,
+a.secondaryButton.button:focus {
+	color: var(--secondary-color-hover);
+	border: 1px solid var(--secondary-color-hover);
+	background-color: var(--white);
+}
+button.secondaryButton.actionButton:disabled,
+button.secondaryButton.actionButton[disabled],
+button.secondaryButton.button:disabled,
+button.secondaryButton.button[disabled] {
+	cursor: default;
+	color: var(--secondary-color-disabled);
+	border: 1px solid var(--secondary-color-disabled);
+	background-color: var(--white);
+}
