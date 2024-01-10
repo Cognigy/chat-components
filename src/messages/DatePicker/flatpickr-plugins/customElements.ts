@@ -36,16 +36,15 @@ function customElements(pluginConfig: Config): Plugin {
 				const hasArrows = amPm.querySelector("span.arrowUp");
 				if (!hasArrows) {
 					const mode = fp?.amPM?.innerText;
-					const amPmArrowUp = fp._createElement<HTMLDivElement>("span", "arrowUp", "");
+
+					const amPmArrowUp = fp._createElement<HTMLSpanElement>("span", "arrowUp");
 					if (mode === "AM") amPmArrowUp.classList.add("disabled");
 					amPmArrowUp.innerHTML = arrowIcon;
-					const amPmarrowDown = fp._createElement<HTMLDivElement>(
-						"span",
-						"arrowDown",
-						"",
-					);
+
+					const amPmarrowDown = fp._createElement<HTMLSpanElement>("span", "arrowDown");
 					if (mode === "PM") amPmarrowDown.classList.add("disabled");
 					amPmarrowDown.innerHTML = arrowIcon;
+
 					amPm.appendChild(amPmArrowUp);
 					amPm.appendChild(amPmarrowDown);
 				}
