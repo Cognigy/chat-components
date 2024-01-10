@@ -9,6 +9,7 @@ body {
 	font-family: Figtree, sans-serif;
 	width: 375px;
 	height: auto;
+	min-height: 100vh;
 	resize: horizontal;
 	margin-block: auto;
 	border-radius: 10px;
