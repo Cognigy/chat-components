@@ -1,3 +1,5 @@
+[![ESLint](https://github.com/Cognigy/chat-components/actions/workflows/eslint.yml/badge.svg)](https://github.com/Cognigy/chat-components/actions/workflows/eslint.yml)
+
 # Chat Components
 
 This repository is work-in-progress and will contain reusable components Cognigy uses in various of their products in order to render chat-messages such as:
