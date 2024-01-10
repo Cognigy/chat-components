@@ -305,9 +305,11 @@ export const Menu = (props: MenuProps) => {
 					))}
 				</ul>
 			</nav>
-			<Typography variant="h1-semibold">
-				{screens.find(s => s.anchor === currentScreen)?.title}
-			</Typography>
+			<div className="page-header">
+				<Typography variant="h1-semibold">
+					{screens.find(s => s.anchor === currentScreen)?.title}
+				</Typography>
+			</div>
 		</>
 	);
 };

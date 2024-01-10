@@ -8,9 +8,8 @@ body {
 	margin-inline: auto;
 	font-family: Figtree, sans-serif;
 	width: 375px;
-	height: 620px;
-	overflow-y: auto;
-	resize: both;
+	height: auto;
+	resize: horizontal;
 	margin-block: auto;
 	border-radius: 10px;
 }
@@ -96,6 +95,14 @@ nav .current {
 	color: var(--black-80) !important;
 	background-color: var(--primary-color-hover);
 	border-radius: 10px;
+}
+
+.page-header {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	width: 100%;
 }
 
 h1 {
