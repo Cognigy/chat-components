@@ -96,6 +96,10 @@
 	min-height: 98px;
 }
 
+:global(.ac-horizontal-separator) {
+	height: 16px !important;
+}
+
 .adaptivecard-wrapper textarea::-webkit-scrollbar {
 	width: 27px;
 }
