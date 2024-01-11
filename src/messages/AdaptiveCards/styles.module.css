@@ -84,6 +84,10 @@
 	resize: none;
 }
 
+.adaptivecard-wrapper textarea {
+	min-height: 78px;
+}
+
 .adaptivecard-wrapper textarea::-webkit-scrollbar {
 	width: 27px;
 }
