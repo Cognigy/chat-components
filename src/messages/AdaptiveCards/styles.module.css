@@ -56,6 +56,14 @@
 	width: 100%;
 }
 
+.adaptivecard-wrapper button:hover {
+	background: var(--black-30);
+}
+
+.adaptivecard-wrapper button:disabled {
+	background: var(--black-90);
+}
+
 .adaptivecard-wrapper :global(.ac-textRun) {
 	color: var(--black-40) !important;
 	font-size: 12px !important;
