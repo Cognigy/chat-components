@@ -70,7 +70,6 @@ export const AdaptiveCards = () => {
 
 	const onExecuteAction = useCallback(
 		(action: Action) => {
-			console.log("onExecuteAction", action);
 			//@ts-ignore
 			switch (action._propertyBag?.type) {
 				case "Action.Submit": {
