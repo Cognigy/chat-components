@@ -14,7 +14,7 @@
 				"function_enable_disable": "",
 				"minDate": "",
 				"maxDate": "",
-				"openPickerButtonText": "Single date",
+				"openPickerButtonText": "Time picker only",
 				"cancelButtonText": "",
 				"submitButtonText": "Confirm Selection",
 				"time_24hr": "",
@@ -23,7 +23,7 @@
 				"defaultMinute": 30,
 				"hourIncrement": 1,
 				"minuteIncrement": 5,
-				"noCalendar": false,
+				"noCalendar": true,
 				"weekNumbers": false
 			}
 		}

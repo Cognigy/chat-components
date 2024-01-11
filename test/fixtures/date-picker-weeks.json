@@ -14,7 +14,7 @@
 				"function_enable_disable": "",
 				"minDate": "",
 				"maxDate": "",
-				"openPickerButtonText": "Single date",
+				"openPickerButtonText": "Week numbers",
 				"cancelButtonText": "",
 				"submitButtonText": "Confirm Selection",
 				"time_24hr": "",
@@ -24,7 +24,7 @@
 				"hourIncrement": 1,
 				"minuteIncrement": 5,
 				"noCalendar": false,
-				"weekNumbers": false
+				"weekNumbers": true
 			}
 		}
 	}

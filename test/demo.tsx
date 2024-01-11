@@ -15,7 +15,14 @@ import gallery from "test/fixtures/gallery.json";
 // import videoYoutube from "test/fixtures/videoYoutube.json";
 // import audio from "test/fixtures/audio.json";
 import AdaptiveCardPayloads from "test/fixtures/adaptiveCards.json";
-// import datePicker from "test/fixtures/date-picker.json"
+
+import datePicker from "test/fixtures/date-picker.json";
+import datePickerMultiple from "test/fixtures/date-picker-multiple.json";
+import datePickerRange from "test/fixtures/date-picker-range.json";
+import datePickerWeeks from "test/fixtures/date-picker-weeks.json";
+import datePickerNoTime from "test/fixtures/date-picker-notime.json";
+import datePickerTimeonly from "test/fixtures/date-picker-timeonly.json";
+
 import { IMessage } from "@cognigy/socket-client";
 import { ChatEvent, TypingIndicator, Typography } from "../src/index.ts";
 
@@ -122,40 +129,12 @@ const screens: TScreen[] = [
 		title: "Datepicker",
 		anchor: "datepicker",
 		messages: [
-			{
-				message: {
-					text: "",
-					data: {
-						//@ts-expect-error need to update IMessage type on socketclient
-						_plugin: {
-							type: "date-picker",
-							data: {
-								eventName: "title",
-								locale: "en",
-								enableTime: "true",
-								defaultDate: null,
-								mode: "range",
-								wantDisable: null,
-								enable_disable: null,
-								function_enable_disable: "",
-								minDate: null,
-								maxDate: "",
-								openPickerButtonText: "Choose date",
-								cancelButtonText: "",
-								submitButtonText: "Confirm Selection",
-								time_24hr: "",
-								dateFormat: "",
-								defaultHour: 12,
-								defaultMinute: 30,
-								hourIncrement: 1,
-								minuteIncrement: 5,
-								noCalendar: false,
-								weekNumbers: false,
-							},
-						},
-					},
-				},
-			},
+			{ message: datePicker as IMessage },
+			{ message: datePickerMultiple as IMessage },
+			{ message: datePickerRange as IMessage },
+			{ message: datePickerWeeks as IMessage },
+			{ message: datePickerNoTime as IMessage },
+			{ message: datePickerTimeonly as IMessage },
 		],
 	},
 	{

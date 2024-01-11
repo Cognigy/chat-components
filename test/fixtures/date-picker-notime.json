@@ -6,7 +6,7 @@
 			"data": {
 				"eventName": "title",
 				"locale": "en",
-				"enableTime": "true",
+				"enableTime": "",
 				"defaultDate": "",
 				"mode": "single",
 				"wantDisable": false,
@@ -14,7 +14,7 @@
 				"function_enable_disable": "",
 				"minDate": "",
 				"maxDate": "",
-				"openPickerButtonText": "Single date",
+				"openPickerButtonText": "Date only",
 				"cancelButtonText": "",
 				"submitButtonText": "Confirm Selection",
 				"time_24hr": "",
