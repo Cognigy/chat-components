@@ -15,8 +15,9 @@ const DatePicker: FC = () => {
 	const [currentDate, setCurrentDate] = useState("");
 	const { action, message, messageParams } = useMessageContext();
 
-	// @ts-expect-error -> need to update IMessage type on socketclient
-	const { openPickerButtonText, submitButtonText, enableTime } = message?.data?._plugin?.data || {};
+	const { openPickerButtonText, submitButtonText, enableTime } =
+		// @ts-expect-error -> need to update IMessage type on socketclient
+		message?.data?._plugin?.data || {};
 
 	const openText = openPickerButtonText || "Pick date";
 	const submitText = submitButtonText || "Confirm Selection";

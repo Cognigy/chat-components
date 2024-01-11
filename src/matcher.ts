@@ -6,7 +6,8 @@ import {
 	Audio,
 	List,
 	Gallery,
-	TextWithButtons, DatePicker,
+	TextWithButtons,
+	DatePicker,
 	AdaptiveCard,
 } from "./messages";
 import { IWebchatConfig } from "./messages/types";
@@ -37,7 +38,7 @@ const defaultConfig: MatchConfig[] = [
 	},
 	{
 		// Datepicker
-		rule: (message) => {
+		rule: message => {
 			// @ts-expect-error -> need to update IMessage type on socketclient
 			return message?.data?._plugin?.type === "date-picker";
 		},

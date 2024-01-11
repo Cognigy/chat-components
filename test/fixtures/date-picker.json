@@ -3,8 +3,7 @@
 	"data": {
 		"_plugin": {
 			"type": "date-picker",
-			"data": 
-			{
+			"data": {
 				"eventName": "title",
 				"locale": "en",
 				"enableTime": "true",
