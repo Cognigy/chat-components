@@ -1,6 +1,6 @@
 {
 	"name": "@cognigy/chat-components",
-	"version": "0.8.0",
+	"version": "0.9.0",
 	"type": "module",
 	"exports": "./dist/chat-components.js",
 	"types": "./dist/index.d.ts",
@@ -25,6 +25,7 @@
 		"@types/dompurify": "^3.0.5",
 		"@types/react": "^18.2.31",
 		"@types/react-dom": "^18.2.14",
+		"@types/react-flatpickr": "^3.8.11",
 		"@typescript-eslint/eslint-plugin": "^6.9.0",
 		"@typescript-eslint/parser": "^6.9.0",
 		"@vitejs/plugin-react-swc": "^3.4.0",
@@ -49,6 +50,8 @@
 		"@fontsource/figtree": "5.0.17",
 		"classnames": "^2.3.2",
 		"dompurify": "^3.0.6",
+		"moment": "^2.30.1",
+		"react-flatpickr": "^3.10.13",
 		"react-player": "^2.13.0",
 		"swiper": "^11.0.4"
 	},
