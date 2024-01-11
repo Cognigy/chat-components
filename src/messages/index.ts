@@ -6,5 +6,6 @@ import List from "./List";
 import Gallery from "./Gallery";
 import DatePicker from "./DatePicker";
 import TextWithButtons from "./TextWithButtons/TextWithButtons";
+import { AdaptiveCards as AdaptiveCard } from "./AdaptiveCards";
 
-export { Text, Image, Video, Audio, List, Gallery, DatePicker, TextWithButtons };
+export { Text, Image, Video, Audio, List, Gallery, DatePicker, TextWithButtons, AdaptiveCard };

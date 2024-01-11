@@ -1,0 +1,197 @@
+[
+	{
+		"text": null,
+		"data": {
+			"_cognigy": {
+				"_webchat": {
+					"type": "adaptiveCard",
+					"adaptiveCard": {
+						"type": "AdaptiveCard",
+						"body": [
+							{
+								"type": "TextBlock",
+								"size": "Medium",
+								"weight": "Bolder",
+								"text": "I eat only ><_>"
+							},
+							{
+								"type": "ColumnSet",
+								"columns": [
+									{
+										"type": "Column",
+										"items": [
+											{
+												"type": "Image",
+												"style": "Person",
+												"url": "https://placekitten.com/128/128",
+												"size": "Small"
+											}
+										],
+										"width": "auto"
+									},
+									{
+										"type": "Column",
+										"items": [
+											{
+												"type": "TextBlock",
+												"weight": "Bolder",
+												"text": "Kitty-Land visitor",
+												"wrap": true
+											},
+											{
+												"type": "TextBlock",
+												"spacing": "None",
+												"text": "Kitten, 2 months old",
+												"isSubtle": true,
+												"wrap": true
+											}
+										],
+										"width": "stretch"
+									}
+								]
+							},
+							{
+								"type": "TextBlock",
+								"text": "To be or not to be a cat, that is the question. Whether 'tis nobler in the mind to suffer the slings and arrows of outrageous fortune, or to take arms against a sea of troubles, and by opposing end them?",
+								"wrap": true
+							},
+							{
+								"type": "FactSet",
+								"facts": [
+									{
+										"fact1": "value1",
+										"fact2": "value2",
+										"fact3": "value3"
+									}
+								]
+							}
+						],
+						"actions": [
+							{
+								"type": "Action.ShowCard",
+								"title": "Set visit date",
+								"card": {
+									"type": "AdaptiveCard",
+									"body": [
+										{
+											"type": "Input.Date",
+											"id": "dueDate",
+											"label": "Planned visit time"
+										},
+										{
+											"type": "Input.Text",
+											"label": "Optional",
+											"id": "comment",
+											"placeholder": "Note:",
+											"isMultiline": true
+										}
+									],
+									"actions": [{ "type": "Action.Submit", "title": "OK" }],
+									"$schema": "http://adaptivecards.io/schemas/adaptive-card.json"
+								}
+							}
+						],
+						"$schema": "http://adaptivecards.io/schemas/adaptive-card.json",
+						"version": "1.6"
+					}
+				}
+			}
+		},
+		"source": "bot"
+	},
+	{
+		"text": null,
+		"data": {
+			"_cognigy": {
+				"_webchat": {
+					"type": "AdaptiveCard",
+					"adaptiveCard": {
+						"body": [
+							{
+								"type": "TextBlock",
+								"size": "large",
+								"weight": "bolder",
+								"text": "Large header"
+							},
+							{
+								"type": "Input.Text",
+								"placeholder": "Placeholder text",
+								"label": "Text Input"
+							},
+							{
+								"type": "Input.ChoiceSet",
+								"choices": [
+									{
+										"title": "Choice 1",
+										"value": "Choice 1"
+									},
+									{
+										"title": "Choice 2",
+										"value": "Choice 2"
+									}
+								],
+								"placeholder": "Placeholder text",
+								"label": "Select Input"
+							},
+							{
+								"type": "Input.Date",
+								"label": "Date Input"
+							},
+							{
+								"type": "Input.Time",
+								"label": "Time Input"
+							},
+							{
+								"type": "Input.Toggle",
+								"title": "Agree to disagree"
+							}
+						],
+						"$schema": "http://adaptivecards.io/schemas/adaptive-card.json",
+						"version": "1.6"
+					}
+				}
+			}
+		}
+	},
+	{
+		"text": null,
+		"data": {
+			"_cognigy": {
+				"_webchat": {
+					"type": "AdaptiveCard",
+					"adaptiveCard": {
+						"body": [
+							{
+								"type": "TextBlock",
+								"size": "extraLarge",
+								"text": "extraLarge"
+							},
+							{
+								"type": "TextBlock",
+								"size": "large",
+								"text": "large"
+							},
+							{
+								"type": "TextBlock",
+								"size": "medium",
+								"text": "medium"
+							},
+							{
+								"type": "TextBlock",
+								"size": "default",
+								"text": "default"
+							},
+							{
+								"type": "TextBlock",
+								"size": "small",
+								"text": "small"
+							}
+						],
+						"$schema": "http://adaptivecards.io/schemas/adaptive-card.json",
+						"version": "1.6"
+					}
+				}
+			}
+		}
+	}
+]

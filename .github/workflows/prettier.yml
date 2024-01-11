@@ -1,4 +1,4 @@
-name: Run Prettier
+name: Formatting
 on:
     pull_request:
         types: [opened, synchronize, reopened]
