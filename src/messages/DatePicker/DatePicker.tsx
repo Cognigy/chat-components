@@ -36,7 +36,7 @@ const DatePicker: FC = () => {
 
 	const handleSubmit = () => {
 		setShowPicker(false);
-		action && action(currentDate);
+		action && action(currentDate, null);
 	};
 
 	const handleKeyDown = (event: KeyboardEvent) => {
@@ -72,8 +72,6 @@ const DatePicker: FC = () => {
 		const isLastTimeInputFieldFocused =
 			(minutesAsLastTimeInput && event.target === minutesField) ||
 			(amPmAsLastTimeInput && event.target === amPmField);
-
-		console.log("isLastTimeInputFieldFocused", isLastTimeInputFieldFocused);
 
 		// Close Date picker on pressing Escape
 		if (event.key === "Esc" || event.key === "Escape") {

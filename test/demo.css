@@ -1,5 +1,4 @@
 body {
-	background-color: gray;
 	background-color: gainsboro;
 	margin: 0;
 }
@@ -9,24 +8,13 @@ body {
 	margin-inline: auto;
 	font-family: Figtree, sans-serif;
 	width: 375px;
-	height: 812px;
-	overflow: hidden;
-	resize: both;
-	display: flex;
-	flex-direction: column;
-}
-
-[data-cognigy-webchat-root] {
-	position: relative;
-}
-
-[data-cognigy-webchat] {
-	overflow-y: auto;
 	height: auto;
-	min-height: 100vh;
+	min-height: 812px;
 	resize: horizontal;
 	margin-block: auto;
 	border-radius: 10px;
+	position: relative;
+	overflow: hidden;
 }
 
 .chat-bubble {
@@ -43,7 +31,7 @@ body {
 	}
 }
 
-#root {
+section[chat-components] {
 	display: flex;
 	flex-wrap: wrap;
 	flex-direction: row;

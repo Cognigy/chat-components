@@ -8,70 +8,16 @@ import { MessageSender } from "../src/messages/types.ts";
 //fixtures
 import listMessage from "test/fixtures/list.json";
 import gallery from "test/fixtures/gallery.json";
-import imageDownloadable from "test/fixtures/image-downloadable.json";
-import image from "test/fixtures/image.json";
-import imageBroken from "test/fixtures/imageBroken.json";
-import video from "test/fixtures/video.json";
-import videoYoutube from "test/fixtures/videoYoutube.json";
-import audio from "test/fixtures/audio.json";
+// import imageDownloadable from "test/fixtures/image-downloadable.json";
+// import image from "test/fixtures/image.json";
+// import imageBroken from "test/fixtures/imageBroken.json";
+// import video from "test/fixtures/video.json";
+// import videoYoutube from "test/fixtures/videoYoutube.json";
+// import audio from "test/fixtures/audio.json";
 import AdaptiveCardPayloads from "test/fixtures/adaptiveCards.json";
+// import datePicker from "test/fixtures/date-picker.json"
 import { IMessage } from "@cognigy/socket-client";
 import { ChatEvent, TypingIndicator, Typography } from "../src/index.ts";
-
-//@ts-ignore
-const messages = [
-	{
-		message: {
-			source: "bot",
-			text: "Hello, how can I help you?",
-			avatarName: "Cognigy",
-		},
-	},
-	{
-		message: {
-			source: "user",
-			text: "I have a problem with my order",
-		},
-	},
-	{
-		message: {
-			source: "bot",
-			text: "Here goes the text.\n\nThe text can also be multiline with <strong>HTML</strong> content",
-			avatarName: "Cognigy",
-		},
-	},
-	{
-		message: image as IMessage,
-	},
-	{
-		message: {
-			source: "bot",
-			text: "The following is a broken Image",
-			avatarName: "Cognigy",
-		},
-	},
-	{
-		message: imageBroken as IMessage,
-	},
-	{
-		message: imageDownloadable as IMessage,
-	},
-	{
-		message: video as IMessage,
-	},
-	{
-		message: videoYoutube as IMessage,
-	},
-	{
-		message: audio as IMessage,
-	},
-	{
-		message: listMessage as IMessage,
-	},
-	{
-		message: gallery as IMessage,
-	},
-];
 
 const action: MessageSender = (text, data) =>
 	alert("Text: " + JSON.stringify(text, null, 2) + " Data: " + JSON.stringify(data, null, 2));
@@ -165,10 +111,52 @@ const screens: TScreen[] = [
 	{
 		title: "List messages",
 		anchor: "list-messages",
+		messages: [{ message: listMessage as IMessage }],
 	},
 	{
 		title: "Gallery",
 		anchor: "gallery",
+		messages: [{ message: gallery as IMessage }],
+	},
+	{
+		title: "Datepicker",
+		anchor: "datepicker",
+		messages: [
+			{
+				message: {
+					text: "",
+					data: {
+						//@ts-expect-error need to update IMessage type on socketclient
+						_plugin: {
+							type: "date-picker",
+							data: {
+								eventName: "title",
+								locale: "en",
+								enableTime: "true",
+								defaultDate: null,
+								mode: "range",
+								wantDisable: null,
+								enable_disable: null,
+								function_enable_disable: "",
+								minDate: null,
+								maxDate: "",
+								openPickerButtonText: "Choose date",
+								cancelButtonText: "",
+								submitButtonText: "Confirm Selection",
+								time_24hr: "",
+								dateFormat: "",
+								defaultHour: 12,
+								defaultMinute: 30,
+								hourIncrement: 1,
+								minuteIncrement: 5,
+								noCalendar: false,
+								weekNumbers: false,
+							},
+						},
+					},
+				},
+			},
+		],
 	},
 	{
 		title: "Quick Replies / Buttons",
@@ -344,10 +332,10 @@ const Demo = () => {
 	const screen = screens.find(m => m.anchor === currentScreen);
 
 	return (
-		<>
+		<section chat-components>
 			<Menu currentScreen={currentScreen} setCurrentScreen={setCurrentScreen} />
 			<Screen messages={screen?.messages} content={screen?.content} />
-		</>
+		</section>
 	);
 };
 
