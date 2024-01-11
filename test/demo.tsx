@@ -8,12 +8,12 @@ import { MessageSender } from "../src/messages/types.ts";
 //fixtures
 import listMessage from "test/fixtures/list.json";
 import gallery from "test/fixtures/gallery.json";
-// import imageDownloadable from "test/fixtures/image-downloadable.json";
-// import image from "test/fixtures/image.json";
-// import imageBroken from "test/fixtures/imageBroken.json";
-// import video from "test/fixtures/video.json";
-// import videoYoutube from "test/fixtures/videoYoutube.json";
-// import audio from "test/fixtures/audio.json";
+import imageDownloadable from "test/fixtures/image-downloadable.json";
+import image from "test/fixtures/image.json";
+import imageBroken from "test/fixtures/imageBroken.json";
+import video from "test/fixtures/video.json";
+import videoYoutube from "test/fixtures/videoYoutube.json";
+import audio from "test/fixtures/audio.json";
 import AdaptiveCardPayloads from "test/fixtures/adaptiveCards.json";
 
 import datePicker from "test/fixtures/date-picker.json";
@@ -114,6 +114,27 @@ const screens: TScreen[] = [
 	{
 		title: "Multimedia messages",
 		anchor: "multimedia-messages",
+		messages: [
+			{ message: image as IMessage },
+			{ message: imageDownloadable as IMessage },
+			{
+				message: {
+					text: "Next one is a broken image",
+					source: "bot",
+					timestamp: "1701163314138",
+				},
+			},
+			{
+				message: { ...imageBroken, timestamp: "1701163314138", source: "bot" } as IMessage,
+				prevMessage: {
+					source: "bot",
+					timestamp: "1701163314138",
+				},
+			},
+			{ message: video as IMessage },
+			{ message: videoYoutube as IMessage },
+			{ message: audio as IMessage },
+		],
 	},
 	{
 		title: "List messages",

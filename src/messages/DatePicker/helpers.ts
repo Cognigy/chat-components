@@ -6,11 +6,11 @@ import customElements from "./flatpickr-plugins/customElements";
 import arrowIcon from "src/assets/svg/arrow_back.svg?raw";
 
 export const getOptionsFromMessage = (message: IMessage) => {
-	// @ts-expect-error -> need to update IMessage type on socketclient
-	const data = message?.data?._plugin?.data;
-	if (!data) return {};
+	if (!message?.data?._plugin || message.data._plugin.type !== "date-picker") return;
 
-	const transformNamedDate = (namedDate: string) => {
+	const data = message.data._plugin.data;
+
+	const transformNamedDate = (namedDate?: string) => {
 		switch (namedDate) {
 			case "today":
 				return moment().format("YYYY-MM-DD");
@@ -52,17 +52,17 @@ export const getOptionsFromMessage = (message: IMessage) => {
 		return locale;
 	};
 
-	const isWeekendDate = (date: string) => {
-		const isoWeekday = moment(date).isoWeekday();
+	// const isWeekendDate = (date?: string) => {
+	// 	const isoWeekday = moment(date).isoWeekday();
 
-		switch (isoWeekday) {
-			case 6: // saturday
-			case 7: // sunday
-				return true;
-		}
+	// 	switch (isoWeekday) {
+	// 		case 6: // saturday
+	// 		case 7: // sunday
+	// 			return true;
+	// 	}
 
-		return false;
-	};
+	// 	return false;
+	// };
 
 	const dateFormat = data.dateFormat || "YYYY-MM-DD";
 	const defaultDate =
@@ -80,12 +80,12 @@ export const getOptionsFromMessage = (message: IMessage) => {
 	const options = {
 		nextArrow: arrowIcon,
 		prevArrow: arrowIcon,
-		defaultHour: data.defaultHour || 12,
-		defaultMinute: data.defaultMinute || 0,
-		hourIncrement: data.hourIncrement || 1,
-		minuteIncrement: data.minuteIncrement || 5,
-		noCalendar: data.noCalendar || false,
-		weekNumbers: data.weekNumbers || false,
+		defaultHour: data?.defaultHour || 12,
+		defaultMinute: data?.defaultMinute || 0,
+		hourIncrement: data?.hourIncrement || 1,
+		minuteIncrement: data?.minuteIncrement || 5,
+		noCalendar: !!data?.noCalendar,
+		weekNumbers: !!data?.weekNumbers,
 		dateFormat: enableTime ? `${dateFormat} ${timeFormat}` : dateFormat,
 		defaultDate,
 		disable: [],
@@ -97,7 +97,7 @@ export const getOptionsFromMessage = (message: IMessage) => {
 		minDate: transformNamedDate(data.minDate) || "",
 		mode: data.mode || "single",
 		static: true,
-		time_24hr: data.time_24hr || false,
+		time_24hr: !!data?.time_24hr,
 		parseDate: (dateString: string) => moment(dateString).toDate(),
 		// if no custom formatting is defined, apply default formatting
 		formatDate: !data.dateFormat
@@ -109,18 +109,26 @@ export const getOptionsFromMessage = (message: IMessage) => {
 		plugins: [customElements({ arrowIcon })],
 	};
 
-	const mask = [...(data.enable_disable || [])]
-		// add special rule for weekends
-		.map(dateString => {
-			if (dateString === "weekends") return isWeekendDate;
+	const enable_disable =
+		typeof data.enable_disable === "string" && data.enable_disable.length > 0
+			? data.enable_disable
+			: null;
 
-			return dateString;
-		})
-		// resolve relative date names like today, tomorrow or yesterday
-		.map(transformNamedDate);
+	const mask = enable_disable
+		? [...enable_disable]
+				// add special rule for weekends
+				.map(dateString => {
+					// TODO: fix this legacy code, it seems not working
+					// if (dateString === "weekends") return isWeekendDate;
+
+					return dateString;
+				})
+				// resolve relative date names like today, tomorrow or yesterday
+				.map(transformNamedDate)
+		: [];
 
 	// the code in function_enable_disable was executed in a vm to check that its return value is from type boolean
-	if (data?.function_enable_disable?.length > 0) {
+	if (data?.function_enable_disable && data?.function_enable_disable?.length > 0) {
 		try {
 			const flatpickrFn = new Function(
 				`"use strict"; return  ${data.function_enable_disable}`,

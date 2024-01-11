@@ -39,7 +39,6 @@ const defaultConfig: MatchConfig[] = [
 	{
 		// Datepicker
 		rule: message => {
-			// @ts-expect-error -> need to update IMessage type on socketclient
 			return message?.data?._plugin?.type === "date-picker";
 		},
 		component: DatePicker,

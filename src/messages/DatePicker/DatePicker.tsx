@@ -15,9 +15,9 @@ const DatePicker: FC = () => {
 	const [currentDate, setCurrentDate] = useState("");
 	const { action, message, messageParams } = useMessageContext();
 
-	const { openPickerButtonText, submitButtonText, enableTime } =
-		// @ts-expect-error -> need to update IMessage type on socketclient
-		message?.data?._plugin?.data || {};
+	if (!message?.data?._plugin || message.data._plugin.type !== "date-picker") return;
+
+	const { openPickerButtonText, submitButtonText, enableTime, time_24hr, noCalendar } = message.data._plugin.data;
 
 	const openText = openPickerButtonText || "Pick date";
 	const submitText = submitButtonText || "Confirm Selection";
@@ -53,10 +53,8 @@ const DatePicker: FC = () => {
 		const shiftTabKeyPress = event.shiftKey && event.key === "Tab";
 
 		// Find last input field of time picker
-		// @ts-expect-error -> need to update IMessage type on socketclient
-		const data = message?.data?._plugin?.data;
-		const minutesAsLastTimeInput = !!data.enableTime && data.time_24hr;
-		const amPmAsLastTimeInput = !!data.enableTime && !data.time_24hr;
+		const minutesAsLastTimeInput = !!enableTime && time_24hr;
+		const amPmAsLastTimeInput = !!enableTime && !time_24hr;
 
 		// Time input fields
 		const hourField = webchatWindow?.getElementsByClassName(
@@ -166,6 +164,7 @@ const DatePicker: FC = () => {
 							classes.footer,
 							"webchat-plugin-date-picker-footer",
 							hasTime && classes.hasTime,
+							noCalendar && classes.noCalendar,
 						)}
 					>
 						<PrimaryButton onClick={handleSubmit} disabled={!currentDate}>
