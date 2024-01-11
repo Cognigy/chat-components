@@ -43,15 +43,17 @@
 
 .adaptivecard-wrapper button {
 	appearance: none;
-	border: none;
 	background: var(--black-10);
 	border-radius: 10px;
+	border: none;
 	color: white;
+	cursor: pointer;
+	font-size: 14px !important;
+	font-weight: 600;
+	line-height: 160% !important;
+	min-width: 100%;
 	padding-block: 11px;
 	width: 100%;
-	min-width: 100%;
-	line-height: 160%;
-	font-weight: 600;
 }
 
 .adaptivecard-wrapper :global(.ac-textRun) {
