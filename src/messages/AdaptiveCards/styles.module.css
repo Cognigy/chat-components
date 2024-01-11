@@ -93,7 +93,7 @@
 }
 
 .adaptivecard-wrapper textarea {
-	min-height: 78px;
+	min-height: 98px;
 }
 
 .adaptivecard-wrapper textarea::-webkit-scrollbar {
