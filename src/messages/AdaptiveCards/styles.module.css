@@ -81,6 +81,22 @@
 	gap: 10px;
 	line-height: 140%;
 	padding: 8px 12px 8px 12px;
+	resize: none;
+}
+
+.adaptivecard-wrapper textarea::-webkit-scrollbar {
+	width: 27px;
+}
+
+.adaptivecard-wrapper textarea::-webkit-scrollbar-track {
+	background: transparent;
+}
+
+.adaptivecard-wrapper textarea::-webkit-scrollbar-thumb {
+	background-color: var(--black-80);
+	border-radius: 10px;
+	border: 12px solid var(--white);
+	border-block: none;
 }
 
 .adaptivecard-wrapper input:focus,
