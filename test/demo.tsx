@@ -332,7 +332,7 @@ const Demo = () => {
 	const screen = screens.find(m => m.anchor === currentScreen);
 
 	return (
-		<section chat-components>
+		<section>
 			<Menu currentScreen={currentScreen} setCurrentScreen={setCurrentScreen} />
 			<Screen messages={screen?.messages} content={screen?.content} />
 		</section>
