@@ -27,5 +27,5 @@
 			"test/*": ["./test/*"]
 		}
 	},
-	"include": ["src", "test/*.spec.tsx"]
+	"include": ["src", "test/*.spec.tsx", "test/demo.tsx"]
 }

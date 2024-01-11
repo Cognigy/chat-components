@@ -1,4 +1,4 @@
-article .bubble {
+.bubble {
 	border-radius: 15px;
 	border: 1px solid var(--black-80);
 	padding: 12px;
