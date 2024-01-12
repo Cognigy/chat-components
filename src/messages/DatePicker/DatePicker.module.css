@@ -136,14 +136,9 @@
 	z-index: 3;
 }
 
-.wrapper .content :global(.flatpickr-months .flatpickr-prev-month.disabled),
-.wrapper .content :global(.flatpickr-months .flatpickr-next-month.disabled) {
-	display: none;
-}
-
-.wrapper .content :global(.flatpickr-months .flatpickr-prev-month i),
-.wrapper .content :global(.flatpickr-months .flatpickr-next-month i) {
-	position: relative;
+.wrapper .content :global(.flatpickr-months .flatpickr-prev-month.flatpickr-disabled),
+.wrapper .content :global(.flatpickr-months .flatpickr-next-month.flatpickr-disabled) {
+	cursor: default;
 }
 
 .wrapper .content :global(.flatpickr-months .flatpickr-prev-month.flatpickr-prev-month),
@@ -159,6 +154,10 @@
 .wrapper .content :global(.flatpickr-months .flatpickr-prev-month svg path),
 .wrapper .content :global(.flatpickr-months .flatpickr-next-month svg path) {
 	fill: var(--black-10);
+}
+.wrapper .content :global(.flatpickr-months .flatpickr-prev-month.flatpickr-disabled svg path),
+.wrapper .content :global(.flatpickr-months .flatpickr-next-month.flatpickr-disabled svg path) {
+	fill: var(--black-80);
 }
 .wrapper .content :global(.flatpickr-months .flatpickr-next-month svg) {
 	transform: rotate(180deg);
