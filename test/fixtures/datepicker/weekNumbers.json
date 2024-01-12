@@ -4,9 +4,9 @@
 		"_plugin": {
 			"type": "date-picker",
 			"data": {
-				"eventName": "title",
+				"eventName": "Calendar",
 				"locale": "en",
-				"enableTime": "",
+				"enableTime": "true",
 				"defaultDate": "",
 				"mode": "single",
 				"wantDisable": false,
@@ -14,7 +14,7 @@
 				"function_enable_disable": "",
 				"minDate": "",
 				"maxDate": "",
-				"openPickerButtonText": "Date only",
+				"openPickerButtonText": "Week numbers",
 				"cancelButtonText": "",
 				"submitButtonText": "Confirm Selection",
 				"time_24hr": "",
@@ -24,7 +24,7 @@
 				"hourIncrement": 1,
 				"minuteIncrement": 5,
 				"noCalendar": false,
-				"weekNumbers": false
+				"weekNumbers": true
 			}
 		}
 	}

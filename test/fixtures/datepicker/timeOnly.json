@@ -4,7 +4,7 @@
 		"_plugin": {
 			"type": "date-picker",
 			"data": {
-				"eventName": "title",
+				"eventName": "Time picker only",
 				"locale": "en",
 				"enableTime": "true",
 				"defaultDate": "",

@@ -16,13 +16,13 @@ import videoYoutube from "test/fixtures/videoYoutube.json";
 import audio from "test/fixtures/audio.json";
 import AdaptiveCardPayloads from "test/fixtures/adaptiveCards.json";
 
-import datePicker from "test/fixtures/date-picker.json";
-import datePickerMultiple from "test/fixtures/date-picker-multiple.json";
-import datePickerRange from "test/fixtures/date-picker-range.json";
-import datePickerWeeks from "test/fixtures/date-picker-weeks.json";
-import datePickerNoTime from "test/fixtures/date-picker-notime.json";
-import datePickerTimeonly from "test/fixtures/date-picker-timeonly.json";
-import datePickerDisableWeekends from "test/fixtures/date-picker-disableWeekends.json";
+import datePicker from "test/fixtures/datepicker/singleDate.json";
+import datePickerMultiple from "test/fixtures/datepicker/multiple.json";
+import datePickerRange from "test/fixtures/datepicker/range.json";
+import datePickerWeeks from "test/fixtures/datepicker/weekNumbers.json";
+import datePickerNoTime from "test/fixtures/datepicker/noTime.json";
+import datePickerTimeonly from "test/fixtures/datepicker/timeOnly.json";
+import datePickerDisableWeekends from "test/fixtures/datepicker/disableWeekends.json";
 
 import { IMessage } from "@cognigy/socket-client";
 import { ChatEvent, TypingIndicator, Typography } from "../src/index.ts";

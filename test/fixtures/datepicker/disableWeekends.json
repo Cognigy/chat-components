@@ -4,17 +4,17 @@
 		"_plugin": {
 			"type": "date-picker",
 			"data": {
-				"eventName": "title",
+				"eventName": "Disable weekends",
 				"locale": "en",
 				"enableTime": "true",
 				"defaultDate": "",
-				"mode": "single",
-				"wantDisable": false,
-				"enable_disable": null,
+				"mode": "range",
+				"wantDisable": true,
+				"enable_disable": ["weekends"],
 				"function_enable_disable": "",
 				"minDate": "",
 				"maxDate": "",
-				"openPickerButtonText": "Week numbers",
+				"openPickerButtonText": "Disable weekends",
 				"cancelButtonText": "",
 				"submitButtonText": "Confirm Selection",
 				"time_24hr": "",
@@ -24,7 +24,7 @@
 				"hourIncrement": 1,
 				"minuteIncrement": 5,
 				"noCalendar": false,
-				"weekNumbers": true
+				"weekNumbers": false
 			}
 		}
 	}
