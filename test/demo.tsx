@@ -71,6 +71,15 @@ const screens: TScreen[] = [
 		],
 	},
 	{
+		title: "Gallery",
+		anchor: "gallery",
+		messages: [
+			{
+				message: gallery as IMessage,
+			},
+		],
+	},
+	{
 		title: "Message Collation",
 		anchor: "message-collation",
 		messages: [
@@ -109,8 +118,13 @@ const screens: TScreen[] = [
 		content: [<TypingIndicator />, <ChatEvent text="Conversation started" />],
 	},
 	{
-		title: "Text messages",
-		anchor: "text-messages",
+		title: "List messages",
+		anchor: "list-messages",
+		messages: [
+			{
+				message: listMessage as IMessage,
+			},
+		],
 	},
 	{
 		title: "Multimedia messages",
@@ -269,6 +283,32 @@ const screens: TScreen[] = [
 							},
 						},
 					},
+				},
+			},
+		],
+	},
+	{
+		title: "Text messages",
+		anchor: "text-messages",
+		messages: [
+			{
+				message: {
+					source: "bot",
+					text: "Hello, how can I help you?",
+					avatarName: "Cognigy",
+				},
+			},
+			{
+				message: {
+					source: "user",
+					text: "I have a problem with my order",
+				},
+			},
+			{
+				message: {
+					source: "bot",
+					text: "Here goes the text.\n\nThe text can also be multiline with <strong>HTML</strong> content",
+					avatarName: "Cognigy",
 				},
 			},
 		],

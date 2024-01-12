@@ -1,4 +1,4 @@
-name: Formatting
+name: Format
 on:
     pull_request:
         types: [opened, synchronize, reopened]

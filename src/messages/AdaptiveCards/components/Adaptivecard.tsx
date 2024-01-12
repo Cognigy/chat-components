@@ -1,7 +1,7 @@
 import { FC, useEffect, useRef } from "react";
 import { Action, AdaptiveCard as MSAdaptiveCard, HostConfig } from "adaptivecards";
 import { Remarkable } from "remarkable";
-import { sanitizeHTML } from "src/sanitize";
+import { sanitizeHTML } from "../../../sanitize.ts";
 
 interface IAdaptiveCardProps {
 	hostConfig?: Partial<HostConfig>;
