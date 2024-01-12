@@ -52,17 +52,17 @@ export const getOptionsFromMessage = (message: IMessage) => {
 		return locale;
 	};
 
-	// const isWeekendDate = (date?: string) => {
-	// 	const isoWeekday = moment(date).isoWeekday();
+	const isWeekendDate = (date: string) => {
+		const isoWeekday = moment(date).isoWeekday();
 
-	// 	switch (isoWeekday) {
-	// 		case 6: // saturday
-	// 		case 7: // sunday
-	// 			return true;
-	// 	}
+		switch (isoWeekday) {
+			case 6: // saturday
+			case 7: // sunday
+				return true;
+		}
 
-	// 	return false;
-	// };
+		return false;
+	};
 
 	const dateFormat = data.dateFormat || "YYYY-MM-DD";
 	const defaultDate =
@@ -89,6 +89,7 @@ export const getOptionsFromMessage = (message: IMessage) => {
 		dateFormat: enableTime ? `${dateFormat} ${timeFormat}` : dateFormat,
 		defaultDate,
 		disable: [],
+		enable: [],
 		enableTime,
 		event: data.eventName,
 		inline: true,
@@ -110,21 +111,19 @@ export const getOptionsFromMessage = (message: IMessage) => {
 	};
 
 	const enable_disable =
-		typeof data.enable_disable === "string" && data.enable_disable.length > 0
+		Array.isArray(data?.enable_disable) && data.enable_disable.length > 0
 			? data.enable_disable
 			: null;
 
 	const mask = enable_disable
 		? [...enable_disable]
-				// add special rule for weekends
-				.map(dateString => {
-					// TODO: fix this legacy code, it seems not working
-					// if (dateString === "weekends") return isWeekendDate;
-
-					return dateString;
-				})
 				// resolve relative date names like today, tomorrow or yesterday
 				.map(transformNamedDate)
+				// add special rule for weekends
+				.map(dateString => {
+					if (dateString === "weekends") return isWeekendDate;
+					return dateString;
+				})
 		: [];
 
 	// the code in function_enable_disable was executed in a vm to check that its return value is from type boolean
@@ -142,11 +141,19 @@ export const getOptionsFromMessage = (message: IMessage) => {
 		}
 	}
 
-	if (mask.length > 0 && data.wantDisable) {
+	if (mask.length > 0) {
 		if (data.wantDisable) {
 			// add date mask as blacklist
 			options.disable = mask as never;
+			// @ts-expect-error disable strictNullChecks
+			delete options.enable;
+		} else {
+			// add date mask as whitelist
+			options.enable = mask as never;
 		}
+	} else {
+		// @ts-expect-error disable strictNullChecks
+		delete options.enable;
 	}
 
 	return options;
