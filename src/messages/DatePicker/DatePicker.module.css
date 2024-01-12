@@ -220,7 +220,7 @@
 	outline: none;
 }
 .wrapper .content :global(.flatpickr-current-month .flatpickr-monthDropdown-months option) {
-	font-weight:normal;
+	font-weight: normal;
 }
 
 /* .wrapper .content :global(.flatpickr-current-month span.cur-month),
