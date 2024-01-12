@@ -118,15 +118,6 @@ const screens: TScreen[] = [
 		content: [<TypingIndicator />, <ChatEvent text="Conversation started" />],
 	},
 	{
-		title: "List messages",
-		anchor: "list-messages",
-		messages: [
-			{
-				message: listMessage as IMessage,
-			},
-		],
-	},
-	{
 		title: "Multimedia messages",
 		anchor: "multimedia-messages",
 		messages: [

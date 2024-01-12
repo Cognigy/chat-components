@@ -4,7 +4,7 @@
 		"_plugin": {
 			"type": "date-picker",
 			"data": {
-				"eventName": "Calendar",
+				"eventName": "Week Numbers",
 				"locale": "en",
 				"enableTime": "true",
 				"defaultDate": "",
