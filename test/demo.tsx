@@ -18,61 +18,6 @@ import AdaptiveCardPayloads from "test/fixtures/adaptiveCards.json";
 import { IMessage } from "@cognigy/socket-client";
 import { ChatEvent, TypingIndicator, Typography } from "../src/index.ts";
 
-//@ts-ignore
-const messages = [
-	{
-		message: {
-			source: "bot",
-			text: "Hello, how can I help you?",
-			avatarName: "Cognigy",
-		},
-	},
-	{
-		message: {
-			source: "user",
-			text: "I have a problem with my order",
-		},
-	},
-	{
-		message: {
-			source: "bot",
-			text: "Here goes the text.\n\nThe text can also be multiline with <strong>HTML</strong> content",
-			avatarName: "Cognigy",
-		},
-	},
-	{
-		message: image as IMessage,
-	},
-	{
-		message: {
-			source: "bot",
-			text: "The following is a broken Image",
-			avatarName: "Cognigy",
-		},
-	},
-	{
-		message: imageBroken as IMessage,
-	},
-	{
-		message: imageDownloadable as IMessage,
-	},
-	{
-		message: video as IMessage,
-	},
-	{
-		message: videoYoutube as IMessage,
-	},
-	{
-		message: audio as IMessage,
-	},
-	{
-		message: listMessage as IMessage,
-	},
-	{
-		message: gallery as IMessage,
-	},
-];
-
 const action: MessageSender = (text, data) =>
 	alert("Text: " + JSON.stringify(text, null, 2) + " Data: " + JSON.stringify(data, null, 2));
 
@@ -117,6 +62,15 @@ const screens: TScreen[] = [
 		],
 	},
 	{
+		title: "Gallery",
+		anchor: "gallery",
+		messages: [
+			{
+				message: gallery as IMessage,
+			},
+		],
+	},
+	{
 		title: "Message Collation",
 		anchor: "message-collation",
 		messages: [
@@ -155,20 +109,38 @@ const screens: TScreen[] = [
 		content: [<TypingIndicator />, <ChatEvent text="Conversation started" />],
 	},
 	{
-		title: "Text messages",
-		anchor: "text-messages",
+		title: "List messages",
+		anchor: "list-messages",
+		messages: [
+			{
+				message: listMessage as IMessage,
+			},
+		],
 	},
 	{
 		title: "Multimedia messages",
 		anchor: "multimedia-messages",
-	},
-	{
-		title: "List messages",
-		anchor: "list-messages",
-	},
-	{
-		title: "Gallery",
-		anchor: "gallery",
+		content: [<Typography variant="title1-semibold">This is a broken image</Typography>],
+		messages: [
+			{
+				message: video as IMessage,
+			},
+			{
+				message: videoYoutube as IMessage,
+			},
+			{
+				message: audio as IMessage,
+			},
+			{
+				message: image as IMessage,
+			},
+			{
+				message: imageDownloadable as IMessage,
+			},
+			{
+				message: imageBroken as IMessage,
+			},
+		],
 	},
 	{
 		title: "Quick Replies / Buttons",
@@ -279,6 +251,32 @@ const screens: TScreen[] = [
 							},
 						},
 					},
+				},
+			},
+		],
+	},
+	{
+		title: "Text messages",
+		anchor: "text-messages",
+		messages: [
+			{
+				message: {
+					source: "bot",
+					text: "Hello, how can I help you?",
+					avatarName: "Cognigy",
+				},
+			},
+			{
+				message: {
+					source: "user",
+					text: "I have a problem with my order",
+				},
+			},
+			{
+				message: {
+					source: "bot",
+					text: "Here goes the text.\n\nThe text can also be multiline with <strong>HTML</strong> content",
+					avatarName: "Cognigy",
 				},
 			},
 		],

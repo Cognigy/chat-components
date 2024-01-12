@@ -7,7 +7,7 @@ import styles from "./styles.module.css";
 
 import type { IMessage } from "@cognigy/socket-client";
 import ChatBubble from "src/common/ChatBubble";
-import { Action, HostConfig } from "adaptivecards";
+import type { Action, HostConfig } from "adaptivecards";
 
 const adaptiveCardsHostConfig: HostConfig = {
 	fontFamily: "inherit",
