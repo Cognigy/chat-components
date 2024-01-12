@@ -77,7 +77,7 @@ function customElements(pluginConfig: Config): Plugin {
 			fp?.calendarContainer?.setAttribute("tabIndex", "0");
 			fp?.calendarContainer?.setAttribute("aria-labelledby", "webchatDatePickerHeaderLabel");
 
-			if (!fp?.config?.enableTime) {
+			if (fp?.config?.enableTime) {
 				const hourField = fp?.timeContainer?.getElementsByClassName("flatpickr-hour")?.[0];
 				hourField?.setAttribute("tabIndex", "0");
 				const minutesField =
