@@ -28,6 +28,7 @@ const DatePicker: FC = () => {
 	const datePickerDescription = getRandomId("webchatDatePickerContentDescription");
 
 	const hasTime = !!enableTime;
+	const hasNoCalendar = !!noCalendar;
 
 	const handleOpen = () => {
 		setShowPicker(true);
@@ -166,7 +167,7 @@ const DatePicker: FC = () => {
 							classes.footer,
 							"webchat-plugin-date-picker-footer",
 							hasTime && classes.hasTime,
-							noCalendar && classes.noCalendar,
+							hasNoCalendar && classes.noCalendar,
 						)}
 					>
 						<PrimaryButton onClick={handleSubmit} disabled={!currentDate}>
