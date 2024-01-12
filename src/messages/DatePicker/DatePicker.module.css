@@ -190,10 +190,43 @@
 	-webkit-appearance: none;
 }
 
-.wrapper .content :global(.flatpickr-current-month span.cur-month),
+.wrapper .content :global(.flatpickr-current-month) {
+	display: flex;
+	gap: 10px;
+}
+
 .wrapper .content :global(.flatpickr-current-month .flatpickr-monthDropdown-months) {
+	display: block;
+	padding: 12px;
+	width: 100%;
+	width: 140px;
+	box-sizing: border-box;
+	border: 1px solid var(--black-60);
+	border-radius: 10px;
+	-moz-appearance: none;
+	-webkit-appearance: none;
+	appearance: none;
+	background-color: var(--white);
+}
+
+.wrapper .content :global(.flatpickr-current-month .flatpickr-monthDropdown-months::-ms-expand) {
 	display: none;
 }
+.wrapper .content :global(.flatpickr-current-month .flatpickr-monthDropdown-months:hover) {
+	border-color: var(--black-60);
+}
+.wrapper .content :global(.flatpickr-current-month .flatpickr-monthDropdown-months:focus) {
+	border-color: var(--black-60);
+	outline: none;
+}
+.wrapper .content :global(.flatpickr-current-month .flatpickr-monthDropdown-months option) {
+	font-weight:normal;
+}
+
+/* .wrapper .content :global(.flatpickr-current-month span.cur-month),
+.wrapper .content :global(.flatpickr-current-month .flatpickr-monthDropdown-months) {
+	display: none;
+} */
 
 .wrapper .content :global(.flatpickr-current-month .numInputWrapper) {
 	width: 60px;
@@ -521,7 +554,7 @@
 
 .wrapper .content :global(.flatpickr-weekwrapper) {
 	float: left;
-	width: 12.7%;
+	width: 12.5%;
 	position: relative;
 	z-index: 1;
 }
@@ -546,7 +579,7 @@
 	justify-content: center;
 }
 
-.wrapper .content :global(.hasTime .flatpickr-time) {
+.wrapper .content :global(.noCalendar .flatpickr-time) {
 	border-top: none;
 }
 

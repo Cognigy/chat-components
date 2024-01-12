@@ -71,26 +71,29 @@ function customElements(pluginConfig: Config): Plugin {
 			}
 		}
 
-		function setAlly() {
+		function setTimeAlly() {
 			fp?.calendarContainer?.focus();
 
 			fp?.calendarContainer?.setAttribute("tabIndex", "0");
 			fp?.calendarContainer?.setAttribute("aria-labelledby", "webchatDatePickerHeaderLabel");
 
-			const hourField = fp?.timeContainer?.getElementsByClassName("flatpickr-hour")?.[0];
-			hourField?.setAttribute("tabIndex", "0");
-			const minutesField = fp?.timeContainer?.getElementsByClassName("flatpickr-minute")?.[0];
-			minutesField?.setAttribute("tabIndex", "0");
-			const amPmField = fp?.timeContainer?.getElementsByClassName("flatpickr-am-pm")?.[0];
-			amPmField?.setAttribute("tabIndex", "0");
-			amPmField?.setAttribute("role", "button");
+			if (!fp?.config?.enableTime) {
+				const hourField = fp?.timeContainer?.getElementsByClassName("flatpickr-hour")?.[0];
+				hourField?.setAttribute("tabIndex", "0");
+				const minutesField =
+					fp?.timeContainer?.getElementsByClassName("flatpickr-minute")?.[0];
+				minutesField?.setAttribute("tabIndex", "0");
+				const amPmField = fp?.timeContainer?.getElementsByClassName("flatpickr-am-pm")?.[0];
+				amPmField?.setAttribute("tabIndex", "0");
+				amPmField?.setAttribute("role", "button");
+			}
 		}
 
 		return {
 			onReady: [
 				upsertTimeArrows,
 				buildTimeArrows,
-				setAlly,
+				setTimeAlly,
 				() => {
 					fp?.loadedPlugins?.push("customElements");
 				},
