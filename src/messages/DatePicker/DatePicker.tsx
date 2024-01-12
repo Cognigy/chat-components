@@ -17,7 +17,7 @@ const DatePicker: FC = () => {
 
 	if (!message?.data?._plugin || message.data._plugin.type !== "date-picker") return;
 
-	const { openPickerButtonText, submitButtonText, enableTime, time_24hr, noCalendar } =
+	const { openPickerButtonText, submitButtonText, enableTime, time_24hr, noCalendar, eventName } =
 		message.data._plugin.data;
 
 	const openText = openPickerButtonText || "Pick date";
@@ -81,7 +81,6 @@ const DatePicker: FC = () => {
 		// Focus should be trapped within date-picker
 		// Handle Tab Navigation
 		if (tabKeyPress) {
-			console.log(event.target);
 			if (event.target === button) {
 				event.preventDefault();
 				calender?.focus(); // Move focus to calender from submit button
@@ -133,9 +132,10 @@ const DatePicker: FC = () => {
 							<Typography
 								variant="h2-semibold"
 								component="span"
-								dangerouslySetInnerHTML={{ __html: "Calendar" }}
 								className="webchat-list-template-header-title"
-							/>
+							>
+								{eventName || "Calendar"}
+							</Typography>
 						</span>
 						<button
 							onClick={handleClose}
