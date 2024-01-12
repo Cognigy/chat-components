@@ -71,15 +71,6 @@ const screens: TScreen[] = [
 		],
 	},
 	{
-		title: "Gallery",
-		anchor: "gallery",
-		messages: [
-			{
-				message: gallery as IMessage,
-			},
-		],
-	},
-	{
 		title: "Message Collation",
 		anchor: "message-collation",
 		messages: [
