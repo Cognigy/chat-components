@@ -17,7 +17,8 @@ const DatePicker: FC = () => {
 
 	if (!message?.data?._plugin || message.data._plugin.type !== "date-picker") return;
 
-	const { openPickerButtonText, submitButtonText, enableTime, time_24hr, noCalendar } = message.data._plugin.data;
+	const { openPickerButtonText, submitButtonText, enableTime, time_24hr, noCalendar } =
+		message.data._plugin.data;
 
 	const openText = openPickerButtonText || "Pick date";
 	const submitText = submitButtonText || "Confirm Selection";
