@@ -379,7 +379,9 @@
 	background-color: var(--black-95);
 }
 
-.wrapper .content :global(.flatpickr-day.flatpickr-disabled .dayInner) {
+.wrapper .content :global(.flatpickr-day.flatpickr-disabled .dayInner),
+.wrapper .content :global(.flatpickr-day.prevMonthDay.flatpickr-disabled .dayInner),
+.wrapper .content :global(.flatpickr-day.nextMonthDay.flatpickr-disabled .dayInner) {
 	background-color: transparent;
 }
 
