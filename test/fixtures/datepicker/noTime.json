@@ -4,15 +4,15 @@
 		"_plugin": {
 			"type": "date-picker",
 			"data": {
-				"eventName": "Date picker only",
+				"eventName": "Date picker from yesterday",
 				"locale": "en",
 				"enableTime": "",
-				"defaultDate": "",
+				"defaultDate": "tomorrow",
 				"mode": "single",
 				"wantDisable": false,
 				"enable_disable": null,
 				"function_enable_disable": "",
-				"minDate": "",
+				"minDate": "yesterday",
 				"maxDate": "",
 				"openPickerButtonText": "Date picker only",
 				"cancelButtonText": "",

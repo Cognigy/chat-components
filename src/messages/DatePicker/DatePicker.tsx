@@ -1,4 +1,4 @@
-import { FC, useState, KeyboardEvent } from "react";
+import { FC, useState, KeyboardEvent, useMemo } from "react";
 import classes from "./DatePicker.module.css";
 import classnames from "classnames";
 import Flatpickr from "react-flatpickr";
@@ -11,9 +11,10 @@ import { getRandomId } from "src/utils";
 import mainClasses from "src/main.module.css";
 
 const DatePicker: FC = () => {
-	const [showPicker, setShowPicker] = useState(false);
-	const [currentDate, setCurrentDate] = useState("");
 	const { action, message, messageParams } = useMessageContext();
+	const options = useMemo(() => getOptionsFromMessage(message), [message]);
+	const [showPicker, setShowPicker] = useState(false);
+	const [currentDate, setCurrentDate] = useState(options?.defaultDate || "");
 
 	if (!message?.data?._plugin || message.data._plugin.type !== "date-picker") return;
 
@@ -34,6 +35,7 @@ const DatePicker: FC = () => {
 
 	const handleClose = () => {
 		setShowPicker(false);
+		setCurrentDate(options?.defaultDate || "");
 	};
 
 	const handleSubmit = () => {
@@ -139,7 +141,6 @@ const DatePicker: FC = () => {
 						</span>
 						<button
 							onClick={handleClose}
-							// onKeyDown={handleKeyClose}
 							aria-label="Close DatePicker"
 							className={classes.right}
 						>
@@ -157,7 +158,7 @@ const DatePicker: FC = () => {
 							onChange={(_date, dateString: string) => {
 								setCurrentDate(dateString);
 							}}
-							options={getOptionsFromMessage(message)}
+							options={options}
 						/>
 					</div>
 					<div
