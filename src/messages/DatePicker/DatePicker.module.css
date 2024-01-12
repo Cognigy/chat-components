@@ -347,6 +347,10 @@
 	background-color: var(--black-95);
 }
 
+.wrapper .content :global(.flatpickr-day.flatpickr-disabled .dayInner) {
+	background-color: transparent;
+}
+
 .wrapper .content :global(.flatpickr-day.today .dayInner) {
 	background-color: var(--primary-color-opacity-20);
 }
@@ -406,24 +410,24 @@
 	left: -12px;
 }
 
-.wrapper .content :global(.flatpickr-day.disabled),
+.wrapper .content :global(.flatpickr-day.flatpickr-disabled),
 .wrapper .content :global(.flatpickr-disabled.flatpickr-day),
-.wrapper .content :global(.flatpickr-day.disabled:hover),
+.wrapper .content :global(.flatpickr-day.flatpickr-disabled:hover),
 .wrapper .content :global(.flatpickr-day.prevMonthDay),
 .wrapper .content :global(.flatpickr-day.nextMonthDay),
 .wrapper .content :global(.flatpickr-day.notAllowed),
 .wrapper .content :global(.flatpickr-day.notAllowed.prevMonthDay),
 .wrapper .content :global(.flatpickr-day.notAllowed.nextMonthDay) {
-	color: rgba(57, 57, 57, 0.3);
+	color: var(--black-80);
 	background: transparent;
 	border-color: transparent;
 	cursor: default;
 }
 
-.wrapper .content :global(.flatpickr-day.disabled),
-.wrapper .content :global(.flatpickr-day.disabled:hover) {
+.wrapper .content :global(.flatpickr-day.flatpickr-disabled),
+.wrapper .content :global(.flatpickr-day.flatpickr-disabled:hover) {
 	cursor: not-allowed;
-	color: rgba(57, 57, 57, 0.1);
+	color: var(--black-90);
 }
 
 .wrapper .content :global(.flatpickr-day.hidden) {

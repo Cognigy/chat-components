@@ -8,7 +8,7 @@
 				"locale": "en",
 				"enableTime": "true",
 				"defaultDate": "",
-				"mode": "single",
+				"mode": "range",
 				"wantDisable": true,
 				"enable_disable": ["weekends"],
 				"function_enable_disable": "",
