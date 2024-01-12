@@ -427,7 +427,6 @@
 .wrapper .content :global(.flatpickr-day.flatpickr-disabled),
 .wrapper .content :global(.flatpickr-day.flatpickr-disabled:hover) {
 	cursor: not-allowed;
-	color: var(--black-90);
 }
 
 .wrapper .content :global(.flatpickr-day.hidden) {
