@@ -18,7 +18,12 @@ export default defineConfig({
 	test: {
 		environment: "jsdom",
 		globals: true,
-		setupFiles: "./test/setup.js",
+		browser: {
+			name: "chrome",
+			enabled: true,
+			headless: true,
+		},
+		setupFiles: ["./test/preSetup.js", "./test/setup.js"],
 		css: {
 			modules: {
 				classNameStrategy: "non-scoped",
