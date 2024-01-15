@@ -9,10 +9,12 @@ body {
 	font-family: Figtree, sans-serif;
 	width: 375px;
 	height: auto;
-	min-height: 100vh;
+	min-height: 812px;
 	resize: horizontal;
 	margin-block: auto;
 	border-radius: 10px;
+	position: relative;
+	overflow: hidden;
 }
 
 .chat-bubble {
@@ -27,18 +29,6 @@ body {
 	100% {
 		opacity: 1;
 	}
-}
-
-#root {
-	display: flex;
-	flex-wrap: wrap;
-	flex-direction: row;
-	min-height: 100vh;
-	width: max-content;
-	align-items: flex-start;
-	box-sizing: border-box;
-	justify-content: space-around;
-	width: 100vw;
 }
 
 h1 {
@@ -69,14 +59,14 @@ nav ul {
 	list-style: none;
 	margin: 0;
 	padding: 0;
+	gap: 10px;
 }
 
 nav li {
-	/* display: flex; */
+	cursor: pointer;
 }
 
 nav a {
-	cursor: default;
 	text-decoration: none;
 	color: inherit;
 	/* display: block; */

@@ -4,12 +4,12 @@ import { useMessageContext } from "src/messages/hooks";
 import mainclasses from "src/main.module.css";
 import classes from "./List.module.css";
 import classnames from "classnames";
-import { PrimaryButton } from "src/common/ActionButtons";
+import { PrimaryButton } from "src/common/Buttons";
 import { getChannelPayload, getRandomId } from "src/utils";
 import { IWebchatAttachmentElement, IWebchatTemplateAttachment } from "@cognigy/socket-client";
 
 const List: FC = () => {
-	const { message, config, action } = useMessageContext();
+	const { message, config, action, onEmitAnalytics } = useMessageContext();
 	const payload = getChannelPayload(message, config);
 
 	const { elements, top_element_style, buttons } =
@@ -63,10 +63,13 @@ const List: FC = () => {
 				))}
 			{button && (
 				<PrimaryButton
+					isActionButton
 					action={action}
 					button={button}
 					buttonClassName="webchat-list-template-global-button"
 					containerClassName={classes.mainButtonWrapper}
+					config={config}
+					onEmitAnalytics={onEmitAnalytics}
 				/>
 			)}
 		</div>

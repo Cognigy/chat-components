@@ -1,4 +1,4 @@
-import { render, waitFor, screen } from "@testing-library/react";
+import { render } from "@testing-library/react";
 import { it, describe, expect } from "vitest";
 import Message from "src/messages/Message";
 import list from "test/fixtures/list.json";
@@ -7,46 +7,37 @@ import { IMessage } from "@cognigy/socket-client";
 describe("Message List", () => {
 	const message = list as unknown as IMessage;
 
-	it("renders List message", async () => {
-		await waitFor(() => {
-			render(<Message message={message} />);
-		});
+	it("renders List message", () => {
+		const { getByTestId } = render(<Message message={message} />);
 
-		expect(screen.getByTestId("list-message")).toBeInTheDocument();
+		expect(getByTestId("list-message")).toBeInTheDocument();
 	});
 
-	it("renders List message with large header", async () => {
-		await waitFor(() => {
-			render(<Message message={message} />);
-		});
+	it("renders List message with large header", () => {
+		const { getByTestId, getAllByTestId } = render(<Message message={message} />);
 
-		expect(screen.getByTestId("header-image")).toBeInTheDocument();
-		expect(screen.getAllByTestId("regular-image")).toHaveLength(2);
+		expect(getByTestId("header-image")).toBeInTheDocument();
+		expect(getAllByTestId("regular-image")).toHaveLength(2);
 	});
 
-	it("renders top element of the list small", async () => {
+	it("renders top element of the list small", () => {
 		list.data._cognigy._webchat.message.attachment.payload.top_element_style = "compact";
-		await waitFor(() => {
-			render(<Message message={message} />);
-		});
 
-		expect(screen.queryByTestId("header-image")).not.toBeInTheDocument();
-		expect(screen.getAllByTestId("regular-image")).toHaveLength(3);
+		const { queryByTestId, getAllByTestId } = render(<Message message={message} />);
+
+		expect(queryByTestId("header-image")).not.toBeInTheDocument();
+		expect(getAllByTestId("regular-image")).toHaveLength(3);
 		list.data._cognigy._webchat.message.attachment.payload.top_element_style = "large";
 	});
 
 	it("renders 'global' button", async () => {
-		await waitFor(() => {
-			render(<Message message={message} />);
-		});
+		const { getByText } = render(<Message message={message} />);
 
-		expect(screen.getByText("Global Button")).toBeInTheDocument();
+		expect(getByText("Global Button")).toBeInTheDocument();
 	});
 
-	it("should have static class names", async () => {
-		await waitFor(() => {
-			render(<Message message={message} />);
-		});
+	it("should have static class names", () => {
+		render(<Message message={message} />);
 
 		expect(document.querySelector(".webchat-list-template-root")).toBeInTheDocument();
 		expect(document.querySelector(".webchat-list-template-header")).toBeInTheDocument();
@@ -67,12 +58,10 @@ describe("Message List", () => {
 		expect(document.querySelector(".webchat-list-template-element-button")).toBeInTheDocument();
 	});
 
-	it("renders list and list items with correct roles", async () => {
-		await waitFor(() => {
-			render(<Message message={message} />);
-		});
+	it("renders list and list items with correct roles", () => {
+		const { getByRole, getAllByRole } = render(<Message message={message} />);
 
-		expect(screen.getByRole("list")).toBeInTheDocument();
-		expect(screen.getAllByRole("listitem")).toHaveLength(5);
+		expect(getByRole("list")).toBeInTheDocument();
+		expect(getAllByRole("listitem")).toHaveLength(5);
 	});
 });

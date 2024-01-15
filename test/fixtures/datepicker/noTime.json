@@ -1,0 +1,31 @@
+{
+	"text": "",
+	"data": {
+		"_plugin": {
+			"type": "date-picker",
+			"data": {
+				"eventName": "Date picker from yesterday",
+				"locale": "en",
+				"enableTime": "",
+				"defaultDate": "tomorrow",
+				"mode": "single",
+				"wantDisable": false,
+				"enable_disable": null,
+				"function_enable_disable": "",
+				"minDate": "yesterday",
+				"maxDate": "",
+				"openPickerButtonText": "Date picker only",
+				"cancelButtonText": "",
+				"submitButtonText": "Confirm Selection",
+				"time_24hr": "",
+				"dateFormat": "",
+				"defaultHour": 12,
+				"defaultMinute": 30,
+				"hourIncrement": 1,
+				"minuteIncrement": 5,
+				"noCalendar": false,
+				"weekNumbers": false
+			}
+		}
+	}
+}

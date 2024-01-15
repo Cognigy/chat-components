@@ -1,7 +1,7 @@
 import { IWebchatAttachmentElement } from "@cognigy/socket-client";
 import { FC, KeyboardEvent, useMemo, useState } from "react";
 import classes from "./Gallery.module.css";
-import buttonClasses from "src/common/ActionButtons/SingleButtons.module.css";
+import buttonClasses from "src/common/Buttons/Buttons.module.css";
 import { useMessageContext } from "../hooks";
 import classnames from "classnames";
 import ActionButtons from "src/common/ActionButtons/ActionButtons";
@@ -92,6 +92,7 @@ const GalleryItem: FC<GallerySlideProps> = props => {
 						<ActionButtons
 							buttonClassName={classnames(
 								buttonClasses.primaryButton,
+								buttonClasses.actionButton,
 								"webchat-carousel-template-button",
 							)}
 							payload={buttons}

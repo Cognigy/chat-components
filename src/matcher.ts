@@ -7,6 +7,7 @@ import {
 	List,
 	Gallery,
 	TextWithButtons,
+	DatePicker,
 	AdaptiveCard,
 } from "./messages";
 import { IWebchatConfig } from "./messages/types";
@@ -34,6 +35,13 @@ const defaultConfig: MatchConfig[] = [
 			return !!message?.text;
 		},
 		component: Text,
+	},
+	{
+		// Datepicker
+		rule: message => {
+			return message?.data?._plugin?.type === "date-picker";
+		},
+		component: DatePicker,
 	},
 	{
 		// Text with buttons / Quick Replies

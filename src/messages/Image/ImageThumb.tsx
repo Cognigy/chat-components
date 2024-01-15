@@ -3,13 +3,13 @@ import classes from "./Image.module.css";
 import classnames from "classnames/bind";
 import { useImageMessageContext } from "./hooks";
 import { useMessageContext } from "src/messages/hooks";
-import { PrimaryButton } from "src/common/ActionButtons";
+import { PrimaryButton } from "src/common/Buttons";
 import { DownloadIcon } from "src/assets/svg";
 
 const cx = classnames.bind(classes);
 
 const ImageThumb: FC = () => {
-	const { config, action } = useMessageContext();
+	const { config, action, onEmitAnalytics } = useMessageContext();
 	const { url, altText, isDownloadable, onExpand, button } = useImageMessageContext();
 	const [isImageBroken, setImageBroken] = useState(false);
 
@@ -48,11 +48,14 @@ const ImageThumb: FC = () => {
 			)}
 			{button && (
 				<PrimaryButton
+					isActionButton
 					button={button}
 					buttonClassName="webchat-buttons-template-button"
 					containerClassName={classes.downloadButtonWrapper}
 					customIcon={<DownloadIcon />}
 					action={action}
+					config={config}
+					onEmitAnalytics={onEmitAnalytics}
 				/>
 			)}
 		</div>

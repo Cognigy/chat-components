@@ -4,14 +4,14 @@ import { useMessageContext } from "src/messages/hooks";
 import { sanitizeHTML } from "src/sanitize";
 import { getRandomId } from "src/utils";
 import { getBackgroundImage } from "src/utils";
-import { PrimaryButton, SecondaryButton } from "src/common/ActionButtons";
+import { PrimaryButton, SecondaryButton } from "src/common/Buttons";
 import classnames from "classnames";
 import { sanitizeUrl } from "@braintree/sanitize-url";
 import { IWebchatAttachmentElement } from "@cognigy/socket-client";
 import { Typography } from "src/index";
 
 const ListItem: FC<{ element: IWebchatAttachmentElement; isHeaderElement?: boolean }> = props => {
-	const { action, config } = useMessageContext();
+	const { action, config, onEmitAnalytics } = useMessageContext();
 	const { element, isHeaderElement } = props;
 	const { title, subtitle, image_url, image_alt_text, default_action, buttons } = element;
 	const button = buttons && buttons?.[0];
@@ -116,10 +116,13 @@ const ListItem: FC<{ element: IWebchatAttachmentElement; isHeaderElement?: boole
 						>
 							{renderTitles}
 							<PrimaryButton
+								isActionButton
 								action={action}
 								button={button}
 								buttonClassName="webchat-list-template-header-button"
 								containerClassName={classes.listHeaderButtonWrapper}
+								config={config}
+								onEmitAnalytics={onEmitAnalytics}
 							/>
 						</div>
 					</>
@@ -137,10 +140,13 @@ const ListItem: FC<{ element: IWebchatAttachmentElement; isHeaderElement?: boole
 			</div>
 			{!isHeaderElement && (
 				<SecondaryButton
+					isActionButton
 					action={action}
 					button={button}
 					buttonClassName="webchat-list-template-element-button"
 					containerClassName={classes.listItemButtonWrapper}
+					config={config}
+					onEmitAnalytics={onEmitAnalytics}
 				/>
 			)}
 		</div>

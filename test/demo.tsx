@@ -15,6 +15,15 @@ import video from "test/fixtures/video.json";
 import videoYoutube from "test/fixtures/videoYoutube.json";
 import audio from "test/fixtures/audio.json";
 import AdaptiveCardPayloads from "test/fixtures/adaptiveCards.json";
+
+import datePicker from "test/fixtures/datepicker/singleDate.json";
+import datePickerMultiple from "test/fixtures/datepicker/multiple.json";
+import datePickerRange from "test/fixtures/datepicker/range.json";
+import datePickerWeeks from "test/fixtures/datepicker/weekNumbers.json";
+import datePickerNoTime from "test/fixtures/datepicker/noTime.json";
+import datePickerTimeonly from "test/fixtures/datepicker/timeOnly.json";
+import datePickerDisableWeekends from "test/fixtures/datepicker/disableWeekends.json";
+
 import { IMessage } from "@cognigy/socket-client";
 import { ChatEvent, TypingIndicator, Typography } from "../src/index.ts";
 
@@ -62,15 +71,6 @@ const screens: TScreen[] = [
 		],
 	},
 	{
-		title: "Gallery",
-		anchor: "gallery",
-		messages: [
-			{
-				message: gallery as IMessage,
-			},
-		],
-	},
-	{
 		title: "Message Collation",
 		anchor: "message-collation",
 		messages: [
@@ -109,37 +109,51 @@ const screens: TScreen[] = [
 		content: [<TypingIndicator />, <ChatEvent text="Conversation started" />],
 	},
 	{
-		title: "List messages",
-		anchor: "list-messages",
+		title: "Multimedia messages",
+		anchor: "multimedia-messages",
 		messages: [
+			{ message: image as IMessage },
+			{ message: imageDownloadable as IMessage },
 			{
-				message: listMessage as IMessage,
+				message: {
+					text: "Next one is a broken image",
+					source: "bot",
+					timestamp: "1701163314138",
+				},
 			},
+			{
+				message: { ...imageBroken, timestamp: "1701163314138", source: "bot" } as IMessage,
+				prevMessage: {
+					source: "bot",
+					timestamp: "1701163314138",
+				},
+			},
+			{ message: video as IMessage },
+			{ message: videoYoutube as IMessage },
+			{ message: audio as IMessage },
 		],
 	},
 	{
-		title: "Multimedia messages",
-		anchor: "multimedia-messages",
-		content: [<Typography variant="title1-semibold">This is a broken image</Typography>],
+		title: "List messages",
+		anchor: "list-messages",
+		messages: [{ message: listMessage as IMessage }],
+	},
+	{
+		title: "Gallery",
+		anchor: "gallery",
+		messages: [{ message: gallery as IMessage }],
+	},
+	{
+		title: "Datepicker",
+		anchor: "datepicker",
 		messages: [
-			{
-				message: video as IMessage,
-			},
-			{
-				message: videoYoutube as IMessage,
-			},
-			{
-				message: audio as IMessage,
-			},
-			{
-				message: image as IMessage,
-			},
-			{
-				message: imageDownloadable as IMessage,
-			},
-			{
-				message: imageBroken as IMessage,
-			},
+			{ message: datePicker as IMessage },
+			{ message: datePickerMultiple as IMessage },
+			{ message: datePickerRange as IMessage },
+			{ message: datePickerWeeks as IMessage },
+			{ message: datePickerNoTime as IMessage },
+			{ message: datePickerTimeonly as IMessage },
+			{ message: datePickerDisableWeekends as IMessage },
 		],
 	},
 	{
@@ -342,10 +356,10 @@ const Demo = () => {
 	const screen = screens.find(m => m.anchor === currentScreen);
 
 	return (
-		<>
+		<section>
 			<Menu currentScreen={currentScreen} setCurrentScreen={setCurrentScreen} />
 			<Screen messages={screen?.messages} content={screen?.content} />
-		</>
+		</section>
 	);
 };
 

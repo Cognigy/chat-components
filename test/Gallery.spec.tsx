@@ -1,4 +1,4 @@
-import { render, waitFor, screen } from "@testing-library/react";
+import { render } from "@testing-library/react";
 import { it, describe, expect } from "vitest";
 import Message from "src/messages/Message";
 import gallery from "test/fixtures/gallery.json";
@@ -7,42 +7,32 @@ import { IMessage } from "@cognigy/socket-client";
 describe("Message Gallery", () => {
 	const message = gallery as unknown as IMessage;
 
-	it("renders Gallery message", async () => {
-		await waitFor(() => {
-			render(<Message message={message} />);
-		});
+	it("renders Gallery message", () => {
+		const { getByTestId } = render(<Message message={message} />);
 
-		expect(screen.getByTestId("gallery-message")).toBeInTheDocument();
+		expect(getByTestId("gallery-message")).toBeInTheDocument();
 	});
 
-	it("renders images inside gallery", async () => {
-		await waitFor(() => {
-			render(<Message message={message} />);
-		});
+	it("renders images inside gallery", () => {
+		const { getAllByAltText } = render(<Message message={message} />);
 
-		expect(screen.getAllByAltText("Attachment Image")).toHaveLength(8);
+		expect(getAllByAltText("Attachment Image")).toHaveLength(8);
 	});
 
-	it("renders subtitles", async () => {
-		await waitFor(() => {
-			render(<Message message={message} />);
-		});
+	it("renders subtitles", () => {
+		const { getAllByText } = render(<Message message={message} />);
 
-		expect(screen.getAllByText(/foobar004g2/i)).toHaveLength(3);
+		expect(getAllByText(/foobar004g2/i)).toHaveLength(3);
 	});
 
-	it("renders with navigation arrows", async () => {
-		await waitFor(() => {
-			render(<Message message={message} />);
-		});
+	it("renders with navigation arrows", () => {
+		const { getByLabelText } = render(<Message message={message} />);
 
-		expect(screen.getByLabelText("Next slide")).toBeVisible();
+		expect(getByLabelText("Next slide")).toBeVisible();
 	});
 
-	it("renders with pagination bullets", async () => {
-		await waitFor(() => {
-			render(<Message message={message} />);
-		});
+	it("renders with pagination bullets", () => {
+		render(<Message message={message} />);
 
 		expect(document.querySelector(".swiper-pagination")).toBeInTheDocument();
 	});
