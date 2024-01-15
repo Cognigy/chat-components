@@ -40,8 +40,8 @@ const DatePicker: FC = () => {
 	};
 
 	const handleSubmit = () => {
-		setShowPicker(false);
 		action && action(currentDate, null);
+		handleClose();
 	};
 
 	const handleKeyDown = (event: KeyboardEvent) => {
@@ -81,6 +81,11 @@ const DatePicker: FC = () => {
 			handleClose();
 		}
 
+		// add flash effect on focus
+		if (tabKeyPress || shiftTabKeyPress) {
+			calender.classList.add("flash-focus");
+		}
+
 		// Focus should be trapped within date-picker
 		// Handle Tab Navigation
 		if (tabKeyPress) {
@@ -105,14 +110,17 @@ const DatePicker: FC = () => {
 	};
 
 	return (
-		<>
-			<PrimaryButton onClick={handleOpen} disabled={!!messageParams?.hasReply}>
+		<div data-testid="datepicker-message">
+			<PrimaryButton
+				onClick={handleOpen}
+				disabled={!!messageParams?.hasReply}
+				data-testid="button-open"
+			>
 				{openText}
 			</PrimaryButton>
 			{showPicker && (
 				<div
 					className={classnames(classes.wrapper, "webchat-plugin-date-picker")}
-					data-testid="datepicker-message"
 					onKeyDown={handleKeyDown}
 					tabIndex={0}
 					role="dialog"
@@ -144,6 +152,7 @@ const DatePicker: FC = () => {
 							onClick={handleClose}
 							aria-label="Close DatePicker"
 							className={classes.right}
+							data-testid="button-close"
 						>
 							<CloseIcon />
 						</button>
@@ -170,13 +179,17 @@ const DatePicker: FC = () => {
 							hasNoCalendar && classes.noCalendar,
 						)}
 					>
-						<PrimaryButton onClick={handleSubmit} disabled={!currentDate}>
+						<PrimaryButton
+							onClick={handleSubmit}
+							disabled={!currentDate}
+							data-testid="button-submit"
+						>
 							{submitText}
 						</PrimaryButton>
 					</div>
 				</div>
 			)}
-		</>
+		</div>
 	);
 };
 

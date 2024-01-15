@@ -114,6 +114,25 @@
 	outline: 0;
 }
 
+.wrapper .content :global(.flatpickr-calendar.flash-focus:focus) {
+	outline: 0;
+	-webkit-animation-duration: 1s;
+	animation-duration: 1s;
+	-webkit-animation-fill-mode: both;
+	animation-fill-mode: both;
+	animation-name: flatpickr-flash-focus;
+	border-radius: 10px;
+}
+
+@keyframes flatpickr-flash-focus {
+	0% {
+		background-color: var(--black-95);
+	}
+	100% {
+		background-color: transparent;
+	}
+}
+
 .wrapper .content :global(.flatpickr-wrapper) {
 	width: 100%;
 	display: flex;
@@ -206,6 +225,7 @@
 	-webkit-appearance: none;
 	appearance: none;
 	background-color: var(--white);
+	color: var(--black-10);
 }
 
 .wrapper .content :global(.flatpickr-current-month .flatpickr-monthDropdown-months::-ms-expand) {
@@ -249,6 +269,7 @@
 	height: 100%;
 	font-size: 14px;
 	box-sizing: border-box;
+	color: var(--black-10);
 }
 
 .wrapper .content :global(.flatpickr-current-month input.cur-year:focus) {
@@ -341,7 +362,7 @@
 	background: none;
 	-webkit-box-sizing: border-box;
 	box-sizing: border-box;
-	color: #393939;
+	color: var(--black-10);
 	cursor: pointer;
 	font-weight: 600;
 	-webkit-flex-basis: 13%;
@@ -652,6 +673,7 @@
 	box-sizing: border-box;
 	height: 44px;
 	width: 44px;
+	color: var(--black-10);
 }
 
 .wrapper .content :global(.flatpickr-time input.flatpickr-minute),
@@ -678,6 +700,7 @@
 	width: 41px;
 	height: 100%;
 	margin-left: 24px;
+	color: var(--black-10);
 }
 
 .wrapper .content :global(.flatpickr-time .flatpickr-am-pm span:not(.disabled)) {
