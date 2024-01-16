@@ -1,6 +1,6 @@
 {
 	"name": "@cognigy/chat-components",
-	"version": "0.10.2",
+	"version": "0.10.3",
 	"type": "module",
 	"exports": "./dist/chat-components.js",
 	"types": "./dist/index.d.ts",
