@@ -22,6 +22,12 @@ and much more. We aim to use these components in various products such as:
 `npm run dev`
 `npm run test:watch`
 
-## Publish to NPM registry
+## Release
 
-`npm publish --access public`
+`npm version patch`
+or
+`npm version minor`
+
+It will bump the version in `package.json`, commit it and create a git tag.
+
+When a PR is merged into `main`, the new release on GitHub will be created and the new version will be published on npm.
