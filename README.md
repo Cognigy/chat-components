@@ -20,6 +20,7 @@ and much more. We aim to use these components in various products such as:
 ## Develop
 
 `npm run dev`
+
 `npm run test:watch`
 
 ## Release
@@ -27,6 +28,8 @@ and much more. We aim to use these components in various products such as:
 `npm version patch`
 or
 `npm version minor`
+
+`git push --follow-tags`
 
 It will bump the version in `package.json`, commit it and create a git tag.
 
