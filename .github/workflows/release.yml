@@ -1,9 +1,9 @@
 name: "Release"
 
-on: # yamllint disable-line rule:truthy
+on:
     push:
         tags:
-            - "**"
+            - "v*"
 
 jobs:
     release:
