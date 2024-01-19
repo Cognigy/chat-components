@@ -124,7 +124,7 @@ const ActionButton: FC<ActionButtonProps> = props => {
 			role={isWebURL ? "link" : undefined}
 		>
 			<Typography
-				variant={size === "large" ? "title1-regular" : "cta-semibold"}
+				variant={size === "large" ? "title1-semibold" : "cta-semibold"}
 				component="span"
 				dangerouslySetInnerHTML={{ __html }}
 			/>

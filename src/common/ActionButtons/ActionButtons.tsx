@@ -7,6 +7,7 @@ import { FC, ReactElement } from "react";
 import { MessageProps } from "src/messages/Message";
 
 export interface ActionButtonsProps {
+	className?: string;
 	action?: MessageProps["action"];
 	payload: IWebchatButton[] | IWebchatQuickReply[];
 	containerClassName?: string;
@@ -20,6 +21,7 @@ export interface ActionButtonsProps {
 
 export const ActionButtons: FC<ActionButtonsProps> = props => {
 	const {
+		className,
 		payload,
 		buttonClassName,
 		containerClassName,
@@ -62,7 +64,7 @@ export const ActionButtons: FC<ActionButtonsProps> = props => {
 
 	return (
 		<div
-			className={classnames(classes.buttons, containerClassName)}
+			className={classnames(className, classes.buttons, containerClassName)}
 			role={buttons.length > 1 ? "group" : undefined}
 			data-testid="action-buttons"
 		>
