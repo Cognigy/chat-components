@@ -1,29 +1,20 @@
 import { FC } from "react";
 import classes from "./File.module.css";
 import classnames from "classnames";
+import { IUploadFileAttachmentData } from "@cognigy/socket-client";
 import { useMessageContext } from "src/messages/hooks";
 import { Typography } from "src/index";
 import { getFileExtension, getFileName } from "./helper";
 
-export interface IUploadFileMetaData {
-	runtimeFileId: string;
-	fileName: string;
-	status?: "infected" | "scanned";
-	mimeType: string;
-	size: number;
-	url: string;
-}
-
 const File: FC = () => {
 	const { message } = useMessageContext();
-	// @ts-expect-error TODO:fix it in socket-client
-	const attachments = message.data?.attachments as IUploadFileMetaData[];
+	const attachments = message.data?.attachments as IUploadFileAttachmentData[];
 
 	if (!attachments || attachments.length === 0) return null;
 
 	return (
 		<div className={classnames(classes.filesWrapper, "webchat-media-files-template-root")}>
-			{attachments.map((attachment: IUploadFileMetaData, index: number) => {
+			{attachments.map((attachment: IUploadFileAttachmentData, index: number) => {
 				const { fileName, size, url } = attachment;
 
 				return (

@@ -94,7 +94,6 @@ const defaultConfig: MatchConfig[] = [
 	{
 		// File
 		rule: (message) => {
-			// @ts-expect-error TODO:fix it in socket-client
 			const attachments = message?.data?.attachments;
 			if (!attachments) return false;
 
