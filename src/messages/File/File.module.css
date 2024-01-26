@@ -6,9 +6,7 @@ article .filesWrapper {
 }
 
 article:global(.user) .filesWrapper {
-	background: var(--background-user-message);
-	border-color: transparent;
-	margin-inline-start: auto;
+	justify-content: flex-end;
 }
 
 article .filePreview {

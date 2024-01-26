@@ -106,6 +106,13 @@ const screens: TScreen[] = [
 					timestamp: "1701163314138",
 				},
 			},
+			{ 
+				message: {...file, timestamp: "1701163314138", source: "user"} as IMessage,
+				prevMessage: {
+					source: "bot",
+					timestamp: "1701163314138",
+				},
+			},
 		],
 		content: [<TypingIndicator />, <ChatEvent text="Conversation started" />],
 	},
@@ -132,7 +139,6 @@ const screens: TScreen[] = [
 			{ message: video as IMessage },
 			{ message: videoYoutube as IMessage },
 			{ message: audio as IMessage },
-			{ message: file as IMessage}
 		],
 	},
 	{
