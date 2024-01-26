@@ -4,6 +4,7 @@ import {
 	Image,
 	Video,
 	Audio,
+	File,
 	List,
 	Gallery,
 	TextWithButtons,
@@ -89,6 +90,17 @@ const defaultConfig: MatchConfig[] = [
 			return channelConfig?.message?.attachment?.type === "audio";
 		},
 		component: Audio,
+	},
+	{
+		// File
+		rule: (message) => {
+			// @ts-expect-error TODO:fix it in socket-client
+			const attachments = message?.data?.attachments;
+			if (!attachments) return false;
+
+			return attachments;
+		},
+		component: File,
 	},
 	{
 		// List

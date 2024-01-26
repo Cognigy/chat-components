@@ -1,0 +1,39 @@
+article .filesWrapper {
+	display: flex;
+	flex-direction: row;
+	flex-wrap: wrap;
+	gap: 8px;
+}
+
+article:global(.user) .filesWrapper {
+	background: var(--background-user-message);
+	border-color: transparent;
+	margin-inline-start: auto;
+}
+
+article .filePreview {
+	display: flex;
+	gap: 12px;
+	padding: 8px 12px;
+	border-radius: 15px;
+	height: 33px;
+	background-color: var(--black-95);
+	max-width: 295px;
+}
+
+article .filePreview .fileNameWrapper {
+	display: flex;
+	flex-direction: row;
+	align-items: center;	
+	max-width: 200px;
+}
+
+article .filePreview .fileNameWrapper .fileName {
+	white-space: nowrap;
+	text-overflow: ellipsis;
+	overflow: hidden;
+}
+
+article .filePreview .fileNameWrapper .fileExtension {
+	max-width: 60px;
+}
