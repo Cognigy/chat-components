@@ -22,16 +22,21 @@ article .filePreview {
 article .filePreview .fileNameWrapper {
 	display: flex;
 	flex-direction: row;
-	align-items: center;	
+	align-items: center;
 	max-width: 200px;
+	color: var(--black-10);
 }
 
-article .filePreview .fileNameWrapper .fileName {
+article .filePreview .fileName {
 	white-space: nowrap;
 	text-overflow: ellipsis;
 	overflow: hidden;
 }
 
-article .filePreview .fileNameWrapper .fileExtension {
+article .filePreview .fileExtension {
 	max-width: 60px;
+}
+
+article .filePreview .fileSize {
+	color: var(--black-40);
 }
