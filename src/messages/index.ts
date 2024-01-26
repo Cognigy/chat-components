@@ -9,4 +9,15 @@ import DatePicker from "./DatePicker";
 import TextWithButtons from "./TextWithButtons/TextWithButtons";
 import { AdaptiveCards as AdaptiveCard } from "./AdaptiveCards";
 
-export { Text, Image, Video, Audio, File, List, Gallery, DatePicker, TextWithButtons, AdaptiveCard };
+export {
+	Text,
+	Image,
+	Video,
+	Audio,
+	File,
+	List,
+	Gallery,
+	DatePicker,
+	TextWithButtons,
+	AdaptiveCard,
+};

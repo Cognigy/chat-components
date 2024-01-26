@@ -106,8 +106,8 @@ const screens: TScreen[] = [
 					timestamp: "1701163314138",
 				},
 			},
-			{ 
-				message: {...file, timestamp: "1701163314138", source: "user"} as IMessage,
+			{
+				message: { ...file, timestamp: "1701163314138", source: "user" } as IMessage,
 				prevMessage: {
 					source: "bot",
 					timestamp: "1701163314138",

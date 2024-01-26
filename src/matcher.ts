@@ -93,7 +93,7 @@ const defaultConfig: MatchConfig[] = [
 	},
 	{
 		// File
-		rule: (message) => {
+		rule: message => {
 			const attachments = message?.data?.attachments;
 			if (!attachments) return false;
 
