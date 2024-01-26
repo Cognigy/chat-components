@@ -19,8 +19,6 @@ const File: FC = () => {
 	// @ts-expect-error TODO:fix it in socket-client
 	const attachments = message.data?.attachments as IUploadFileMetaData[];
 
-	console.log("attachments", attachments);
-
 	if (!attachments || attachments.length === 0) return null;
 
 	return (
