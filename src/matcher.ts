@@ -97,7 +97,7 @@ const defaultConfig: MatchConfig[] = [
 			const attachments = message?.data?.attachments;
 			if (!attachments) return false;
 
-			return attachments;
+			return true;
 		},
 		component: File,
 	},
