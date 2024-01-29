@@ -26,9 +26,11 @@ const defaultConfig: MatchConfig[] = [
 		// Text message
 		rule: (message, config) => {
 			// do not render engagement messages unless configured!
+			// do not render messages with file attachments. It will be rendered by the File component
 			if (
-				message?.source === "engagement" &&
-				!config?.settings?.showEngagementMessagesInChat
+				(message?.source === "engagement" &&
+					!config?.settings?.showEngagementMessagesInChat) ||
+				message?.data?.attachments
 			) {
 				return false;
 			}
