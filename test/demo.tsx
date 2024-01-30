@@ -14,6 +14,7 @@ import imageBroken from "test/fixtures/imageBroken.json";
 import video from "test/fixtures/video.json";
 import videoYoutube from "test/fixtures/videoYoutube.json";
 import audio from "test/fixtures/audio.json";
+import file from "test/fixtures/file.json";
 import AdaptiveCardPayloads from "test/fixtures/adaptiveCards.json";
 
 import datePicker from "test/fixtures/datepicker/singleDate.json";
@@ -102,6 +103,13 @@ const screens: TScreen[] = [
 				message: {
 					text: "Hi, I need help with my order",
 					source: "user",
+					timestamp: "1701163314138",
+				},
+			},
+			{
+				message: { ...file, timestamp: "1701163314138", source: "user" } as IMessage,
+				prevMessage: {
+					source: "bot",
 					timestamp: "1701163314138",
 				},
 			},

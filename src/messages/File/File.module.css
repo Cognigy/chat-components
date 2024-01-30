@@ -1,0 +1,42 @@
+article .filesWrapper {
+	display: flex;
+	flex-direction: row;
+	flex-wrap: wrap;
+	gap: 8px;
+}
+
+article:global(.user) .filesWrapper {
+	justify-content: flex-end;
+}
+
+article .filePreview {
+	display: flex;
+	gap: 12px;
+	padding: 8px 12px;
+	border-radius: 15px;
+	height: 33px;
+	background-color: var(--black-95);
+	max-width: 295px;
+}
+
+article .filePreview .fileNameWrapper {
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+	max-width: 200px;
+	color: var(--black-10);
+}
+
+article .filePreview .fileName {
+	white-space: nowrap;
+	text-overflow: ellipsis;
+	overflow: hidden;
+}
+
+article .filePreview .fileExtension {
+	max-width: 60px;
+}
+
+article .filePreview .fileSize {
+	color: var(--black-40);
+}

@@ -4,6 +4,7 @@ import {
 	Image,
 	Video,
 	Audio,
+	File,
 	List,
 	Gallery,
 	TextWithButtons,
@@ -25,9 +26,11 @@ const defaultConfig: MatchConfig[] = [
 		// Text message
 		rule: (message, config) => {
 			// do not render engagement messages unless configured!
+			// do not render messages with file attachments. It will be rendered by the File component
 			if (
-				message?.source === "engagement" &&
-				!config?.settings?.showEngagementMessagesInChat
+				(message?.source === "engagement" &&
+					!config?.settings?.showEngagementMessagesInChat) ||
+				message?.data?.attachments
 			) {
 				return false;
 			}
@@ -89,6 +92,16 @@ const defaultConfig: MatchConfig[] = [
 			return channelConfig?.message?.attachment?.type === "audio";
 		},
 		component: Audio,
+	},
+	{
+		// File
+		rule: message => {
+			const attachments = message?.data?.attachments;
+			if (!attachments) return false;
+
+			return true;
+		},
+		component: File,
 	},
 	{
 		// List
