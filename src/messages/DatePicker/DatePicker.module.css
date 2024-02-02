@@ -226,6 +226,11 @@
 	appearance: none;
 	background-color: var(--white);
 	color: var(--black-10);
+	font-size: 14px;
+}
+
+.wrapper .content.isMobile :global(.flatpickr-current-month .flatpickr-monthDropdown-months) {
+	font-size: 16px;
 }
 
 .wrapper .content :global(.flatpickr-current-month .flatpickr-monthDropdown-months::-ms-expand) {
@@ -252,6 +257,10 @@
 	height: 44px;
 }
 
+.wrapper .content.isMobile :global(.flatpickr-current-month .numInputWrapper) {
+	width: 64px;
+}
+
 .wrapper .content :global(.flatpickr-current-month .numInputWrapper span.arrowUp),
 .wrapper .content :global(.flatpickr-current-month .numInputWrapper span.arrowDown) {
 	display: none;
@@ -270,6 +279,10 @@
 	font-size: 14px;
 	box-sizing: border-box;
 	color: var(--black-10);
+}
+
+.wrapper .content.isMobile :global(.flatpickr-current-month input.cur-year) {
+	font-size: 16px;
 }
 
 .wrapper .content :global(.flatpickr-current-month input.cur-year:focus) {
@@ -619,6 +632,10 @@
 	align-items: center;
 }
 
+.wrapper .content.content.isMobile :global(.flatpickr-time .numInputWrapper) {
+	width: 46px;
+}
+
 .wrapper .content :global(.flatpickr-time span.arrowUp:after),
 .wrapper .content :global(.flatpickr-time span.arrowDown:after) {
 	display: none;
@@ -631,6 +648,11 @@
 	display: flex;
 	justify-content: center;
 	cursor: pointer;
+}
+
+.wrapper .content.isMobile :global(.flatpickr-time span.arrowUp),
+.wrapper .content.isMobile :global(.flatpickr-time span.arrowDown) {
+	width: 46px;
 }
 
 .wrapper .content :global(.flatpickr-time span.arrowUp.disabled),
@@ -676,6 +698,10 @@
 	color: var(--black-10);
 }
 
+.wrapper .content.isMobile :global(.flatpickr-time input) {
+	font-size: 16px;
+}
+
 .wrapper .content :global(.flatpickr-time input.flatpickr-minute),
 .wrapper .content :global(.flatpickr-time input.flatpickr-second) {
 	font-weight: 400;
@@ -701,6 +727,10 @@
 	height: 100%;
 	margin-left: 24px;
 	color: var(--black-10);
+}
+
+.wrapper .content.isMobile :global(.flatpickr-time .flatpickr-am-pm) {
+	font-size: 16px;
 }
 
 .wrapper .content :global(.flatpickr-time .flatpickr-am-pm span:not(.disabled)) {

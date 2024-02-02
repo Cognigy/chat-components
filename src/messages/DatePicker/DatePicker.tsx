@@ -9,12 +9,15 @@ import Typography from "src/common/Typography";
 import { PrimaryButton } from "src/common/Buttons";
 import { getRandomId } from "src/utils";
 import mainClasses from "src/main.module.css";
+import { useMediaQuery } from "react-responsive";
 
 const DatePicker: FC = () => {
 	const { action, message, messageParams } = useMessageContext();
 	const options = useMemo(() => getOptionsFromMessage(message), [message]);
 	const [showPicker, setShowPicker] = useState(false);
 	const [currentDate, setCurrentDate] = useState(options?.defaultDate || "");
+
+	const isMobile = useMediaQuery({ query: "(max-width: 575px)" });
 
 	if (!message?.data?._plugin || message.data._plugin.type !== "date-picker") return;
 
@@ -161,6 +164,7 @@ const DatePicker: FC = () => {
 					<div
 						className={classnames(
 							classes.content,
+							isMobile && classes.isMobile,
 							"webchat-plugin-date-picker-content",
 						)}
 					>
