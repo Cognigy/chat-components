@@ -177,22 +177,22 @@ const DatePicker: FC = () => {
 							}}
 							options={options}
 						/>
-					</div>
-					<div
-						className={classnames(
-							classes.footer,
-							"webchat-plugin-date-picker-footer",
-							hasTime && classes.hasTime,
-							hasNoCalendar && classes.noCalendar,
-						)}
-					>
-						<PrimaryButton
-							onClick={handleSubmit}
-							disabled={!currentDate}
-							data-testid="button-submit"
+						<div
+							className={classnames(
+								classes.footer,
+								"webchat-plugin-date-picker-footer",
+								hasTime && classes.hasTime,
+								hasNoCalendar && classes.noCalendar,
+							)}
 						>
-							{submitText}
-						</PrimaryButton>
+							<PrimaryButton
+								onClick={handleSubmit}
+								disabled={!currentDate}
+								data-testid="button-submit"
+							>
+								{submitText}
+							</PrimaryButton>
+						</div>
 					</div>
 				</div>
 			)}
