@@ -10,12 +10,17 @@
 	overflow: hidden;
 }
 
+.wrapper.isMobile {
+	overflow-y: auto;
+}
+
 .header {
 	display: flex;
 	border-bottom: 1px solid var(--black-80);
 	padding: 20px;
 	align-items: center;
 	justify-content: space-between;
+	background-color: var(--white);
 }
 
 .header .left {
@@ -44,9 +49,19 @@
 	box-sizing: border-box;
 }
 
+.wrapper.isMobile .header {
+	position: sticky;
+	top: 0;
+	z-index: 5;
+}
+
 .content {
 	margin-top: 20px;
 	padding: 0px 10px;
+}
+
+.wrapper.isMobile .content {
+	padding-bottom: 40px;
 }
 
 .footer {
@@ -229,7 +244,7 @@
 	font-size: 14px;
 }
 
-.wrapper .content.isMobile :global(.flatpickr-current-month .flatpickr-monthDropdown-months) {
+.wrapper.isMobile .content :global(.flatpickr-current-month .flatpickr-monthDropdown-months) {
 	font-size: 16px;
 }
 
@@ -257,7 +272,7 @@
 	height: 44px;
 }
 
-.wrapper .content.isMobile :global(.flatpickr-current-month .numInputWrapper) {
+.wrapper.isMobile .content :global(.flatpickr-current-month .numInputWrapper) {
 	width: 64px;
 }
 
@@ -281,7 +296,7 @@
 	color: var(--black-10);
 }
 
-.wrapper .content.isMobile :global(.flatpickr-current-month input.cur-year) {
+.wrapper.isMobile .content :global(.flatpickr-current-month input.cur-year) {
 	font-size: 16px;
 }
 
@@ -471,11 +486,11 @@
 }
 .wrapper .content :global(.flatpickr-day.inRange .dayInner::after),
 .wrapper .content :global(.flatpickr-day.startRange:not(.endRange) .dayInner::after) {
-	right: -12px;
+	right: -13px;
 }
 .wrapper .content :global(.flatpickr-day.inRange .dayInner::before),
 .wrapper .content :global(.flatpickr-day.endRange:not(.startRange) .dayInner::before) {
-	left: -12px;
+	left: -13px;
 }
 
 .wrapper .content :global(.flatpickr-day.flatpickr-disabled),
@@ -650,8 +665,8 @@
 	cursor: pointer;
 }
 
-.wrapper .content.isMobile :global(.flatpickr-time span.arrowUp),
-.wrapper .content.isMobile :global(.flatpickr-time span.arrowDown) {
+.wrapper.isMobile .content :global(.flatpickr-time span.arrowUp),
+.wrapper.isMobile .content :global(.flatpickr-time span.arrowDown) {
 	width: 46px;
 }
 
@@ -698,7 +713,7 @@
 	color: var(--black-10);
 }
 
-.wrapper .content.isMobile :global(.flatpickr-time input) {
+.wrapper.isMobile .content :global(.flatpickr-time input) {
 	font-size: 16px;
 }
 
@@ -729,7 +744,7 @@
 	color: var(--black-10);
 }
 
-.wrapper .content.isMobile :global(.flatpickr-time .flatpickr-am-pm) {
+.wrapper.isMobile .content :global(.flatpickr-time .flatpickr-am-pm) {
 	font-size: 16px;
 }
 

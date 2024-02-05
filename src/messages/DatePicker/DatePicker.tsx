@@ -123,7 +123,11 @@ const DatePicker: FC = () => {
 			</PrimaryButton>
 			{showPicker && (
 				<div
-					className={classnames(classes.wrapper, "webchat-plugin-date-picker")}
+					className={classnames(
+						classes.wrapper,
+						isMobile && classes.isMobile,
+						"webchat-plugin-date-picker",
+					)}
 					onKeyDown={handleKeyDown}
 					tabIndex={0}
 					role="dialog"
@@ -164,7 +168,6 @@ const DatePicker: FC = () => {
 					<div
 						className={classnames(
 							classes.content,
-							isMobile && classes.isMobile,
 							"webchat-plugin-date-picker-content",
 						)}
 					>
