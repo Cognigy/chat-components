@@ -165,18 +165,20 @@ const DatePicker: FC = () => {
 						</button>
 					</div>
 
-					<div
-						className={classnames(
-							classes.content,
-							"webchat-plugin-date-picker-content",
-						)}
-					>
-						<Flatpickr
-							onChange={(_date, dateString: string) => {
-								setCurrentDate(dateString);
-							}}
-							options={options}
-						/>
+					<div className={classes.contentWrapper}>
+						<div
+							className={classnames(
+								classes.content,
+								"webchat-plugin-date-picker-content",
+							)}
+						>
+							<Flatpickr
+								onChange={(_date, dateString: string) => {
+									setCurrentDate(dateString);
+								}}
+								options={options}
+							/>
+						</div>
 						<div
 							className={classnames(
 								classes.footer,

@@ -51,7 +51,7 @@
 	padding: 20px 10px 0px 10px;
 }
 
-.wrapper.isMobile .content {
+.wrapper.isMobile .contentWrapper {
 	overflow-y: auto;
 	overflow-x: hidden;
 	padding-bottom: 40px;
