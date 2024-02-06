@@ -3,11 +3,13 @@ import { FC } from "react";
 import { Text } from "src/messages";
 
 import classes from "./TextWithButtons.module.css";
+import mainClasses from "src/main.module.css";
 import { useMessageContext } from "../hooks";
 
-import { getChannelPayload } from "src/utils";
+import { getChannelPayload, getRandomId } from "src/utils";
 import ActionButtons from "src/common/ActionButtons/ActionButtons";
 import { IWebchatTemplateAttachment } from "@cognigy/socket-client";
+import classNames from "classnames";
 
 /**
  * Combines Text with Buttons + Quick Replies media types as
@@ -31,19 +33,40 @@ const TextWithButtons: FC = () => {
 	const shouldBeDisabled = isQuickReplies && messageParams?.hasReply;
 	const modifiedAction = shouldBeDisabled ? undefined : action;
 
+	const webchatButtonTemplateTextId = getRandomId("webchatButtonTemplateHeader");
+	const classType = isQuickReplies ? "quick-reply" : "buttons";
+
 	return (
-		<>
-			<Text content={text} />
+		<div className={`webchat-${classType}-template-root`}>
+			<Text
+				content={text}
+				className={`webchat-${classType}-template-header`}
+				id={webchatButtonTemplateTextId}
+			/>
+
+			{buttons.length > 1 && (
+				<span
+					className={classNames(mainClasses.srOnly, "sr-only")}
+					id={`srOnly-${webchatButtonTemplateTextId}`}
+				>
+					With {buttons?.length} buttons or links in
+				</span>
+			)}
+
 			<ActionButtons
 				action={modifiedAction}
-				buttonClassName={classes.button}
-				containerClassName={classes.buttons}
+				buttonClassName={classNames(classes.button, `webchat-${classType}-template-button`)}
+				containerClassName={classNames(
+					classes.buttons,
+					isQuickReplies && "webchat-quick-reply-template-replies-container",
+				)}
 				payload={buttons}
 				showUrlIcon
 				config={config}
 				onEmitAnalytics={onEmitAnalytics}
+				templateTextId={webchatButtonTemplateTextId}
 			/>
-		</>
+		</div>
 	);
 };
 

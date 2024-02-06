@@ -5,6 +5,7 @@ import classnames from "classnames";
 import classes from "./ActionButtons.module.css";
 import { FC, ReactElement } from "react";
 import { MessageProps } from "src/messages/Message";
+import { getRandomId } from "src/utils";
 
 export interface ActionButtonsProps {
 	className?: string;
@@ -17,6 +18,7 @@ export interface ActionButtonsProps {
 	config: MessageProps["config"];
 	onEmitAnalytics: MessageProps["onEmitAnalytics"];
 	size?: "small" | "large";
+	templateTextId?: string;
 }
 
 export const ActionButtons: FC<ActionButtonsProps> = props => {
@@ -31,6 +33,7 @@ export const ActionButtons: FC<ActionButtonsProps> = props => {
 		config,
 		onEmitAnalytics,
 		size,
+		templateTextId,
 	} = props;
 
 	if (!payload || payload?.length === 0) return null;
@@ -44,6 +47,10 @@ export const ActionButtons: FC<ActionButtonsProps> = props => {
 
 		return true;
 	});
+
+	const webchatButtonTemplateButtonId = getRandomId("webchatButtonTemplateButton");
+
+	//TODO: add config conditional autofocus on first button
 
 	const buttonElements = buttons.map((button, index: number) => (
 		<ActionButton
@@ -59,6 +66,7 @@ export const ActionButtons: FC<ActionButtonsProps> = props => {
 			config={config}
 			onEmitAnalytics={onEmitAnalytics}
 			size={size ? size : "small"}
+			id={`${webchatButtonTemplateButtonId}-${index}`}
 		/>
 	));
 
@@ -66,6 +74,9 @@ export const ActionButtons: FC<ActionButtonsProps> = props => {
 		<div
 			className={classnames(className, classes.buttons, containerClassName)}
 			role={buttons.length > 1 ? "group" : undefined}
+			aria-labelledby={
+				buttons.length > 1 ? `${templateTextId} srOnly-${templateTextId}` : undefined
+			}
 			data-testid="action-buttons"
 		>
 			{buttonElements}

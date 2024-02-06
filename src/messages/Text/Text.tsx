@@ -4,9 +4,12 @@ import ChatBubble from "../../common/ChatBubble";
 import { useMessageContext } from "../hooks";
 import { replaceUrlsWithHTMLanchorElem } from "src/utils";
 import { sanitizeHTML } from "src/sanitize";
+import classNames from "classnames";
 
 interface TextProps {
 	content?: string;
+	className?: string;
+	id?: string;
 }
 
 const Text: FC<TextProps> = props => {
@@ -25,7 +28,11 @@ const Text: FC<TextProps> = props => {
 
 	return (
 		<ChatBubble>
-			<div className={classes.text} dangerouslySetInnerHTML={{ __html: __html }}></div>
+			<div
+				id={props?.id}
+				className={classNames(classes.text, props?.className)}
+				dangerouslySetInnerHTML={{ __html: __html }}
+			></div>
 		</ChatBubble>
 	);
 };
