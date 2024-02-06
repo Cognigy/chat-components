@@ -8,7 +8,6 @@ import styles from "./styles.module.css";
 import type { IMessage } from "@cognigy/socket-client";
 import ChatBubble from "src/common/ChatBubble";
 import type { Action, HostConfig } from "adaptivecards";
-import { useMediaQuery } from "react-responsive";
 
 const adaptiveCardsHostConfig: HostConfig = {
 	fontFamily: "inherit",
@@ -48,8 +47,6 @@ const adaptiveCardsHostConfig: HostConfig = {
 
 export const AdaptiveCards = () => {
 	const { message, action: onSendMessage, config } = useMessageContext();
-
-	const isMobile = useMediaQuery({ query: "(max-width: 575px)" });
 
 	const getCardPayload = (message: IMessage) => {
 		//@ts-ignore
@@ -100,11 +97,7 @@ export const AdaptiveCards = () => {
 
 	return (
 		<ChatBubble
-			className={classnames(
-				styles["adaptivecard-wrapper"],
-				"adaptivecard-wrapper internal",
-				isMobile && styles.isMobile,
-			)}
+			className={classnames(styles["adaptivecard-wrapper"], "adaptivecard-wrapper internal")}
 		>
 			<AdaptiveCard
 				payload={cardPayload}

@@ -92,10 +92,12 @@
 	resize: none;
 }
 
-.adaptivecard-wrapper.isMobile input,
-.adaptivecard-wrapper.isMobile textarea,
-.adaptivecard-wrapper.isMobile select {
-	font-size: 16px !important;
+@media screen and (max-width: 575px) {
+	.adaptivecard-wrapper input,
+	.adaptivecard-wrapper textarea,
+	.adaptivecard-wrapper select {
+		font-size: 16px !important;
+	}
 }
 
 .adaptivecard-wrapper textarea {
