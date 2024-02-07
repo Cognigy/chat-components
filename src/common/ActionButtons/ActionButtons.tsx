@@ -1,11 +1,12 @@
 import { IWebchatButton, IWebchatQuickReply } from "@cognigy/socket-client";
 import { ActionButton } from ".";
 import classnames from "classnames";
-
+import mainClasses from "src/main.module.css";
 import classes from "./ActionButtons.module.css";
-import { FC, ReactElement } from "react";
+import { FC, ReactElement, useEffect, useMemo } from "react";
 import { MessageProps } from "src/messages/Message";
 import { getRandomId } from "src/utils";
+import classNames from "classnames";
 
 export interface ActionButtonsProps {
 	className?: string;
@@ -36,6 +37,24 @@ export const ActionButtons: FC<ActionButtonsProps> = props => {
 		templateTextId,
 	} = props;
 
+	const webchatButtonTemplateButtonId = useMemo(
+		() => getRandomId("webchatButtonTemplateButton"),
+		[],
+	);
+
+	useEffect(() => {
+		const firstButton = document.getElementById(`${webchatButtonTemplateButtonId}-0`);
+		const chatHistory = document.getElementById("webchatChatHistoryWrapperLiveLogPanel");
+
+		if (!config?.settings.enableAutoFocus) return;
+
+		if (!chatHistory?.contains(document.activeElement)) return;
+
+		setTimeout(() => {
+			firstButton?.focus();
+		}, 200);
+	}, [config?.settings.enableAutoFocus, webchatButtonTemplateButtonId]);
+
 	if (!payload || payload?.length === 0) return null;
 
 	const buttons = payload.filter((button: ActionButtonsProps["payload"][number]) => {
@@ -47,10 +66,6 @@ export const ActionButtons: FC<ActionButtonsProps> = props => {
 
 		return true;
 	});
-
-	const webchatButtonTemplateButtonId = getRandomId("webchatButtonTemplateButton");
-
-	//TODO: add config conditional autofocus on first button
 
 	const buttonElements = buttons.map((button, index: number) => (
 		<ActionButton
@@ -71,16 +86,28 @@ export const ActionButtons: FC<ActionButtonsProps> = props => {
 	));
 
 	return (
-		<div
-			className={classnames(className, classes.buttons, containerClassName)}
-			role={buttons.length > 1 ? "group" : undefined}
-			aria-labelledby={
-				buttons.length > 1 ? `${templateTextId} srOnly-${templateTextId}` : undefined
-			}
-			data-testid="action-buttons"
-		>
-			{buttonElements}
-		</div>
+		<>
+			{buttons.length > 1 && templateTextId && (
+				<span
+					className={classNames(mainClasses.srOnly, "sr-only")}
+					id={`srOnly-${templateTextId}`}
+				>
+					{`With ${buttons.length} buttons or links in`}
+				</span>
+			)}
+			<div
+				className={classnames(className, classes.buttons, containerClassName)}
+				role={buttons.length > 1 ? "group" : undefined}
+				aria-labelledby={
+					buttons.length > 1 && templateTextId
+						? `${templateTextId} srOnly-${templateTextId}`
+						: undefined
+				}
+				data-testid="action-buttons"
+			>
+				{buttonElements}
+			</div>
+		</>
 	);
 };
 

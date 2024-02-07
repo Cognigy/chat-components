@@ -3,7 +3,6 @@ import { FC } from "react";
 import { Text } from "src/messages";
 
 import classes from "./TextWithButtons.module.css";
-import mainClasses from "src/main.module.css";
 import { useMessageContext } from "../hooks";
 
 import { getChannelPayload, getRandomId } from "src/utils";
@@ -43,15 +42,6 @@ const TextWithButtons: FC = () => {
 				className={`webchat-${classType}-template-header`}
 				id={webchatButtonTemplateTextId}
 			/>
-
-			{buttons.length > 1 && (
-				<span
-					className={classNames(mainClasses.srOnly, "sr-only")}
-					id={`srOnly-${webchatButtonTemplateTextId}`}
-				>
-					With {buttons?.length} buttons or links in
-				</span>
-			)}
 
 			<ActionButtons
 				action={modifiedAction}

@@ -32,7 +32,7 @@ const Text: FC<TextProps> = props => {
 				id={props?.id}
 				className={classNames(classes.text, props?.className)}
 				dangerouslySetInnerHTML={{ __html: __html }}
-			></div>
+			/>
 		</ChatBubble>
 	);
 };
