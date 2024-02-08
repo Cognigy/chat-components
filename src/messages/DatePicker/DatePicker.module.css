@@ -8,6 +8,8 @@
 	height: 100%;
 	touch-action: none;
 	overflow: hidden;
+	display: flex;
+	flex-direction: column;
 }
 
 .header {
@@ -16,6 +18,7 @@
 	padding: 20px;
 	align-items: center;
 	justify-content: space-between;
+	background-color: var(--white);
 }
 
 .header .left {
@@ -45,8 +48,7 @@
 }
 
 .content {
-	margin-top: 20px;
-	padding: 0px 10px;
+	padding: 20px 10px 0px 10px;
 }
 
 .footer {
@@ -226,6 +228,7 @@
 	appearance: none;
 	background-color: var(--white);
 	color: var(--black-10);
+	font-size: 14px;
 }
 
 .wrapper .content :global(.flatpickr-current-month .flatpickr-monthDropdown-months::-ms-expand) {
@@ -458,11 +461,11 @@
 }
 .wrapper .content :global(.flatpickr-day.inRange .dayInner::after),
 .wrapper .content :global(.flatpickr-day.startRange:not(.endRange) .dayInner::after) {
-	right: -12px;
+	right: -13px;
 }
 .wrapper .content :global(.flatpickr-day.inRange .dayInner::before),
 .wrapper .content :global(.flatpickr-day.endRange:not(.startRange) .dayInner::before) {
-	left: -12px;
+	left: -13px;
 }
 
 .wrapper .content :global(.flatpickr-day.flatpickr-disabled),
@@ -709,4 +712,44 @@
 
 .wrapper .content :global(.flatpickr-input) {
 	display: none;
+}
+
+@media screen and (max-width: 575px) {
+	.wrapper .contentWrapper {
+		overflow-y: auto;
+		overflow-x: hidden;
+		padding-bottom: 40px;
+	}
+
+	/*
+	* Prevent auto-zoom on mobile devices
+	*/
+	.wrapper .content :global(.flatpickr-current-month .flatpickr-monthDropdown-months) {
+		font-size: 16px;
+	}
+
+	.wrapper .content :global(.flatpickr-current-month .numInputWrapper) {
+		width: 64px;
+	}
+
+	.wrapper .content :global(.flatpickr-current-month input.cur-year) {
+		font-size: 16px;
+	}
+
+	.wrapper .content.content :global(.flatpickr-time .numInputWrapper) {
+		width: 46px;
+	}
+
+	.wrapper .content :global(.flatpickr-time span.arrowUp),
+	.wrapper .content :global(.flatpickr-time span.arrowDown) {
+		width: 46px;
+	}
+
+	.wrapper .content :global(.flatpickr-time input) {
+		font-size: 16px;
+	}
+
+	.wrapper .content :global(.flatpickr-time .flatpickr-am-pm) {
+		font-size: 16px;
+	}
 }

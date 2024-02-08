@@ -158,34 +158,36 @@ const DatePicker: FC = () => {
 						</button>
 					</div>
 
-					<div
-						className={classnames(
-							classes.content,
-							"webchat-plugin-date-picker-content",
-						)}
-					>
-						<Flatpickr
-							onChange={(_date, dateString: string) => {
-								setCurrentDate(dateString);
-							}}
-							options={options}
-						/>
-					</div>
-					<div
-						className={classnames(
-							classes.footer,
-							"webchat-plugin-date-picker-footer",
-							hasTime && classes.hasTime,
-							hasNoCalendar && classes.noCalendar,
-						)}
-					>
-						<PrimaryButton
-							onClick={handleSubmit}
-							disabled={!currentDate}
-							data-testid="button-submit"
+					<div className={classes.contentWrapper}>
+						<div
+							className={classnames(
+								classes.content,
+								"webchat-plugin-date-picker-content",
+							)}
 						>
-							{submitText}
-						</PrimaryButton>
+							<Flatpickr
+								onChange={(_date, dateString: string) => {
+									setCurrentDate(dateString);
+								}}
+								options={options}
+							/>
+						</div>
+						<div
+							className={classnames(
+								classes.footer,
+								"webchat-plugin-date-picker-footer",
+								hasTime && classes.hasTime,
+								hasNoCalendar && classes.noCalendar,
+							)}
+						>
+							<PrimaryButton
+								onClick={handleSubmit}
+								disabled={!currentDate}
+								data-testid="button-submit"
+							>
+								{submitText}
+							</PrimaryButton>
+						</div>
 					</div>
 				</div>
 			)}
