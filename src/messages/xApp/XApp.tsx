@@ -18,8 +18,6 @@ const XApp: FC = () => {
 	const [showOverlay, setShowOverlay] = useState(shouldOpenImmediately);
 
 	const handleSubmit = (event: MessageEvent) => {
-		console.log("event", event);
-
 		if (sessionUrl.startsWith(event.origin) === false) {
 			return;
 		}
