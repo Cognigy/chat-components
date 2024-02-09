@@ -2,7 +2,7 @@
 
 # Chat Components
 
-This repository is work-in-progress and will contain reusable components Cognigy uses in various of their products in order to render chat-messages such as:
+This repository contains reusable components Cognigy uses in various of their products in order to render chat-messages such as:
 
 -   text messages
 -   galleries

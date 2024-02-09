@@ -1,0 +1,64 @@
+.wrapper {
+	background-color: var(--white);
+	height: 100%;
+	left: 0;
+	overflow: hidden;
+	position: absolute;
+	top: 0;
+	width: 100%;
+	z-index: 5000;
+}
+
+.header {
+	align-items: center;
+	border-bottom: 1px solid var(--black-80);
+	display: flex;
+	justify-content: space-between;
+	padding: 20px;
+}
+
+.title {
+	align-items: center;
+	display: flex;
+	flex: 1;
+	height: 28px;
+	justify-content: center;
+	text-align: center;
+	margin-inline-start: 22px;
+}
+
+.button {
+	align-items: center;
+	appearance: none;
+	background-color: transparent;
+	border: none;
+	border-radius: 2px;
+	box-sizing: border-box;
+	cursor: pointer;
+	display: flex;
+	height: 24px;
+	justify-content: flex-end;
+	margin: 0;
+	outline: none;
+	padding: 2px;
+	width: 22px;
+}
+
+.button:focus {
+	outline: 2px solid var(--primary-color);
+}
+
+.content {
+	align-items: center;
+	display: flex;
+	flex-direction: column;
+	height: 100%;
+	justify-content: center;
+}
+
+.appFrame {
+	appearance: none;
+	border: none;
+	height: 100%;
+	width: 100%;
+}

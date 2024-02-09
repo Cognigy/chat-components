@@ -17,6 +17,8 @@ import audio from "test/fixtures/audio.json";
 import file from "test/fixtures/file.json";
 import AdaptiveCardPayloads from "test/fixtures/adaptiveCards.json";
 
+import xAppPayload from "test/fixtures/xApp.json";
+
 import datePicker from "test/fixtures/datepicker/singleDate.json";
 import datePickerMultiple from "test/fixtures/datepicker/multiple.json";
 import datePickerRange from "test/fixtures/datepicker/range.json";
@@ -301,6 +303,21 @@ const screens: TScreen[] = [
 					avatarName: "Cognigy",
 				},
 			},
+			{
+				message: {
+					source: "bot",
+					text: "This message should not overflow and should get hard breaks: https://static.test?token=d4567f11cffa23a49b2190355b956da8de46fcbc7817d3ce3708d6bddabc0bfd",
+				},
+			},
+		],
+	},
+	{
+		title: "xApp",
+		anchor: "xapp",
+		messages: [
+			{
+				message: xAppPayload as IMessage,
+			},
 		],
 	},
 ];
@@ -354,7 +371,7 @@ const Screen: FC<ScreenProps> = props => {
 
 const Demo = () => {
 	const [currentScreen, setCurrentScreen] = useState(() => {
-		const CURRENT_PR = screens[0].anchor;
+		const CURRENT_PR = screens[9].anchor;
 
 		const hash = window.location.hash.replace("#", "");
 

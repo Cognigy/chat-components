@@ -10,6 +10,7 @@ import {
 	TextWithButtons,
 	DatePicker,
 	AdaptiveCard,
+	XApp,
 } from "./messages";
 import { IWebchatConfig } from "./messages/types";
 import { getChannelPayload } from "./utils";
@@ -38,6 +39,13 @@ const defaultConfig: MatchConfig[] = [
 			return !!message?.text;
 		},
 		component: Text,
+	},
+	{
+		// xApp
+		rule: message => {
+			return message?.data?._plugin?.type === "x-app";
+		},
+		component: XApp,
 	},
 	{
 		// Datepicker
