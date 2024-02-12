@@ -1,8 +1,7 @@
 import { FC, useMemo, KeyboardEvent } from "react";
 import classes from "./List.module.css";
-import { useMessageContext } from "src/messages/hooks";
+import { useMessageContext, useRandomId } from "src/messages/hooks";
 import { sanitizeHTML } from "src/sanitize";
-import { getRandomId } from "src/utils";
 import { getBackgroundImage } from "src/utils";
 import { PrimaryButton, SecondaryButton } from "src/common/Buttons";
 import classnames from "classnames";
@@ -39,7 +38,7 @@ const ListItem: FC<{ element: IWebchatAttachmentElement; isHeaderElement?: boole
 
 	const titleHtml = isSanitizeEnabled ? sanitizeHTML(title) : title;
 	const subtitleHtml = isSanitizeEnabled ? sanitizeHTML(subtitle) : subtitle;
-	const subtitleId = useMemo(() => getRandomId("webchatListTemplateHeaderSubtitle"), []);
+	const subtitleId = useRandomId("webchatListTemplateHeaderSubtitle");
 
 	const rootClasses = isHeaderElement
 		? classnames("webchat-list-template-header", classes.headerWrapper)

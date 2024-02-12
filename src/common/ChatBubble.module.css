@@ -6,6 +6,8 @@
 	width: max-content;
 	box-sizing: border-box;
 	margin-block-end: 12px;
+	word-break: break-word;
+	white-space: pre-wrap;
 }
 
 article:not(:global(.user)) .bubble {

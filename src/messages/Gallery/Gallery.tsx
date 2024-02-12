@@ -1,8 +1,8 @@
-import { FC, useEffect, useMemo } from "react";
-import { useMessageContext } from "src/messages/hooks";
+import { FC, useEffect } from "react";
+import { useMessageContext, useRandomId } from "src/messages/hooks";
 import classes from "./Gallery.module.css";
 import classnames from "classnames";
-import { getChannelPayload, getRandomId } from "src/utils";
+import { getChannelPayload } from "src/utils";
 import { ArrowBack as ArrowNavIcon } from "src/assets/svg";
 import { Navigation, Pagination, A11y } from "swiper/modules";
 import { Swiper, SwiperSlide } from "swiper/react";
@@ -15,7 +15,7 @@ const Gallery: FC = () => {
 	const { elements } =
 		(payload?.message?.attachment as IWebchatTemplateAttachment)?.payload || {};
 
-	const carouselContentId = useMemo(() => getRandomId("webchatCarouselContentButton"), []);
+	const carouselContentId = useRandomId("webchatCarouselContentButton");
 
 	useEffect(() => {
 		const chatHistory = document.getElementById("webchatChatHistoryWrapperLiveLogPanel");

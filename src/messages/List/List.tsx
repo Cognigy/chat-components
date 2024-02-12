@@ -1,11 +1,11 @@
-import { FC, Fragment, useEffect, useMemo } from "react";
+import { FC, Fragment, useEffect } from "react";
 import ListItem from "./ListItem";
-import { useMessageContext } from "src/messages/hooks";
+import { useMessageContext, useRandomId } from "src/messages/hooks";
 import mainclasses from "src/main.module.css";
 import classes from "./List.module.css";
 import classnames from "classnames";
 import { PrimaryButton } from "src/common/Buttons";
-import { getChannelPayload, getRandomId } from "src/utils";
+import { getChannelPayload } from "src/utils";
 import { IWebchatAttachmentElement, IWebchatTemplateAttachment } from "@cognigy/socket-client";
 
 const List: FC = () => {
@@ -21,7 +21,8 @@ const List: FC = () => {
 	const regularElements = showTopElementLarge ? elements?.slice(1) : elements;
 	const headerElement = showTopElementLarge ? elements?.[0] : null;
 	const button = buttons && buttons?.[0];
-	const listTemplateId = useMemo(() => getRandomId("webchatListTemplateRoot"), []);
+
+	const listTemplateId = useRandomId("webchatListTemplateRoot");
 
 	useEffect(() => {
 		const chatHistory = document.getElementById("webchatChatHistoryWrapperLiveLogPanel");
