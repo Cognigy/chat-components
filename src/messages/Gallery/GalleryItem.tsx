@@ -1,12 +1,11 @@
 import { IWebchatAttachmentElement } from "@cognigy/socket-client";
-import { FC, KeyboardEvent, useMemo, useState } from "react";
+import { FC, KeyboardEvent, useState } from "react";
 import classes from "./Gallery.module.css";
 import buttonClasses from "src/common/Buttons/Buttons.module.css";
-import { useMessageContext } from "../hooks";
+import { useMessageContext, useRandomId } from "../hooks";
 import classnames from "classnames";
 import ActionButtons from "src/common/ActionButtons/ActionButtons";
 import { sanitizeHTML } from "src/sanitize";
-import { getRandomId } from "src/utils";
 import { sanitizeUrl } from "@braintree/sanitize-url";
 import { Typography } from "src/index";
 
@@ -26,8 +25,8 @@ const GalleryItem: FC<GallerySlideProps> = props => {
 	const titleHtml = isSanitizeEnabled ? sanitizeHTML(title) : title;
 	const subtitleHtml = isSanitizeEnabled ? sanitizeHTML(subtitle) : subtitle;
 
-	const titleId = useMemo(() => getRandomId("webchatCarouselTemplateTitle"), []);
-	const subtitleId = useMemo(() => getRandomId("webchatCarouselTemplateSubtitle"), []);
+	const titleId = useRandomId("webchatCarouselTemplateTitle");
+	const subtitleId = useRandomId("webchatCarouselTemplateSubtitle");
 
 	const handleClick = () => {
 		if (!default_action?.url) return;

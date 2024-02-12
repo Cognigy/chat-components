@@ -3,9 +3,9 @@ import { FC } from "react";
 import { Text } from "src/messages";
 
 import classes from "./TextWithButtons.module.css";
-import { useMessageContext } from "../hooks";
+import { useMessageContext, useRandomId } from "../hooks";
 
-import { getChannelPayload, getRandomId } from "src/utils";
+import { getChannelPayload } from "src/utils";
 import ActionButtons from "src/common/ActionButtons/ActionButtons";
 import { IWebchatTemplateAttachment } from "@cognigy/socket-client";
 import classNames from "classnames";
@@ -20,6 +20,8 @@ import classNames from "classnames";
 const TextWithButtons: FC = () => {
 	const { action, message, config, onEmitAnalytics, messageParams } = useMessageContext();
 
+	const webchatButtonTemplateTextId = useRandomId("webchatButtonTemplateHeader");
+
 	const payload = getChannelPayload(message, config);
 
 	const isQuickReplies =
@@ -32,7 +34,6 @@ const TextWithButtons: FC = () => {
 	const shouldBeDisabled = isQuickReplies && messageParams?.hasReply;
 	const modifiedAction = shouldBeDisabled ? undefined : action;
 
-	const webchatButtonTemplateTextId = getRandomId("webchatButtonTemplateHeader");
 	const classType = isQuickReplies ? "quick-reply" : "buttons";
 
 	return (

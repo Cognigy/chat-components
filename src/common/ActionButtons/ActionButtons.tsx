@@ -3,10 +3,10 @@ import { ActionButton } from ".";
 import classnames from "classnames";
 import mainClasses from "src/main.module.css";
 import classes from "./ActionButtons.module.css";
-import { FC, ReactElement, useEffect, useMemo } from "react";
+import { FC, ReactElement, useEffect } from "react";
 import { MessageProps } from "src/messages/Message";
-import { getRandomId } from "src/utils";
 import classNames from "classnames";
+import { useRandomId } from "src/messages/hooks";
 
 export interface ActionButtonsProps {
 	className?: string;
@@ -37,10 +37,7 @@ export const ActionButtons: FC<ActionButtonsProps> = props => {
 		templateTextId,
 	} = props;
 
-	const webchatButtonTemplateButtonId = useMemo(
-		() => getRandomId("webchatButtonTemplateButton"),
-		[],
-	);
+	const webchatButtonTemplateButtonId = useRandomId("webchatButtonTemplateButton");
 
 	useEffect(() => {
 		const firstButton = document.getElementById(`${webchatButtonTemplateButtonId}-0`);
