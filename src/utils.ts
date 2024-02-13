@@ -80,7 +80,7 @@ export const getRandomId = (prefix = "") => {
  */
 export const replaceUrlsWithHTMLanchorElem = (text: string) => {
 	// Enhanced regex to better capture URLs with parameters
-	const urlMatcherRegex = /(\b(https?):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/gi;
+	const urlMatcherRegex = /(\b(https?):\/\/[-A-Z0-9+&@#/%?=~_|!:,.;]*[-A-Z0-9+&@#/%=~_|])/gi;
 
 	if (typeof text !== "string") return text;
 
