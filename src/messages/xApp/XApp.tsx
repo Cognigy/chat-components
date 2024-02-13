@@ -1,4 +1,4 @@
-import { FC, useEffect, useState } from "react";
+import { FC, useCallback, useEffect, useState } from "react";
 import classnames from "classnames";
 
 import { useMessageContext } from "src/messages/hooks";
@@ -17,17 +17,26 @@ const XApp: FC = () => {
 
 	const [showOverlay, setShowOverlay] = useState(shouldOpenImmediately);
 
-	const handleSubmit = (event: MessageEvent) => {
-		if (sessionUrl.startsWith(event.origin) === false) {
-			return;
-		}
+	const {
+		sessionUrl,
+		openButtonLabel = "Open",
+		headerTitle = "Choose",
+	} = (message?.data?._plugin as IPluginXApp)?.data || {};
 
-		if (event.data.type !== "x-app-submit") {
-			return;
-		}
+	const handleSubmit = useCallback(
+		(event: MessageEvent) => {
+			if (sessionUrl.startsWith(event.origin) === false) {
+				return;
+			}
 
-		handleClose();
-	};
+			if (event.data.type !== "x-app-submit") {
+				return;
+			}
+
+			handleClose();
+		},
+		[sessionUrl],
+	);
 
 	useEffect(() => {
 		function unsubscribe() {
@@ -43,16 +52,9 @@ const XApp: FC = () => {
 		return () => {
 			unsubscribe();
 		};
-		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [showOverlay]);
+	}, [handleSubmit, showOverlay]);
 
 	if (!message?.data?._plugin || message.data._plugin.type !== "x-app") return;
-
-	const {
-		sessionUrl,
-		openButtonLabel = "Open",
-		headerTitle = "Choose",
-	} = message?.data?._plugin?.data || {};
 
 	const handleOpen = () => {
 		setShowOverlay(true);
