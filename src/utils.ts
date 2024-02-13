@@ -34,6 +34,7 @@ export const isMessageCollatable = (message: IMessage, prevMessage?: IMessage) =
 
 	const difference = Number(message?.timestamp) - Number(prevMessage?.timestamp);
 
+	// XAppSubmitMessages should is a pill, and should always be collated
 	if (message?.data?._plugin?.type === "x-app-submit") return true;
 
 	// if the previous message was a rating message that displays an event status pill, don't collate
