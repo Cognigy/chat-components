@@ -6,7 +6,7 @@ import Typography from "src/common/Typography";
 import { PrimaryButton } from "src/common/Buttons";
 
 import { CloseIcon } from "src/assets/svg";
-import classes from "./xApp.module.css";
+import classes from "./XApp.module.css";
 import { IPluginXApp } from "@cognigy/socket-client/lib/interfaces/messageData";
 
 const XApp: FC = () => {
