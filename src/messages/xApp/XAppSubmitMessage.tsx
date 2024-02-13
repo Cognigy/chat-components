@@ -1,7 +1,7 @@
 import { ChatEvent } from "src/index";
 import { useMessageContext } from "../hooks";
 
-import classes from "./xApp.module.css";
+import classes from "./XApp.module.css";
 
 const XAppSubmitMessage = () => {
 	const { message } = useMessageContext();
