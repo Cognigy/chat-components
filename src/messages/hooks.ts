@@ -1,5 +1,6 @@
-import { useContext } from "react";
+import { useContext, useState } from "react";
 import { MessageContext } from "./context.tsx";
+import { getRandomId } from "src/utils.ts";
 
 function useMessageContext() {
 	const state = useContext(MessageContext);
@@ -11,4 +12,10 @@ function useMessageContext() {
 	return state;
 }
 
-export { useMessageContext };
+const useRandomId = (prefix = "") => {
+	const [id] = useState(() => getRandomId(prefix));
+
+	return id;
+};
+
+export { useMessageContext, useRandomId };

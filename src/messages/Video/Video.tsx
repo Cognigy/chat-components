@@ -36,7 +36,9 @@ const Video: FC = () => {
 			className={classnames(classes.wrapper, "webchat-media-template-video")}
 			data-testid="video-message"
 		>
-			<span className={mainClasses.srOnly}>{altText || "Attachment Video"}</span>
+			<span className={classnames(mainClasses.srOnly, "sr-only")}>
+				{altText || "Attachment Video"}
+			</span>
 			<ReactPlayer
 				url={url}
 				light

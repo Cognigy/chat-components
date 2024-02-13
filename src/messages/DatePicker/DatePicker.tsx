@@ -2,12 +2,11 @@ import { FC, useState, KeyboardEvent, useMemo } from "react";
 import classes from "./DatePicker.module.css";
 import classnames from "classnames";
 import Flatpickr from "react-flatpickr";
-import { useMessageContext } from "src/messages/hooks";
+import { useMessageContext, useRandomId } from "src/messages/hooks";
 import { getOptionsFromMessage } from "./helpers";
 import { CloseIcon } from "src/assets/svg";
 import Typography from "src/common/Typography";
 import { PrimaryButton } from "src/common/Buttons";
-import { getRandomId } from "src/utils";
 import mainClasses from "src/main.module.css";
 
 const DatePicker: FC = () => {
@@ -16,6 +15,9 @@ const DatePicker: FC = () => {
 	const [showPicker, setShowPicker] = useState(false);
 	const [currentDate, setCurrentDate] = useState(options?.defaultDate || "");
 
+	const datePickerHeading = useRandomId("webchatDatePickerHeading");
+	const datePickerDescription = useRandomId("webchatDatePickerContentDescription");
+
 	if (!message?.data?._plugin || message.data._plugin.type !== "date-picker") return;
 
 	const { openPickerButtonText, submitButtonText, enableTime, time_24hr, noCalendar, eventName } =
@@ -23,9 +25,6 @@ const DatePicker: FC = () => {
 
 	const openText = openPickerButtonText || "Pick date";
 	const submitText = submitButtonText || "Confirm Selection";
-
-	const datePickerHeading = getRandomId("webchatDatePickerHeading");
-	const datePickerDescription = getRandomId("webchatDatePickerContentDescription");
 
 	const hasTime = !!enableTime;
 	const hasNoCalendar = !!noCalendar;
@@ -158,34 +157,36 @@ const DatePicker: FC = () => {
 						</button>
 					</div>
 
-					<div
-						className={classnames(
-							classes.content,
-							"webchat-plugin-date-picker-content",
-						)}
-					>
-						<Flatpickr
-							onChange={(_date, dateString: string) => {
-								setCurrentDate(dateString);
-							}}
-							options={options}
-						/>
-					</div>
-					<div
-						className={classnames(
-							classes.footer,
-							"webchat-plugin-date-picker-footer",
-							hasTime && classes.hasTime,
-							hasNoCalendar && classes.noCalendar,
-						)}
-					>
-						<PrimaryButton
-							onClick={handleSubmit}
-							disabled={!currentDate}
-							data-testid="button-submit"
+					<div className={classes.contentWrapper}>
+						<div
+							className={classnames(
+								classes.content,
+								"webchat-plugin-date-picker-content",
+							)}
 						>
-							{submitText}
-						</PrimaryButton>
+							<Flatpickr
+								onChange={(_date, dateString: string) => {
+									setCurrentDate(dateString);
+								}}
+								options={options}
+							/>
+						</div>
+						<div
+							className={classnames(
+								classes.footer,
+								"webchat-plugin-date-picker-footer",
+								hasTime && classes.hasTime,
+								hasNoCalendar && classes.noCalendar,
+							)}
+						>
+							<PrimaryButton
+								onClick={handleSubmit}
+								disabled={!currentDate}
+								data-testid="button-submit"
+							>
+								{submitText}
+							</PrimaryButton>
+						</div>
 					</div>
 				</div>
 			)}

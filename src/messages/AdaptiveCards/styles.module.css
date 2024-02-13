@@ -92,6 +92,14 @@
 	resize: none;
 }
 
+@media screen and (max-width: 575px) {
+	.adaptivecard-wrapper input,
+	.adaptivecard-wrapper textarea,
+	.adaptivecard-wrapper select {
+		font-size: 16px !important;
+	}
+}
+
 .adaptivecard-wrapper textarea {
 	min-height: 98px;
 }
