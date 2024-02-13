@@ -62,3 +62,7 @@
 	height: 100%;
 	width: 100%;
 }
+
+.pill {
+	margin-block-start: 40px;
+}

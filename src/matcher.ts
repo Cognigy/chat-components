@@ -16,6 +16,7 @@ import { IWebchatConfig } from "./messages/types";
 import { getChannelPayload } from "./utils";
 import { IMessage, IWebchatTemplateAttachment } from "@cognigy/socket-client";
 import { IAdaptiveCardMessage } from "@cognigy/socket-client/lib/interfaces/messageData";
+import { XAppSubmitMessage } from "./messages/xApp";
 
 export type MatchConfig = {
 	rule: (message: IMessage, config?: IWebchatConfig) => boolean;
@@ -46,6 +47,13 @@ const defaultConfig: MatchConfig[] = [
 			return message?.data?._plugin?.type === "x-app";
 		},
 		component: XApp,
+	},
+	{
+		// xApp submit
+		rule: message => {
+			return message?.data?._plugin?.type === "x-app-submit";
+		},
+		component: XAppSubmitMessage,
 	},
 	{
 		// Datepicker
