@@ -133,13 +133,12 @@ const defaultConfig: MatchConfig[] = [
 			// Rest of the code...
 			const _webchat = (message?.data?._cognigy?._webchat as IAdaptiveCardMessage)
 				?.adaptiveCard;
-			//@ts-ignore
+
 			const _defaultPreview = message?.data?._cognigy?._defaultPreview?.adaptiveCard;
-			//@ts-ignore
+
 			const _plugin = message?.data?._plugin?.type === "adaptivecards";
 			const defaultPreviewEnabled = config?.settings?.enableDefaultPreview;
 
-			//@ts-ignore
 			if (message.data?._cognigy?._defaultPreview?.message && defaultPreviewEnabled) {
 				return false;
 			}
