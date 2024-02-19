@@ -6,23 +6,3 @@
 	margin-top: 10px;
 	max-width: 295px;
 }
-
-article button.button,
-article a.button {
-	background: var(--primary-color);
-	color: var(--white);
-	border: none;
-	outline: none;
-}
-
-article button.button:hover,
-article a.button:hover,
-article button.button:focus,
-article a.button:focus {
-	background: var(--primary-color-hover);
-}
-
-article button.button:disabled,
-article a.button[disabled] {
-	background: var(--primary-color-disabled);
-}

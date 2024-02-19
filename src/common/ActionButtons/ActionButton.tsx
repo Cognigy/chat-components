@@ -118,6 +118,7 @@ const ActionButton: FC<ActionButtonProps> = props => {
 				isWebURL && classes.url,
 				props.className,
 				disabled && classes.disabled,
+				disabled && "disabled",
 			)}
 			aria-label={ariaLabel}
 			aria-disabled={disabled}
