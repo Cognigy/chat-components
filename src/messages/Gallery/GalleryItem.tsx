@@ -17,7 +17,7 @@ export interface GallerySlideProps {
 const GalleryItem: FC<GallerySlideProps> = props => {
 	const { slide, contentId } = props;
 	const { title, subtitle, image_url, image_alt_text, buttons, default_action } = slide;
-	const { action, config, onEmitAnalytics } = useMessageContext();
+	const { action, config, onEmitAnalytics, messageParams } = useMessageContext();
 	const hasExtraInfo = subtitle || (buttons && buttons?.length > 0);
 	const [isImageBroken, setImageBroken] = useState(false);
 
@@ -27,6 +27,8 @@ const GalleryItem: FC<GallerySlideProps> = props => {
 
 	const titleId = useRandomId("webchatCarouselTemplateTitle");
 	const subtitleId = useRandomId("webchatCarouselTemplateSubtitle");
+
+	const shouldBeDisabled = messageParams?.isConversationEnded;
 
 	const handleClick = () => {
 		if (!default_action?.url) return;
@@ -95,7 +97,7 @@ const GalleryItem: FC<GallerySlideProps> = props => {
 								"webchat-carousel-template-button",
 							)}
 							payload={buttons}
-							action={action}
+							action={shouldBeDisabled ? undefined : action}
 							config={config}
 							onEmitAnalytics={onEmitAnalytics}
 						/>

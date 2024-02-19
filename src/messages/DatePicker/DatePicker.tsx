@@ -29,6 +29,8 @@ const DatePicker: FC = () => {
 	const hasTime = !!enableTime;
 	const hasNoCalendar = !!noCalendar;
 
+	const shouldBeDisabled = messageParams?.isConversationEnded || messageParams?.hasReply;
+
 	const handleOpen = () => {
 		setShowPicker(true);
 	};
@@ -112,7 +114,7 @@ const DatePicker: FC = () => {
 		<div data-testid="datepicker-message">
 			<PrimaryButton
 				onClick={handleOpen}
-				disabled={!!messageParams?.hasReply}
+				disabled={shouldBeDisabled}
 				data-testid="button-open"
 			>
 				{openText}

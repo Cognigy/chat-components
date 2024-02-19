@@ -31,7 +31,8 @@ const TextWithButtons: FC = () => {
 	const text = attachments?.payload?.text || payload?.message?.text || "";
 	const buttons = attachments?.payload?.buttons || payload?.message?.quick_replies || [];
 
-	const shouldBeDisabled = isQuickReplies && messageParams?.hasReply;
+	const shouldBeDisabled =
+		(isQuickReplies && messageParams?.hasReply) || messageParams?.isConversationEnded;
 	const modifiedAction = shouldBeDisabled ? undefined : action;
 
 	const classType = isQuickReplies ? "quick-reply" : "buttons";

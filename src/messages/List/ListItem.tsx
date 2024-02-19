@@ -10,10 +10,12 @@ import { IWebchatAttachmentElement } from "@cognigy/socket-client";
 import { Typography } from "src/index";
 
 const ListItem: FC<{ element: IWebchatAttachmentElement; isHeaderElement?: boolean }> = props => {
-	const { action, config, onEmitAnalytics } = useMessageContext();
+	const { action, config, onEmitAnalytics, messageParams } = useMessageContext();
 	const { element, isHeaderElement } = props;
 	const { title, subtitle, image_url, image_alt_text, default_action, buttons } = element;
 	const button = buttons && buttons?.[0];
+
+	const shouldBeDisabled = messageParams?.isConversationEnded;
 
 	const handleClick = () => {
 		if (!default_action?.url) return;
@@ -116,7 +118,7 @@ const ListItem: FC<{ element: IWebchatAttachmentElement; isHeaderElement?: boole
 							{renderTitles}
 							<PrimaryButton
 								isActionButton
-								action={action}
+								action={shouldBeDisabled ? undefined : action}
 								button={button}
 								buttonClassName="webchat-list-template-header-button"
 								containerClassName={classes.listHeaderButtonWrapper}
@@ -140,7 +142,7 @@ const ListItem: FC<{ element: IWebchatAttachmentElement; isHeaderElement?: boole
 			{!isHeaderElement && (
 				<SecondaryButton
 					isActionButton
-					action={action}
+					action={shouldBeDisabled ? undefined : action}
 					button={button}
 					buttonClassName="webchat-list-template-element-button"
 					containerClassName={classes.listItemButtonWrapper}

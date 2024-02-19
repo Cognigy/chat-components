@@ -21,22 +21,37 @@ export interface MessageProps {
 	onEmitAnalytics?: (event: string, payload?: unknown) => void;
 	plugins?: MatchConfig[];
 	prevMessage?: IMessage;
+	isConversationEnded?: boolean;
 }
 
 const Message: FC<MessageProps> = props => {
-	const shouldCollate = isMessageCollatable(props.message, props.prevMessage);
+	const {
+		action,
+		className,
+		config,
+		hasReply,
+		message,
+		onEmitAnalytics,
+		plugins,
+		prevMessage,
+		isConversationEnded,
+	} = props;
+	const shouldCollate = isMessageCollatable(message, prevMessage);
 
 	const rootClassName = classnames(
 		"webchat-message-row",
-		props.message.source,
-		props.className,
+		message.source,
+		className,
 		classes.message,
 		shouldCollate && classes.collated,
 	);
 
-	const MessageComponent = match(props.message, props.config, props.plugins);
+	const MessageComponent = match(message, config, plugins);
 
-	const messageParams = useMemo(() => ({ hasReply: props.hasReply }), [props.hasReply]);
+	const messageParams = useMemo(
+		() => ({ hasReply: hasReply, isConversationEnded: isConversationEnded }),
+		[hasReply, isConversationEnded],
+	);
 
 	/**
 	 * No rule matched the message, so we don't render anything.
@@ -47,14 +62,14 @@ const Message: FC<MessageProps> = props => {
 
 	return (
 		<MessageProvider
-			message={props.message}
-			action={props.action}
-			onEmitAnalytics={props.onEmitAnalytics}
-			config={props.config}
+			message={message}
+			action={action}
+			onEmitAnalytics={onEmitAnalytics}
+			config={config}
 			messageParams={messageParams}
 		>
 			<article className={rootClassName}>
-				{!shouldCollate && <MessageHeader enableAvatar={props.message.source !== "user"} />}
+				{!shouldCollate && <MessageHeader enableAvatar={message.source !== "user"} />}
 				<MessageComponent />
 			</article>
 		</MessageProvider>
