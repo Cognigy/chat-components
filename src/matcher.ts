@@ -25,23 +25,6 @@ export type MatchConfig = {
 
 const defaultConfig: MatchConfig[] = [
 	{
-		// Text message
-		rule: (message, config) => {
-			// do not render engagement messages unless configured!
-			// do not render messages with file attachments. It will be rendered by the File component
-			if (
-				(message?.source === "engagement" &&
-					!config?.settings?.showEngagementMessagesInChat) ||
-				message?.data?.attachments
-			) {
-				return false;
-			}
-
-			return !!message?.text;
-		},
-		component: Text,
-	},
-	{
 		// xApp
 		rule: message => {
 			return message?.data?._plugin?.type === "x-app";
@@ -150,13 +133,12 @@ const defaultConfig: MatchConfig[] = [
 			// Rest of the code...
 			const _webchat = (message?.data?._cognigy?._webchat as IAdaptiveCardMessage)
 				?.adaptiveCard;
-			//@ts-ignore
+
 			const _defaultPreview = message?.data?._cognigy?._defaultPreview?.adaptiveCard;
-			//@ts-ignore
+
 			const _plugin = message?.data?._plugin?.type === "adaptivecards";
 			const defaultPreviewEnabled = config?.settings?.enableDefaultPreview;
 
-			//@ts-ignore
 			if (message.data?._cognigy?._defaultPreview?.message && defaultPreviewEnabled) {
 				return false;
 			}
@@ -173,6 +155,23 @@ const defaultConfig: MatchConfig[] = [
 			return false;
 		},
 		component: AdaptiveCard,
+	},
+	{
+		// Text message
+		rule: (message, config) => {
+			// do not render engagement messages unless configured!
+			// do not render messages with file attachments. It will be rendered by the File component
+			if (
+				(message?.source === "engagement" &&
+					!config?.settings?.showEngagementMessagesInChat) ||
+				message?.data?.attachments
+			) {
+				return false;
+			}
+
+			return !!message?.text;
+		},
+		component: Text,
 	},
 ];
 
