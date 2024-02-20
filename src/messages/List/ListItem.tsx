@@ -103,7 +103,7 @@ const ListItem: FC<{ element: IWebchatAttachmentElement; isHeaderElement?: boole
 				aria-label={default_action?.url ? `${titleHtml}. Opens in new tab` : undefined}
 				aria-describedby={subtitle ? subtitleId : undefined}
 				tabIndex={default_action?.url ? 0 : -1}
-				style={default_action?.url ? { cursor: "pointer" } : {}}
+				style={default_action?.url && !shouldBeDisabled ? { cursor: "pointer" } : {}}
 			>
 				{isHeaderElement ? (
 					<>
