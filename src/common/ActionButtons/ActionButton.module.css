@@ -30,11 +30,8 @@ a.button:focus {
 }
 
 button.button:disabled,
-button.button[disabled],
 button.button:disabled:hover,
-button.button[disabled]:hover,
 button.button:disabled:focus,
-button.button[disabled]:focus,
 a.button.disabled,
 a.button.disabled:hover,
 a.button.disabled:focus {
