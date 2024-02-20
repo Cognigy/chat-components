@@ -42,6 +42,7 @@ a.primaryButton.actionButton:global(.disabled):focus,
 button.primaryButton.button:disabled:hover,
 button.primaryButton.button:disabled:focus {
 	cursor: default;
+	pointer-events: none;
 	background-color: var(--secondary-color-disabled);
 }
 
@@ -81,6 +82,7 @@ button.secondaryButton.button:disabled:hover,
 button.secondaryButton.button:disabled:focus {
 	cursor: default;
 	color: var(--secondary-color-disabled);
+	pointer-events: none;
 	border: 1px solid var(--secondary-color-disabled);
 	background-color: var(--white);
 }
