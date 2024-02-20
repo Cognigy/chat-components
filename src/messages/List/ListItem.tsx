@@ -18,7 +18,7 @@ const ListItem: FC<{ element: IWebchatAttachmentElement; isHeaderElement?: boole
 	const shouldBeDisabled = messageParams?.isConversationEnded;
 
 	const handleClick = () => {
-		if (!default_action?.url) return;
+		if (shouldBeDisabled || !default_action?.url) return;
 
 		const url = config?.settings?.disableUrlButtonSanitization
 			? default_action.url
