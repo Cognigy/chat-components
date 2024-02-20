@@ -366,14 +366,15 @@ const MessageParams = (props: MessageParamsProps) => {
 interface ScreenProps {
 	messages: TScreen["messages"];
 	content?: TScreen["content"];
-	messageParams?: MessageProviderProps["messageParams"];
-	setMessageParams?: Dispatch<
-		SetStateAction<{ hasReply: boolean; isConversationEnded: boolean }>
-	>;
 }
 
 const Screen: FC<ScreenProps> = props => {
-	const { messages = [], messageParams, setMessageParams } = props;
+	const { messages = [] } = props;
+
+	const [messageParams, setMessageParams] = useState({
+		hasReply: false,
+		isConversationEnded: false,
+	});
 
 	return (
 		<div id="content">
@@ -403,22 +404,12 @@ const Demo = () => {
 		return hash || CURRENT_PR;
 	});
 
-	const [messageParams, setMessageParams] = useState({
-		hasReply: false,
-		isConversationEnded: false,
-	});
-
 	const screen = screens.find(m => m.anchor === currentScreen);
 
 	return (
 		<section>
 			<Menu currentScreen={currentScreen} setCurrentScreen={setCurrentScreen} />
-			<Screen
-				messages={screen?.messages}
-				content={screen?.content}
-				messageParams={messageParams}
-				setMessageParams={setMessageParams}
-			/>
+			<Screen messages={screen?.messages} content={screen?.content} />
 		</section>
 	);
 };
