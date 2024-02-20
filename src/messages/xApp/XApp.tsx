@@ -23,6 +23,8 @@ const XApp: FC = () => {
 		headerTitle = "Choose",
 	} = (message?.data?._plugin as IPluginXApp)?.data || {};
 
+	const shouldBeDisabled = messageParams?.isConversationEnded || messageParams?.hasReply;
+
 	const handleSubmit = useCallback(
 		(event: MessageEvent) => {
 			if (sessionUrl.startsWith(event.origin) === false) {
@@ -68,7 +70,7 @@ const XApp: FC = () => {
 		<div data-testid="xApp-message">
 			<PrimaryButton
 				onClick={handleOpen}
-				disabled={messageParams?.hasReply}
+				disabled={shouldBeDisabled}
 				data-testid="button-open"
 			>
 				{openButtonLabel}
