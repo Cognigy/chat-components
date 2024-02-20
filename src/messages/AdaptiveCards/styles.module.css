@@ -56,13 +56,15 @@
 	width: 100%;
 }
 
-.adaptivecard-wrapper.chatDisabled button {
-	background: var(--black-90);
-	cursor: default;
-}
-
 .adaptivecard-wrapper button:hover {
 	background: var(--black-30);
+}
+
+.adaptivecard-wrapper.chatDisabled button,
+.adaptivecard-wrapper.chatDisabled button:hover {
+	background: var(--black-90);
+	cursor: default;
+	pointer-events: none;
 }
 
 .adaptivecard-wrapper button:disabled {
