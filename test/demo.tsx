@@ -322,21 +322,18 @@ export const Menu = (props: MenuProps) => {
 };
 
 interface MessageParamsProps {
-	messageParams?: MessageProviderProps["messageParams"];
-	setMessageParams?: Dispatch<
-		SetStateAction<{ hasReply: boolean; isConversationEnded: boolean }>
-	>;
+	messageParams: MessageProviderProps["messageParams"];
+	setMessageParams: Dispatch<SetStateAction<{ hasReply: boolean; isConversationEnded: boolean }>>;
 }
 const MessageParams = (props: MessageParamsProps) => {
 	const { setMessageParams, messageParams } = props;
 
 	const toggleConversationEnded = () => {
-		setMessageParams &&
-			setMessageParams(prev => ({ ...prev, isConversationEnded: !prev.isConversationEnded }));
+		setMessageParams(prev => ({ ...prev, isConversationEnded: !prev.isConversationEnded }));
 	};
 
 	const toggleHasReply = () => {
-		setMessageParams && setMessageParams(prev => ({ ...prev, hasReply: !prev.hasReply }));
+		setMessageParams(prev => ({ ...prev, hasReply: !prev.hasReply }));
 	};
 
 	return (
