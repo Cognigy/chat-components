@@ -330,12 +330,12 @@ interface MessageParamsProps {
 const MessageParams = (props: MessageParamsProps) => {
 	const { setMessageParams, messageParams } = props;
 
-	const handleChangeConversationEnded = () => {
+	const toggleConversationEnded = () => {
 		setMessageParams &&
 			setMessageParams(prev => ({ ...prev, isConversationEnded: !prev.isConversationEnded }));
 	};
 
-	const handleChangeHasReply = () => {
+	const toggleHasReply = () => {
 		setMessageParams && setMessageParams(prev => ({ ...prev, hasReply: !prev.hasReply }));
 	};
 
@@ -346,7 +346,7 @@ const MessageParams = (props: MessageParamsProps) => {
 				<input
 					type="checkbox"
 					checked={!!messageParams?.hasReply}
-					onChange={handleChangeHasReply}
+					onChange={toggleHasReply}
 				/>
 				<span className="slider" />
 			</label>
@@ -355,7 +355,7 @@ const MessageParams = (props: MessageParamsProps) => {
 				<input
 					type="checkbox"
 					checked={!!messageParams?.isConversationEnded}
-					onChange={handleChangeConversationEnded}
+					onChange={toggleConversationEnded}
 				/>
 				<span className="slider" />
 			</label>
