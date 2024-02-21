@@ -34,22 +34,23 @@ article .wrapper {
 	color: var(--white);
 }
 
+.headerContent > * {
+	color: var(--white);
+}
+
 .itemTitle {
 	margin-top: 0px;
 	margin-bottom: 0px;
-	color: var(--black-10);
 }
 
 .itemTitleWithSubtitle {
 	margin-top: 0px;
 	margin-bottom: 8px;
-	color: var(--black-10);
 }
 
 .itemSubtitle {
 	margin-top: 0px;
 	margin-bottom: 0px;
-	color: var(--black-10);
 }
 
 .itemSubtitle.ignoreWS {
@@ -76,10 +77,12 @@ article .wrapper {
 	align-items: center;
 	gap: 16px;
 	width: 100%;
+	color: var(--black-20);
 }
 
-.listItemText {
+.listItemText > * {
 	width: 100%;
+	color: var(--black-20);
 }
 
 .listItemImage {
