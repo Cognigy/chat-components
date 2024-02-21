@@ -80,8 +80,11 @@ article .wrapper {
 	color: var(--black-20);
 }
 
-.listItemText > * {
+.listItemText {
 	width: 100%;
+}
+
+.listItemText > * {
 	color: var(--black-20);
 }
 
