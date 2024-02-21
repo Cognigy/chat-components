@@ -49,7 +49,7 @@ const Message: FC<MessageProps> = props => {
 	const MessageComponent = match(message, config, plugins);
 
 	const messageParams = useMemo(
-		() => ({ hasReply: hasReply, isConversationEnded: isConversationEnded }),
+		() => ({ hasReply, isConversationEnded }),
 		[hasReply, isConversationEnded],
 	);
 
