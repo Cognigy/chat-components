@@ -1,4 +1,4 @@
-import React, { FC, useState } from "react";
+import React, { Dispatch, FC, SetStateAction, useState } from "react";
 import ReactDOM from "react-dom/client";
 
 import "./demo.css";
@@ -29,6 +29,7 @@ import datePickerDisableWeekends from "test/fixtures/datepicker/disableWeekends.
 
 import { IMessage } from "@cognigy/socket-client";
 import { ChatEvent, TypingIndicator, Typography } from "../src/index.ts";
+import { MessageProviderProps } from "src/messages/context.tsx";
 
 const action: MessageSender = (text, data) =>
 	alert("Text: " + JSON.stringify(text, null, 2) + " Data: " + JSON.stringify(data, null, 2));
@@ -201,37 +202,6 @@ const screens: TScreen[] = [
 				},
 			},
 			{
-				hasReply: true,
-				message: {
-					avatarName: "Cognigy",
-					text: "",
-					source: "bot",
-					data: {
-						_cognigy: {
-							_webchat: {
-								message: {
-									text: "This QR should be disabled.",
-									quick_replies: [
-										{
-											content_type: "text",
-											payload: "payload1",
-											title: "Make purchase",
-										},
-										{
-											content_type: "user_phone_number",
-											image_url: "",
-											image_alt_text: "",
-											payload: "0111222333",
-											title: "Call us",
-										},
-									],
-								},
-							},
-						},
-					},
-				},
-			},
-			{
 				message: {
 					avatarName: "Cognigy",
 					source: "bot",
@@ -351,6 +321,45 @@ export const Menu = (props: MenuProps) => {
 	);
 };
 
+interface MessageParamsProps {
+	messageParams: MessageProviderProps["messageParams"];
+	setMessageParams: Dispatch<SetStateAction<{ hasReply: boolean; isConversationEnded: boolean }>>;
+}
+const MessageParams = (props: MessageParamsProps) => {
+	const { setMessageParams, messageParams } = props;
+
+	const toggleConversationEnded = () => {
+		setMessageParams(prev => ({ ...prev, isConversationEnded: !prev.isConversationEnded }));
+	};
+
+	const toggleHasReply = () => {
+		setMessageParams(prev => ({ ...prev, hasReply: !prev.hasReply }));
+	};
+
+	return (
+		<div className="message-params">
+			<label className="switch">
+				<p>hasReply</p>
+				<input
+					type="checkbox"
+					checked={!!messageParams?.hasReply}
+					onChange={toggleHasReply}
+				/>
+				<span className="slider" />
+			</label>
+			<label className="switch">
+				<p>isConversationEnded</p>
+				<input
+					type="checkbox"
+					checked={!!messageParams?.isConversationEnded}
+					onChange={toggleConversationEnded}
+				/>
+				<span className="slider" />
+			</label>
+		</div>
+	);
+};
+
 interface ScreenProps {
 	messages: TScreen["messages"];
 	content?: TScreen["content"];
@@ -359,12 +368,26 @@ interface ScreenProps {
 const Screen: FC<ScreenProps> = props => {
 	const { messages = [] } = props;
 
+	const [messageParams, setMessageParams] = useState({
+		hasReply: false,
+		isConversationEnded: false,
+	});
+
 	return (
-		<div className={"chatRoot"}>
-			{messages.map((message, index) => (
-				<Message key={index} {...message} action={action} />
-			))}
-			{props.content}
+		<div id="content">
+			<div className={"chatRoot"}>
+				{messages.map((message, index) => (
+					<Message
+						key={index}
+						{...message}
+						action={action}
+						hasReply={messageParams?.hasReply}
+						isConversationEnded={messageParams?.isConversationEnded}
+					/>
+				))}
+				{props.content}
+			</div>
+			<MessageParams messageParams={messageParams} setMessageParams={setMessageParams} />
 		</div>
 	);
 };

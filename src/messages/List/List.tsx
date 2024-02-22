@@ -9,7 +9,7 @@ import { getChannelPayload } from "src/utils";
 import { IWebchatAttachmentElement, IWebchatTemplateAttachment } from "@cognigy/socket-client";
 
 const List: FC = () => {
-	const { message, config, action, onEmitAnalytics } = useMessageContext();
+	const { message, messageParams, config, action, onEmitAnalytics } = useMessageContext();
 	const payload = getChannelPayload(message, config);
 
 	const { elements, top_element_style, buttons } =
@@ -23,6 +23,8 @@ const List: FC = () => {
 	const button = buttons && buttons?.[0];
 
 	const listTemplateId = useRandomId("webchatListTemplateRoot");
+
+	const shouldBeDisabled = messageParams?.isConversationEnded;
 
 	useEffect(() => {
 		const chatHistory = document.getElementById("webchatChatHistoryWrapperLiveLogPanel");
@@ -65,7 +67,7 @@ const List: FC = () => {
 			{button && (
 				<PrimaryButton
 					isActionButton
-					action={action}
+					action={shouldBeDisabled ? undefined : action}
 					button={button}
 					buttonClassName="webchat-list-template-global-button"
 					containerClassName={classes.mainButtonWrapper}

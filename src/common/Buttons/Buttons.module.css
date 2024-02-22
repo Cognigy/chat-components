@@ -33,10 +33,16 @@ a.primaryButton.button:focus {
 	background-color: var(--secondary-color-hover);
 }
 button.primaryButton.actionButton:disabled,
-button.primaryButton.actionButton[disabled],
+a.primaryButton.actionButton:global(.disabled),
 button.primaryButton.button:disabled,
-button.primaryButton.button[disabled] {
+button.primaryButton.actionButton:disabled:hover,
+button.primaryButton.actionButton:disabled:focus,
+a.primaryButton.actionButton:global(.disabled):hover,
+a.primaryButton.actionButton:global(.disabled):focus,
+button.primaryButton.button:disabled:hover,
+button.primaryButton.button:disabled:focus {
 	cursor: default;
+	pointer-events: none;
 	background-color: var(--secondary-color-disabled);
 }
 
@@ -66,11 +72,17 @@ a.secondaryButton.button:focus {
 	background-color: var(--white);
 }
 button.secondaryButton.actionButton:disabled,
-button.secondaryButton.actionButton[disabled],
+a.secondaryButton.actionButton:global(.disabled),
 button.secondaryButton.button:disabled,
-button.secondaryButton.button[disabled] {
+button.secondaryButton.actionButton:disabled:hover,
+button.secondaryButton.actionButton:disabled:focus,
+a.secondaryButton.actionButton:global(.disabled):hover,
+a.secondaryButton.actionButton:global(.disabled):focus,
+button.secondaryButton.button:disabled:hover,
+button.secondaryButton.button:disabled:focus {
 	cursor: default;
 	color: var(--secondary-color-disabled);
+	pointer-events: none;
 	border: 1px solid var(--secondary-color-disabled);
 	background-color: var(--white);
 }

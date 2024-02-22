@@ -46,7 +46,7 @@ const adaptiveCardsHostConfig: HostConfig = {
 };
 
 export const AdaptiveCards = () => {
-	const { message, action: onSendMessage, config } = useMessageContext();
+	const { message, messageParams, action: onSendMessage, config } = useMessageContext();
 
 	const getCardPayload = (message: IMessage) => {
 		//@ts-ignore
@@ -68,8 +68,12 @@ export const AdaptiveCards = () => {
 
 	const cardPayload = getCardPayload(message);
 
+	const shouldBeDisabled = messageParams?.isConversationEnded;
+
 	const onExecuteAction = useCallback(
 		(action: Action) => {
+			if (shouldBeDisabled) return;
+
 			//@ts-ignore
 			switch (action._propertyBag?.type) {
 				case "Action.Submit": {
@@ -92,12 +96,16 @@ export const AdaptiveCards = () => {
 				}
 			}
 		},
-		[onSendMessage],
+		[onSendMessage, shouldBeDisabled],
 	);
 
 	return (
 		<ChatBubble
-			className={classnames(styles["adaptivecard-wrapper"], "adaptivecard-wrapper internal")}
+			className={classnames(
+				styles["adaptivecard-wrapper"],
+				"adaptivecard-wrapper internal",
+				shouldBeDisabled && styles.chatDisabled,
+			)}
 		>
 			<AdaptiveCard
 				payload={cardPayload}

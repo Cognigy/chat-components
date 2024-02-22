@@ -8,6 +8,7 @@ interface MessageProviderProps {
 	message: MessageProps["message"];
 	messageParams?: {
 		hasReply: MessageProps["hasReply"];
+		isConversationEnded: MessageProps["isConversationEnded"];
 	};
 	onEmitAnalytics?: MessageProps["onEmitAnalytics"];
 }

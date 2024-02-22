@@ -30,6 +30,12 @@ a.button:focus {
 }
 
 button.button:disabled,
-a.button.disabled {
-	background: var(--primary-color-disabled) !important;
+button.button:disabled:hover,
+button.button:disabled:focus,
+a.button.disabled,
+a.button.disabled:hover,
+a.button.disabled:focus {
+	background: var(--primary-color-disabled);
+	cursor: default;
+	pointer-events: none;
 }

@@ -34,6 +34,10 @@ article .wrapper {
 	color: var(--white);
 }
 
+.headerContent > * {
+	color: var(--white);
+}
+
 .itemTitle {
 	margin-top: 0px;
 	margin-bottom: 0px;
@@ -73,10 +77,15 @@ article .wrapper {
 	align-items: center;
 	gap: 16px;
 	width: 100%;
+	color: var(--black-20);
 }
 
 .listItemText {
 	width: 100%;
+}
+
+.listItemText > * {
+	color: var(--black-20);
 }
 
 .listItemImage {
