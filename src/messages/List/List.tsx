@@ -29,7 +29,7 @@ const List: FC = () => {
 	useEffect(() => {
 		const chatHistory = document.getElementById("webchatChatHistoryWrapperLiveLogPanel");
 
-		if (!config?.settings.enableAutoFocus) return;
+		if (!config?.settings?.widgetSettings?.enableAutoFocus) return;
 
 		if (!chatHistory?.contains(document.activeElement)) return;
 
@@ -42,7 +42,7 @@ const List: FC = () => {
 		setTimeout(() => {
 			firstFocusable?.focus();
 		}, 200);
-	}, [config?.settings.enableAutoFocus, listTemplateId]);
+	}, [config?.settings?.widgetSettings?.enableAutoFocus, listTemplateId]);
 
 	if (!elements || elements?.length === 0) return null;
 

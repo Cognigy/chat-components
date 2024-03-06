@@ -9,7 +9,7 @@ export function getChannelPayload(message: IMessage, config?: IWebchatConfig) {
 	const { _facebook, _webchat } = message?.data?._cognigy || {};
 
 	if (
-		config?.settings?.enableStrictMessengerSync &&
+		config?.settings?.widgetSettings?.enableStrictMessengerSync &&
 		message.data?._cognigy?.syncWebchatWithFacebook
 	) {
 		return _facebook;

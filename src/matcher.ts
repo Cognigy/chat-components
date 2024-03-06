@@ -137,7 +137,7 @@ const defaultConfig: MatchConfig[] = [
 			const _defaultPreview = message?.data?._cognigy?._defaultPreview?.adaptiveCard;
 
 			const _plugin = message?.data?._plugin?.type === "adaptivecards";
-			const defaultPreviewEnabled = config?.settings?.enableDefaultPreview;
+			const defaultPreviewEnabled = config?.settings?.widgetSettings?.enableDefaultPreview;
 
 			if (message.data?._cognigy?._defaultPreview?.message && defaultPreviewEnabled) {
 				return false;
@@ -163,7 +163,7 @@ const defaultConfig: MatchConfig[] = [
 			// do not render messages with file attachments. It will be rendered by the File component
 			if (
 				(message?.source === "engagement" &&
-					!config?.settings?.showEngagementMessagesInChat) ||
+					!config?.settings?.teaserMessage?.showInChat) ||
 				message?.data?.attachments
 			) {
 				return false;

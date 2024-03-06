@@ -17,7 +17,7 @@ const ImageThumb: FC = () => {
 		event.key === "Enter" && onExpand && onExpand();
 	};
 
-	const isDynamicRatio = !!config?.settings?.dynamicImageAspectRatio;
+	const isDynamicRatio = !!config?.settings?.layout?.dynamicImageAspectRatio;
 
 	const imageClasses = cx({
 		"webchat-media-template-image": true,

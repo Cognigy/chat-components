@@ -16,11 +16,11 @@ const Text: FC<TextProps> = props => {
 	const { message, config } = useMessageContext();
 	const content = props.content || message?.text || "";
 
-	const enhancedURLsText = config?.settings?.disableRenderURLsAsLinks
+	const enhancedURLsText = config?.settings?.widgetSettings?.disableRenderURLsAsLinks
 		? content
 		: replaceUrlsWithHTMLanchorElem(content);
 
-	const __html = config?.settings?.disableHtmlContentSanitization
+	const __html = config?.settings?.layout?.disableHtmlContentSanitization
 		? enhancedURLsText
 		: sanitizeHTML(enhancedURLsText);
 

@@ -43,7 +43,7 @@ const ActionButton: FC<ActionButtonProps> = props => {
 	if (!buttonType) return null;
 
 	const buttonLabel = getWebchatButtonLabel(button) || "";
-	const __html = config?.settings?.disableHtmlContentSanitization
+	const __html = config?.settings?.layout?.disableHtmlContentSanitization
 		? buttonLabel
 		: sanitizeHTML(buttonLabel);
 
@@ -83,7 +83,7 @@ const ActionButton: FC<ActionButtonProps> = props => {
 		}
 
 		if (isWebURL) {
-			const url = config?.settings?.disableUrlButtonSanitization
+			const url = config?.settings?.layout?.disableUrlButtonSanitization
 				? button.url
 				: sanitizeUrl(button.url);
 
@@ -98,7 +98,7 @@ const ActionButton: FC<ActionButtonProps> = props => {
 		event.preventDefault();
 
 		const textMessageInput = document.getElementById("webchatInputMessageInputInTextMode");
-		if (textMessageInput && config?.settings?.focusInputAfterPostback)
+		if (textMessageInput && config?.settings?.behavior?.focusInputAfterPostback)
 			textMessageInput.focus?.();
 
 		props.action?.(button.payload, null, { label: button.title });

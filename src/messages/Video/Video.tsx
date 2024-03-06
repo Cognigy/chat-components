@@ -18,7 +18,7 @@ const Video: FC = () => {
 		(player: ReactPlayer) => {
 			const chatHistory = document.getElementById("webchatChatHistoryWrapperLiveLogPanel");
 
-			if (!config?.settings.enableAutoFocus) return;
+			if (!config?.settings?.widgetSettings?.enableAutoFocus) return;
 
 			if (!chatHistory?.contains(document.activeElement)) return;
 
@@ -26,7 +26,7 @@ const Video: FC = () => {
 				player.getInternalPlayer()?.focus();
 			}, 100);
 		},
-		[config?.settings.enableAutoFocus],
+		[config?.settings?.widgetSettings?.enableAutoFocus],
 	);
 
 	if (!url) return null;

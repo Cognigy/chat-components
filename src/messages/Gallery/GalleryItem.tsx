@@ -21,7 +21,7 @@ const GalleryItem: FC<GallerySlideProps> = props => {
 	const hasExtraInfo = subtitle || (buttons && buttons?.length > 0);
 	const [isImageBroken, setImageBroken] = useState(false);
 
-	const isSanitizeEnabled = !config?.settings?.disableHtmlContentSanitization;
+	const isSanitizeEnabled = !config?.settings?.layout?.disableHtmlContentSanitization;
 	const titleHtml = isSanitizeEnabled ? sanitizeHTML(title) : title;
 	const subtitleHtml = isSanitizeEnabled ? sanitizeHTML(subtitle) : subtitle;
 
@@ -33,7 +33,7 @@ const GalleryItem: FC<GallerySlideProps> = props => {
 	const handleClick = () => {
 		if (!default_action?.url) return;
 
-		const url = config?.settings?.disableUrlButtonSanitization
+		const url = config?.settings?.layout?.disableUrlButtonSanitization
 			? default_action.url
 			: sanitizeUrl(default_action.url);
 
