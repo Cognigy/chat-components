@@ -43,14 +43,14 @@ export const ActionButtons: FC<ActionButtonsProps> = props => {
 		const firstButton = document.getElementById(`${webchatButtonTemplateButtonId}-0`);
 		const chatHistory = document.getElementById("webchatChatHistoryWrapperLiveLogPanel");
 
-		if (!config?.settings.enableAutoFocus) return;
+		if (!config?.settings?.widgetSettings?.enableAutoFocus) return;
 
 		if (!chatHistory?.contains(document.activeElement)) return;
 
 		setTimeout(() => {
 			firstButton?.focus();
 		}, 200);
-	}, [config?.settings.enableAutoFocus, webchatButtonTemplateButtonId]);
+	}, [config?.settings?.widgetSettings?.enableAutoFocus, webchatButtonTemplateButtonId]);
 
 	if (!payload || payload?.length === 0) return null;
 
