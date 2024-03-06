@@ -162,7 +162,6 @@ export interface IWebchatSettings {
 		position: "centered" | "bottomRight";
 	};
 
-
 	// Settings related to the webchat browser embedding
 	// These settings are NOT configurable via the Endpoint Editor in Cognigy.AI
 	embeddingConfiguration: {
@@ -177,8 +176,8 @@ export interface IWebchatSettings {
 			text: string;
 			timeout: number;
 			title: string;
-		}
-	},
+		};
+	};
 
 	// Additional Settings to configure the webchat widget behavior
 	// These settings are NOT configurable via the Endpoint Editor in Cognigy.AI
