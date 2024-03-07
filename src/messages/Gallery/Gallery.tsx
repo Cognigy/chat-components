@@ -23,7 +23,7 @@ const Gallery: FC = () => {
 		const firstCardContent = document.getElementById(`${carouselContentId}-0`);
 		const firstButton = firstCardContent?.getElementsByTagName("button")?.[0];
 
-		if (!config?.settings.enableAutoFocus) return;
+		if (!config?.settings?.widgetSettings?.enableAutoFocus) return;
 
 		if (!chatHistory?.contains(document.activeElement)) return;
 
@@ -36,7 +36,7 @@ const Gallery: FC = () => {
 				firstButton?.focus();
 			}, 200);
 		}
-	}, [carouselContentId, config?.settings.enableAutoFocus]);
+	}, [carouselContentId, config?.settings?.widgetSettings?.enableAutoFocus]);
 
 	if (!elements || elements?.length === 0) return null;
 

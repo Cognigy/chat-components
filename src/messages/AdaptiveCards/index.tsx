@@ -55,7 +55,7 @@ export const AdaptiveCards = () => {
 		const _defaultPreview = message?.data?._cognigy?._defaultPreview?.adaptiveCard;
 		//@ts-ignore
 		const _plugin = message?.data?._plugin?.payload;
-		const defaultPreviewEnabled = config?.settings?.enableDefaultPreview;
+		const defaultPreviewEnabled = config?.settings?.widgetSettings?.enableDefaultPreview;
 
 		if (_webchat && _defaultPreview && !defaultPreviewEnabled) {
 			return _webchat;

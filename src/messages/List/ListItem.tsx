@@ -20,7 +20,7 @@ const ListItem: FC<{ element: IWebchatAttachmentElement; isHeaderElement?: boole
 	const handleClick = () => {
 		if (shouldBeDisabled || !default_action?.url) return;
 
-		const url = config?.settings?.disableUrlButtonSanitization
+		const url = config?.settings?.layout?.disableUrlButtonSanitization
 			? default_action.url
 			: sanitizeUrl(default_action.url);
 
@@ -36,7 +36,7 @@ const ListItem: FC<{ element: IWebchatAttachmentElement; isHeaderElement?: boole
 		}
 	};
 
-	const isSanitizeEnabled = !config?.settings?.disableHtmlContentSanitization;
+	const isSanitizeEnabled = !config?.settings?.layout?.disableHtmlContentSanitization;
 
 	const titleHtml = isSanitizeEnabled ? sanitizeHTML(title) : title;
 	const subtitleHtml = isSanitizeEnabled ? sanitizeHTML(subtitle) : subtitle;
