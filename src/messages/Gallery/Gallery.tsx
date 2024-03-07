@@ -36,7 +36,7 @@ const Gallery: FC = () => {
 				firstButton?.focus();
 			}, 200);
 		}
-	}, [carouselContentId, config?.settings?.widgetSettings.enableAutoFocus]);
+	}, [carouselContentId, config?.settings?.widgetSettings?.enableAutoFocus]);
 
 	if (!elements || elements?.length === 0) return null;
 
