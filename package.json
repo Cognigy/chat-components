@@ -3,6 +3,7 @@
 	"version": "0.17.0",
 	"type": "module",
 	"exports": "./dist/chat-components.js",
+	"module": "./dist/chat-components.js",
 	"types": "./dist/index.d.ts",
 	"files": [
 		"./dist/**/*",
