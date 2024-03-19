@@ -119,6 +119,7 @@ const ActionButton: FC<ActionButtonProps> = props => {
 				props.className,
 				disabled && classes.disabled,
 				disabled && "disabled",
+				isPhoneNumber && "phone-number-anchor"
 			)}
 			aria-label={ariaLabel}
 			aria-disabled={disabled}

@@ -21,11 +21,11 @@
 	margin-block-start: calc(var(--webchat-message-margin-block, 24px) * -0.5);
 }
 
-.message a {
+.message a:not(:global(.phone-number-anchor)) {
 	color: var(--text-link);
 }
 
-.message a:hover,
-.message a:focus {
+.message a:hover:not(:global(.phone-number-anchor)),
+.message a:focus:not(:global(.phone-number-anchor)) {
 	color: var(--text-link-hover);
 }
