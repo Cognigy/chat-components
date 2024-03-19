@@ -20,3 +20,12 @@
 .collated {
 	margin-block-start: calc(var(--webchat-message-margin-block, 24px) * -0.5);
 }
+
+.message a {
+	color: var(--text-link);
+}
+
+.message a:hover,
+.message a:focus {
+	color: var(--text-link-hover);
+}
