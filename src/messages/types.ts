@@ -73,6 +73,8 @@ export interface IWebchatSettings {
 		enableBadge: boolean;
 		enablePreview: boolean;
 		enableSound: boolean;
+		unreadMessageTitleText: string;
+		unreadMessageTitleTextPlural: string;
 	};
 	homeScreen: {
 		enabled: boolean;
@@ -99,6 +101,7 @@ export interface IWebchatSettings {
 	};
 	teaserMessage: {
 		text: string;
+		teaserMessageDelay: number;
 		showInChat: boolean;
 		conversationStarters: {
 			enabled: boolean;
@@ -196,10 +199,6 @@ export interface IWebchatSettings {
 		enableDefaultPreview: boolean;
 		ignoreLineBreaks: boolean;
 		STTLanguage: string;
-		teaserMessageDelay: number;
-		unreadMessageTitleText: string;
-		unreadMessageTitleTextPlural: string;
-		userAvatarUrl: string;
 
 		sourceDirectionMapping: {
 			agent: TSourceDirection;
