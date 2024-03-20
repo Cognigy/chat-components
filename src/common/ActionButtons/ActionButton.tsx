@@ -90,7 +90,6 @@ const ActionButton: FC<ActionButtonProps> = props => {
 			// prevent no-ops from sending you to a blank page
 			if (url === "about:blank") return;
 			window.open(url, isWebURLButtonTargetBlank ? "_blank" : "_self");
-			return;
 		}
 
 		if (disabled) return;
@@ -98,8 +97,13 @@ const ActionButton: FC<ActionButtonProps> = props => {
 		event.preventDefault();
 
 		const textMessageInput = document.getElementById("webchatInputMessageInputInTextMode");
-		if (textMessageInput && config?.settings?.behavior?.focusInputAfterPostback)
+		if (textMessageInput && config?.settings?.widgetSettings?.enableAutoFocus) {
 			textMessageInput.focus?.();
+		}
+
+		if (isWebURL) {
+			return;
+		}
 
 		props.action?.(button.payload, null, { label: button.title });
 	};
