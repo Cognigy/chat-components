@@ -96,6 +96,13 @@ const screens: TScreen[] = [
 					timestamp: "1701163314138",
 				},
 			},
+			{
+				message: {
+					text: "This message has a new a header",
+					source: "agent",
+					timestamp: "1701163314138",
+				},
+			},
 		],
 	},
 	{

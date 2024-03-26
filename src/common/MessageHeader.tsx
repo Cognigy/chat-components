@@ -20,6 +20,7 @@ const MessageHeader: FC<MessageHeaderProps> = props => {
 	const { message } = useMessageContext();
 
 	const isUserMessage = message.source === "user";
+	const isAgentMessage = message.source === "agent";
 
 	const className = classnames(
 		"message-header",
@@ -37,7 +38,7 @@ const MessageHeader: FC<MessageHeaderProps> = props => {
 				{!isUserMessage && (
 					<>
 						<span className={classes["avatar-name"]}>
-							{message?.avatarName || "Bot"}
+							{message?.avatarName || (isAgentMessage ? "Agent" : "Bot")}
 						</span>
 						<HeaderEllipsis />
 					</>
