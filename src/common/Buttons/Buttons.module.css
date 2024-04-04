@@ -32,6 +32,13 @@ a.primaryButton.button:hover,
 a.primaryButton.button:focus {
 	background-color: var(--secondary-color-hover);
 }
+button.primaryButton.actionButton:focus-visible,
+a.primaryButton.actionButton:focus-visible,
+button.primaryButton.button:focus-visible,
+a.primaryButton.button:focus-visible {
+	outline: 2px solid var(--primary-color);
+	outline-offset: 2px;
+}
 button.primaryButton.actionButton:disabled,
 a.primaryButton.actionButton:global(.disabled),
 button.primaryButton.button:disabled,

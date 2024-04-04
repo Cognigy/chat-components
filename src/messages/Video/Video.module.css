@@ -18,11 +18,16 @@ article .player > div:first-child {
 	outline: none;
 	aspect-ratio: 16/9;
 	height: auto !important;
+	border-radius: var(--bubble-border-radius);
 }
 
 article .player > div:first-child:hover,
 article .player > div:first-child:focus {
 	opacity: 0.85;
+}
+article .player > div:first-child:focus-visible {
+	outline: 2px solid var(--primary-color);
+	outline-offset: -2px;
 }
 
 article .player > div:first-child:hover svg circle,
