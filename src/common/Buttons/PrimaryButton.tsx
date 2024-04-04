@@ -1,4 +1,4 @@
-import { ButtonHTMLAttributes, FC, ReactElement } from "react";
+import { ButtonHTMLAttributes, FC, ReactElement, forwardRef } from "react";
 import classes from "./Buttons.module.css";
 import classnames from "classnames";
 import ActionButtons, { ActionButtonsProps } from "../ActionButtons/ActionButtons";
@@ -16,7 +16,7 @@ interface PrimaryButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
 	onEmitAnalytics?: ActionButtonsProps["onEmitAnalytics"];
 }
 
-const PrimaryButton: FC<PrimaryButtonProps> = props => {
+const PrimaryButton = forwardRef<HTMLButtonElement, PrimaryButtonProps>((props, ref) => {
 	const {
 		button,
 		customIcon,
@@ -34,6 +34,7 @@ const PrimaryButton: FC<PrimaryButtonProps> = props => {
 			<Button
 				{...restProps}
 				className={classnames(classes.primaryButton, classes.button, props.className)}
+				ref={ref}
 			/>
 		);
 
@@ -54,6 +55,6 @@ const PrimaryButton: FC<PrimaryButtonProps> = props => {
 			onEmitAnalytics={onEmitAnalytics}
 		/>
 	);
-};
+});
 
 export default PrimaryButton;

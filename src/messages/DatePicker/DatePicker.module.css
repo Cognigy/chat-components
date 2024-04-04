@@ -116,14 +116,9 @@
 	outline: 0;
 }
 
-.wrapper .content :global(.flatpickr-calendar.flash-focus:focus) {
-	outline: 0;
-	-webkit-animation-duration: 1s;
-	animation-duration: 1s;
-	-webkit-animation-fill-mode: both;
-	animation-fill-mode: both;
-	animation-name: flatpickr-flash-focus;
-	border-radius: 10px;
+.wrapper .content :global(.flatpickr-calendar:focus-visible .flatpickr-innerContainer) {
+	outline: 2px solid var(--primary-color);
+	outline-offset: 2px;
 }
 
 @keyframes flatpickr-flash-focus {
@@ -682,6 +677,17 @@
 .wrapper .content :global(.flatpickr-time input.flatpickr-minute),
 .wrapper .content :global(.flatpickr-time input.flatpickr-second) {
 	font-weight: 400;
+}
+
+.wrapper .content :global(.flatpickr-time input.flatpickr-hour:focus),
+.wrapper .content :global(.flatpickr-time input.flatpickr-minute:focus),
+.wrapper .content :global(.flatpickr-time input.flatpickr-second:focus){
+	outline: 2px solid var(--primary-color);
+}
+
+.wrapper .content :global(.flatpickr-time span.flatpickr-am-pm:focus-visible){
+	outline: 2px solid var(--primary-color);
+	outline-offset: -2px;
 }
 
 .wrapper .content :global(.flatpickr-time input:focus) {
