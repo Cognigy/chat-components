@@ -64,7 +64,7 @@ const ActionButton: FC<ActionButtonProps> = props => {
 		} else if (total <= 1 && isURLInNewTab) {
 			return newTabURLButtonTitle;
 		}
-	}
+	};
 
 	const PhoneNumberAnchor = (props: React.HTMLAttributes<HTMLAnchorElement>) =>
 		button.payload ? <a {...props} href={`tel:${button.payload}`} /> : null;
