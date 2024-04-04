@@ -14,6 +14,11 @@ article .wrapper {
 	opacity: 0.85;
 }
 
+.headerWrapper:focus-visible {
+	outline: 2px solid var(--primary-color);
+	outline-offset: -3px;
+}
+
 .darkLayer {
 	display: block;
 	content: " ";
@@ -66,6 +71,15 @@ article .wrapper {
 .listItemWrapper {
 	position: relative;
 	display: flex;
+}
+
+.listItemWrapper:focus {
+	outline: none;
+}
+
+.listItemWrapper:focus-visible{
+	outline: 2px solid var(--primary-color);
+	outline-offset: -10px;
 }
 
 .listItemContent {
