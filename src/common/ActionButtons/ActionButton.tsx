@@ -54,13 +54,17 @@ const ActionButton: FC<ActionButtonProps> = props => {
 	const isWebURL = "type" in button && button.type === "web_url";
 	const isWebURLButtonTargetBlank = isWebURL && button.target !== "_self";
 
-	const buttonTitleWithTarget =
-		isWebURL && isWebURLButtonTargetBlank ? `${buttonTitle} Opens in new tab` : button.title;
+	const getAriaLabel = () => {
+		const isURLInNewTab = isWebURL && isWebURLButtonTargetBlank;
+		const newTabURLButtonTitle = `${buttonTitle}. Opens in new tab`;
+		const buttonTitleWithTarget = isURLInNewTab ? newTabURLButtonTitle : button.title;
 
-	const ariaLabel =
-		total > 1
-			? `Item ${position} of ${total}: ${buttonTitleWithTarget}`
-			: buttonTitleWithTarget;
+		if (total > 1) {
+			return `Item ${position} of ${total}: ${buttonTitleWithTarget}`;
+		} else if (total <= 1 && isURLInNewTab) {
+			return newTabURLButtonTitle;
+		}
+	}
 
 	const PhoneNumberAnchor = (props: React.HTMLAttributes<HTMLAnchorElement>) =>
 		button.payload ? <a {...props} href={`tel:${button.payload}`} /> : null;
@@ -125,7 +129,7 @@ const ActionButton: FC<ActionButtonProps> = props => {
 				disabled && "disabled",
 				isPhoneNumber && "phone-number-anchor",
 			)}
-			aria-label={ariaLabel}
+			aria-label={getAriaLabel()}
 			aria-disabled={disabled}
 			role={isWebURL ? "link" : undefined}
 		>
