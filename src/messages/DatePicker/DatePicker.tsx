@@ -1,4 +1,4 @@
-import { FC, useState, KeyboardEvent, useMemo, useEffect, useRef } from "react";
+import { FC, useState, KeyboardEvent, useMemo, useRef } from "react";
 import classes from "./DatePicker.module.css";
 import classnames from "classnames";
 import Flatpickr from "react-flatpickr";

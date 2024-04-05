@@ -1,4 +1,4 @@
-import { ButtonHTMLAttributes, FC, ReactElement, forwardRef } from "react";
+import { ButtonHTMLAttributes, ReactElement, forwardRef } from "react";
 import classes from "./Buttons.module.css";
 import classnames from "classnames";
 import ActionButtons, { ActionButtonsProps } from "../ActionButtons/ActionButtons";

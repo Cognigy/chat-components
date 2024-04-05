@@ -1,4 +1,4 @@
-import { ButtonHTMLAttributes, FC, ReactElement, forwardRef } from "react";
+import { ButtonHTMLAttributes, ReactElement, forwardRef } from "react";
 import Typography from "../Typography";
 
 interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
