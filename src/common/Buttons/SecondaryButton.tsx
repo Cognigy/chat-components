@@ -1,4 +1,4 @@
-import { ButtonHTMLAttributes, FC, ReactElement } from "react";
+import { ButtonHTMLAttributes, FC, ReactElement, forwardRef } from "react";
 import classes from "./Buttons.module.css";
 import classnames from "classnames";
 import ActionButtons, { ActionButtonsProps } from "../ActionButtons/ActionButtons";
@@ -16,7 +16,7 @@ interface SecondaryButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
 	onEmitAnalytics?: ActionButtonsProps["onEmitAnalytics"];
 }
 
-const SecondaryButton: FC<SecondaryButtonProps> = props => {
+const SecondaryButton = forwardRef<HTMLButtonElement, SecondaryButtonProps>((props, ref) => {
 	const {
 		button,
 		customIcon,
@@ -34,6 +34,7 @@ const SecondaryButton: FC<SecondaryButtonProps> = props => {
 			<Button
 				{...restProps}
 				className={classnames(classes.secondaryButton, classes.button, props.className)}
+				ref={ref}
 			/>
 		);
 
@@ -54,6 +55,6 @@ const SecondaryButton: FC<SecondaryButtonProps> = props => {
 			onEmitAnalytics={onEmitAnalytics}
 		/>
 	);
-};
+});
 
 export default SecondaryButton;
