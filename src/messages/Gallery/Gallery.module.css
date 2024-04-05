@@ -169,7 +169,7 @@ article :global(.swiper).wrapper :global(.swiper-pagination-bullet) {
 	background: var(--black-80);
 	opacity: 1;
 }
-article :global(.swiper).wrapper :global(.swiper-pagination-bullet):focus{
+article :global(.swiper).wrapper :global(.swiper-pagination-bullet):focus {
 	box-shadow: 0 0 0 4px var(--primary-color-opacity-10);
 	outline: none;
 }

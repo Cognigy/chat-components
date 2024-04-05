@@ -681,11 +681,11 @@
 
 .wrapper .content :global(.flatpickr-time input.flatpickr-hour:focus),
 .wrapper .content :global(.flatpickr-time input.flatpickr-minute:focus),
-.wrapper .content :global(.flatpickr-time input.flatpickr-second:focus){
+.wrapper .content :global(.flatpickr-time input.flatpickr-second:focus) {
 	outline: 2px solid var(--primary-color);
 }
 
-.wrapper .content :global(.flatpickr-time span.flatpickr-am-pm:focus-visible){
+.wrapper .content :global(.flatpickr-time span.flatpickr-am-pm:focus-visible) {
 	outline: 2px solid var(--primary-color);
 	outline-offset: -2px;
 }
