@@ -119,6 +119,13 @@ article :global(.swiper).wrapper :global(.gallery-button-next) {
 	top: calc(150px / 2 - 8px);
 	z-index: 10;
 	cursor: pointer;
+	width: 30px;
+	height: 30px;
+	background-color: rgba(0, 0, 0, 0.5);
+	border: none;
+	border-radius: 50%;
+	display: flex;
+	align-items: center;
 }
 article :global(.swiper).wrapper :global(.gallery-button-prev) {
 	left: 20px;
@@ -162,10 +169,13 @@ article :global(.swiper).wrapper :global(.swiper-pagination-bullet) {
 	background: var(--black-80);
 	opacity: 1;
 }
-article :global(.swiper).wrapper :global(.swiper-pagination-bullet):focus,
-article :global(.swiper).wrapper :global(.swiper-pagination-bullet):focus-visible {
+article :global(.swiper).wrapper :global(.swiper-pagination-bullet):focus {
 	box-shadow: 0 0 0 4px var(--primary-color-opacity-10);
 	outline: none;
+}
+article :global(.swiper).wrapper :global(.swiper-pagination-bullet):focus-visible {
+	background-color: var(--primary-color);
+	outline: "none";
 }
 article :global(.swiper).wrapper :global(button.swiper-pagination-bullet) {
 	border: none;

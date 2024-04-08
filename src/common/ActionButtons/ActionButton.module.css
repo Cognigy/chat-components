@@ -8,7 +8,7 @@ a.button {
 	justify-content: center;
 	gap: 10px;
 	text-decoration: none;
-	background: var(--primary-color);
+	background: var(--primary-color) !important;
 	color: var(--white);
 	border: none;
 	outline: none;
@@ -27,6 +27,11 @@ a.button:hover,
 button.button:focus,
 a.button:focus {
 	background: var(--primary-color-hover);
+}
+button.button:focus-visible,
+a.button:focus-visible {
+	outline: 2px solid var(--primary-color);
+	outline-offset: 2px;
 }
 
 button.button:disabled,

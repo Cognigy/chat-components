@@ -1,4 +1,4 @@
-import { ButtonHTMLAttributes, FC, ReactElement } from "react";
+import { ButtonHTMLAttributes, ReactElement, forwardRef } from "react";
 import Typography from "../Typography";
 
 interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
@@ -6,10 +6,10 @@ interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
 	icon?: ReactElement;
 }
 
-const Button: FC<ButtonProps> = props => {
+const Button = forwardRef<HTMLButtonElement, ButtonProps>((props, ref) => {
 	const { size, icon, children, ...restProps } = props;
 	return (
-		<button {...restProps}>
+		<button {...restProps} ref={ref}>
 			<Typography
 				variant={size === "large" ? "title1-regular" : "cta-semibold"}
 				component="span"
@@ -19,6 +19,6 @@ const Button: FC<ButtonProps> = props => {
 			{icon && icon}
 		</button>
 	);
-};
+});
 
 export default Button;

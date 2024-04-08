@@ -66,12 +66,12 @@ const Gallery: FC = () => {
 				</SwiperSlide>
 			))}
 
-			<span className="gallery-button-prev">
+			<button className="gallery-button-prev">
 				<ArrowNavIcon />
-			</span>
-			<span className="gallery-button-next">
+			</button>
+			<button className="gallery-button-next">
 				<ArrowNavIcon />
-			</span>
+			</button>
 		</Swiper>
 	);
 };

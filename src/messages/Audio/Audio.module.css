@@ -30,6 +30,10 @@ article button.playButton:hover,
 article button.playButton:focus {
 	outline: none;
 }
+article button.playButton:focus-visible {
+	outline: 2px solid var(--primary-color);
+	outline-offset: 2px;
+}
 
 article button.playButton:focus svg circle,
 article button.playButton:hover svg circle {

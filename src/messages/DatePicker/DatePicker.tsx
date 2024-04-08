@@ -1,4 +1,4 @@
-import { FC, useState, KeyboardEvent, useMemo } from "react";
+import { FC, useState, KeyboardEvent, useMemo, useRef } from "react";
 import classes from "./DatePicker.module.css";
 import classnames from "classnames";
 import Flatpickr from "react-flatpickr";
@@ -14,6 +14,8 @@ const DatePicker: FC = () => {
 	const options = useMemo(() => getOptionsFromMessage(message), [message]);
 	const [showPicker, setShowPicker] = useState(false);
 	const [currentDate, setCurrentDate] = useState(options?.defaultDate || "");
+
+	const openButtonRef = useRef<HTMLButtonElement>(null);
 
 	const datePickerHeading = useRandomId("webchatDatePickerHeading");
 	const datePickerDescription = useRandomId("webchatDatePickerContentDescription");
@@ -38,6 +40,8 @@ const DatePicker: FC = () => {
 	const handleClose = () => {
 		setShowPicker(false);
 		setCurrentDate(options?.defaultDate || "");
+		// Focus back to the open button
+		openButtonRef.current?.focus();
 	};
 
 	const handleSubmit = () => {
@@ -116,6 +120,7 @@ const DatePicker: FC = () => {
 				onClick={handleOpen}
 				disabled={shouldBeDisabled}
 				data-testid="button-open"
+				ref={openButtonRef}
 			>
 				{openText}
 			</PrimaryButton>
