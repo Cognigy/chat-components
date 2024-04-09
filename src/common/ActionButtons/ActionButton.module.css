@@ -14,7 +14,7 @@ a.button {
 	outline: none;
 }
 
-a.button:global(.phone-number-anchor){
+a.button:global(.phone-number-anchor) {
 	background: var(--primary-color);
 }
 
