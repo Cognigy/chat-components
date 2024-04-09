@@ -8,10 +8,14 @@ a.button {
 	justify-content: center;
 	gap: 10px;
 	text-decoration: none;
-	background: var(--primary-color) !important;
+	background: var(--primary-color);
 	color: var(--white);
 	border: none;
 	outline: none;
+}
+
+a.button:global(.phone-number-anchor) {
+	background: var(--primary-color);
 }
 
 button.button svg,
