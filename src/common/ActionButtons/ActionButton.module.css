@@ -14,6 +14,10 @@ a.button {
 	outline: none;
 }
 
+a.button:global(.phone-number-anchor){
+	background: var(--primary-color);
+}
+
 button.button svg,
 a.button svg,
 button.button path,
