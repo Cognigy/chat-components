@@ -6,10 +6,10 @@ import type { IPluginXAppSubmit } from "@cognigy/socket-client/lib/interfaces/me
 const XAppSubmitMessage = () => {
 	const { message } = useMessageContext();
 
-	const { success } = (message?.data?._plugin as IPluginXAppSubmit)?.data || {};
-	const text = success ? "Submitted successfully" : "Submission failed";
+	// TODO remove any after socket-client update
+	const { success, text } = (message?.data?._plugin as IPluginXAppSubmit as any)?.data || {};
 
-	return <ChatEvent text={text} />;
+	return <ChatEvent text={success ? text : "Submission failed"} />;
 };
 
 export default XAppSubmitMessage;
