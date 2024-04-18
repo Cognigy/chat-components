@@ -5,13 +5,13 @@
 			"_default": {
 				"_image": {
 					"type": "image",
-					"imageUrl": "https://placekitten.com/600/600",
+					"imageUrl": "https://placewaifu.com/image/600/600",
 					"imageAltText": "",
 					"buttons": [
 						{
 							"type": "web_url",
 							"title": "Download",
-							"url": "https://placekitten.com/600/600"
+							"url": "https://placewaifu.com/image/600/600"
 						}
 					]
 				}
@@ -21,13 +21,13 @@
 					"attachment": {
 						"type": "image",
 						"payload": {
-							"url": "https://placekitten.com/600/600",
+							"url": "https://placewaifu.com/image/600/600",
 							"altText": "",
 							"buttons": [
 								{
 									"type": "web_url",
 									"title": "Download",
-									"url": "https://placekitten.com/600/600"
+									"url": "https://placewaifu.com/image/600/600"
 								}
 							]
 						}
