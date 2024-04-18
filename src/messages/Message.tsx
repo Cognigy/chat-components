@@ -22,6 +22,7 @@ export interface MessageProps {
 	plugins?: MatchConfig[];
 	prevMessage?: IMessage;
 	isConversationEnded?: boolean;
+	openXAppOverlay?: (url: string | undefined) => void;
 }
 
 const Message: FC<MessageProps> = props => {
@@ -35,6 +36,7 @@ const Message: FC<MessageProps> = props => {
 		plugins,
 		prevMessage,
 		isConversationEnded,
+		openXAppOverlay,
 	} = props;
 	const shouldCollate = isMessageCollatable(message, prevMessage);
 
@@ -67,6 +69,7 @@ const Message: FC<MessageProps> = props => {
 			onEmitAnalytics={onEmitAnalytics}
 			config={config}
 			messageParams={messageParams}
+			openXAppOverlay={openXAppOverlay}
 		>
 			<article className={rootClassName}>
 				{!shouldCollate && <MessageHeader enableAvatar={message.source !== "user"} />}

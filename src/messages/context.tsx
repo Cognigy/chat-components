@@ -1,16 +1,12 @@
 import { createContext, FC, useMemo, ReactNode } from "react";
 import { MessageProps } from "./Message";
 
-interface MessageProviderProps {
-	action?: MessageProps["action"];
+interface MessageProviderProps extends MessageProps {
 	children: ReactNode;
-	config?: MessageProps["config"];
-	message: MessageProps["message"];
 	messageParams?: {
 		hasReply: MessageProps["hasReply"];
 		isConversationEnded: MessageProps["isConversationEnded"];
 	};
-	onEmitAnalytics?: MessageProps["onEmitAnalytics"];
 }
 
 export type MessageContextValue = Omit<MessageProviderProps, "children"> | undefined;
@@ -28,11 +24,11 @@ const MessageContext = createContext<MessageContextValue>(undefined);
  * - messageParams
  */
 const MessageProvider: FC<MessageProviderProps> = props => {
-	const { message, messageParams, action, onEmitAnalytics, config } = props;
+	const { message, messageParams, action, onEmitAnalytics, config, openXAppOverlay } = props;
 
 	const contextValue = useMemo(
-		() => ({ message, action, onEmitAnalytics, config, messageParams }),
-		[message, action, onEmitAnalytics, config, messageParams],
+		() => ({ message, action, onEmitAnalytics, config, messageParams, openXAppOverlay }),
+		[message, action, onEmitAnalytics, config, messageParams, openXAppOverlay],
 	);
 
 	return <MessageContext.Provider value={contextValue}>{props.children}</MessageContext.Provider>;

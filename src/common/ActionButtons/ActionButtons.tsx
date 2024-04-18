@@ -20,6 +20,7 @@ export interface ActionButtonsProps {
 	onEmitAnalytics: MessageProps["onEmitAnalytics"];
 	size?: "small" | "large";
 	templateTextId?: string;
+	openXAppOverlay?: (url: string | undefined) => void;
 }
 
 export const ActionButtons: FC<ActionButtonsProps> = props => {
@@ -55,7 +56,10 @@ export const ActionButtons: FC<ActionButtonsProps> = props => {
 	if (!payload || payload?.length === 0) return null;
 
 	const buttons = payload.filter((button: ActionButtonsProps["payload"][number]) => {
-		if ("type" in button && !["postback", "web_url", "phone_number"].includes(button.type))
+		if (
+			"type" in button &&
+			!["postback", "web_url", "phone_number", "openXApp"].includes(button.type)
+		)
 			return false;
 
 		if ("content_type" in button && button.content_type === "text" && !button.title)
@@ -79,6 +83,7 @@ export const ActionButtons: FC<ActionButtonsProps> = props => {
 			onEmitAnalytics={onEmitAnalytics}
 			size={size ? size : "small"}
 			id={`${webchatButtonTemplateButtonId}-${index}`}
+			openXAppOverlay={props.openXAppOverlay}
 		/>
 	));
 

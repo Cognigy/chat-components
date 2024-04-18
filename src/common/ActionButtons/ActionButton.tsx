@@ -20,6 +20,7 @@ interface ActionButtonProps extends React.HTMLAttributes<HTMLButtonElement> {
 	config: MessageProps["config"];
 	onEmitAnalytics: MessageProps["onEmitAnalytics"];
 	size?: "small" | "large";
+	openXAppOverlay?: (url: string | undefined) => void;
 }
 
 /**
@@ -36,6 +37,7 @@ const ActionButton: FC<ActionButtonProps> = props => {
 		config,
 		onEmitAnalytics,
 		size,
+		openXAppOverlay,
 	} = props;
 
 	const buttonType =
@@ -106,6 +108,11 @@ const ActionButton: FC<ActionButtonProps> = props => {
 		}
 
 		if (isWebURL) {
+			return;
+		}
+
+		if (buttonType === "openXApp") {
+			openXAppOverlay?.(button.payload);
 			return;
 		}
 
