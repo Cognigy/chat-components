@@ -21,14 +21,18 @@ const File: FC = () => {
 					const { fileName, size, url } = attachment;
 
 					return (
-						<a href={url} target="_blank" style={{ textDecoration: "none" }}>
+						<a
+							href={url}
+							target="_blank"
+							style={{ textDecoration: "none" }}
+							key={index}
+						>
 							<div
 								className={classnames(
 									classes.filePreview,
 									"webchat-media-template-file",
 								)}
 								data-testid="file-message"
-								key={index}
 							>
 								<div className={classes.fileNameWrapper}>
 									<Typography
