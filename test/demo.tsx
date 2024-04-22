@@ -17,8 +17,6 @@ import audio from "test/fixtures/audio.json";
 import file from "test/fixtures/file.json";
 import AdaptiveCardPayloads from "test/fixtures/adaptiveCards.json";
 
-import xAppPayload from "test/fixtures/xApp.json";
-
 import datePicker from "test/fixtures/datepicker/singleDate.json";
 import datePickerMultiple from "test/fixtures/datepicker/multiple.json";
 import datePickerRange from "test/fixtures/datepicker/range.json";
@@ -289,11 +287,77 @@ const screens: TScreen[] = [
 		],
 	},
 	{
-		title: "xApp",
-		anchor: "xapp",
+		title: "xApp Buttons",
+		anchor: "xapp-buttons",
 		messages: [
 			{
-				message: xAppPayload as IMessage,
+				message: {
+					data: {
+						_cognigy: {
+							_default: {
+								_quickReplies: {
+									type: "quick_replies",
+									quickReplies: [
+										{
+											id: 0.4782026154264929,
+											title: "Enter my SUPER secret",
+											imageAltText: "",
+											imageUrl: "",
+											contentType: "openXApp",
+											payload:
+												"https://static.test?token=002f31acb7588108fc605ccc001763733ef4ce34c9f87360c1cab889467d69ab",
+										},
+									],
+									text: "Now, please open the SUPER secret form manually",
+								},
+							},
+							_webchat: {
+								message: {
+									text: "QR",
+									quick_replies: [
+										{
+											content_type: "openXApp",
+											image_url: "",
+											image_alt_text: "",
+											payload:
+												"https://static.test?token=002f31acb7588108fc605ccc001763733ef4ce34c9f87360c1cab889467d69ab",
+											title: "Enter my SUPER secret",
+										},
+									],
+								},
+							},
+						},
+					},
+				},
+			},
+			{
+				message: {
+					data: {
+						_cognigy: {
+							_webchat: {
+								message: {
+									attachment: {
+										type: "template",
+										payload: {
+											text: "Button",
+											template_type: "button",
+											buttons: [
+												{
+													title: "Open XApp Button",
+													// eslint-disable-next-line @typescript-eslint/no-explicit-any
+													type: "openXApp" as any,
+													payload:
+														"https://static.test?token=3c7feaf07c76d49699eaa0073d0afcdafd48dba2aa7a4dfc7acb18d0057c29c0",
+												},
+											],
+										},
+									},
+								},
+							},
+						},
+					},
+					source: "bot",
+				},
 			},
 		],
 	},
@@ -390,6 +454,7 @@ const Screen: FC<ScreenProps> = props => {
 						action={action}
 						hasReply={messageParams?.hasReply}
 						isConversationEnded={messageParams?.isConversationEnded}
+						openXAppOverlay={url => alert(`Open XApp Overlay, url is: ${url}`)}
 					/>
 				))}
 				{props.content}

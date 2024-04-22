@@ -9,7 +9,7 @@
 						{
 							"title": "foobar004g1",
 							"subtitle": "",
-							"imageUrl": "https://placekitten.com/300/300",
+							"imageUrl": "https://placewaifu.com/image/300/300",
 							"buttons": [
 								{
 									"id": 0.9601740794827666,
@@ -23,7 +23,7 @@
 						{
 							"title": "foobar004g2",
 							"subtitle": "foobar004g2sub1\nfoobar004g2sub2",
-							"imageUrl": "https://placekitten.com/300/300",
+							"imageUrl": "https://placewaifu.com/image/300/300",
 							"buttons": [],
 							"id": 0.9969017542005371
 						},
@@ -46,7 +46,7 @@
 							"elements": [
 								{
 									"title": "Cat 1",
-									"image_url": "https://placekitten.com/300/300",
+									"image_url": "https://placewaifu.com/image/300/300",
 									"buttons": [
 										{
 											"type": "postback",
@@ -63,13 +63,13 @@
 								{
 									"title": "Cat 2",
 									"subtitle": "foobar004g2sub1\nfoobar004g2sub2",
-									"image_url": "https://placekitten.com/300/300",
+									"image_url": "https://placewaifu.com/image/300/300",
 									"buttons": []
 								},
 								{
 									"title": "Cat 3",
 									"subtitle": "",
-									"image_url": "https://placekitten.com/300/300",
+									"image_url": "https://placewaifu.com/image/300/300",
 									"buttons": [
 										{
 											"type": "postback",
@@ -81,13 +81,13 @@
 								{
 									"title": "Cat 4",
 									"subtitle": "foobar004g2sub1\nfoobar004g2sub2",
-									"image_url": "https://placekitten.com/300/300",
+									"image_url": "https://placewaifu.com/image/300/300",
 									"buttons": []
 								},
 								{
 									"title": "Cat 5",
 									"subtitle": "",
-									"image_url": "https://placekitten.com/300/300",
+									"image_url": "https://placewaifu.com/image/300/300",
 									"buttons": [
 										{
 											"type": "postback",
@@ -104,18 +104,18 @@
 								{
 									"title": "Cat 6",
 									"subtitle": "foobar004g2sub1\nfoobar004g2sub2",
-									"image_url": "https://placekitten.com/300/300",
+									"image_url": "https://placewaifu.com/image/300/300",
 									"buttons": []
 								},
 								{
 									"title": "Cat 7",
 									"subtitle": "",
-									"image_url": "https://placekitten.com/300/300",
+									"image_url": "https://placewaifu.com/image/300/300",
 									"buttons": null
 								},
 								{
 									"title": "Cat 8",
-									"image_url": "https://placekitten.com/300/300"
+									"image_url": "https://placewaifu.com/image/300/300"
 								}
 							]
 						}

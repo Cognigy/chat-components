@@ -6,7 +6,6 @@ import File from "./File";
 import List from "./List";
 import Gallery from "./Gallery";
 import DatePicker from "./DatePicker";
-import XApp from "./xApp";
 import TextWithButtons from "./TextWithButtons/TextWithButtons";
 import { AdaptiveCards as AdaptiveCard } from "./AdaptiveCards";
 
@@ -21,5 +20,4 @@ export {
 	DatePicker,
 	TextWithButtons,
 	AdaptiveCard,
-	XApp,
 };

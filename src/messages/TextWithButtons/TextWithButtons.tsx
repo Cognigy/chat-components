@@ -18,7 +18,8 @@ import classNames from "classnames";
  * - QR buttons get disabled when there is a reply in chat from the user
  */
 const TextWithButtons: FC = () => {
-	const { action, message, config, onEmitAnalytics, messageParams } = useMessageContext();
+	const { action, message, config, onEmitAnalytics, messageParams, openXAppOverlay } =
+		useMessageContext();
 
 	const webchatButtonTemplateTextId = useRandomId("webchatButtonTemplateHeader");
 
@@ -57,6 +58,7 @@ const TextWithButtons: FC = () => {
 				config={config}
 				onEmitAnalytics={onEmitAnalytics}
 				templateTextId={webchatButtonTemplateTextId}
+				openXAppOverlay={openXAppOverlay}
 			/>
 		</div>
 	);
