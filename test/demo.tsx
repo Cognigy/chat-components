@@ -289,7 +289,7 @@ const screens: TScreen[] = [
 			{
 				message: {
 					source: "bot",
-					text: 'This message has both anchor and image tags <a href="https://docs.cognigy.com">Cognigy Docs</a> <img src="https://placekitten.com/200/200" alt="Alt text">',
+					text: 'This message has both anchor and image tags <a href="https://docs.cognigy.com">Cognigy Docs</a> <img src="https://placewaifu.com/image/200/200" alt="Alt text">',
 				},
 			},
 		],
