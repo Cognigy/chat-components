@@ -284,6 +284,12 @@ const screens: TScreen[] = [
 					text: "This message should not overflow and should get hard breaks: https://static.test?token=d4567f11cffa23a49b2190355b956da8de46fcbc7817d3ce3708d6bddabc0bfd",
 				},
 			},
+			{
+				message: {
+					source: "bot",
+					text: 'This message has both anchor and image tags <a href="https://docs.cognigy.com">Cognigy Docs</a> <img src="https://placewaifu.com/image/200/200" alt="Alt text">',
+				},
+			},
 		],
 	},
 	{
