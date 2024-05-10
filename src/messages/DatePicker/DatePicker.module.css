@@ -410,7 +410,7 @@
 
 .wrapper .content :global(.flatpickr-day.selected .dayInner) {
 	background-color: var(--primary-color);
-	color: var(--white);
+	color: var(--primary-contrast-color);
 }
 
 .wrapper .content :global(.flatpickr-day.inRange .dayInner),
@@ -422,7 +422,7 @@
 .wrapper .content :global(.flatpickr-day.nextMonthDay.today.inRange .dayInner) {
 	width: 100%;
 	background-color: var(--primary-color);
-	color: var(--white);
+	color: var(--primary-contrast-color);
 }
 
 .wrapper .content :global(.flatpickr-day.startRange .dayInner),
@@ -430,7 +430,7 @@
 .wrapper .content :global(.flatpickr-day.endRange .dayInner),
 .wrapper .content :global(.flatpickr-day.endRange:hover .dayInner) {
 	background-color: var(--primary-color);
-	color: var(--white);
+	color: var(--primary-contrast-color);
 }
 
 .wrapper .content :global(.flatpickr-day.startRange:not(.endRange) .dayInner) {

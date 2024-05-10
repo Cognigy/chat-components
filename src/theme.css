@@ -4,16 +4,18 @@
 	--primary-color-disabled: color-mix(in srgb, var(--primary-color), #fff 80%);
 	--primary-color-opacity-10: color-mix(in srgb, var(--primary-color) 10%, transparent);
 	--primary-color-opacity-20: color-mix(in srgb, var(--primary-color) 20%, transparent);
+	--primary-contrast-color: var(--webchat-primary-contrast-color, #fdfcfc);
 
 	--secondary-color: var(--webchat-secondary-color, #1a1a1a);
 	--secondary-color-hover: color-mix(in srgb, var(--secondary-color), #fff 20%);
 	--secondary-color-disabled: color-mix(in srgb, var(--secondary-color), #fff 90%);
 	--secondary-color-opacity-10: color-mix(in srgb, var(--secondary-color) 10%, transparent);
 	--secondary-color-opacity-20: color-mix(in srgb, var(--secondary-color) 20%, transparent);
+	--secondary-contrast-color: var(--webchat-secondary-contrast-color, #fff);
 
 	--background-bot-message: var(--webchat-background-bot-message, #fff);
 	--background-user-message: var(--webchat-background-user-message, #e8ebff);
-	--background-agent-message: var(--webchat-background-agent-message, --background-bot-message);
+	--background-agent-message: var(--webchat-background-agent-message, var(--background-bot-message));
 
 	--text-link: var(--webchat-text-link, #6688ed);
 	--text-link-hover: color-mix(in srgb, var(--text-link), #000 20%);
