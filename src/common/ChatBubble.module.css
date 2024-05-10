@@ -10,8 +10,12 @@
 	white-space: pre-wrap;
 }
 
-article:not(:global(.user)) .bubble {
+article:global(.bot) .bubble {
 	background: var(--background-bot-message);
+}
+
+article:global(.agent) .bubble {
+	background: var(--background-agent-message);
 }
 
 article:global(.user) .bubble {

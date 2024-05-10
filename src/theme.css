@@ -13,6 +13,7 @@
 
 	--background-bot-message: var(--webchat-background-bot-message, #fff);
 	--background-user-message: var(--webchat-background-user-message, #e8ebff);
+	--background-agent-message: var(--webchat-background-agent-message, --background-bot-message);
 
 	--text-link: var(--webchat-text-link, #6688ed);
 	--text-link-hover: color-mix(in srgb, var(--text-link), #000 20%);
