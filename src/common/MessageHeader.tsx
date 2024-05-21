@@ -26,7 +26,7 @@ const MessageHeader: FC<MessageHeaderProps> = props => {
 		"message-header",
 		props.className,
 		classes.header,
-		isUserMessage ? classes.outgoing : classes.ongoing,
+		isUserMessage ? classes.outgoing : classes.incoming,
 	);
 
 	const recievedAt = message?.timestamp ? Number(message.timestamp) : Date.now();

@@ -17,5 +17,6 @@ article:not(:global(.user)) .bubble {
 article:global(.user) .bubble {
 	background: var(--background-user-message);
 	border-color: transparent;
-	margin-inline-start: auto;
+	/* TODO: change this based on source direction mapping */
+	margin-inline-start: auto; 
 }
