@@ -152,7 +152,6 @@ export const getOptionsFromMessage = (message: IMessage) => {
 		if (data.wantDisable) {
 			// add date mask as blacklist
 			options.disable = mask as never;
-
 			delete options.enable;
 		} else {
 			// add date mask as whitelist
