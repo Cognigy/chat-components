@@ -1,5 +1,6 @@
 import moment from "moment";
 import l10n from "flatpickr/dist/l10n";
+import { Options } from "flatpickr/dist/types/options";
 import { key as LocaleKey } from "flatpickr/dist/types/locale";
 import { IMessage } from "@cognigy/socket-client";
 import customElements from "./flatpickr-plugins/customElements";
@@ -77,7 +78,7 @@ export const getOptionsFromMessage = (message: IMessage) => {
 	const timeFormat = data.time_24hr ? timeTemp : `${timeTemp} K`; //12-hour format with AM/PM
 
 	if (localeId === "gb") locale = { ...locale, firstDayOfWeek: 1 };
-	const options = {
+	const options: Options = {
 		nextArrow: arrowIcon,
 		prevArrow: arrowIcon,
 		defaultHour: data?.defaultHour || 12,
@@ -91,7 +92,6 @@ export const getOptionsFromMessage = (message: IMessage) => {
 		disable: [],
 		enable: [],
 		enableTime,
-		event: data.eventName,
 		inline: true,
 		locale,
 		maxDate: transformNamedDate(data.maxDate) || "",
@@ -109,6 +109,13 @@ export const getOptionsFromMessage = (message: IMessage) => {
 			: undefined,
 		plugins: [customElements({ arrowIcon })],
 	};
+
+	// we need this value because user can directly submit the defaut date
+	const defaultDateFormatted = defaultDate
+		? moment(defaultDate)
+				.locale(momentLocaleId)
+				.format(enableTime ? "L LT" : "L")
+		: undefined;
 
 	const enable_disable =
 		Array.isArray(data?.enable_disable) && data.enable_disable.length > 0
@@ -145,16 +152,15 @@ export const getOptionsFromMessage = (message: IMessage) => {
 		if (data.wantDisable) {
 			// add date mask as blacklist
 			options.disable = mask as never;
-			// @ts-expect-error disable strictNullChecks
+
 			delete options.enable;
 		} else {
 			// add date mask as whitelist
 			options.enable = mask as never;
 		}
 	} else {
-		// @ts-expect-error disable strictNullChecks
 		delete options.enable;
 	}
 
-	return options;
+	return { options, defaultDateFormatted };
 };
