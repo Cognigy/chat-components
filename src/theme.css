@@ -38,4 +38,12 @@
 	--text-light: var(--webchat-text-light, --white);
 
 	--bubble-border-radius: var(--webchat-bubble-border-radius, 15px);
+
+	--border-bot-message: var(--webchat-border-bot-message, var(--black-80));
+	--border-user-message: var(--webchat-border-user-message, transparent);
+	--border-agent-message: var(--webchat-border-agent-message, var(--border-bot-message));
+
+	--bot-message-contrast-color: var(--webchat-bot-message-contrast-color, #1c1c1c);
+	--user-message-contrast-color: var(--webchat-user-message-contrast-color, #1c1c1c);
+	--agent-message-contrast-color: var(--webchat-agent-message-contrast-color, #1c1c1c);
 }
