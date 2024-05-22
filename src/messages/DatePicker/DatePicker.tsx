@@ -14,7 +14,7 @@ const DatePicker: FC = () => {
 	const optionsFromMessage = useMemo(() => getOptionsFromMessage(message), [message]);
 
 	const [showPicker, setShowPicker] = useState(false);
-	const [currentDate, setCurrentDate] = useState(optionsFromMessage?.defaultDateFormatted || "");
+	const [currentDate, setCurrentDate] = useState(optionsFromMessage.defaultDateFormatted);
 
 	const openButtonRef = useRef<HTMLButtonElement>(null);
 
@@ -40,7 +40,7 @@ const DatePicker: FC = () => {
 
 	const handleClose = () => {
 		setShowPicker(false);
-		setCurrentDate(optionsFromMessage?.defaultDateFormatted || "");
+		setCurrentDate(optionsFromMessage.defaultDateFormatted);
 		// Focus back to the open button
 		openButtonRef.current?.focus();
 	};
@@ -176,7 +176,7 @@ const DatePicker: FC = () => {
 								onChange={(_date, dateString: string) => {
 									setCurrentDate(dateString);
 								}}
-								options={optionsFromMessage?.options}
+								options={optionsFromMessage.options}
 							/>
 						</div>
 						<div

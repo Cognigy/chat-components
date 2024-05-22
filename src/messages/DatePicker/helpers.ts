@@ -6,8 +6,14 @@ import { IMessage } from "@cognigy/socket-client";
 import customElements from "./flatpickr-plugins/customElements";
 import arrowIcon from "src/assets/svg/arrow_back.svg?raw";
 
-export const getOptionsFromMessage = (message: IMessage) => {
-	if (!message?.data?._plugin || message.data._plugin.type !== "date-picker") return;
+export interface IOptionsFromMessage {
+	options: Options | undefined;
+	defaultDateFormatted: string;
+}
+
+export const getOptionsFromMessage = (message: IMessage): IOptionsFromMessage => {
+	if (!message?.data?._plugin || message.data._plugin.type !== "date-picker")
+		return { options: undefined, defaultDateFormatted: "" };
 
 	const data = message.data._plugin.data;
 
@@ -115,7 +121,7 @@ export const getOptionsFromMessage = (message: IMessage) => {
 		? moment(defaultDate)
 				.locale(momentLocaleId)
 				.format(enableTime ? "L LT" : "L")
-		: undefined;
+		: "";
 
 	const enable_disable =
 		Array.isArray(data?.enable_disable) && data.enable_disable.length > 0
