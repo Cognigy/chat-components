@@ -12,7 +12,7 @@
 
 article:global(.bot) .bubble {
 	background: var(--background-bot-message);
-	color: var(--bot-message-contrast-color)
+	color: var(--bot-message-contrast-color);
 }
 
 article:global(.agent) .bubble {
