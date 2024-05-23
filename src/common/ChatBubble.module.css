@@ -1,6 +1,6 @@
 .bubble {
 	border-radius: 15px;
-	border: 1px solid var(--black-80);
+	border: 1px solid var(--border-bot-message);
 	padding: 12px;
 	max-width: 295px;
 	width: max-content;
@@ -10,12 +10,20 @@
 	white-space: pre-wrap;
 }
 
-article:not(:global(.user)) .bubble {
+article:global(.bot) .bubble {
 	background: var(--background-bot-message);
+	color: var(--bot-message-contrast-color);
+}
+
+article:global(.agent) .bubble {
+	background: var(--background-agent-message);
+	border-color: var(--border-agent-message);
+	color: var(--agent-message-contrast-color);
 }
 
 article:global(.user) .bubble {
 	background: var(--background-user-message);
-	border-color: transparent;
+	border-color: var(--border-user-message);
 	margin-inline-start: auto;
+	color: var(--user-message-contrast-color);
 }
