@@ -17,16 +17,25 @@ interface MessageHeaderProps {
  * - Timestamp
  */
 const MessageHeader: FC<MessageHeaderProps> = props => {
-	const { message } = useMessageContext();
+	const { message, config } = useMessageContext();
+
+	const directionMapping = config?.settings?.widgetSettings?.sourceDirectionMapping;
 
 	const isUserMessage = message.source === "user";
+	const isBotMessage = message.source === "bot";
 	const isAgentMessage = message.source === "agent";
+
+	const userMessageDirection = directionMapping?.user || "outgoing";
+	const botMessageDirection = directionMapping?.bot || "incoming";
+	const agentMessageDirection = directionMapping?.agent || "incoming";
 
 	const className = classnames(
 		"message-header",
 		props.className,
 		classes.header,
-		isUserMessage ? classes.outgoing : classes.incoming,
+		isUserMessage && classes[userMessageDirection],
+		isBotMessage && classes[botMessageDirection],
+		isAgentMessage && classes[agentMessageDirection],
 	);
 
 	const recievedAt = message?.timestamp ? Number(message.timestamp) : Date.now();

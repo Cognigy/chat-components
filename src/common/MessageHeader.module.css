@@ -17,7 +17,6 @@ article .header .headerMeta {
 }
 
 article .header.outgoing {
-	/* TODO: change this based on source direction mapping */
 	flex-direction: row-reverse;
 }
 

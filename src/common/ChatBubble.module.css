@@ -17,6 +17,14 @@ article:not(:global(.user)) .bubble {
 article:global(.user) .bubble {
 	background: var(--background-user-message);
 	border-color: transparent;
-	/* TODO: change this based on source direction mapping */
-	margin-inline-start: auto; 
+}
+
+article:not(:global(.user)) .incoming,
+article:global(.user) .incoming {
+	margin-inline-start: 0;
+}
+
+article:not(:global(.user)) .outgoing,
+article:global(.user) .outgoing {
+	margin-inline-start: auto;
 }
