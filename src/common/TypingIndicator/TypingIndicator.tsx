@@ -1,9 +1,11 @@
 import { FC } from "react";
 import classes from "./TypingIndicator.module.css";
 import classnames from "classnames";
+import { TSourceDirection } from "src/messages/types";
 
 interface ITypingIndicator {
 	className?: string;
+	direction?: TSourceDirection;
 }
 
 const TypingIndicator: FC<ITypingIndicator> = props => {
@@ -11,6 +13,7 @@ const TypingIndicator: FC<ITypingIndicator> = props => {
 		classes.typingIndicator,
 		props.className,
 		"webchat-typing-indicator",
+		props.direction && classes[props.direction],
 	);
 
 	return (

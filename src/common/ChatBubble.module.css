@@ -21,7 +21,7 @@ article:global(.user) .bubble {
 
 article:not(:global(.user)) .incoming,
 article:global(.user) .incoming {
-	margin-inline-start: 0;
+	margin-inline-start: none;
 }
 
 article:not(:global(.user)) .outgoing,
