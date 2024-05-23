@@ -9,7 +9,7 @@ a.button {
 	gap: 10px;
 	text-decoration: none;
 	background: var(--primary-color);
-	color: var(--white);
+	color: var(--primary-contrast-color);
 	border: none;
 	outline: none;
 }
@@ -22,7 +22,7 @@ button.button svg,
 a.button svg,
 button.button path,
 a.button svg path {
-	fill: var(--white);
+	fill: var(--primary-contrast-color);
 	width: 12px;
 }
 

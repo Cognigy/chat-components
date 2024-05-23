@@ -5,7 +5,7 @@ import { MessageProps } from "src/messages/Message";
 export type MessagePasstroughProps = Pick<MessageProps, "message" | "action">;
 
 export type TSourceDirection = "incoming" | "outgoing";
-export type TSourceColor = "primary" | "neutral";
+export type TSourceColor = "bot" | "user";
 
 export interface IWebchatSettings {
 	// Settings that are also configurable via the Endpoint Editor in Cognigy.AI
