@@ -5,7 +5,7 @@ article .header {
 	margin-block-end: 8px;
 }
 
-article .header.ongoing {
+article .header.incoming {
 	height: 32px;
 	margin-block-end: 12px;
 }

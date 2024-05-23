@@ -15,6 +15,14 @@
 	margin-inline: var(--webchat-message-margin-inline, 20px);
 }
 
+.incoming {
+	margin-inline-start: none;
+}
+
+.outgoing {
+	margin-inline-start: auto;
+}
+
 .dot {
 	background: var(--black-40);
 	border-radius: 999px;

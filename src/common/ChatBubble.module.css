@@ -24,6 +24,15 @@ article:global(.agent) .bubble {
 article:global(.user) .bubble {
 	background: var(--background-user-message);
 	border-color: var(--border-user-message);
-	margin-inline-start: auto;
 	color: var(--user-message-contrast-color);
+}
+
+article:not(:global(.user)) .incoming,
+article:global(.user) .incoming {
+	margin-inline-start: none;
+}
+
+article:not(:global(.user)) .outgoing,
+article:global(.user) .outgoing {
+	margin-inline-start: auto;
 }
