@@ -6,8 +6,8 @@ import { IMessage } from "@cognigy/socket-client";
 import customElements from "./flatpickr-plugins/customElements";
 import arrowIcon from "src/assets/svg/arrow_back.svg?raw";
 
-export const getOptionsFromMessage = (message: IMessage): Options | undefined => {
-	if (!message?.data?._plugin || message.data._plugin.type !== "date-picker") return undefined;
+export const getOptionsFromMessage = (message: IMessage) => {
+	if (!message?.data?._plugin || message.data._plugin.type !== "date-picker") return;
 
 	const data = message.data._plugin.data;
 
