@@ -1,4 +1,4 @@
-import moment from "moment";
+import moment from "moment/min/moment-with-locales";
 import l10n from "flatpickr/dist/l10n";
 import { Options } from "flatpickr/dist/types/options";
 import { key as LocaleKey } from "flatpickr/dist/types/locale";
@@ -6,14 +6,9 @@ import { IMessage } from "@cognigy/socket-client";
 import customElements from "./flatpickr-plugins/customElements";
 import arrowIcon from "src/assets/svg/arrow_back.svg?raw";
 
-export interface IOptionsFromMessage {
-	options: Options | undefined;
-	defaultDateFormatted: string;
-}
-
-export const getOptionsFromMessage = (message: IMessage): IOptionsFromMessage => {
+export const getOptionsFromMessage = (message: IMessage): Options | undefined => {
 	if (!message?.data?._plugin || message.data._plugin.type !== "date-picker")
-		return { options: undefined, defaultDateFormatted: "" };
+		return undefined;
 
 	const data = message.data._plugin.data;
 
@@ -71,7 +66,7 @@ export const getOptionsFromMessage = (message: IMessage): IOptionsFromMessage =>
 		return false;
 	};
 
-	const dateFormat = data.dateFormat || "YYYY-MM-DD";
+	const dateFormat = data.dateFormat || "Y-m-d";
 	const defaultDate =
 		transformNamedDate(data.defaultDate) || transformNamedDate(data.minDate) || undefined;
 
@@ -80,8 +75,10 @@ export const getOptionsFromMessage = (message: IMessage): IOptionsFromMessage =>
 	const flatpickrLocaleId = getFlatpickrLocaleId(localeId);
 	let locale = l10n[flatpickrLocaleId];
 	const enableTime = !!data.enableTime;
-	const timeTemp = data.time_24hr ? "H:i" : "h:i"; //12-hour format without AM/PM
-	const timeFormat = data.time_24hr ? timeTemp : `${timeTemp} K`; //12-hour format with AM/PM
+
+	const timeFormat = data.time_24hr ? "H:i" : "h:i K";
+	const dateFormatString = enableTime ? `${dateFormat} ${timeFormat}` : dateFormat;
+	const dateFormatLocalString = enableTime ? "L LT" : "L";
 
 	if (localeId === "gb") locale = { ...locale, firstDayOfWeek: 1 };
 	const options: Options = {
@@ -93,7 +90,7 @@ export const getOptionsFromMessage = (message: IMessage): IOptionsFromMessage =>
 		minuteIncrement: data?.minuteIncrement || 5,
 		noCalendar: !!data?.noCalendar,
 		weekNumbers: !!data?.weekNumbers,
-		dateFormat: enableTime ? `${dateFormat} ${timeFormat}` : dateFormat,
+		dateFormat: dateFormatString,
 		defaultDate,
 		disable: [],
 		enable: [],
@@ -108,20 +105,10 @@ export const getOptionsFromMessage = (message: IMessage): IOptionsFromMessage =>
 		parseDate: (dateString: string) => moment(dateString).toDate(),
 		// if no custom formatting is defined, apply default formatting
 		formatDate: !data.dateFormat
-			? (date: Date) =>
-					moment(date)
-						.locale(momentLocaleId)
-						.format(enableTime ? "L LT" : "L")
+			? (date: Date) => moment(date).locale(momentLocaleId).format(dateFormatLocalString)
 			: undefined,
 		plugins: [customElements({ arrowIcon })],
 	};
-
-	// we need this value because user can directly submit the defaut date
-	const defaultDateFormatted = defaultDate
-		? moment(defaultDate)
-				.locale(momentLocaleId)
-				.format(enableTime ? "L LT" : "L")
-		: "";
 
 	const enable_disable =
 		Array.isArray(data?.enable_disable) && data.enable_disable.length > 0
@@ -167,5 +154,5 @@ export const getOptionsFromMessage = (message: IMessage): IOptionsFromMessage =>
 		delete options.enable;
 	}
 
-	return { options, defaultDateFormatted };
+	return options;
 };

@@ -11,10 +11,10 @@ import mainClasses from "src/main.module.css";
 
 const DatePicker: FC = () => {
 	const { action, message, messageParams } = useMessageContext();
-	const optionsFromMessage = useMemo(() => getOptionsFromMessage(message), [message]);
+	const options = useMemo(() => getOptionsFromMessage(message), [message]);
 
 	const [showPicker, setShowPicker] = useState(false);
-	const [currentDate, setCurrentDate] = useState(optionsFromMessage.defaultDateFormatted);
+	const [currentDate, setCurrentDate] = useState("");
 
 	const openButtonRef = useRef<HTMLButtonElement>(null);
 
@@ -40,7 +40,7 @@ const DatePicker: FC = () => {
 
 	const handleClose = () => {
 		setShowPicker(false);
-		setCurrentDate(optionsFromMessage.defaultDateFormatted);
+		setCurrentDate("");
 		// Focus back to the open button
 		openButtonRef.current?.focus();
 	};
@@ -48,6 +48,12 @@ const DatePicker: FC = () => {
 	const handleSubmit = () => {
 		action && action(currentDate, null);
 		handleClose();
+	};
+
+	const handleOnChange = (_: Date[], dateString: string) => {
+		if (dateString) {
+			setCurrentDate(dateString);
+		}
 	};
 
 	const handleKeyDown = (event: KeyboardEvent) => {
@@ -173,10 +179,9 @@ const DatePicker: FC = () => {
 							)}
 						>
 							<Flatpickr
-								onChange={(_date, dateString: string) => {
-									setCurrentDate(dateString);
-								}}
-								options={optionsFromMessage.options}
+								onChange={handleOnChange}
+								onReady={handleOnChange}
+								options={options}
 							/>
 						</div>
 						<div
