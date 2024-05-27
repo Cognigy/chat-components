@@ -7,8 +7,7 @@ import customElements from "./flatpickr-plugins/customElements";
 import arrowIcon from "src/assets/svg/arrow_back.svg?raw";
 
 export const getOptionsFromMessage = (message: IMessage): Options | undefined => {
-	if (!message?.data?._plugin || message.data._plugin.type !== "date-picker")
-		return undefined;
+	if (!message?.data?._plugin || message.data._plugin.type !== "date-picker") return undefined;
 
 	const data = message.data._plugin.data;
 
