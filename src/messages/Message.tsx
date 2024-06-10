@@ -6,7 +6,7 @@ import { match, MatchConfig } from "../matcher";
 import { MessageProvider } from "./context";
 import { IWebchatConfig, MessageSender } from "./types";
 
-import "src/theme.css";
+import "src/theme.module.css";
 import classes from "./Message.module.css";
 import { isMessageCollatable } from "../utils";
 import { IMessage } from "@cognigy/socket-client";
