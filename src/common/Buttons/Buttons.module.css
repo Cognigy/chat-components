@@ -16,8 +16,8 @@ button.primaryButton.button,
 a.primaryButton.button:global(.phone-number-anchor) {
 	width: 100%;
 	border-radius: 10px;
-	background-color: var(--secondary-color);
-	color: var(--secondary-contrast-color);
+	background-color: var(--cc-secondary-color);
+	color: var(--cc-secondary-contrast-color);
 	border: none;
 	outline: none;
 	height: 44px;
@@ -30,13 +30,13 @@ button.primaryButton.button:hover,
 button.primaryButton.button:focus,
 a.primaryButton.button:hover,
 a.primaryButton.button:focus {
-	background-color: var(--secondary-color-hover);
+	background-color: var(--cc-secondary-color-hover);
 }
 button.primaryButton.actionButton:focus-visible,
 a.primaryButton.actionButton:focus-visible,
 button.primaryButton.button:focus-visible,
 a.primaryButton.button:focus-visible {
-	outline: 2px solid var(--primary-color);
+	outline: 2px solid var(--cc-primary-color);
 	outline-offset: 2px;
 }
 button.primaryButton.actionButton:disabled,
@@ -50,7 +50,7 @@ button.primaryButton.button:disabled:hover,
 button.primaryButton.button:disabled:focus {
 	cursor: default;
 	pointer-events: none;
-	background-color: var(--secondary-color-disabled);
+	background-color: var(--cc-secondary-color-disabled);
 }
 
 /* Secondary Button */
@@ -60,9 +60,9 @@ button.secondaryButton.button,
 a.secondaryButton.button:global(.phone-number-anchor) {
 	width: 100%;
 	border-radius: 10px;
-	background-color: var(--white);
-	color: var(--secondary-color);
-	border: 1px solid var(--secondary-color);
+	background-color: var(--cc-white);
+	color: var(--cc-secondary-color);
+	border: 1px solid var(--cc-secondary-color);
 	outline: none;
 	height: 44px;
 }
@@ -74,9 +74,9 @@ button.secondaryButton.button:hover,
 button.secondaryButton.button:focus,
 a.secondaryButton.button:hover,
 a.secondaryButton.button:focus {
-	color: var(--secondary-color-hover);
-	border: 1px solid var(--secondary-color-hover);
-	background-color: var(--white);
+	color: var(--cc-secondary-color-hover);
+	border: 1px solid var(--cc-secondary-color-hover);
+	background-color: var(--cc-white);
 }
 button.secondaryButton.actionButton:disabled,
 a.secondaryButton.actionButton:global(.disabled),
@@ -88,8 +88,8 @@ a.secondaryButton.actionButton:global(.disabled):focus,
 button.secondaryButton.button:disabled:hover,
 button.secondaryButton.button:disabled:focus {
 	cursor: default;
-	color: var(--secondary-color-disabled);
+	color: var(--cc-secondary-color-disabled);
 	pointer-events: none;
-	border: 1px solid var(--secondary-color-disabled);
-	background-color: var(--white);
+	border: 1px solid var(--cc-secondary-color-disabled);
+	background-color: var(--cc-white);
 }

@@ -34,7 +34,7 @@
 	top: 0;
 	height: 56px;
 	width: 100%;
-	background-color: var(--white);
+	background-color: var(--cc-white);
 	overflow: hidden;
 	display: flex;
 	justify-content: space-between;
@@ -44,7 +44,7 @@
 	display: flex;
 	align-items: center;
 	margin-left: 15px;
-	color: var(--black-10);
+	color: var(--cc-black-10);
 	font-weight: 700;
 	font-size: 16px;
 }
@@ -65,7 +65,7 @@
 	outline: none;
 	margin: 0;
 	transition: background-color 0.1s ease-out, color 0.1s ease-out, fill 0.1s ease-out;
-	color: var(--black-10);
+	color: var(--cc-black-10);
 	border-radius: 50%;
 	cursor: pointer;
 	width: 40px;
@@ -74,10 +74,10 @@
 
 .icon:hover,
 .icon:focus {
-	background-color: var(--black-95);
+	background-color: var(--cc-black-95);
 	opacity: 0.85;
 }
 
 .icon svg {
-	fill: var(--black-10);
+	fill: var(--cc-black-10);
 }

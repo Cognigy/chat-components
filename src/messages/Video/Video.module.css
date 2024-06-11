@@ -1,5 +1,5 @@
 article .wrapper {
-	border-radius: var(--bubble-border-radius);
+	border-radius: var(--cc-bubble-border-radius);
 	max-width: 295px;
 	position: relative;
 }
@@ -10,15 +10,15 @@ article .player {
 	object-fit: cover;
 	object-position: left;
 	overflow: hidden;
-	border-radius: var(--bubble-border-radius);
+	border-radius: var(--cc-bubble-border-radius);
 }
 
 article .player > div:first-child {
-	background-color: var(--black-10);
+	background-color: var(--cc-black-10);
 	outline: none;
 	aspect-ratio: 16/9;
 	height: auto !important;
-	border-radius: var(--bubble-border-radius);
+	border-radius: var(--cc-bubble-border-radius);
 }
 
 article .player > div:first-child:hover,
@@ -26,7 +26,7 @@ article .player > div:first-child:focus {
 	opacity: 0.85;
 }
 article .player > div:first-child:focus-visible {
-	outline: 2px solid var(--primary-color);
+	outline: 2px solid var(--cc-primary-color);
 	outline-offset: -2px;
 }
 

@@ -1,8 +1,8 @@
 .typingIndicator {
 	align-items: center;
-	background-color: var(--white);
+	background-color: var(--cc-white);
 	border-radius: 15px;
-	border: 1px solid var(--black-80);
+	border: 1px solid var(--cc-black-80);
 	box-sizing: border-box;
 	display: flex;
 	gap: 6px;
@@ -24,7 +24,7 @@
 }
 
 .dot {
-	background: var(--black-40);
+	background: var(--cc-black-40);
 	border-radius: 999px;
 	width: 6px;
 	height: 6px;

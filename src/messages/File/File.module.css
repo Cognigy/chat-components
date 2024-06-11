@@ -15,7 +15,7 @@ article .filePreview {
 	padding: 8px 12px;
 	border-radius: 15px;
 	height: 33px;
-	background-color: var(--black-95);
+	background-color: var(--cc-black-95);
 	max-width: 295px;
 }
 
@@ -24,7 +24,7 @@ article .filePreview .fileNameWrapper {
 	flex-direction: row;
 	align-items: center;
 	max-width: 200px;
-	color: var(--black-10);
+	color: var(--cc-black-10);
 }
 
 article .filePreview .fileName {
@@ -38,5 +38,5 @@ article .filePreview .fileExtension {
 }
 
 article .filePreview .fileSize {
-	color: var(--black-40);
+	color: var(--cc-black-40);
 }

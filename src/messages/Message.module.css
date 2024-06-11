@@ -22,10 +22,10 @@
 }
 
 .message a:not(:global(.phone-number-anchor)) {
-	color: var(--text-link);
+	color: var(--cc-text-link);
 }
 
 .message a:hover:not(:global(.phone-number-anchor)),
 .message a:focus:not(:global(.phone-number-anchor)) {
-	color: var(--text-link-hover);
+	color: var(--cc-text-link-hover);
 }

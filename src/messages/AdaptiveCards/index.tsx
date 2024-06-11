@@ -37,8 +37,8 @@ const adaptiveCardsHostConfig: HostConfig = {
 			foregroundColors: {
 				//@ts-ignore
 				default: {
-					default: "var(--black-10)",
-					subtle: "var(--black-40)",
+					default: "var(--cc-black-10)",
+					subtle: "var(--cc-black-40)",
 				},
 			},
 		},
