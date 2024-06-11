@@ -1,6 +1,6 @@
 .bubble {
 	border-radius: 15px;
-	border: 1px solid var(--border-bot-message);
+	border: 1px solid var(--cc-border-bot-message);
 	padding: 12px;
 	max-width: 295px;
 	width: max-content;
@@ -11,20 +11,20 @@
 }
 
 article:global(.bot) .bubble {
-	background: var(--background-bot-message);
-	color: var(--bot-message-contrast-color);
+	background: var(--cc-background-bot-message);
+	color: var(--cc-bot-message-contrast-color);
 }
 
 article:global(.agent) .bubble {
-	background: var(--background-agent-message);
-	border-color: var(--border-agent-message);
-	color: var(--agent-message-contrast-color);
+	background: var(--cc-background-agent-message);
+	border-color: var(--cc-border-agent-message);
+	color: var(--cc-agent-message-contrast-color);
 }
 
 article:global(.user) .bubble {
-	background: var(--background-user-message);
-	border-color: var(--border-user-message);
-	color: var(--user-message-contrast-color);
+	background: var(--cc-background-user-message);
+	border-color: var(--cc-border-user-message);
+	color: var(--cc-user-message-contrast-color);
 }
 
 article:not(:global(.user)) .incoming,

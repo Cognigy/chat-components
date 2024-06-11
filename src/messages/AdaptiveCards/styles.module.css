@@ -37,13 +37,13 @@
 }
 
 .adaptivecard-wrapper > *:focus {
-	outline: 1px solid var(--primary-color);
-	border-color: var(--primary-color);
+	outline: 1px solid var(--cc-primary-color);
+	border-color: var(--cc-primary-color);
 }
 
 .adaptivecard-wrapper button {
 	appearance: none;
-	background: var(--black-10);
+	background: var(--cc-black-10);
 	border-radius: 10px;
 	border: none;
 	color: white;
@@ -57,22 +57,22 @@
 }
 
 .adaptivecard-wrapper button:hover {
-	background: var(--black-30);
+	background: var(--cc-black-30);
 }
 
 .adaptivecard-wrapper.chatDisabled button,
 .adaptivecard-wrapper.chatDisabled button:hover {
-	background: var(--black-90);
+	background: var(--cc-black-90);
 	cursor: default;
 	pointer-events: none;
 }
 
 .adaptivecard-wrapper button:disabled {
-	background: var(--black-90);
+	background: var(--cc-black-90);
 }
 
 .adaptivecard-wrapper :global(.ac-textRun) {
-	color: var(--black-40) !important;
+	color: var(--cc-black-40) !important;
 	font-size: 12px !important;
 	line-height: 140%;
 }
@@ -90,7 +90,7 @@
 	background: var(--Basics-white, #fff);
 	border-radius: 10px;
 	border: 1px solid var(--Basics-black-60, #999);
-	color: var(--black-40) !important;
+	color: var(--cc-black-40) !important;
 	display: flex;
 	font-size: 14px !important;
 	gap: 10px;
@@ -124,17 +124,17 @@
 }
 
 .adaptivecard-wrapper textarea::-webkit-scrollbar-thumb {
-	background-color: var(--black-80);
+	background-color: var(--cc-black-80);
 	border-radius: 10px;
-	border: 12px solid var(--white);
+	border: 12px solid var(--cc-white);
 	border-block: none;
 }
 
 .adaptivecard-wrapper input:focus,
 .adaptivecard-wrapper textarea:focus,
 .adaptivecard-wrapper select:focus {
-	outline: 1px solid var(--primary-color);
-	border-color: 1px solid var(--primary-color);
+	outline: 1px solid var(--cc-primary-color);
+	border-color: 1px solid var(--cc-primary-color);
 }
 
 .adaptivecard-wrapper :global(.ac-actionSet) {
@@ -147,33 +147,33 @@
 	border-radius: 15px;
 	box-shadow: none;
 	padding: 0;
-	border: 1px solid var(--black-80);
+	border: 1px solid var(--cc-black-80);
 	margin: -17px;
 }
 
 .adaptivecard-wrapper [type="checkbox"] {
 	appearance: none;
-	background-color: var(--white);
-	border: 1px solid var(--black-10, #999);
+	background-color: var(--cc-white);
+	border: 1px solid var(--cc-black-10, #999);
 	border-radius: 1px;
 	width: 16px;
 	height: 16px;
 }
 
 .adaptivecard-wrapper [type="checkbox"]:checked {
-	background-color: var(--black-10);
+	background-color: var(--cc-black-10);
 	background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 16 16' fill='none'%3E%3Cpath fill-rule='evenodd' clip-rule='evenodd' d='M12.5172 4.4569C12.8172 4.74256 12.8288 5.2173 12.5431 5.51724L7.19089 11.1371C6.69828 11.6543 5.87315 11.6543 5.38054 11.1371L3.4569 9.11724C3.17123 8.8173 3.18281 8.34256 3.48276 8.0569C3.78271 7.77123 4.25744 7.78281 4.5431 8.08276L6.28572 9.9125L11.4569 4.48276C11.7426 4.18281 12.2173 4.17123 12.5172 4.4569Z' fill='white'/%3E%3C/svg%3E");
 	background-position: -1px -1px;
 }
 
 .adaptivecard-wrapper [type="checkbox"]:active {
-	background-color: var(--black-60);
-	border-color: var(--black-60);
+	background-color: var(--cc-black-60);
+	border-color: var(--cc-black-60);
 }
 
 .adaptivecard-wrapper [type="checkbox"]:checked:hover {
-	background-color: var(--black-40);
-	border-color: var(--black-40);
+	background-color: var(--cc-black-40);
+	border-color: var(--cc-black-40);
 }
 
 .adaptivecard-wrapper input:invalid {
@@ -215,6 +215,6 @@
 }
 
 .adaptivecard-wrapper select option {
-	color: var(--black-40);
-	border-bottom: 1px solid var(--black-10);
+	color: var(--cc-black-40);
+	border-bottom: 1px solid var(--cc-black-10);
 }

@@ -1,0 +1,49 @@
+:root {
+	--cc-primary-color: var(--webchat-primary-color, #2455e6);
+	--cc-primary-color-hover: color-mix(in srgb, var(--cc-primary-color), #000 20%);
+	--cc-primary-color-disabled: color-mix(in srgb, var(--cc-primary-color), #fff 80%);
+	--cc-primary-color-opacity-10: color-mix(in srgb, var(--cc-primary-color) 10%, transparent);
+	--cc-primary-color-opacity-20: color-mix(in srgb, var(--cc-primary-color) 20%, transparent);
+	--cc-primary-contrast-color: var(--webchat-primary-contrast-color, #fdfcfc);
+
+	--cc-secondary-color: var(--webchat-secondary-color, #1a1a1a);
+	--cc-secondary-color-hover: color-mix(in srgb, var(--cc-secondary-color), #fff 20%);
+	--cc-secondary-color-disabled: color-mix(in srgb, var(--cc-secondary-color), #fff 90%);
+	--cc-secondary-color-opacity-10: color-mix(in srgb, var(--cc-secondary-color) 10%, transparent);
+	--cc-secondary-color-opacity-20: color-mix(in srgb, var(--cc-secondary-color) 20%, transparent);
+	--cc-secondary-contrast-color: var(--webchat-secondary-contrast-color, #fff);
+
+	--cc-background-bot-message: var(--webchat-background-bot-message, #fff);
+	--cc-background-user-message: var(--webchat-background-user-message, #e8ebff);
+	--cc-background-agent-message: var(
+		--webchat-background-agent-message,
+		var(--cc-background-bot-message)
+	);
+
+	--cc-text-link: var(--webchat-text-link, #6688ed);
+	--cc-text-link-hover: color-mix(in srgb, var(--cc-text-link), #000 20%);
+	--cc-text-link-disabled: color-mix(in srgb, var(--cc-text-link), #fff 90%);
+
+	--cc-black-10: #1a1a1a;
+	--cc-black-20: #333;
+	--cc-black-30: #4d4d4d;
+	--cc-black-40: #666;
+	--cc-black-60: #999;
+	--cc-black-80: #ccc;
+	--cc-black-90: #e5e5e5;
+	--cc-black-95: #f2f2f2;
+	--cc-white: #fff;
+
+	--cc-text-dark: var(--webchat-text-dark, --cc-black-10);
+	--cc-text-light: var(--webchat-text-light, --cc-white);
+
+	--cc-bubble-border-radius: var(--webchat-bubble-border-radius, 15px);
+
+	--cc-border-bot-message: var(--webchat-border-bot-message, var(--cc-black-80));
+	--cc-border-user-message: var(--webchat-border-user-message, transparent);
+	--cc-border-agent-message: var(--webchat-border-agent-message, var(--cc-border-bot-message));
+
+	--cc-bot-message-contrast-color: var(--webchat-bot-message-contrast-color, #1c1c1c);
+	--cc-user-message-contrast-color: var(--webchat-user-message-contrast-color, #1c1c1c);
+	--cc-agent-message-contrast-color: var(--webchat-agent-message-contrast-color, #1c1c1c);
+}

@@ -1,9 +1,9 @@
 article .wrapper {
 	max-width: 295px;
-	border-radius: var(--bubble-border-radius);
+	border-radius: var(--cc-bubble-border-radius);
 	overflow: hidden;
-	border: 1px solid var(--black-80);
-	background-color: var(--white);
+	border: 1px solid var(--cc-black-80);
+	background-color: var(--cc-white);
 }
 
 .headerWrapper {
@@ -15,7 +15,7 @@ article .wrapper {
 }
 
 .headerWrapper:focus-visible {
-	outline: 2px solid var(--primary-color);
+	outline: 2px solid var(--cc-primary-color);
 	outline-offset: -3px;
 }
 
@@ -36,11 +36,11 @@ article .wrapper {
 	bottom: 0;
 	right: 0;
 	padding: 16px;
-	color: var(--white);
+	color: var(--cc-white);
 }
 
 .headerContent > * {
-	color: var(--white);
+	color: var(--cc-white);
 }
 
 .itemTitle {
@@ -78,7 +78,7 @@ article .wrapper {
 }
 
 .listItemWrapper:focus-visible {
-	outline: 2px solid var(--primary-color);
+	outline: 2px solid var(--cc-primary-color);
 	outline-offset: -10px;
 }
 
@@ -91,7 +91,7 @@ article .wrapper {
 	align-items: center;
 	gap: 16px;
 	width: 100%;
-	color: var(--black-20);
+	color: var(--cc-black-20);
 }
 
 .listItemText {
@@ -99,7 +99,7 @@ article .wrapper {
 }
 
 .listItemText > * {
-	color: var(--black-20);
+	color: var(--cc-black-20);
 }
 
 .listItemImage {

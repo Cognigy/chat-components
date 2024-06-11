@@ -14,11 +14,11 @@
 
 .header {
 	display: flex;
-	border-bottom: 1px solid var(--black-80);
+	border-bottom: 1px solid var(--cc-black-80);
 	padding: 20px;
 	align-items: center;
 	justify-content: space-between;
-	background-color: var(--white);
+	background-color: var(--cc-white);
 }
 
 .header .left {
@@ -117,13 +117,13 @@
 }
 
 .wrapper .content :global(.flatpickr-calendar:focus-visible .flatpickr-innerContainer) {
-	outline: 2px solid var(--primary-color);
+	outline: 2px solid var(--cc-primary-color);
 	outline-offset: 2px;
 }
 
 @keyframes flatpickr-flash-focus {
 	0% {
-		background-color: var(--black-95);
+		background-color: var(--cc-black-95);
 	}
 	100% {
 		background-color: transparent;
@@ -169,11 +169,11 @@
 
 .wrapper .content :global(.flatpickr-months .flatpickr-prev-month svg path),
 .wrapper .content :global(.flatpickr-months .flatpickr-next-month svg path) {
-	fill: var(--black-10);
+	fill: var(--cc-black-10);
 }
 .wrapper .content :global(.flatpickr-months .flatpickr-prev-month.flatpickr-disabled svg path),
 .wrapper .content :global(.flatpickr-months .flatpickr-next-month.flatpickr-disabled svg path) {
-	fill: var(--black-80);
+	fill: var(--cc-black-80);
 }
 .wrapper .content :global(.flatpickr-months .flatpickr-next-month svg) {
 	transform: rotate(180deg);
@@ -216,13 +216,13 @@
 	width: 100%;
 	width: 120px;
 	box-sizing: border-box;
-	border: 1px solid var(--black-60);
+	border: 1px solid var(--cc-black-60);
 	border-radius: 10px;
 	-moz-appearance: none;
 	-webkit-appearance: none;
 	appearance: none;
-	background-color: var(--white);
-	color: var(--black-10);
+	background-color: var(--cc-white);
+	color: var(--cc-black-10);
 	font-size: 14px;
 }
 
@@ -230,10 +230,10 @@
 	display: none;
 }
 .wrapper .content :global(.flatpickr-current-month .flatpickr-monthDropdown-months:hover) {
-	border-color: var(--black-60);
+	border-color: var(--cc-black-60);
 }
 .wrapper .content :global(.flatpickr-current-month .flatpickr-monthDropdown-months:focus) {
-	border-color: var(--black-60);
+	border-color: var(--cc-black-60);
 	outline: none;
 }
 .wrapper .content :global(.flatpickr-current-month .flatpickr-monthDropdown-months option) {
@@ -257,8 +257,8 @@
 
 .wrapper .content :global(.flatpickr-current-month input.cur-year) {
 	border-radius: 10px;
-	border: 1px solid var(--black-60);
-	background: var(--white);
+	border: 1px solid var(--cc-black-60);
+	background: var(--cc-white);
 	display: flex;
 	padding: 12px;
 	justify-content: center;
@@ -267,7 +267,7 @@
 	height: 100%;
 	font-size: 14px;
 	box-sizing: border-box;
-	color: var(--black-10);
+	color: var(--cc-black-10);
 }
 
 .wrapper .content :global(.flatpickr-current-month input.cur-year:focus) {
@@ -309,7 +309,7 @@
 .wrapper .content :global(span.flatpickr-weekday) {
 	cursor: default;
 	background: transparent;
-	color: var(--black-40);
+	color: var(--cc-black-40);
 	line-height: 140%;
 	margin: 0;
 	text-align: center;
@@ -360,7 +360,7 @@
 	background: none;
 	-webkit-box-sizing: border-box;
 	box-sizing: border-box;
-	color: var(--black-10);
+	color: var(--cc-black-10);
 	cursor: pointer;
 	font-weight: 600;
 	-webkit-flex-basis: 13%;
@@ -395,7 +395,7 @@
 .wrapper .content :global(.flatpickr-day:focus .dayInner),
 .wrapper .content :global(.flatpickr-day.prevMonthDay:focus .dayInner),
 .wrapper .content :global(.flatpickr-day.nextMonthDay:focus .dayInner) {
-	background-color: var(--black-95);
+	background-color: var(--cc-black-95);
 }
 
 .wrapper .content :global(.flatpickr-day.flatpickr-disabled .dayInner),
@@ -405,12 +405,12 @@
 }
 
 .wrapper .content :global(.flatpickr-day.today .dayInner) {
-	background-color: var(--primary-color-opacity-20);
+	background-color: var(--cc-primary-color-opacity-20);
 }
 
 .wrapper .content :global(.flatpickr-day.selected .dayInner) {
-	background-color: var(--primary-color);
-	color: var(--primary-contrast-color);
+	background-color: var(--cc-primary-color);
+	color: var(--cc-primary-contrast-color);
 }
 
 .wrapper .content :global(.flatpickr-day.inRange .dayInner),
@@ -421,16 +421,16 @@
 .wrapper .content :global(.flatpickr-day.prevMonthDay.today.inRange .dayInner),
 .wrapper .content :global(.flatpickr-day.nextMonthDay.today.inRange .dayInner) {
 	width: 100%;
-	background-color: var(--primary-color);
-	color: var(--primary-contrast-color);
+	background-color: var(--cc-primary-color);
+	color: var(--cc-primary-contrast-color);
 }
 
 .wrapper .content :global(.flatpickr-day.startRange .dayInner),
 .wrapper .content :global(.flatpickr-day.startRange:hover .dayInner),
 .wrapper .content :global(.flatpickr-day.endRange .dayInner),
 .wrapper .content :global(.flatpickr-day.endRange:hover .dayInner) {
-	background-color: var(--primary-color);
-	color: var(--primary-contrast-color);
+	background-color: var(--cc-primary-color);
+	color: var(--cc-primary-contrast-color);
 }
 
 .wrapper .content :global(.flatpickr-day.startRange:not(.endRange) .dayInner) {
@@ -451,7 +451,7 @@
 	height: 32px;
 	width: 32px;
 	position: absolute;
-	background-color: var(--primary-color);
+	background-color: var(--cc-primary-color);
 	z-index: -1;
 }
 .wrapper .content :global(.flatpickr-day.inRange .dayInner::after),
@@ -471,7 +471,7 @@
 .wrapper .content :global(.flatpickr-day.notAllowed),
 .wrapper .content :global(.flatpickr-day.notAllowed.prevMonthDay),
 .wrapper .content :global(.flatpickr-day.notAllowed.nextMonthDay) {
-	color: var(--black-80);
+	color: var(--cc-black-80);
 	background: transparent;
 	border-color: transparent;
 	cursor: default;
@@ -506,7 +506,7 @@
 	background: none;
 	-webkit-box-sizing: border-box;
 	box-sizing: border-box;
-	color: var(--black-60);
+	color: var(--cc-black-60);
 	cursor: pointer;
 	font-weight: 600;
 	-webkit-flex-basis: 13%;
@@ -534,10 +534,10 @@
 	display: flex;
 	align-items: center;
 	justify-content: center;
-	background-color: var(--black-80);
+	background-color: var(--cc-black-80);
 }
 .wrapper .content :global(.flatpickr-weekwrapper span.flatpickr-day span.weekdayInner.currentWeek) {
-	color: var(--black-40);
+	color: var(--cc-black-40);
 }
 
 .wrapper .content :global(.flatpickr-weekwrapper span.flatpickr-day:first-child span.weekdayInner) {
@@ -553,7 +553,7 @@
 	height: calc((100% - 27px) / 2);
 	position: absolute;
 	bottom: 0;
-	background-color: var(--black-80);
+	background-color: var(--cc-black-80);
 }
 
 .wrapper .content :global(.flatpickr-weekwrapper span.flatpickr-day:last-child span.weekdayInner) {
@@ -569,7 +569,7 @@
 	height: calc((100% - 27px) / 2);
 	position: absolute;
 	top: 0;
-	background-color: var(--black-80);
+	background-color: var(--cc-black-80);
 }
 
 .wrapper .content :global(.flatpickr-weekwrapper) {
@@ -592,7 +592,7 @@
 	margin: 12px 10px 0px 10px;
 	padding-top: 24px;
 	box-sizing: border-box;
-	border-top: 1px solid var(--black-80);
+	border-top: 1px solid var(--cc-black-80);
 	overflow: hidden;
 	display: flex;
 	align-items: center;
@@ -641,11 +641,11 @@
 }
 
 .wrapper .content :global(.flatpickr-time svg path) {
-	fill: var(--black-10);
+	fill: var(--cc-black-10);
 }
 
 .wrapper .content :global(.flatpickr-time span.disabled svg path) {
-	fill: var(--black-80);
+	fill: var(--cc-black-80);
 }
 
 .wrapper .content :global(.flatpickr-time span.arrowUp) {
@@ -659,8 +659,8 @@
 
 .wrapper .content :global(.flatpickr-time input) {
 	border-radius: 10px;
-	border: 1px solid var(--black-60, #999);
-	background: var(--white, #fff);
+	border: 1px solid var(--cc-black-60, #999);
+	background: var(--cc-white, #fff);
 	display: flex;
 	padding: 12px;
 	justify-content: center;
@@ -671,7 +671,7 @@
 	box-sizing: border-box;
 	height: 44px;
 	width: 44px;
-	color: var(--black-10);
+	color: var(--cc-black-10);
 }
 
 .wrapper .content :global(.flatpickr-time input.flatpickr-minute),
@@ -682,11 +682,11 @@
 .wrapper .content :global(.flatpickr-time input.flatpickr-hour:focus),
 .wrapper .content :global(.flatpickr-time input.flatpickr-minute:focus),
 .wrapper .content :global(.flatpickr-time input.flatpickr-second:focus) {
-	outline: 2px solid var(--primary-color);
+	outline: 2px solid var(--cc-primary-color);
 }
 
 .wrapper .content :global(.flatpickr-time span.flatpickr-am-pm:focus-visible) {
-	outline: 2px solid var(--primary-color);
+	outline: 2px solid var(--cc-primary-color);
 	outline-offset: -2px;
 }
 
@@ -709,7 +709,7 @@
 	width: 41px;
 	height: 100%;
 	margin-left: 24px;
-	color: var(--black-10);
+	color: var(--cc-black-10);
 }
 
 .wrapper .content :global(.flatpickr-time .flatpickr-am-pm span:not(.disabled)) {

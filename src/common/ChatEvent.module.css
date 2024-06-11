@@ -10,7 +10,7 @@
 
 .eventPillTextWrapper {
 	border-radius: 15px;
-	background: var(--black-80);
-	color: var(--black-20);
+	background: var(--cc-black-80);
+	color: var(--cc-black-20);
 	padding: 8px 12px;
 }

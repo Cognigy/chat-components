@@ -7,14 +7,14 @@
 
 .slideItem .top {
 	position: relative;
-	border-radius: var(--bubble-border-radius);
+	border-radius: var(--cc-bubble-border-radius);
 }
 
 .slideItem .bottom {
-	border-bottom-left-radius: var(--bubble-border-radius);
-	border-bottom-right-radius: var(--bubble-border-radius);
-	border: 1px solid var(--black-80);
-	background-color: var(--white);
+	border-bottom-left-radius: var(--cc-bubble-border-radius);
+	border-bottom-right-radius: var(--cc-bubble-border-radius);
+	border: 1px solid var(--cc-black-80);
+	background-color: var(--cc-white);
 	display: flex;
 	flex-direction: column;
 	gap: 8px;
@@ -25,7 +25,7 @@
 	aspect-ratio: 206/150;
 	object-fit: cover;
 	object-position: left;
-	border-radius: var(--bubble-border-radius);
+	border-radius: var(--cc-bubble-border-radius);
 	width: 100%;
 	display: block;
 	outline: none;
@@ -36,8 +36,8 @@
 	width: 100%;
 	display: block;
 	outline: none;
-	border-radius: var(--bubble-border-radius);
-	background-color: var(--black-80);
+	border-radius: var(--cc-bubble-border-radius);
+	background-color: var(--cc-black-80);
 }
 
 .slideItem .hasExtraInfo,
@@ -52,7 +52,7 @@
 	margin: 0px;
 	left: 8px;
 	bottom: 10px;
-	color: var(--white);
+	color: var(--cc-white);
 }
 
 .slideItem .bottom p {
@@ -166,15 +166,15 @@ article :global(.swiper).wrapper :global(.swiper-pagination-bullet) {
 	height: 6px;
 	display: inline-block;
 	border-radius: 50%;
-	background: var(--black-80);
+	background: var(--cc-black-80);
 	opacity: 1;
 }
 article :global(.swiper).wrapper :global(.swiper-pagination-bullet):focus {
-	box-shadow: 0 0 0 4px var(--primary-color-opacity-10);
+	box-shadow: 0 0 0 4px var(--cc-primary-color-opacity-10);
 	outline: none;
 }
 article :global(.swiper).wrapper :global(.swiper-pagination-bullet):focus-visible {
-	background-color: var(--primary-color);
+	background-color: var(--cc-primary-color);
 	outline: "none";
 }
 article :global(.swiper).wrapper :global(button.swiper-pagination-bullet) {
@@ -193,7 +193,7 @@ article :global(.swiper).wrapper :global(.swiper-pagination-bullet:only-child) {
 }
 article :global(.swiper).wrapper :global(.swiper-pagination-bullet-active) {
 	opacity: 1;
-	background: var(--primary-color);
+	background: var(--cc-primary-color);
 }
 article
 	:global(.swiper).wrapper
