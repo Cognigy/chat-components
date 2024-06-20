@@ -7,3 +7,7 @@
 	outline: 2px solid var(--cc-primary-color);
 	outline-offset: 2px;
 }
+
+.text img {
+	max-width: 100%;
+}
