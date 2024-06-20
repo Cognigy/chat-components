@@ -21,6 +21,14 @@
 	margin-block-start: calc(var(--webchat-message-margin-block, 24px) * -0.5);
 }
 
+.fullscreen {
+	margin-block-start: 0;
+	margin-block-end: 0;
+	margin-inline-start: 0;
+	margin-inline-end: 0;
+	flex: 1;
+}
+
 .message a:not(:global(.phone-number-anchor)) {
 	color: var(--text-link);
 }

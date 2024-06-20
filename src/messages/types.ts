@@ -239,3 +239,68 @@ export type MessageSender = (
 	data?: Record<string, any> | null,
 	options?: Partial<ISendMessageOptions>,
 ) => void;
+
+export interface IWebchatTheme {
+    // Webchat V3 theme colors
+    // Primary Colors
+    primaryColor: string;
+    primaryColorHover: string;
+    primaryColorDisabled: string;
+    primaryContrastColor: string;
+
+    // Secondary Colors
+    secondaryColor: string;
+    secondaryColorHover: string;
+    secondaryColorDisabled: string;
+    secondaryContrastColor: string;
+
+    // Meta Colors
+    backgroundHome: string;
+    backgroundWebchat: string;
+    backgroundBotMessage: string;
+    backgroundUserMessage: string;
+    backgroundEngagementMessage: string;
+
+    textLink: string;
+    textLinkHover: string;
+    textLinkDisabled: string;
+
+    //Basic Colors
+    black10: string;
+    black20: string;
+    black40: string;
+    black60: string;
+    black80: string;
+    black95: string;
+    white: string;
+
+    textDark: string;
+    textLight: string;
+
+    // Confirmation Colors
+    green: string;
+    green10: string;
+    red: string;
+    red10: string;
+
+
+    // Legacy Webchat V2 theme colors
+    primaryStrongColor: string;
+    primaryWeakColor: string;
+    primaryGradient: string;
+    primaryStrongGradient: string;
+
+    greyColor: string;
+    greyStrongColor: string;
+    greyWeakColor: string;
+    greyContrastColor: string;
+
+    shadow: string;
+    messageShadow: string;
+
+    unitSize: number;
+    blockSize: number;
+    cornerSize: number;
+
+    fontFamily: string;
+}
