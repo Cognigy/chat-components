@@ -294,7 +294,7 @@ const screens: TScreen[] = [
 				message: {
 					source: "bot",
 					text: 'Large Image: <img src="https://www.cognigy.com/hs-fs/hubfs/AI%20agent%20business.png?width=1153&height=1024&name=AI%20agent%20business.png" alt="Alt text">',
-				}
+				},
 			},
 		],
 	},
