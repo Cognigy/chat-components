@@ -179,7 +179,6 @@
 	border-color: red;
 }
 
-
 .adaptivecard-wrapper [type="date"]::-webkit-calendar-picker-indicator,
 .adaptivecard-wrapper [type="time"]::-webkit-calendar-picker-indicator {
 	background: none;
