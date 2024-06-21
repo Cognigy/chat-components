@@ -167,6 +167,7 @@ const defaultConfig: MatchConfig[] = [
 			return !!message?.text;
 		},
 		component: Text,
+		name: "Text",
 	},
 ];
 
