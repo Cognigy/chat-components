@@ -22,7 +22,7 @@ export interface MessageProps {
 	message: IMessage;
 	onDismissFullscreen?: () => void;
 	onEmitAnalytics?: (event: string, payload?: unknown) => void;
-	onSendMessage?: MessageSender; // = "prop.action", for legacy plugins 
+	onSendMessage?: MessageSender; // = "prop.action", for legacy plugins
 	onSetFullscreen?: () => void;
 	openXAppOverlay?: (url: string | undefined) => void;
 	plugins?: MessagePlugin[];
@@ -99,7 +99,9 @@ const Message: FC<MessageProps> = props => {
 			openXAppOverlay={openXAppOverlay}
 		>
 			<article className={rootClassName}>
-				{!shouldCollate && !isFullscreen && <MessageHeader enableAvatar={message.source !== "user"} />}
+				{!shouldCollate && !isFullscreen && (
+					<MessageHeader enableAvatar={message.source !== "user"} />
+				)}
 				{matchedPlugins.map((plugin, index) =>
 					plugin.component ? (
 						<plugin.component

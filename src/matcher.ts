@@ -179,7 +179,7 @@ export function match(
 	webchatConfig?: IWebchatConfig,
 	externalPlugins: MessagePlugin[] = [],
 ) {
-	const config = [ ...externalPlugins, ...defaultConfig  ];
+	const config = [...externalPlugins, ...defaultConfig];
 
 	const plugins: MessagePlugin[] = [];
 
@@ -196,14 +196,14 @@ export function match(
 }
 
 export interface MessagePluginOptions {
-    fullscreen?: boolean;
-    fullwidth?: boolean;
-    passthrough?: boolean;
+	fullscreen?: boolean;
+	fullwidth?: boolean;
+	passthrough?: boolean;
 }
 
 export interface MessagePlugin {
-    name?: string;
-    match: (message: IMessage, config?: IWebchatConfig) => boolean;
-    component: React.ComponentType<MessageProps>;
-    options?: MessagePluginOptions;
+	name?: string;
+	match: (message: IMessage, config?: IWebchatConfig) => boolean;
+	component: React.ComponentType<MessageProps>;
+	options?: MessagePluginOptions;
 }
