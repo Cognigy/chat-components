@@ -290,6 +290,12 @@ const screens: TScreen[] = [
 					text: 'This message has both anchor and image tags <a href="https://docs.cognigy.com">Cognigy Docs</a> <img src="https://placewaifu.com/image/200/200" alt="Alt text">',
 				},
 			},
+			{
+				message: {
+					source: "bot",
+					text: 'Large Image: <img src="https://www.cognigy.com/hs-fs/hubfs/AI%20agent%20business.png?width=1153&height=1024&name=AI%20agent%20business.png" alt="Alt text">',
+				},
+			},
 		],
 	},
 	{
