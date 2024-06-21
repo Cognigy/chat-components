@@ -2,9 +2,9 @@ import { FC, useMemo } from "react";
 import classnames from "classnames";
 
 import MessageHeader from "../common/MessageHeader";
-import { match, MatchConfig } from "../matcher";
+import { match, MessagePlugin } from "../matcher";
 import { MessageProvider } from "./context";
-import { IWebchatConfig, MessageSender } from "./types";
+import { IWebchatConfig, IWebchatTheme, MessageSender } from "./types";
 
 import "src/theme.css";
 import classes from "./Message.module.css";
@@ -17,12 +17,17 @@ export interface MessageProps {
 	config?: IWebchatConfig;
 	disableHeader?: boolean;
 	hasReply?: boolean;
-	message: IMessage;
-	onEmitAnalytics?: (event: string, payload?: unknown) => void;
-	plugins?: MatchConfig[];
-	prevMessage?: IMessage;
 	isConversationEnded?: boolean;
+	isFullscreen?: boolean;
+	message: IMessage;
+	onDismissFullscreen?: () => void;
+	onEmitAnalytics?: (event: string, payload?: unknown) => void;
+	onSendMessage?: MessageSender; // = "prop.action", for legacy plugins
+	onSetFullscreen?: () => void;
 	openXAppOverlay?: (url: string | undefined) => void;
+	plugins?: MessagePlugin[];
+	prevMessage?: IMessage;
+	theme?: IWebchatTheme;
 }
 
 const Message: FC<MessageProps> = props => {
@@ -31,12 +36,15 @@ const Message: FC<MessageProps> = props => {
 		className,
 		config,
 		hasReply,
+		isConversationEnded,
+		isFullscreen,
 		message,
+		onDismissFullscreen,
 		onEmitAnalytics,
+		onSetFullscreen,
+		openXAppOverlay,
 		plugins,
 		prevMessage,
-		isConversationEnded,
-		openXAppOverlay,
 	} = props;
 	const shouldCollate = isMessageCollatable(message, prevMessage);
 
@@ -46,9 +54,10 @@ const Message: FC<MessageProps> = props => {
 		className,
 		classes.message,
 		shouldCollate && classes.collated,
+		isFullscreen && classes.fullscreen,
 	);
 
-	const MessageComponent = match(message, config, plugins);
+	const matchedPlugins = match(message, config, plugins);
 
 	const messageParams = useMemo(
 		() => ({ hasReply, isConversationEnded }),
@@ -58,22 +67,56 @@ const Message: FC<MessageProps> = props => {
 	/**
 	 * No rule matched the message, so we don't render anything.
 	 */
-	if (!MessageComponent) {
+	if (!Array.isArray(matchedPlugins) || matchedPlugins.length < 1) {
 		return null;
+	}
+
+	if (isFullscreen) {
+		const Fullscreen = matchedPlugins[0]?.component;
+		if (Fullscreen) {
+			return (
+				<Fullscreen
+					isFullscreen={isFullscreen}
+					message={message}
+					onDismissFullscreen={onDismissFullscreen}
+					onEmitAnalytics={onEmitAnalytics}
+					onSendMessage={action}
+					onSetFullscreen={onSetFullscreen}
+					prevMessage={prevMessage}
+					theme={props.theme}
+				/>
+			);
+		}
 	}
 
 	return (
 		<MessageProvider
-			message={message}
 			action={action}
-			onEmitAnalytics={onEmitAnalytics}
 			config={config}
+			message={message}
 			messageParams={messageParams}
+			onEmitAnalytics={onEmitAnalytics}
 			openXAppOverlay={openXAppOverlay}
 		>
 			<article className={rootClassName}>
-				{!shouldCollate && <MessageHeader enableAvatar={message.source !== "user"} />}
-				<MessageComponent />
+				{!shouldCollate && !isFullscreen && (
+					<MessageHeader enableAvatar={message.source !== "user"} />
+				)}
+				{matchedPlugins.map((plugin, index) =>
+					plugin.component ? (
+						<plugin.component
+							isFullscreen={isFullscreen}
+							key={index}
+							message={message}
+							onDismissFullscreen={onDismissFullscreen}
+							onEmitAnalytics={onEmitAnalytics}
+							onSendMessage={action}
+							onSetFullscreen={onSetFullscreen}
+							prevMessage={prevMessage}
+							theme={props.theme}
+						/>
+					) : null,
+				)}
 			</article>
 		</MessageProvider>
 	);

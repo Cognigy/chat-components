@@ -1,4 +1,4 @@
-import { FC } from "react";
+import React, { FC } from "react";
 import {
 	Text,
 	Image,
@@ -16,30 +16,33 @@ import { getChannelPayload } from "./utils";
 import { IMessage, IWebchatTemplateAttachment } from "@cognigy/socket-client";
 import { IAdaptiveCardMessage } from "@cognigy/socket-client/lib/interfaces/messageData";
 import { XAppSubmitMessage } from "./messages/xApp";
+import { MessageProps } from "./messages/Message";
 
 export type MatchConfig = {
-	rule: (message: IMessage, config?: IWebchatConfig) => boolean;
+	match: (message: IMessage, config?: IWebchatConfig) => boolean;
 	component: FC;
+	name?: string;
+	options?: MessagePluginOptions;
 };
 
 const defaultConfig: MatchConfig[] = [
 	{
 		// xApp submit
-		rule: message => {
+		match: message => {
 			return message?.data?._plugin?.type === "x-app-submit";
 		},
 		component: XAppSubmitMessage,
 	},
 	{
 		// Datepicker
-		rule: message => {
+		match: message => {
 			return message?.data?._plugin?.type === "date-picker";
 		},
 		component: DatePicker,
 	},
 	{
 		// Text with buttons / Quick Replies
-		rule: (message, config) => {
+		match: (message, config) => {
 			const channelConfig = getChannelPayload(message, config);
 			if (!channelConfig) return false;
 
@@ -56,7 +59,7 @@ const defaultConfig: MatchConfig[] = [
 	},
 	{
 		// Image
-		rule: (message, config) => {
+		match: (message, config) => {
 			const channelConfig = getChannelPayload(message, config);
 			if (!channelConfig) return false;
 
@@ -66,7 +69,7 @@ const defaultConfig: MatchConfig[] = [
 	},
 	{
 		// Video
-		rule: (message, config) => {
+		match: (message, config) => {
 			const channelConfig = getChannelPayload(message, config);
 			if (!channelConfig) return false;
 
@@ -76,7 +79,7 @@ const defaultConfig: MatchConfig[] = [
 	},
 	{
 		// Audio
-		rule: (message, config) => {
+		match: (message, config) => {
 			const channelConfig = getChannelPayload(message, config);
 			if (!channelConfig) return false;
 
@@ -86,7 +89,7 @@ const defaultConfig: MatchConfig[] = [
 	},
 	{
 		// File
-		rule: message => {
+		match: message => {
 			const attachments = message?.data?.attachments;
 			if (!attachments) return false;
 
@@ -96,7 +99,7 @@ const defaultConfig: MatchConfig[] = [
 	},
 	{
 		// List
-		rule: (message, config) => {
+		match: (message, config) => {
 			const channelConfig = getChannelPayload(message, config);
 			if (!channelConfig) return false;
 
@@ -109,7 +112,7 @@ const defaultConfig: MatchConfig[] = [
 	},
 	{
 		// Gallery
-		rule: (message, config) => {
+		match: (message, config) => {
 			const channelConfig = getChannelPayload(message, config);
 			if (!channelConfig) return false;
 
@@ -121,7 +124,7 @@ const defaultConfig: MatchConfig[] = [
 		component: Gallery,
 	},
 	{
-		rule: (message, config) => {
+		match: (message, config) => {
 			// Rest of the code...
 			const _webchat = (message?.data?._cognigy?._webchat as IAdaptiveCardMessage)
 				?.adaptiveCard;
@@ -150,7 +153,7 @@ const defaultConfig: MatchConfig[] = [
 	},
 	{
 		// Text message
-		rule: (message, config) => {
+		match: (message, config) => {
 			// do not render engagement messages unless configured!
 			// do not render messages with file attachments. It will be rendered by the File component
 			if (
@@ -164,25 +167,44 @@ const defaultConfig: MatchConfig[] = [
 			return !!message?.text;
 		},
 		component: Text,
+		name: "Text",
 	},
 ];
 
 /**
- * Matches a message to a component by given rule.
- * Accepts `configExtended` to extend with custom rules.
+ * Matches a message to a component.
+ * Accepts `externalPlugins` to extend with custom matchs.
  */
 export function match(
 	message: IMessage,
 	webchatConfig?: IWebchatConfig,
-	configExtended: MatchConfig[] = [],
+	externalPlugins: MessagePlugin[] = [],
 ) {
-	const config = [...configExtended, ...defaultConfig];
+	const config = [...externalPlugins, ...defaultConfig];
 
-	const match = config.find((matcher: MatchConfig) => matcher.rule(message, webchatConfig));
+	const plugins: MessagePlugin[] = [];
 
-	if (match && match.component) {
-		return match.component;
+	for (const plugin of config) {
+		if (plugin.match(message, webchatConfig)) {
+			plugins.push(plugin);
+			if (!plugin?.options?.passthrough) {
+				break;
+			}
+		}
 	}
 
-	return null;
+	return plugins;
+}
+
+export interface MessagePluginOptions {
+	fullscreen?: boolean;
+	fullwidth?: boolean;
+	passthrough?: boolean;
+}
+
+export interface MessagePlugin {
+	name?: string;
+	match: (message: IMessage, config?: IWebchatConfig) => boolean;
+	component: React.ComponentType<MessageProps>;
+	options?: MessagePluginOptions;
 }
