@@ -91,7 +91,6 @@
 	border-radius: 10px;
 	border: 1px solid var(--Basics-black-60, #999);
 	color: var(--cc-black-40) !important;
-	display: flex;
 	font-size: 14px !important;
 	gap: 10px;
 	line-height: 140%;
@@ -180,23 +179,23 @@
 	border-color: red;
 }
 
-.adaptivecard-wrapper [type="date"] {
-	background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 16 16' fill='none'%3E%3Cpath fill-rule='evenodd' clip-rule='evenodd' d='M3 0.75C3 0.335786 3.33579 0 3.75 0C4.16421 0 4.5 0.335786 4.5 0.75V3H11V0.75C11 0.335786 11.3358 0 11.75 0C12.1642 0 12.5 0.335786 12.5 0.75V3H14C15.1046 3 16 3.89543 16 5V14C16 15.1046 15.1046 16 14 16H2C0.895431 16 0 15.1046 0 14V5C0 3.89543 0.895431 3 2 3H3V0.75ZM1.5 6H14.5V14C14.5 14.2761 14.2761 14.5 14 14.5H2C1.72386 14.5 1.5 14.2761 1.5 14V6Z' fill='%232455E6'/%3E%3C/svg%3E");
-	background-position: right 12px center;
-	background-repeat: no-repeat;
-}
-
 .adaptivecard-wrapper [type="date"]::-webkit-calendar-picker-indicator,
 .adaptivecard-wrapper [type="time"]::-webkit-calendar-picker-indicator {
 	background: none;
-	appearance: none;
-	display: none;
+}
+
+.adaptivecard-wrapper [type="date"],
+.adaptivecard-wrapper [type="time"] {
+	background-repeat: no-repeat;
+	background-position: right 12px center;
+}
+
+.adaptivecard-wrapper [type="date"] {
+	background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 16 16' fill='none'%3E%3Cpath fill-rule='evenodd' clip-rule='evenodd' d='M3 0.75C3 0.335786 3.33579 0 3.75 0C4.16421 0 4.5 0.335786 4.5 0.75V3H11V0.75C11 0.335786 11.3358 0 11.75 0C12.1642 0 12.5 0.335786 12.5 0.75V3H14C15.1046 3 16 3.89543 16 5V14C16 15.1046 15.1046 16 14 16H2C0.895431 16 0 15.1046 0 14V5C0 3.89543 0.895431 3 2 3H3V0.75ZM1.5 6H14.5V14C14.5 14.2761 14.2761 14.5 14 14.5H2C1.72386 14.5 1.5 14.2761 1.5 14V6Z' fill='%232455E6'/%3E%3C/svg%3E");
 }
 
 .adaptivecard-wrapper [type="time"] {
 	background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 16 16' fill='none'%3E%3Cpath fill-rule='evenodd' clip-rule='evenodd' d='M8 14.5C11.5899 14.5 14.5 11.5899 14.5 8C14.5 4.41015 11.5899 1.5 8 1.5C4.41015 1.5 1.5 4.41015 1.5 8C1.5 11.5899 4.41015 14.5 8 14.5ZM8 16C12.4183 16 16 12.4183 16 8C16 3.58172 12.4183 0 8 0C3.58172 0 0 3.58172 0 8C0 12.4183 3.58172 16 8 16Z' fill='%232455E6'/%3E%3Cpath fill-rule='evenodd' clip-rule='evenodd' d='M11.0303 12.0303C10.7374 12.3232 10.2626 12.3232 9.96967 12.0303L7.25 9.31066L7.25 4C7.25 3.58579 7.58578 3.25 8 3.25C8.41421 3.25 8.75 3.58579 8.75 4L8.75 8.68934L11.0303 10.9697C11.3232 11.2626 11.3232 11.7374 11.0303 12.0303Z' fill='%232455E6'/%3E%3C/svg%3E");
-	background-position: right 12px center;
-	background-repeat: no-repeat;
 }
 
 .adaptivecard-wrapper select {
