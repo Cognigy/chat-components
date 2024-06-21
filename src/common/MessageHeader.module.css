@@ -21,7 +21,7 @@ article .header.outgoing {
 }
 
 article .header .timestamp {
-	color: var(--black-40);
+	color: var(--cc-black-40);
 }
 
 article .header .avatar-name {

@@ -2,6 +2,6 @@ article .avatar {
 	border-radius: 1000px;
 	width: 28px;
 	height: 28px;
-	background-color: var(--primary-color);
+	background-color: var(--cc-primary-color);
 	box-sizing: border-box;
 }

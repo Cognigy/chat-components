@@ -1,18 +1,18 @@
 article .wrapper {
 	position: relative;
-	border-radius: var(--bubble-border-radius);
+	border-radius: var(--cc-bubble-border-radius);
 	max-width: 295px;
 	width: 100%;
 	outline: none;
 }
 
 article .wrapper:focus-visible {
-	outline: 2px solid var(--primary-color);
+	outline: 2px solid var(--cc-primary-color);
 	outline-offset: -3px;
 }
 
 article .wrapper img {
-	border-radius: var(--bubble-border-radius);
+	border-radius: var(--cc-bubble-border-radius);
 	width: 100%;
 	display: block;
 	outline: none;
@@ -23,9 +23,9 @@ article .wrapper img {
 }
 
 .wrapperDownloadable {
-	background-color: var(--white);
+	background-color: var(--cc-white);
 	cursor: pointer;
-	border: 1px solid var(--black-80);
+	border: 1px solid var(--cc-black-80);
 }
 .wrapperDownloadable img:hover,
 .wrapperDownloadable img:focus {
@@ -51,6 +51,6 @@ article .wrapper img {
 	width: 100%;
 	display: block;
 	outline: none;
-	border-radius: var(--bubble-border-radius);
-	background-color: var(--black-80);
+	border-radius: var(--cc-bubble-border-radius);
+	background-color: var(--cc-black-80);
 }

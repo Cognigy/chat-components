@@ -1,5 +1,5 @@
 article .wrapper {
-	border-radius: var(--bubble-border-radius);
+	border-radius: var(--cc-bubble-border-radius);
 	max-width: 295px;
 	position: relative;
 	display: flex;
@@ -11,9 +11,9 @@ article .wrapper {
 	justify-content: space-between;
 	height: 52px;
 	width: 100%;
-	background-color: var(--white);
-	border-radius: var(--bubble-border-radius);
-	border: 1px solid var(--black-80);
+	background-color: var(--cc-white);
+	border-radius: var(--cc-bubble-border-radius);
+	border: 1px solid var(--cc-black-80);
 	padding: 0px 12px;
 	gap: 16px;
 }
@@ -31,7 +31,7 @@ article button.playButton:focus {
 	outline: none;
 }
 article button.playButton:focus-visible {
-	outline: 2px solid var(--primary-color);
+	outline: 2px solid var(--cc-primary-color);
 	outline-offset: 2px;
 }
 
@@ -52,9 +52,9 @@ article .progressBar input[type="range"] {
 	width: 100%;
 	cursor: pointer;
 	outline: none;
-	border-radius: var(--bubble-border-radius);
+	border-radius: var(--cc-bubble-border-radius);
 	height: 3px;
-	background: var(--black-80);
+	background: var(--cc-black-80);
 }
 
 /* Thumb: Webkit */
@@ -63,7 +63,7 @@ article .progressBar input[type="range"]::-webkit-slider-thumb {
 	appearance: none;
 	height: 13px;
 	width: 13px;
-	background-color: var(--primary-color);
+	background-color: var(--cc-primary-color);
 	border-radius: 50%;
 	border: none;
 	transition: 0.2s ease-in-out;
@@ -73,7 +73,7 @@ article .progressBar input[type="range"]::-webkit-slider-thumb {
 article .progressBar input[type="range"]::-moz-range-thumb {
 	height: 13px;
 	width: 13px;
-	background-color: var(--primary-color);
+	background-color: var(--cc-primary-color);
 	border-radius: 50%;
 	border: none;
 	transition: 0.2s ease-in-out;
@@ -82,23 +82,23 @@ article .progressBar input[type="range"]::-moz-range-thumb {
 /* Hover, active & focus Thumb: Webkit */
 
 article .progressBar input[type="range"]::-webkit-slider-thumb:hover {
-	box-shadow: 0 0 0 7px var(--primary-color-opacity-10);
+	box-shadow: 0 0 0 7px var(--cc-primary-color-opacity-10);
 }
 article .progressBar input[type="range"]:active::-webkit-slider-thumb {
-	box-shadow: 0 0 0 9px var(--primary-color-opacity-20);
+	box-shadow: 0 0 0 9px var(--cc-primary-color-opacity-20);
 }
 article .progressBar input[type="range"]:focus::-webkit-slider-thumb {
-	box-shadow: 0 0 0 9px var(--primary-color-opacity-20);
+	box-shadow: 0 0 0 9px var(--cc-primary-color-opacity-20);
 }
 
 /* Hover, active & focus Thumb: Firefox */
 
 article .progressBar input[type="range"]::-moz-range-thumb:hover {
-	box-shadow: 0 0 0 7px var(--primary-color-opacity-10);
+	box-shadow: 0 0 0 7px var(--cc-primary-color-opacity-10);
 }
 article .progressBar input[type="range"]:active::-moz-range-thumb {
-	box-shadow: 0 0 0 9px var(--primary-color-opacity-20);
+	box-shadow: 0 0 0 9px var(--cc-primary-color-opacity-20);
 }
 article .progressBar input[type="range"]:focus::-moz-range-thumb {
-	box-shadow: 0 0 0 9px var(--primary-color-opacity-20);
+	box-shadow: 0 0 0 9px var(--cc-primary-color-opacity-20);
 }

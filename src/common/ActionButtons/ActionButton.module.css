@@ -8,21 +8,21 @@ a.button {
 	justify-content: center;
 	gap: 10px;
 	text-decoration: none;
-	background: var(--primary-color);
-	color: var(--primary-contrast-color);
+	background: var(--cc-primary-color);
+	color: var(--cc-primary-contrast-color);
 	border: none;
 	outline: none;
 }
 
 a.button:global(.phone-number-anchor) {
-	background: var(--primary-color);
+	background: var(--cc-primary-color);
 }
 
 button.button svg,
 a.button svg,
 button.button path,
 a.button svg path {
-	fill: var(--primary-contrast-color);
+	fill: var(--cc-primary-contrast-color);
 	width: 12px;
 }
 
@@ -30,11 +30,11 @@ button.button:hover,
 a.button:hover,
 button.button:focus,
 a.button:focus {
-	background: var(--primary-color-hover);
+	background: var(--cc-primary-color-hover);
 }
 button.button:focus-visible,
 a.button:focus-visible {
-	outline: 2px solid var(--primary-color);
+	outline: 2px solid var(--cc-primary-color);
 	outline-offset: 2px;
 }
 
@@ -44,7 +44,7 @@ button.button:disabled:focus,
 a.button.disabled,
 a.button.disabled:hover,
 a.button.disabled:focus {
-	background: var(--primary-color-disabled);
+	background: var(--cc-primary-color-disabled);
 	cursor: default;
 	pointer-events: none;
 }

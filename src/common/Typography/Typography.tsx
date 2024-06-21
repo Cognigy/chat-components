@@ -43,8 +43,8 @@ const variantsMapping: Record<TagVariants, keyof JSX.IntrinsicElements> = {
 };
 
 const colorsMapping: Record<ColorVariants, string> = {
-	primary: "var(--primary-color)",
-	secondary: "var(--secondary-color)",
+	primary: "var(--cc-primary-color)",
+	secondary: "var(--cc-secondary-color)",
 };
 
 const Typography: FC<TypographyProps> = props => {
