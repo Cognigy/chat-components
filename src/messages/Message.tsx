@@ -85,7 +85,7 @@ const Message: FC<MessageProps> = props => {
 					onSetFullscreen={onSetFullscreen}
 					prevMessage={prevMessage}
 					theme={props.theme}
-					attributes={{ styles: { flexGrow: 1, minHeight: 0} }}
+					attributes={{ styles: { flexGrow: 1, minHeight: 0 } }}
 				/>
 			);
 		}
