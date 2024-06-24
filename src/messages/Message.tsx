@@ -28,6 +28,7 @@ export interface MessageProps {
 	plugins?: MessagePlugin[];
 	prevMessage?: IMessage;
 	theme?: IWebchatTheme;
+	attributes?: React.HTMLProps<HTMLDivElement> & { styles?: React.CSSProperties };
 }
 
 const Message: FC<MessageProps> = props => {
@@ -84,6 +85,7 @@ const Message: FC<MessageProps> = props => {
 					onSetFullscreen={onSetFullscreen}
 					prevMessage={prevMessage}
 					theme={props.theme}
+					attributes={{ styles: { flexGrow: 1, minHeight: 0} }}
 				/>
 			);
 		}
@@ -105,6 +107,7 @@ const Message: FC<MessageProps> = props => {
 				{matchedPlugins.map((plugin, index) =>
 					plugin.component ? (
 						<plugin.component
+							attributes={{ styles: {} }}
 							isFullscreen={isFullscreen}
 							key={index}
 							message={message}
