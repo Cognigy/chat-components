@@ -77,6 +77,7 @@ const Message: FC<MessageProps> = props => {
 		if (Fullscreen) {
 			return (
 				<Fullscreen
+					config={config}
 					isFullscreen={isFullscreen}
 					message={message}
 					onDismissFullscreen={onDismissFullscreen}
@@ -111,6 +112,7 @@ const Message: FC<MessageProps> = props => {
 							isFullscreen={isFullscreen}
 							key={index}
 							message={message}
+							config={config}
 							onDismissFullscreen={onDismissFullscreen}
 							onEmitAnalytics={onEmitAnalytics}
 							onSendMessage={action}
