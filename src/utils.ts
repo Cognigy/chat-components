@@ -55,7 +55,7 @@ export const isMessageCollatable = (message: IMessage, prevMessage?: IMessage) =
 
 export const isEventMessage = (message: IMessage) => {
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
-	return !!((message?.data?._cognigy as unknown) as any)?._webchat3Event?.type;
+	return !!(message?.data?._cognigy as unknown as any)?._webchat3Event?.type;
 };
 
 export const getBackgroundImage = (url: string) => {
