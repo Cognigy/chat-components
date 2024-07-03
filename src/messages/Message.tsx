@@ -8,7 +8,7 @@ import { IWebchatConfig, IWebchatTheme, MessageSender } from "./types";
 
 import "src/theme.css";
 import classes from "./Message.module.css";
-import { isMessageCollatable } from "../utils";
+import { isEventMessage, isMessageCollatable } from "../utils";
 import { IMessage } from "@cognigy/socket-client";
 
 export interface MessageProps {
@@ -48,6 +48,8 @@ const Message: FC<MessageProps> = props => {
 		prevMessage,
 	} = props;
 	const shouldCollate = isMessageCollatable(message, prevMessage);
+
+	const showHeader = !shouldCollate && !isFullscreen && !isEventMessage(message);
 
 	const rootClassName = classnames(
 		"webchat-message-row",
@@ -101,9 +103,7 @@ const Message: FC<MessageProps> = props => {
 			openXAppOverlay={openXAppOverlay}
 		>
 			<article className={rootClassName}>
-				{!shouldCollate && !isFullscreen && (
-					<MessageHeader enableAvatar={message.source !== "user"} />
-				)}
+				{showHeader && <MessageHeader enableAvatar={message.source !== "user"} />}
 				{matchedPlugins.map((plugin, index) =>
 					plugin.component ? (
 						<plugin.component

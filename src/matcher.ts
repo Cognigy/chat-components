@@ -17,6 +17,7 @@ import { IMessage, IWebchatTemplateAttachment } from "@cognigy/socket-client";
 import { IAdaptiveCardMessage } from "@cognigy/socket-client/lib/interfaces/messageData";
 import { XAppSubmitMessage } from "./messages/xApp";
 import { MessageProps } from "./messages/Message";
+import Webchat3Event from "./messages/Webchat3Event";
 
 export type MatchConfig = {
 	match: (message: IMessage, config?: IWebchatConfig) => boolean;
@@ -32,6 +33,14 @@ const defaultConfig: MatchConfig[] = [
 			return message?.data?._plugin?.type === "x-app-submit";
 		},
 		component: XAppSubmitMessage,
+	},
+	{
+		// Webchat3Event
+		match: message => {
+			// eslint-disable-next-line @typescript-eslint/no-explicit-any
+			return !!((message?.data?._cognigy as unknown) as any)?._webchat3Event?.type;
+		},
+		component: Webchat3Event,
 	},
 	{
 		// Datepicker
