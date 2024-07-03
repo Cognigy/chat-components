@@ -1,11 +1,11 @@
 import { FC } from "react";
 import { useMessageContext } from "src/messages/hooks";
 import ChatEvent from "src/common/ChatEvent";
+import { ILiveAgentEvent } from "@cognigy/socket-client";
 
 const Webchat3Event: FC = () => {
 	const { message } = useMessageContext();
-	// eslint-disable-next-line @typescript-eslint/no-explicit-any
-	const text = (message?.data?._cognigy as unknown as any)?._webchat3?.payload?.text;
+	const text = (message?.data?._cognigy?._webchat3 as ILiveAgentEvent)?.payload?.text;
 
 	if (!text) return null;
 
