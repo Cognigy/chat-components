@@ -38,7 +38,7 @@ const defaultConfig: MatchConfig[] = [
 		// Webchat3Event
 		match: message => {
 			// eslint-disable-next-line @typescript-eslint/no-explicit-any
-			return !!(message?.data?._cognigy as unknown as any)?._webchat3Event?.type;
+			return !!(message?.data?._cognigy as unknown as any)?._webchat3?.type;
 		},
 		component: Webchat3Event,
 	},

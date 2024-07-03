@@ -5,7 +5,7 @@ import ChatEvent from "src/common/ChatEvent";
 const Webchat3Event: FC = () => {
 	const { message } = useMessageContext();
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
-	const text = (message?.data?._cognigy as unknown as any)?._webchat3Event?.data?.text;
+	const text = (message?.data?._cognigy as unknown as any)?._webchat3?.payload?.text;
 
 	if (!text) return null;
 
