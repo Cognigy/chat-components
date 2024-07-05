@@ -1,0 +1,13 @@
+{
+  "text": "",
+  "data": {
+    "_cognigy": {
+      "_webchat3": {
+        "type": "liveAgentEvent",
+        "payload": {
+					"text": "Agent joined"
+				}
+      }
+    }
+  }
+}
