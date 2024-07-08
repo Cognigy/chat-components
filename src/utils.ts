@@ -53,6 +53,10 @@ export const isMessageCollatable = (message: IMessage, prevMessage?: IMessage) =
 	);
 };
 
+export const isEventMessage = (message: IMessage) => {
+	return !!message?.data?._cognigy?._webchat3?.type;
+};
+
 export const getBackgroundImage = (url: string) => {
 	if (!url) return undefined;
 
