@@ -103,7 +103,7 @@ const ActionButton: FC<ActionButtonProps> = props => {
 		event.preventDefault();
 
 		const textMessageInput = document.getElementById("webchatInputMessageInputInTextMode");
-		if (textMessageInput && config?.settings?.widgetSettings?.enableAutoFocus) {
+		if (textMessageInput && config?.settings?.behavior?.focusInputAfterPostback) {
 			textMessageInput.focus?.();
 		}
 
