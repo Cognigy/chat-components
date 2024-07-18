@@ -50,7 +50,7 @@
 .slideItem .top h2 {
 	position: absolute;
 	margin: 0px;
-	left: 8px;
+	margin-inline-start: 8px;
 	bottom: 10px;
 	color: var(--cc-white);
 }
@@ -133,6 +133,16 @@ article :global(.swiper).wrapper :global(.gallery-button-prev) {
 article :global(.swiper).wrapper :global(.gallery-button-next) {
 	right: 20px;
 	transform: rotate(180deg);
+}
+article :global(.swiper).wrapper :global(.gallery-button-prev:dir(rtl)) {
+	left: unset;
+	right: 20px;
+	transform: rotate(180deg);
+}
+article :global(.swiper).wrapper :global(.gallery-button-next:dir(rtl)) {
+	right: unset;
+	left: 20px;
+	transform: rotate(0deg);
 }
 article :global(.swiper).wrapper :global(.swiper-button-disabled) {
 	opacity: 0;
