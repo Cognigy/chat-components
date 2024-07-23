@@ -89,6 +89,11 @@
 									"actions": [{ "type": "Action.Submit", "title": "OK" }],
 									"$schema": "http://adaptivecards.io/schemas/adaptive-card.json"
 								}
+							},
+							{
+								"type": "Action.OpenUrl",
+								"title": "Learn more",
+								"url": "https://www.youtube.com/watch?v=dQw4w9WgXcQ"
 							}
 						],
 						"$schema": "http://adaptivecards.io/schemas/adaptive-card.json",
