@@ -5,17 +5,29 @@ article .wrapper {
 	display: flex;
 }
 
-.controls {
+article .audioWrapper {
+	display: flex;
+	flex-direction: column;
+	width: 100%;
+	min-height: 52px;
+	background-color: var(--cc-white);
+	border-radius: var(--cc-bubble-border-radius);
+	border: 1px solid var(--cc-black-80);
+	padding: 0px 12px;
+}
+
+article .audioWrapper .controls {
 	display: flex;
 	align-items: center;
 	justify-content: space-between;
 	height: 52px;
 	width: 100%;
-	background-color: var(--cc-white);
-	border-radius: var(--cc-bubble-border-radius);
-	border: 1px solid var(--cc-black-80);
-	padding: 0px 12px;
 	gap: 16px;
+}
+
+article .audioWrapper .audioTranscript {
+	font-style: italic;
+	margin-top: 8px;
 }
 
 article button.playButton {

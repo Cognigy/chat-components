@@ -2,18 +2,20 @@ import { ChangeEvent, FC, MutableRefObject } from "react";
 import classes from "./Audio.module.css";
 import { AudioPause, AudioPlay } from "src/assets/svg";
 import ReactPlayer from "react-player";
+import Typography from "src/common/Typography";
 
 type ControlsProps = {
 	playerRef: MutableRefObject<ReactPlayer | null>;
 	playing: boolean;
 	progress: number;
 	duration: number;
+	altText: string;
 	handlePlay: () => void;
 	handlePause: () => void;
 };
 
 const Controls: FC<ControlsProps> = props => {
-	const { playerRef, playing, progress, duration, handlePlay, handlePause } = props;
+	const { playerRef, playing, progress, duration, altText, handlePlay, handlePause } = props;
 
 	const togglePlayAndPause = () => {
 		if (playing) {
@@ -52,36 +54,47 @@ const Controls: FC<ControlsProps> = props => {
 	};
 
 	return (
-		<div className={classes.controls} data-testid="audio-controls">
-			<div className="duration">
-				<time>{formatTime()}</time>
-			</div>
+		<div className={classes.audioWrapper} data-testid="audio-controls">
+			<div className={classes.controls}>
+				<div className="duration">
+					<time>{formatTime()}</time>
+				</div>
 
-			<div className={classes.progressBar}>
-				<input
-					type="range"
-					min={0}
-					max={0.999999}
-					step="any"
-					value={progress}
-					onMouseDown={handleSeekStart}
-					onTouchStart={handleSeekStart}
-					onChange={handleSeekChange}
-					onMouseUp={handleSeekEnd}
-					onTouchEnd={handleSeekEnd}
-					style={{
-						background: `linear-gradient(to right, var(--cc-primary-color) ${
-							progress * 100
-						}%, var(--cc-black-80) ${progress * 100}%)`,
-					}}
-				/>
-			</div>
+				<div className={classes.progressBar}>
+					<input
+						type="range"
+						min={0}
+						max={0.999999}
+						step="any"
+						value={progress}
+						onMouseDown={handleSeekStart}
+						onTouchStart={handleSeekStart}
+						onChange={handleSeekChange}
+						onMouseUp={handleSeekEnd}
+						onTouchEnd={handleSeekEnd}
+						style={{
+							background: `linear-gradient(to right, var(--cc-primary-color) ${
+								progress * 100
+							}%, var(--cc-black-80) ${progress * 100}%)`,
+						}}
+					/>
+				</div>
 
-			<div className="buttons">
-				<button className={classes.playButton} onClick={togglePlayAndPause}>
-					{playing ? <AudioPause /> : <AudioPlay />}
-				</button>
+				<div className="buttons">
+					<button className={classes.playButton} onClick={togglePlayAndPause}>
+						{playing ? <AudioPause /> : <AudioPlay />}
+					</button>
+				</div>
 			</div>
+			{altText && (
+				<Typography
+					variant="title2-regular"
+					component="p"
+					className={classes.audioTranscript}
+				>
+					Transcribed text: {altText}
+				</Typography>
+			)}
 		</div>
 	);
 };
