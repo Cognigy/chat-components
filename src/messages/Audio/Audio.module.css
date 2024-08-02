@@ -28,6 +28,7 @@ article .audioWrapper .controls {
 article .audioWrapper .audioTranscript {
 	font-style: italic;
 	margin-top: 8px;
+	white-space: pre-wrap;
 }
 
 article button.playButton {
