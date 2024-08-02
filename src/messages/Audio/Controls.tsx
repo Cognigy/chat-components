@@ -86,6 +86,8 @@ const Controls: FC<ControlsProps> = props => {
 					</button>
 				</div>
 			</div>
+			{/* TODO:  */}
+			{/* <a href={`data:text/plain;charset=utf-8,${encodeURIComponent(altText)}`} download="transcript.txt">test</a> */}
 			{altText && (
 				<Typography
 					variant="title2-regular"
