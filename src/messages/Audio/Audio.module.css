@@ -7,9 +7,11 @@ article .wrapper {
 
 article .audioWrapper {
 	display: flex;
-	flex-direction: column;
+	align-items: center;
+	justify-content: space-between;
+	height: 52px;
 	width: 100%;
-	min-height: 52px;
+	gap: 10px;
 	background-color: var(--cc-white);
 	border-radius: var(--cc-bubble-border-radius);
 	border: 1px solid var(--cc-black-80);
@@ -18,17 +20,29 @@ article .audioWrapper {
 
 article .audioWrapper .controls {
 	display: flex;
+	flex-direction: row;
 	align-items: center;
 	justify-content: space-between;
-	height: 52px;
-	width: 100%;
 	gap: 16px;
+	width: 100%;
 }
 
-article .audioWrapper .audioTranscript {
-	font-style: italic;
-	margin-top: 8px;
-	white-space: pre-wrap;
+article .audioWrapper .downloadButton {
+	background-color: transparent;
+	border: none;
+	outline: none;
+	cursor: pointer;
+	width: 30px;
+	height: 30px;
+}
+
+article .audioWrapper .downloadButton:hover svg path{
+	fill-opacity: 85%;
+}
+
+article .audioWrapper .downloadButton:focus-visible {
+	outline: 2px solid var(--cc-primary-color);
+	outline-offset: 2px;
 }
 
 article button.playButton {

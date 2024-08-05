@@ -1,8 +1,8 @@
-import { ChangeEvent, FC, MutableRefObject } from "react";
+import { ChangeEvent, FC, MutableRefObject, useRef } from "react";
 import classes from "./Audio.module.css";
-import { AudioPause, AudioPlay } from "src/assets/svg";
+import { AudioPause, AudioPlay, DownloadIcon } from "src/assets/svg";
 import ReactPlayer from "react-player";
-import Typography from "src/common/Typography";
+import { Tooltip } from "react-tooltip";
 
 type ControlsProps = {
 	playerRef: MutableRefObject<ReactPlayer | null>;
@@ -16,6 +16,8 @@ type ControlsProps = {
 
 const Controls: FC<ControlsProps> = props => {
 	const { playerRef, playing, progress, duration, altText, handlePlay, handlePause } = props;
+
+	const downloadTranscriptLinkRef = useRef<HTMLAnchorElement>(null);
 
 	const togglePlayAndPause = () => {
 		if (playing) {
@@ -35,6 +37,12 @@ const Controls: FC<ControlsProps> = props => {
 
 	const handleSeekEnd = () => {
 		handlePlay();
+	};
+
+	const handleDownloadTranscript = () => {
+		if (downloadTranscriptLinkRef.current) {
+			downloadTranscriptLinkRef.current.click();
+		}
 	};
 
 	const formatTime = () => {
@@ -86,17 +94,25 @@ const Controls: FC<ControlsProps> = props => {
 					</button>
 				</div>
 			</div>
-			{/* TODO:  */}
-			{/* <a href={`data:text/plain;charset=utf-8,${encodeURIComponent(altText)}`} download="transcript.txt">test</a> */}
-			{altText && (
-				<Typography
-					variant="title2-regular"
-					component="p"
-					className={classes.audioTranscript}
-				>
-					Transcribed text: {altText}
-				</Typography>
-			)}
+			{/* Button to download audio transcript with tooltip */}
+			<button
+				onClick={handleDownloadTranscript}
+				aria-label="Download transcript"
+				className={classes.downloadButton}
+				data-tooltip-id="downloadTranscriptButton"
+				data-tooltip-place="top"
+				data-tooltip-content="Download transcript"
+			>
+				<DownloadIcon />
+			</button>
+			<Tooltip id="downloadTranscriptButton" globalCloseEvents={{ escape: true }} />
+			<a
+				ref={downloadTranscriptLinkRef}
+				href={`data:text/plain;charset=utf-8,${encodeURIComponent(altText)}`}
+				download="audio-transcript.txt"
+				style={{ display: "none" }}
+				aria-hidden="true"
+			/>
 		</div>
 	);
 };
