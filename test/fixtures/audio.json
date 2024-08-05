@@ -13,7 +13,8 @@
 					"attachment": {
 						"type": "audio",
 						"payload": {
-							"url": "https://download.samplelib.com/mp3/sample-15s.mp3"
+							"url": "https://download.samplelib.com/mp3/sample-15s.mp3",
+							"altText": "Soft happy tone instrumental music playing."
 						}
 					}
 				}
