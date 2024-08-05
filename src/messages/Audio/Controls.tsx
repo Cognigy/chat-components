@@ -95,24 +95,29 @@ const Controls: FC<ControlsProps> = props => {
 				</div>
 			</div>
 			{/* Button to download audio transcript with tooltip */}
-			<button
-				onClick={handleDownloadTranscript}
-				aria-label="Download transcript"
-				className={classes.downloadButton}
-				data-tooltip-id="downloadTranscriptButton"
-				data-tooltip-place="top"
-				data-tooltip-content="Download transcript"
-			>
-				<DownloadIcon />
-			</button>
-			<Tooltip id="downloadTranscriptButton" globalCloseEvents={{ escape: true }} />
-			<a
-				ref={downloadTranscriptLinkRef}
-				href={`data:text/plain;charset=utf-8,${encodeURIComponent(altText)}`}
-				download="audio-transcript.txt"
-				style={{ display: "none" }}
-				aria-hidden="true"
-			/>
+			{altText && (
+				<>
+					<button
+						onClick={handleDownloadTranscript}
+						aria-label="Download transcript"
+						className={classes.downloadButton}
+						data-tooltip-id="downloadTranscriptButton"
+						data-tooltip-place="top"
+						data-tooltip-content="Download transcript"
+						data-testid="download-transcript-button"
+					>
+						<DownloadIcon />
+					</button>
+					<Tooltip id="downloadTranscriptButton" globalCloseEvents={{ escape: true }} />
+					<a
+						ref={downloadTranscriptLinkRef}
+						href={`data:text/plain;charset=utf-8,${encodeURIComponent(altText)}`}
+						download="audio-transcript.txt"
+						style={{ display: "none" }}
+						aria-hidden="true"
+					/>
+				</>
+			)}
 		</div>
 	);
 };

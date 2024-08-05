@@ -36,7 +36,7 @@ article .audioWrapper .downloadButton {
 	height: 30px;
 }
 
-article .audioWrapper .downloadButton:hover svg path{
+article .audioWrapper .downloadButton:hover svg path {
 	fill-opacity: 85%;
 }
 
