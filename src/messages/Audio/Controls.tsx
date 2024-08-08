@@ -78,7 +78,11 @@ const Controls: FC<ControlsProps> = props => {
 			</div>
 
 			<div className="buttons">
-				<button className={classes.playButton} onClick={togglePlayAndPause}>
+				<button
+					className={classes.playButton}
+					onClick={togglePlayAndPause}
+					aria-label={playing ? "Pause audio" : "Play audio"}
+				>
 					{playing ? <AudioPause /> : <AudioPlay />}
 				</button>
 			</div>
