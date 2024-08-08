@@ -1,4 +1,4 @@
-import { ChangeEvent, FC, MutableRefObject } from "react";
+import { ChangeEvent, FC, MutableRefObject, useMemo } from "react";
 import classes from "./Audio.module.css";
 import { AudioPause, AudioPlay } from "src/assets/svg";
 import ReactPlayer from "react-player";
@@ -35,7 +35,7 @@ const Controls: FC<ControlsProps> = props => {
 		handlePlay();
 	};
 
-	const formatTime = () => {
+	const formatTime = useMemo(() => {
 		const padString = (string: number) => {
 			return ("0" + string).slice(-2);
 		};
@@ -49,7 +49,7 @@ const Controls: FC<ControlsProps> = props => {
 			return `${hh}:${padString(mm)}:${ss}`;
 		}
 		return `${mm}:${ss}`;
-	};
+	}, [duration, progress]);
 
 	// Convert formatted time to readable text for screen readers
 	const timeToText = (time: string) => {
@@ -66,7 +66,7 @@ const Controls: FC<ControlsProps> = props => {
 	return (
 		<div className={classes.controls} data-testid="audio-controls">
 			<div className="duration">
-				<time>{formatTime()}</time>
+				<time>{formatTime}</time>
 			</div>
 
 			<div className={classes.progressBar}>
@@ -76,7 +76,7 @@ const Controls: FC<ControlsProps> = props => {
 					max={0.999999}
 					step="any"
 					value={progress}
-					aria-valuetext={`${timeToText(formatTime())} remaining`}
+					aria-valuetext={`${timeToText(formatTime)} remaining`}
 					aria-label="Audio playback progress"
 					onMouseDown={handleSeekStart}
 					onTouchStart={handleSeekStart}
