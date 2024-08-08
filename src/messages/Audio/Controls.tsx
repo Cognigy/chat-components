@@ -51,6 +51,18 @@ const Controls: FC<ControlsProps> = props => {
 		return `${mm}:${ss}`;
 	};
 
+	// Convert formatted time to readable text for screen readers
+	const timeToText = (time: string) => {
+		if (time.length < 6) {
+			time = `00:${time}`;
+		}
+		const [hours, minutes, seconds] = time.split(":").map(Number);
+		const hoursText = hours ? `${hours} hours ` : "";
+		const minutesText = minutes ? `${minutes} minutes ` : "";
+		const secondsText = `${seconds} seconds`;
+		return `${hoursText}${minutesText}${secondsText}`;
+	};
+
 	return (
 		<div className={classes.controls} data-testid="audio-controls">
 			<div className="duration">
@@ -64,6 +76,8 @@ const Controls: FC<ControlsProps> = props => {
 					max={0.999999}
 					step="any"
 					value={progress}
+					aria-valuetext={`${timeToText(formatTime())} remaining`}
+					aria-label="Audio progress bar"
 					onMouseDown={handleSeekStart}
 					onTouchStart={handleSeekStart}
 					onChange={handleSeekChange}
