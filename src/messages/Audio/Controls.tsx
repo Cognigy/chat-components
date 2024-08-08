@@ -77,7 +77,7 @@ const Controls: FC<ControlsProps> = props => {
 					step="any"
 					value={progress}
 					aria-valuetext={`${timeToText(formatTime())} remaining`}
-					aria-label="Audio progress bar"
+					aria-label="Audio playback progress"
 					onMouseDown={handleSeekStart}
 					onTouchStart={handleSeekStart}
 					onChange={handleSeekChange}
