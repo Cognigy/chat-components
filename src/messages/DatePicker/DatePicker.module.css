@@ -226,6 +226,14 @@
 	font-size: 14px;
 }
 
+.wrapper .content :global(.flatpickr-current-month) label {
+	color: var(--cc-black-40);
+	position: absolute;
+	top: -15px;
+	padding-left: 6px;
+	font-size: 12px;
+}
+
 .wrapper .content :global(.flatpickr-current-month .flatpickr-monthDropdown-months::-ms-expand) {
 	display: none;
 }
