@@ -133,11 +133,11 @@ function customElements(pluginConfig: Config): Plugin {
 				upsertTimeArrows,
 				buildTimeArrows,
 				setTimeAlly,
+				setMonthSelectAlly,
+				setYearSelectAlly,
 				() => {
 					fp?.loadedPlugins?.push("customElements");
 				},
-				setMonthSelectAlly,
-				setYearSelectAlly,
 			],
 			onDayCreate: [
 				(_dObj, _dStr, _fp, dayElem) => {
