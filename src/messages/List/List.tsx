@@ -7,6 +7,7 @@ import classnames from "classnames";
 import { PrimaryButton } from "src/common/Buttons";
 import { getChannelPayload } from "src/utils";
 import { IWebchatAttachmentElement, IWebchatTemplateAttachment } from "@cognigy/socket-client";
+import getKeyboardFocusableElements from "../utils";
 
 const List: FC = () => {
 	const { message, messageParams, config, action, onEmitAnalytics } = useMessageContext();
@@ -33,12 +34,9 @@ const List: FC = () => {
 
 		if (!chatHistory?.contains(document.activeElement)) return;
 
-		const listTemplateRoot = document.getElementById(listTemplateId);
+		const listTemplateRoot = document.getElementById(listTemplateId) as HTMLElement;
 		// get the first focusable element within the list and add focus
-		const focusable = listTemplateRoot?.querySelectorAll(
-			'button, [href], [tabindex]:not([tabindex="-1"])',
-		);
-		const firstFocusable = focusable && (focusable[0] as HTMLElement);
+		const {firstFocusable} = getKeyboardFocusableElements(listTemplateRoot);
 		setTimeout(() => {
 			firstFocusable?.focus();
 		}, 200);

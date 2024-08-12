@@ -72,8 +72,6 @@ function customElements(pluginConfig: Config): Plugin {
 		}
 
 		function setTimeAlly() {
-			fp?.calendarContainer?.focus();
-
 			fp?.calendarContainer?.setAttribute("tabIndex", "0");
 			fp?.calendarContainer?.setAttribute("aria-labelledby", "webchatDatePickerHeaderLabel");
 
@@ -89,43 +87,55 @@ function customElements(pluginConfig: Config): Plugin {
 			}
 		}
 
-		function setMonthSelectAlly() {
+		// Accessibility for the calendar, month and year select fields
+		// We need to programmatically force certain attributes of the calendar to make it accessible as flatpickr does not provide a way to do it via props
+		function setMonthYearSelectAlly() {
 			const monthYearDiv =
 				fp?.calendarContainer?.getElementsByClassName("flatpickr-current-month")[0];
 
+			// Accessibility for month field
 			const monthSelector = monthYearDiv?.getElementsByClassName(
 				"flatpickr-monthDropdown-months",
 			)?.[0] as HTMLElement;
-			monthSelector?.setAttribute("id", "monthSelector-datepicker");
-			monthSelector?.classList.add("monthSelector-datepicker");
 			// unset aria-label attribute from month input to avaoid redundancy
 			monthSelector?.removeAttribute("aria-label");
-
+			// Create label element for month select and append it
+			monthSelector?.setAttribute("id", "monthSelector-datepicker");
 			const monthLabel = document.createElement("label");
 			monthLabel.setAttribute("for", "monthSelector-datepicker");
-
 			monthLabel.textContent = "Month";
-
 			monthYearDiv?.prepend(monthLabel);
-		}
+			// Set tabindex to month input
+			monthSelector?.setAttribute("tabIndex", "0");
 
-		function setYearSelectAlly() {
-			const monthYearDiv =
-				fp?.calendarContainer?.getElementsByClassName("flatpickr-current-month")[0];
-
+			// Accessibility for year field
 			const yearInput = monthYearDiv?.getElementsByClassName("cur-year")?.[0] as HTMLElement;
-
-			const yearInputWrapper = yearInput?.parentElement as HTMLElement;
-			yearInput?.setAttribute("id", "yearSelector-datepicker");
-			yearInput?.classList.add("yearSelector-datepicker");
 			// unset aria-label attribute from year input to avaoid redundancy
 			yearInput?.removeAttribute("aria-label");
-
+			// Create label element for year select and append it
+			yearInput?.setAttribute("id", "yearSelector-datepicker");
 			const yearLabel = document.createElement("label");
 			yearLabel.setAttribute("for", "yearSelector-datepicker");
 			yearLabel.textContent = "Year";
-
+			const yearInputWrapper = yearInput?.parentElement as HTMLElement;
 			yearInputWrapper?.prepend(yearLabel);
+			// Set tabindex to year input
+			yearInput?.setAttribute("tabIndex", "0");
+
+			// Set tabindex to inner container of calendar instead of calendar container
+			fp?.calendarContainer?.setAttribute("tabIndex", "-1");
+			const innerCalenderContainer = fp?.calendarContainer?.getElementsByClassName("flatpickr-innerContainer")[0];
+			innerCalenderContainer?.setAttribute("tabIndex", "0");
+		}
+
+		// Tabindex for the month select field has to be set on every 'onValueUpdate' event in addition to onReady event
+		function setKeyBoardA11yForMonthSelect() {
+			const monthYearDiv =
+				fp?.calendarContainer?.getElementsByClassName("flatpickr-current-month")[0];
+			const monthSelector = monthYearDiv?.getElementsByClassName(
+				"flatpickr-monthDropdown-months",
+			)?.[0] as HTMLElement;
+			monthSelector?.setAttribute("tabIndex", "0");
 		}
 
 		return {
@@ -133,11 +143,10 @@ function customElements(pluginConfig: Config): Plugin {
 				upsertTimeArrows,
 				buildTimeArrows,
 				setTimeAlly,
+				setMonthYearSelectAlly,
 				() => {
 					fp?.loadedPlugins?.push("customElements");
 				},
-				setMonthSelectAlly,
-				setYearSelectAlly,
 			],
 			onDayCreate: [
 				(_dObj, _dStr, _fp, dayElem) => {
@@ -145,7 +154,7 @@ function customElements(pluginConfig: Config): Plugin {
 				},
 				handleWeekNumbers,
 			],
-			onValueUpdate: [upsertTimeArrows],
+			onValueUpdate: [upsertTimeArrows, setKeyBoardA11yForMonthSelect],
 		};
 	};
 }

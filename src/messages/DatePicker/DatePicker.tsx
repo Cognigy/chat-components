@@ -8,6 +8,7 @@ import { CloseIcon } from "src/assets/svg";
 import Typography from "src/common/Typography";
 import { PrimaryButton } from "src/common/Buttons";
 import mainClasses from "src/main.module.css";
+import getKeyboardFocusableElements from "../utils";
 
 const DatePicker: FC = () => {
 	const { action, message, messageParams } = useMessageContext();
@@ -20,6 +21,7 @@ const DatePicker: FC = () => {
 
 	const datePickerHeading = useRandomId("webchatDatePickerHeading");
 	const datePickerDescription = useRandomId("webchatDatePickerContentDescription");
+	const datePickerContainer = useRandomId("webchatDatePickerContainer");
 
 	if (!message?.data?._plugin || message.data._plugin.type !== "date-picker") return;
 
@@ -58,12 +60,9 @@ const DatePicker: FC = () => {
 
 	const handleKeyDown = (event: KeyboardEvent) => {
 		const webchatWindow = document.querySelector("div.webchat-plugin-date-picker");
-		const button = document.querySelector(
-			"div.webchat-plugin-date-picker-footer button",
-		) as HTMLButtonElement;
 
-		const calenderElements = webchatWindow?.getElementsByClassName("flatpickr-calendar");
-		const calender = calenderElements?.[0] as HTMLElement;
+		const calenderContainer = document.getElementById(datePickerContainer) as HTMLElement;
+		const { firstFocusable, lastFocusable } = getKeyboardFocusableElements(calenderContainer);
 
 		const tabKeyPress = !event.shiftKey && event.key === "Tab";
 		const shiftTabKeyPress = event.shiftKey && event.key === "Tab";
@@ -93,30 +92,32 @@ const DatePicker: FC = () => {
 			handleClose();
 		}
 
-		// add flash effect on focus
-		if (tabKeyPress || shiftTabKeyPress) {
-			calender.classList.add("flash-focus");
-		}
 
 		// Focus should be trapped within date-picker
 		// Handle Tab Navigation
 		if (tabKeyPress) {
-			if (event.target === button) {
+			if (event.target === lastFocusable) {
 				event.preventDefault();
-				calender?.focus(); // Move focus to calender from submit button
+				firstFocusable?.focus(); // Move focus to first focusable element
 			} else if (isLastTimeInputFieldFocused) {
 				event.preventDefault();
-				button?.focus(); // Move focus to cancel button from last time input field
+				const submitButton = document.querySelector(
+					"div.webchat-plugin-date-picker-footer button",
+				) as HTMLButtonElement;
+				submitButton?.focus(); // Move focus to cancel button from last time input field
 			}
 		}
 		// Handle Reverse Tab Navigation
 		if (shiftTabKeyPress) {
-			if (event.target === calender) {
+			if (event.target === firstFocusable) {
 				event.preventDefault();
-				button?.focus(); // Move focus to Submit button from calender
+				lastFocusable?.focus(); // Move focus to last focusable element
 			} else if (event.target === hourField) {
 				event.preventDefault();
-				calender?.focus(); // Move focus to calender from hour input field
+				const innerCalenderContainer = webchatWindow?.getElementsByClassName(
+					"flatpickr-innerContainer",
+				)?.[0] as HTMLElement;
+				innerCalenderContainer?.focus(); // Move focus to calender from hour input field
 			}
 		}
 	};
@@ -135,7 +136,6 @@ const DatePicker: FC = () => {
 				<div
 					className={classnames(classes.wrapper, "webchat-plugin-date-picker")}
 					onKeyDown={handleKeyDown}
-					tabIndex={0}
 					role="dialog"
 					aria-modal="true"
 					aria-labelledby={datePickerHeading}
@@ -164,14 +164,15 @@ const DatePicker: FC = () => {
 						<button
 							onClick={handleClose}
 							aria-label="Close DatePicker"
-							className={classes.right}
+							className={classnames(classes.right, classes.closeCalender, "webchat-plugin-date-picker-close")}
 							data-testid="button-close"
+							autoFocus
 						>
 							<CloseIcon />
 						</button>
 					</div>
 
-					<div className={classes.contentWrapper}>
+					<div className={classes.contentWrapper} id={datePickerContainer}>
 						<div
 							className={classnames(
 								classes.content,
