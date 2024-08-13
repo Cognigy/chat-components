@@ -15,7 +15,6 @@ const Avatar: FC<AvatarProps> = props => {
 	const overrides = (message?.data as any)?._webchat || {};
 
 	useEffect(() => {
-
 		if (overrides.agentAvatarOverrideUrl) {
 			setAvatarUrl(overrides.agentAvatarOverrideUrl);
 			return;
@@ -34,8 +33,12 @@ const Avatar: FC<AvatarProps> = props => {
 		if (message?.source !== "agent") {
 			setAvatarUrl(botAvatar);
 		}
-
-	}, [message.avatarUrl, message?.source, overrides.agentAvatarOverrideUrl, overrides.botAvatarOverrideUrl]);
+	}, [
+		message.avatarUrl,
+		message?.source,
+		overrides.agentAvatarOverrideUrl,
+		overrides.botAvatarOverrideUrl,
+	]);
 
 	const classNames = classnames(
 		classes.avatar,

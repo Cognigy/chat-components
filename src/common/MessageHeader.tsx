@@ -58,9 +58,7 @@ const MessageHeader: FC<MessageHeaderProps> = props => {
 			<Typography variant="title2-regular" component="div" className={classes.headerMeta}>
 				{!isUserMessage && (
 					<>
-						<span className={classes["avatar-name"]}>
-							{name}
-						</span>
+						<span className={classes["avatar-name"]}>{name}</span>
 						<HeaderEllipsis />
 					</>
 				)}

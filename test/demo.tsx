@@ -281,16 +281,16 @@ const screens: TScreen[] = [
 			{
 				message: {
 					source: "agent",
-					text: "Avatar url and name overrides", 
+					text: "Avatar url and name overrides",
 					data: {
 						//@ts-ignore
 						_webchat: {
 							agentAvatarOverrideUrl: "https://placewaifu.com/image/200/200",
 							agentAvatarOverrideName: "Agent Name Override",
 						},
-						}
-					}
+					},
 				},
+			},
 			{
 				message: {
 					source: "bot",
