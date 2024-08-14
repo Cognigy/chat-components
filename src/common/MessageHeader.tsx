@@ -40,15 +40,25 @@ const MessageHeader: FC<MessageHeaderProps> = props => {
 
 	const recievedAt = message?.timestamp ? Number(message.timestamp) : Date.now();
 
+	const overrides = (message?.data as any)?._webchat || {};
+
+	let name = message?.avatarName || (isAgentMessage ? "Agent" : "Bot");
+
+	if (overrides.agentAvatarOverrideName) {
+		name = overrides.agentAvatarOverrideName;
+	}
+
+	if (overrides.botAvatarOverrideName) {
+		name = overrides.botAvatarOverrideName;
+	}
+
 	return (
 		<header className={className} data-testid="message-header">
 			{props.enableAvatar && <Avatar />}
 			<Typography variant="title2-regular" component="div" className={classes.headerMeta}>
 				{!isUserMessage && (
 					<>
-						<span className={classes["avatar-name"]}>
-							{message?.avatarName || (isAgentMessage ? "Agent" : "Bot")}
-						</span>
+						<span className={classes["avatar-name"]}>{name}</span>
 						<HeaderEllipsis />
 					</>
 				)}

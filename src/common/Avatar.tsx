@@ -12,13 +12,33 @@ const Avatar: FC<AvatarProps> = props => {
 	const { message } = useMessageContext();
 	const [avatarUrl, setAvatarUrl] = useState(placeholderAvatar);
 
+	const overrides = (message?.data as any)?._webchat || {};
+
 	useEffect(() => {
+		if (overrides.agentAvatarOverrideUrl) {
+			setAvatarUrl(overrides.agentAvatarOverrideUrl);
+			return;
+		}
+
+		if (overrides.botAvatarOverrideUrl) {
+			setAvatarUrl(overrides.botAvatarOverrideUrl);
+			return;
+		}
+
 		if (message?.avatarUrl) {
 			setAvatarUrl(message.avatarUrl);
-		} else if (message?.source !== "agent") {
+			return;
+		}
+
+		if (message?.source !== "agent") {
 			setAvatarUrl(botAvatar);
 		}
-	}, [message?.avatarUrl, message?.source]);
+	}, [
+		message.avatarUrl,
+		message?.source,
+		overrides.agentAvatarOverrideUrl,
+		overrides.botAvatarOverrideUrl,
+	]);
 
 	const classNames = classnames(
 		classes.avatar,
