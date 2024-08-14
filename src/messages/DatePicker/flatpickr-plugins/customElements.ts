@@ -89,11 +89,52 @@ function customElements(pluginConfig: Config): Plugin {
 			}
 		}
 
+		function setMonthSelectAlly() {
+			const monthYearDiv =
+				fp?.calendarContainer?.getElementsByClassName("flatpickr-current-month")[0];
+
+			const monthSelector = monthYearDiv?.getElementsByClassName(
+				"flatpickr-monthDropdown-months",
+			)?.[0] as HTMLElement;
+			monthSelector?.setAttribute("id", "monthSelector-datepicker");
+			monthSelector?.classList.add("monthSelector-datepicker");
+			// unset aria-label attribute from month input to avaoid redundancy
+			monthSelector?.removeAttribute("aria-label");
+
+			const monthLabel = document.createElement("label");
+			monthLabel.setAttribute("for", "monthSelector-datepicker");
+
+			monthLabel.textContent = "Month";
+
+			monthYearDiv?.prepend(monthLabel);
+		}
+
+		function setYearSelectAlly() {
+			const monthYearDiv =
+				fp?.calendarContainer?.getElementsByClassName("flatpickr-current-month")[0];
+
+			const yearInput = monthYearDiv?.getElementsByClassName("cur-year")?.[0] as HTMLElement;
+
+			const yearInputWrapper = yearInput?.parentElement as HTMLElement;
+			yearInput?.setAttribute("id", "yearSelector-datepicker");
+			yearInput?.classList.add("yearSelector-datepicker");
+			// unset aria-label attribute from year input to avaoid redundancy
+			yearInput?.removeAttribute("aria-label");
+
+			const yearLabel = document.createElement("label");
+			yearLabel.setAttribute("for", "yearSelector-datepicker");
+			yearLabel.textContent = "Year";
+
+			yearInputWrapper?.prepend(yearLabel);
+		}
+
 		return {
 			onReady: [
 				upsertTimeArrows,
 				buildTimeArrows,
 				setTimeAlly,
+				setMonthSelectAlly,
+				setYearSelectAlly,
 				() => {
 					fp?.loadedPlugins?.push("customElements");
 				},
