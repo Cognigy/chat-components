@@ -1,10 +1,10 @@
-import { FC, useCallback } from "react";
+import { FC, useCallback, useEffect, useRef } from "react";
 import ReactPlayer from "react-player";
 import classes from "./Video.module.css";
 import mainClasses from "src/main.module.css";
 import classnames from "classnames";
 import { VideoPlayIcon } from "src/assets/svg";
-import { useMessageContext } from "src/messages/hooks";
+import { useMessageContext, useRandomId } from "src/messages/hooks";
 import { getChannelPayload } from "src/utils";
 import { IWebchatVideoAttachment } from "@cognigy/socket-client";
 
@@ -13,6 +13,17 @@ const Video: FC = () => {
 	const payload = getChannelPayload(message, config);
 	const { url, altText } =
 		(payload?.message?.attachment as IWebchatVideoAttachment)?.payload || {};
+
+	const videoPlayerId = useRandomId("webchat-video-player");
+	const videoPlayerRef = useRef<ReactPlayer>(null);
+
+	useEffect(() => {
+		// Get the element with tabindex=0 inside video preview and assign the button role and aria-label
+		const videoWrapper = document.getElementById(videoPlayerId);
+		const videoWrapperFocus = videoWrapper?.querySelector("[tabindex='0']");
+		videoWrapperFocus?.setAttribute("role", "button");
+		videoWrapperFocus?.setAttribute("aria-label", "Play Video");
+	}, []);
 
 	const handleFocus = useCallback(
 		(player: ReactPlayer) => {
@@ -29,6 +40,12 @@ const Video: FC = () => {
 		[config?.settings?.widgetSettings?.enableAutoFocus],
 	);
 
+	// Prevent focus loss from video preview button when the video starts playing by focusing the internal player
+	const handleOnStart = () => {
+		const internalPlayer = videoPlayerRef.current?.getInternalPlayer();
+		internalPlayer?.focus();
+	};
+
 	if (!url) return null;
 
 	return (
@@ -40,6 +57,8 @@ const Video: FC = () => {
 				{altText || "Attachment Video"}
 			</span>
 			<ReactPlayer
+				ref={videoPlayerRef}
+				id={videoPlayerId}
 				url={url}
 				light
 				playing
@@ -49,6 +68,7 @@ const Video: FC = () => {
 				width="unset"
 				height="unset"
 				onReady={handleFocus}
+				onStart={handleOnStart}
 			/>
 		</div>
 	);
