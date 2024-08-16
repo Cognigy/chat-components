@@ -3,7 +3,8 @@ import ReactPlayer from "react-player";
 import classes from "./Video.module.css";
 import mainClasses from "src/main.module.css";
 import classnames from "classnames";
-import { VideoPlayIcon } from "src/assets/svg";
+import PrimaryButton from "src/common/Buttons/PrimaryButton";
+import { DownloadIcon, VideoPlayIcon } from "src/assets/svg";
 import { useMessageContext, useRandomId } from "src/messages/hooks";
 import { getChannelPayload } from "src/utils";
 import { IWebchatVideoAttachment } from "@cognigy/socket-client";
@@ -16,6 +17,7 @@ const Video: FC = () => {
 
 	const videoPlayerId = useRandomId("webchat-video-player");
 	const videoPlayerRef = useRef<ReactPlayer>(null);
+	const downloadTranscriptLinkRef = useRef<HTMLAnchorElement>(null);
 
 	useEffect(() => {
 		// Get the element with tabindex=0 inside video preview and assign the button role and aria-label
@@ -50,7 +52,11 @@ const Video: FC = () => {
 
 	return (
 		<div
-			className={classnames(classes.wrapper, "webchat-media-template-video")}
+			className={classnames(
+				classes.wrapper,
+				altText && classes.wrapperWithButton,
+				"webchat-media-template-video",
+			)}
 			data-testid="video-message"
 		>
 			<span className={classnames(mainClasses.srOnly, "sr-only")}>
@@ -70,6 +76,27 @@ const Video: FC = () => {
 				onReady={handleFocus}
 				onStart={handleOnStart}
 			/>
+			{altText && (
+				<div className={classes.downloadButtonWrapper}>
+					<PrimaryButton
+						className={classnames(
+							classes.downloadButton,
+							"webchat-buttons-template-button-video",
+						)}
+						customIcon={<DownloadIcon className={classes.downloadIcon} fontSize={10} />}
+						onClick={() => downloadTranscriptLinkRef.current?.click()}
+					>
+						Download Transcript
+					</PrimaryButton>
+					<a
+						ref={downloadTranscriptLinkRef}
+						href={`data:text/plain;charset=utf-8,${encodeURIComponent(altText)}`}
+						download="video-transcript.txt"
+						style={{ display: "none" }}
+						aria-hidden="true"
+					/>
+				</div>
+			)}
 		</div>
 	);
 };

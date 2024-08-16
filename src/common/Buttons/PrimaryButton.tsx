@@ -33,6 +33,7 @@ const PrimaryButton = forwardRef<HTMLButtonElement, PrimaryButtonProps>((props, 
 		return (
 			<Button
 				{...restProps}
+				icon={customIcon}
 				className={classnames(classes.primaryButton, classes.button, props.className)}
 				ref={ref}
 			/>
