@@ -23,4 +23,14 @@ describe("Message Audio", () => {
 			expect(getByTestId("audio-controls")).toBeVisible();
 		});
 	});
+
+	it("renders audio message with download button", async () => {
+		const { getByTestId } = render(<Message message={message} />);
+
+		await waitFor(() => {
+			expect(getByTestId("audio-message").querySelector("audio")).not.toBeVisible();
+			expect(getByTestId("audio-controls")).toBeVisible();
+			expect(getByTestId("download-transcript-button")).toBeVisible();
+		});
+	});
 });

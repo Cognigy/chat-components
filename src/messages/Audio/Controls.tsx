@@ -1,19 +1,23 @@
-import { ChangeEvent, FC, MutableRefObject, useMemo } from "react";
+import { ChangeEvent, FC, MutableRefObject, useRef, useMemo } from "react";
 import classes from "./Audio.module.css";
-import { AudioPause, AudioPlay } from "src/assets/svg";
+import { AudioPause, AudioPlay, DownloadIcon } from "src/assets/svg";
 import ReactPlayer from "react-player";
+import { Tooltip } from "react-tooltip";
 
 type ControlsProps = {
 	playerRef: MutableRefObject<ReactPlayer | null>;
 	playing: boolean;
 	progress: number;
 	duration: number;
+	altText: string;
 	handlePlay: () => void;
 	handlePause: () => void;
 };
 
 const Controls: FC<ControlsProps> = props => {
-	const { playerRef, playing, progress, duration, handlePlay, handlePause } = props;
+	const { playerRef, playing, progress, duration, altText, handlePlay, handlePause } = props;
+
+	const downloadTranscriptLinkRef = useRef<HTMLAnchorElement>(null);
 
 	const togglePlayAndPause = () => {
 		if (playing) {
@@ -33,6 +37,12 @@ const Controls: FC<ControlsProps> = props => {
 
 	const handleSeekEnd = () => {
 		handlePlay();
+	};
+
+	const handleDownloadTranscript = () => {
+		if (downloadTranscriptLinkRef.current) {
+			downloadTranscriptLinkRef.current.click();
+		}
 	};
 
 	const formatTime = useMemo(() => {
@@ -64,42 +74,68 @@ const Controls: FC<ControlsProps> = props => {
 	};
 
 	return (
-		<div className={classes.controls} data-testid="audio-controls">
-			<div className="duration">
-				<time>{formatTime}</time>
-			</div>
+		<div className={classes.audioWrapper} data-testid="audio-controls">
+			<div className={classes.controls}>
+				<div className="duration">
+					<time>{formatTime}</time>
+				</div>
 
-			<div className={classes.progressBar}>
-				<input
-					type="range"
-					min={0}
-					max={0.999999}
-					step="any"
-					value={progress}
-					aria-valuetext={`${timeToText(formatTime)} remaining`}
-					aria-label="Audio playback progress"
-					onMouseDown={handleSeekStart}
-					onTouchStart={handleSeekStart}
-					onChange={handleSeekChange}
-					onMouseUp={handleSeekEnd}
-					onTouchEnd={handleSeekEnd}
-					style={{
-						background: `linear-gradient(to right, var(--cc-primary-color) ${
-							progress * 100
-						}%, var(--cc-black-80) ${progress * 100}%)`,
-					}}
-				/>
-			</div>
+				<div className={classes.progressBar}>
+					<input
+						type="range"
+						min={0}
+						max={0.999999}
+						step="any"
+						value={progress}
+						aria-valuetext={`${timeToText(formatTime)} remaining`}
+						aria-label="Audio playback progress"
+						onMouseDown={handleSeekStart}
+						onTouchStart={handleSeekStart}
+						onChange={handleSeekChange}
+						onMouseUp={handleSeekEnd}
+						onTouchEnd={handleSeekEnd}
+						style={{
+							background: `linear-gradient(to right, var(--cc-primary-color) ${
+								progress * 100
+							}%, var(--cc-black-80) ${progress * 100}%)`,
+						}}
+					/>
+				</div>
 
-			<div className="buttons">
-				<button
-					className={classes.playButton}
-					onClick={togglePlayAndPause}
-					aria-label={playing ? "Pause audio" : "Play audio"}
-				>
-					{playing ? <AudioPause /> : <AudioPlay />}
-				</button>
+				<div className="buttons">
+					<button
+						className={classes.playButton}
+						onClick={togglePlayAndPause}
+						aria-label={playing ? "Pause audio" : "Play audio"}
+					>
+						{playing ? <AudioPause /> : <AudioPlay />}
+					</button>
+				</div>
 			</div>
+			{/* Button to download audio transcript with tooltip */}
+			{altText && (
+				<>
+					<button
+						onClick={handleDownloadTranscript}
+						aria-label="Download transcript"
+						className={classes.downloadButton}
+						data-tooltip-id="downloadTranscriptButton"
+						data-tooltip-place="top"
+						data-tooltip-content="Download transcript"
+						data-testid="download-transcript-button"
+					>
+						<DownloadIcon />
+					</button>
+					<Tooltip id="downloadTranscriptButton" globalCloseEvents={{ escape: true }} />
+					<a
+						ref={downloadTranscriptLinkRef}
+						href={`data:text/plain;charset=utf-8,${encodeURIComponent(altText)}`}
+						download="audio-transcript.txt"
+						style={{ display: "none" }}
+						aria-hidden="true"
+					/>
+				</>
+			)}
 		</div>
 	);
 };
