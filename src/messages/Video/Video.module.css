@@ -60,11 +60,12 @@ article .player > div:first-child:focus svg circle {
 	fill-opacity: 1;
 }
 
-article .wrapper:focus,
+article .wrapper:focus .player,
 article .player:focus-within {
 	outline: 2px solid var(--cc-primary-color);
 }
 
+article .wrapper:focus,
 article .player video:focus {
 	outline: none;
 }
