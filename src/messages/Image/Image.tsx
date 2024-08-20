@@ -1,4 +1,4 @@
-import { FC, useMemo, useState } from "react";
+import { FC, useMemo, useRef, useState } from "react";
 import { ImageMessageContext } from "./context";
 import Lightbox from "./lightbox/Lightbox";
 import ImageThumb from "./ImageThumb";
@@ -14,6 +14,8 @@ const Image: FC = () => {
 
 	const button = buttons?.[0];
 
+	const buttonRef = useRef<HTMLDivElement>(null);
+
 	const isDownloadable =
 		(buttons as IWebchatButton[])?.find(
 			button => "type" in button && button.type === "web_url",
@@ -24,7 +26,10 @@ const Image: FC = () => {
 	const contextValue = useMemo(
 		() => ({
 			onExpand: () => isDownloadable && setShowLightbox(true),
-			onClose: () => setShowLightbox(false),
+			onClose: () => {
+				setShowLightbox(false);
+				buttonRef.current?.focus(); // Restore focus after closing the lightbox
+			},
 			url,
 			altText,
 			isDownloadable,
@@ -37,7 +42,7 @@ const Image: FC = () => {
 
 	return (
 		<ImageMessageContext.Provider value={contextValue}>
-			<ImageThumb />
+			<ImageThumb ref={buttonRef} />
 			{showLightbox && <Lightbox />}
 		</ImageMessageContext.Provider>
 	);

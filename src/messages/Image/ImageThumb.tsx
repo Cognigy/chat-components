@@ -1,4 +1,4 @@
-import { FC, useState } from "react";
+import { forwardRef, useState } from "react";
 import classes from "./Image.module.css";
 import classnames from "classnames/bind";
 import { useImageMessageContext } from "./hooks";
@@ -8,7 +8,7 @@ import { DownloadIcon } from "src/assets/svg";
 
 const cx = classnames.bind(classes);
 
-const ImageThumb: FC = () => {
+const ImageThumb = forwardRef((_props, ref) => {
 	const { config, action, onEmitAnalytics } = useMessageContext();
 	const { url, altText, isDownloadable, onExpand, button } = useImageMessageContext();
 	const [isImageBroken, setImageBroken] = useState(false);
@@ -30,6 +30,7 @@ const ImageThumb: FC = () => {
 	return (
 		<div className={cx(classes.wrapper, isDownloadable && classes.wrapperDownloadable)}>
 			<div
+				ref={ref as React.RefObject<HTMLDivElement>}
 				className={imageClasses}
 				onClick={() => onExpand()}
 				onKeyDown={handleKeyDown}
@@ -62,6 +63,6 @@ const ImageThumb: FC = () => {
 			)}
 		</div>
 	);
-};
+});
 
 export default ImageThumb;
