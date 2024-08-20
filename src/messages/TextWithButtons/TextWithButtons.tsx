@@ -40,11 +40,13 @@ const TextWithButtons: FC = () => {
 
 	return (
 		<div className={`webchat-${classType}-template-root`}>
-			{text && <Text
-				content={text}
-				className={`webchat-${classType}-template-header`}
-				id={webchatButtonTemplateTextId}
-			/>}
+			{text && (
+				<Text
+					content={text}
+					className={`webchat-${classType}-template-header`}
+					id={webchatButtonTemplateTextId}
+				/>
+			)}
 
 			<ActionButtons
 				action={modifiedAction}
