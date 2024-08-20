@@ -209,6 +209,36 @@ const screens: TScreen[] = [
 			{
 				message: {
 					avatarName: "Cognigy",
+					text: "",
+					source: "bot",
+					data: {
+						_cognigy: {
+							_webchat: {
+								message: {
+									text: "",
+									quick_replies: [
+										{
+											content_type: "text",
+											payload: "payload1",
+											title: "This QR does not have a text bubble above",
+										},
+										{
+											content_type: "user_phone_number",
+											image_url: "",
+											image_alt_text: "",
+											payload: "0111222333",
+											title: "Call us",
+										},
+									],
+								},
+							},
+						},
+					},
+				},
+			},
+			{
+				message: {
+					avatarName: "Cognigy",
 					source: "bot",
 
 					data: {
