@@ -6,9 +6,13 @@ article .wrapper {
 	outline: none;
 }
 
-article .wrapper:focus-visible {
+article .wrapper .webchat-media-template-image {
+	border-top-left-radius: var(--cc-bubble-border-radius);
+	border-top-right-radius: var(--cc-bubble-border-radius);
+}
+
+article .wrapper .webchat-media-template-image:focus-visible {
 	outline: 2px solid var(--cc-primary-color);
-	outline-offset: -3px;
 }
 
 article .wrapper img {

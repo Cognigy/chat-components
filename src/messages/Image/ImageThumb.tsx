@@ -14,38 +14,40 @@ const ImageThumb: FC = () => {
 	const [isImageBroken, setImageBroken] = useState(false);
 
 	const handleKeyDown = (event: React.KeyboardEvent<HTMLDivElement>) => {
-		event.key === "Enter" && onExpand && onExpand();
+		if (event.key === "Enter" || event.key === " ") {
+			if (onExpand) onExpand();
+		}
 	};
 
 	const isDynamicRatio = !!config?.settings?.layout?.dynamicImageAspectRatio;
 
 	const imageClasses = cx({
 		"webchat-media-template-image": true,
-		wrapper: true,
 		flexImage: !isDynamicRatio,
 		fixedImage: isDynamicRatio,
-		wrapperDownloadable: isDownloadable,
 	});
 
 	return (
-		<div
-			className={imageClasses}
-			onClick={() => onExpand()}
-			onKeyDown={handleKeyDown}
-			tabIndex={isDownloadable ? 0 : -1}
-			role={isDownloadable ? "button" : undefined}
-			aria-label={isDownloadable ? "View Image in fullsize" : undefined}
-			data-testid="image-message"
-		>
-			{isImageBroken ? (
-				<span className={classes.brokenImage} />
-			) : (
-				<img
-					src={url}
-					alt={altText || "Attachment Image"}
-					onError={() => setImageBroken(true)}
-				/>
-			)}
+		<div className={cx(classes.wrapper, isDownloadable && classes.wrapperDownloadable)}>
+			<div
+				className={imageClasses}
+				onClick={() => onExpand()}
+				onKeyDown={handleKeyDown}
+				tabIndex={isDownloadable ? 0 : -1}
+				role={isDownloadable ? "button" : undefined}
+				aria-label={isDownloadable ? "View Image in fullsize" : undefined}
+				data-testid="image-message"
+			>
+				{isImageBroken ? (
+					<span className={classes.brokenImage} />
+				) : (
+					<img
+						src={url}
+						alt={altText || "Attachment Image"}
+						onError={() => setImageBroken(true)}
+					/>
+				)}
+			</div>
 			{button && (
 				<PrimaryButton
 					isActionButton
