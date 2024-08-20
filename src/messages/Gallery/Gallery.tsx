@@ -59,6 +59,7 @@ const Gallery: FC = () => {
 			pagination={{ clickable: true }}
 			className={classnames("webchat-carousel-template-root", classes.wrapper)}
 			data-testid="gallery-message"
+			a11y={{ slideLabelMessage: `Slide {{index}} of {{slidesLength}}` }}
 		>
 			{elements.map((element: IWebchatAttachmentElement, i: number) => (
 				<SwiperSlide key={i} style={{ width: "206px" }}>
