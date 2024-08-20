@@ -176,7 +176,7 @@ article :global(.swiper).wrapper :global(.swiper-pagination-bullet) {
 	height: 6px;
 	display: inline-block;
 	border-radius: 50%;
-	background: var(--cc-black-80);
+	background: var(--cc-black-50);
 	opacity: 1;
 }
 article :global(.swiper).wrapper :global(.swiper-pagination-bullet):focus {
