@@ -20,7 +20,7 @@
 		var(--cc-background-bot-message)
 	);
 
-	--cc-text-link: var(--webchat-text-link, #6688ed);
+	--cc-text-link: var(--webchat-text-link, #335fdf);
 	--cc-text-link-hover: color-mix(in srgb, var(--cc-text-link), #000 20%);
 	--cc-text-link-disabled: color-mix(in srgb, var(--cc-text-link), #fff 90%);
 
