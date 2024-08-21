@@ -122,6 +122,11 @@ article .wrapper .listItemRoot {
 	padding-top: 12px;
 }
 
+.listHeaderButtonWrapper button:focus {
+	border: 2px solid var(--cc-white);
+	outline-offset: 0px !important;
+}
+
 .listItemButtonWrapper {
 	padding: 0px 16px 16px;
 }
