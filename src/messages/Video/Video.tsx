@@ -1,9 +1,9 @@
 import { FC, useCallback, useMemo, useRef, useState } from "react";
 import ReactPlayer from "react-player";
 import classes from "./Video.module.css";
-import mainClasses from "src/main.module.css";
 import classnames from "classnames";
-import { VideoPlayIcon } from "src/assets/svg";
+import PrimaryButton from "src/common/Buttons/PrimaryButton";
+import { DownloadIcon, VideoPlayIcon } from "src/assets/svg";
 import { useMessageContext } from "src/messages/hooks";
 import { getChannelPayload } from "src/utils";
 import { IWebchatVideoAttachment } from "@cognigy/socket-client";
@@ -14,6 +14,7 @@ const Video: FC = () => {
 	const { url, altText } =
 		(payload?.message?.attachment as IWebchatVideoAttachment)?.payload || {};
 
+	const downloadTranscriptLinkRef = useRef<HTMLAnchorElement>(null);
 	const [playing, setPlaying] = useState(false);
 
 	const videoPlayerWrapperRef = useRef<HTMLDivElement>(null);
@@ -67,35 +68,55 @@ const Video: FC = () => {
 		// Latest version of ReactPlayer at the moment supports previewTabIndex and previewArialLabel props for passing tabindex and aria-label to the video preview button (light mode),
 		// But, does not support passing a role prop to the preview button.
 		// Therefore, we need to add the role, tabindex and aria-label attributes to the video preview wrapper div and handle the keydown event to play/pause the video.
-		<div
-			ref={videoPlayerWrapperRef}
-			className={classnames(classes.wrapper, "webchat-media-template-video")}
-			data-testid="video-message"
-			role={lightMode ? "button" : undefined}
-			tabIndex={lightMode ? 0 : -1}
-			aria-label={lightMode ? "Play Video" : undefined}
-			onKeyDown={handleKeyDown}
-		>
-			<span className={classnames(mainClasses.srOnly, "sr-only")}>
-				{altText || "Attachment Video"}
-			</span>
-			<ReactPlayer
-				ref={videoPlayerRef}
-				url={url}
-				light={lightMode}
-				playing={playing}
-				controls
-				className={classes.player}
-				playIcon={<VideoPlayIcon width="35px" height="35px" />}
-				width="unset"
-				height="unset"
-				onPlay={() => setPlaying(true)}
-				onPause={() => setPlaying(false)}
-				onClickPreview={() => setPlaying(!playing)}
-				onReady={handleFocus}
-				onStart={handleOnStart}
-				previewTabIndex={-1} // Remove tabindex from the video preview, as it is handled by the wrapper div
-			/>
+		<div className={classnames(classes.wrapper, altText && classes.wrapperWithButton)}>
+			<div
+				className={classnames(classes.playerWrapper, "webchat-media-template-video")}
+				ref={videoPlayerWrapperRef}
+				data-testid="video-message"
+				role={lightMode ? "button" : undefined}
+				tabIndex={lightMode ? 0 : -1}
+				aria-label={lightMode ? "Play Video" : undefined}
+				onKeyDown={handleKeyDown}
+			>
+				<ReactPlayer
+					ref={videoPlayerRef}
+					url={url}
+					light={lightMode}
+					playing={playing}
+					controls
+					className={classes.player}
+					playIcon={<VideoPlayIcon width="35px" height="35px" />}
+					width="unset"
+					height="unset"
+					onPlay={() => setPlaying(true)}
+					onPause={() => setPlaying(false)}
+					onClickPreview={() => setPlaying(!playing)}
+					onReady={handleFocus}
+					onStart={handleOnStart}
+					previewTabIndex={-1} // Remove tabindex from the video preview, as it is handled by the wrapper div
+				/>
+			</div>
+			{altText && (
+				<div className={classes.downloadButtonWrapper}>
+					<PrimaryButton
+						className={classnames(
+							classes.downloadButton,
+							"webchat-buttons-template-button-video",
+						)}
+						customIcon={<DownloadIcon className={classes.downloadIcon} fontSize={10} />}
+						onClick={() => downloadTranscriptLinkRef.current?.click()}
+					>
+						Download Transcript
+					</PrimaryButton>
+					<a
+						ref={downloadTranscriptLinkRef}
+						href={`data:text/plain;charset=utf-8,${encodeURIComponent(altText)}`}
+						download="video-transcript.txt"
+						style={{ display: "none" }}
+						aria-hidden="true"
+					/>
+				</div>
+			)}
 		</div>
 	);
 };
