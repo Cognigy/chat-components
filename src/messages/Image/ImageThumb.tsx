@@ -23,7 +23,7 @@ const ImageThumb = forwardRef((_props, ref) => {
 
 	const wrapperClasses = cx({
 		wrapper: true,
-		wrapperDownloadable : isDownloadable,
+		wrapperDownloadable: isDownloadable,
 	});
 
 	const imageClasses = cx({
