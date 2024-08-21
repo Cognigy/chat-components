@@ -94,7 +94,7 @@ const ListItem: FC<{ element: IWebchatAttachmentElement; isHeaderElement?: boole
 	}, [subtitleHtml, subtitleId, titleHtml, isHeaderElement]);
 
 	return (
-		<div role="listitem">
+		<div role="listitem" className={classes.listItemRoot}>
 			<div
 				className={rootClasses}
 				onClick={handleClick}

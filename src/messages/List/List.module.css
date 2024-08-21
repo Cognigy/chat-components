@@ -1,12 +1,17 @@
 article .wrapper {
 	max-width: 295px;
 	border-radius: var(--cc-bubble-border-radius);
-	overflow: hidden;
 	border: 1px solid var(--cc-black-80);
 	background-color: var(--cc-white);
 }
 
+article .wrapper .listItemRoot {
+	border-top-right-radius: var(--cc-bubble-border-radius);
+	border-top-left-radius: var(--cc-bubble-border-radius);
+}
+
 .headerWrapper {
+	border-radius: inherit;
 	position: relative;
 }
 
@@ -16,7 +21,7 @@ article .wrapper {
 
 .headerWrapper:focus-visible {
 	outline: 2px solid var(--cc-primary-color);
-	outline-offset: -3px;
+	outline-offset: 2px;
 }
 
 .darkLayer {
@@ -28,6 +33,7 @@ article .wrapper {
 	right: 0;
 	bottom: 0;
 	background-color: hsla(0, 0%, 0%, 0.3);
+	border-radius: inherit;
 }
 
 .headerContent {
@@ -66,6 +72,7 @@ article .wrapper {
 	aspect-ratio: 16/9;
 	background-size: cover;
 	background-position: center center;
+	border-radius: inherit;
 }
 
 .listItemWrapper {
