@@ -21,6 +21,11 @@ const ImageThumb = forwardRef((_props, ref) => {
 
 	const isDynamicRatio = !!config?.settings?.layout?.dynamicImageAspectRatio;
 
+	const wrapperClasses = cx({
+		wrapper: true,
+		wrapperDownloadable : isDownloadable,
+	});
+
 	const imageClasses = cx({
 		"webchat-media-template-image": true,
 		flexImage: !isDynamicRatio,
@@ -28,7 +33,7 @@ const ImageThumb = forwardRef((_props, ref) => {
 	});
 
 	return (
-		<div className={cx(classes.wrapper, isDownloadable && classes.wrapperDownloadable)}>
+		<div className={wrapperClasses}>
 			<div
 				ref={ref as React.RefObject<HTMLDivElement>}
 				className={imageClasses}
