@@ -6,9 +6,15 @@ article .wrapper {
 	outline: none;
 }
 
-article .wrapper:focus-visible {
+article .wrapper .fixedImage,
+article .wrapper .flexImage {
+	border-top-left-radius: var(--cc-bubble-border-radius);
+	border-top-right-radius: var(--cc-bubble-border-radius);
+}
+
+article .wrapper .fixedImage:focus-visible,
+article .wrapper .flexImage:focus-visible {
 	outline: 2px solid var(--cc-primary-color);
-	outline-offset: -3px;
 }
 
 article .wrapper img {
