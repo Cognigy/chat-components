@@ -78,6 +78,10 @@
 	opacity: 0.85;
 }
 
+.icon:focus-visible {
+	border: 2px solid var(--cc-primary-color);
+}
+
 .icon svg {
 	fill: var(--cc-black-10);
 }

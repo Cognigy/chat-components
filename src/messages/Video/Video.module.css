@@ -13,12 +13,40 @@ article .player {
 	border-radius: var(--cc-bubble-border-radius);
 }
 
+article .wrapperWithButton {
+	border: 1px solid var(--cc-black-80);
+}
+
+article .wrapperWithButton .player {
+	border-bottom-left-radius: 0px;
+	border-bottom-right-radius: 0px;
+}
+
+article .downloadButtonWrapper {
+	padding: 16px;
+	background-color: var(--cc-white);
+	border-bottom-left-radius: var(--cc-bubble-border-radius);
+	border-bottom-right-radius: var(--cc-bubble-border-radius);
+}
+
+article .downloadButton {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	gap: 10px;
+}
+
+article .downloadIcon,
+article .downloadIcon path {
+	width: 12px;
+	fill: var(--cc-primary-contrast-color);
+}
+
 article .player > div:first-child {
 	background-color: var(--cc-black-10);
 	outline: none;
 	aspect-ratio: 16/9;
 	height: auto !important;
-	border-radius: var(--cc-bubble-border-radius);
 }
 
 article .player > div:first-child:hover,
@@ -31,11 +59,12 @@ article .player > div:first-child:focus svg circle {
 	fill-opacity: 1;
 }
 
-article .wrapper:focus,
+article .playerWrapper:focus .player,
 article .player:focus-within {
 	outline: 2px solid var(--cc-primary-color);
 }
 
+article .playerWrapper:focus,
 article .player video:focus {
 	outline: none;
 }

@@ -13,6 +13,7 @@ import image from "test/fixtures/image.json";
 import imageBroken from "test/fixtures/imageBroken.json";
 import video from "test/fixtures/video.json";
 import videoYoutube from "test/fixtures/videoYoutube.json";
+import videoAltText from "test/fixtures/videoWithAltText.json";
 import audio from "test/fixtures/audio.json";
 import file from "test/fixtures/file.json";
 import AdaptiveCardPayloads from "test/fixtures/adaptiveCards.json";
@@ -146,6 +147,7 @@ const screens: TScreen[] = [
 			},
 			{ message: video as IMessage },
 			{ message: videoYoutube as IMessage },
+			{ message: videoAltText as IMessage },
 			{ message: audio as IMessage },
 		],
 	},
@@ -191,6 +193,36 @@ const screens: TScreen[] = [
 											content_type: "text",
 											payload: "payload1",
 											title: "Make purchase",
+										},
+										{
+											content_type: "user_phone_number",
+											image_url: "",
+											image_alt_text: "",
+											payload: "0111222333",
+											title: "Call us",
+										},
+									],
+								},
+							},
+						},
+					},
+				},
+			},
+			{
+				message: {
+					avatarName: "Cognigy",
+					text: "",
+					source: "bot",
+					data: {
+						_cognigy: {
+							_webchat: {
+								message: {
+									text: "",
+									quick_replies: [
+										{
+											content_type: "text",
+											payload: "payload1",
+											title: "This QR does not have a text bubble above",
 										},
 										{
 											content_type: "user_phone_number",

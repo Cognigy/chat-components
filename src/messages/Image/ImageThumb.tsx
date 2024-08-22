@@ -1,4 +1,4 @@
-import { FC, useState } from "react";
+import { forwardRef, useState } from "react";
 import classes from "./Image.module.css";
 import classnames from "classnames/bind";
 import { useImageMessageContext } from "./hooks";
@@ -8,44 +8,52 @@ import { DownloadIcon } from "src/assets/svg";
 
 const cx = classnames.bind(classes);
 
-const ImageThumb: FC = () => {
+const ImageThumb = forwardRef((_props, ref) => {
 	const { config, action, onEmitAnalytics } = useMessageContext();
 	const { url, altText, isDownloadable, onExpand, button } = useImageMessageContext();
 	const [isImageBroken, setImageBroken] = useState(false);
 
 	const handleKeyDown = (event: React.KeyboardEvent<HTMLDivElement>) => {
-		event.key === "Enter" && onExpand && onExpand();
+		if (event.key === "Enter" || event.key === " ") {
+			if (onExpand) onExpand();
+		}
 	};
 
 	const isDynamicRatio = !!config?.settings?.layout?.dynamicImageAspectRatio;
 
-	const imageClasses = cx({
-		"webchat-media-template-image": true,
+	const wrapperClasses = cx({
 		wrapper: true,
-		flexImage: !isDynamicRatio,
-		fixedImage: isDynamicRatio,
 		wrapperDownloadable: isDownloadable,
 	});
 
+	const imageClasses = cx({
+		"webchat-media-template-image": true,
+		flexImage: !isDynamicRatio,
+		fixedImage: isDynamicRatio,
+	});
+
 	return (
-		<div
-			className={imageClasses}
-			onClick={() => onExpand()}
-			onKeyDown={handleKeyDown}
-			tabIndex={isDownloadable ? 0 : -1}
-			role={isDownloadable ? "button" : undefined}
-			aria-label={isDownloadable ? "View Image in fullsize" : undefined}
-			data-testid="image-message"
-		>
-			{isImageBroken ? (
-				<span className={classes.brokenImage} />
-			) : (
-				<img
-					src={url}
-					alt={altText || "Attachment Image"}
-					onError={() => setImageBroken(true)}
-				/>
-			)}
+		<div className={wrapperClasses}>
+			<div
+				ref={ref as React.RefObject<HTMLDivElement>}
+				className={imageClasses}
+				onClick={() => onExpand()}
+				onKeyDown={handleKeyDown}
+				tabIndex={isDownloadable ? 0 : -1}
+				role={isDownloadable ? "button" : undefined}
+				aria-label={isDownloadable ? "View Image in fullsize" : undefined}
+				data-testid="image-message"
+			>
+				{isImageBroken ? (
+					<span className={classes.brokenImage} />
+				) : (
+					<img
+						src={url}
+						alt={altText || "Attachment Image"}
+						onError={() => setImageBroken(true)}
+					/>
+				)}
+			</div>
 			{button && (
 				<PrimaryButton
 					isActionButton
@@ -60,6 +68,6 @@ const ImageThumb: FC = () => {
 			)}
 		</div>
 	);
-};
+});
 
 export default ImageThumb;
