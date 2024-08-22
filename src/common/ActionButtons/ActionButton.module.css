@@ -33,7 +33,8 @@ a.button:focus {
 	background: var(--cc-primary-color-hover);
 }
 button.button:focus-visible,
-a.button:focus-visible {
+a.button:focus-visible,
+a.button:global(.phone-number-anchor):focus-visible {
 	outline: 2px solid var(--cc-primary-color);
 	outline-offset: 2px;
 }

@@ -66,9 +66,9 @@
 									"image_url": "https://placewaifu.com/image/300/300",
 									"buttons": [
 										{
-											"payload": "foobar009l1b1",
-											"type": "postback",
-											"title": "foobar009l1b1"
+											"payload": "0123456789",
+											"type": "phone_number",
+											"title": "Call_foobar009l1b2"
 										}
 									],
 									"default_action": {

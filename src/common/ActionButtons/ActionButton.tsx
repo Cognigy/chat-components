@@ -70,11 +70,15 @@ const ActionButton: FC<ActionButtonProps> = props => {
 
 	const PhoneNumberAnchor = (props: React.HTMLAttributes<HTMLAnchorElement>) =>
 		button.payload ? <a {...props} href={`tel:${button.payload}`} /> : null;
+	const Anchor = (props: React.HTMLAttributes<HTMLAnchorElement>) =>
+		isWebURL ? <a {...props} href={button.url} target={button.target} /> : null;
 	const Button = (props: React.HTMLAttributes<HTMLButtonElement>) => (
 		<button {...props} disabled={disabled} aria-disabled={disabled} />
 	);
 
-	const Component = isPhoneNumber ? PhoneNumberAnchor : Button;
+	const isURLComponent = isWebURL || isPhoneNumber;
+	const URLComponent = isPhoneNumber ? PhoneNumberAnchor : Anchor;
+	const Component = isURLComponent ? URLComponent : Button;
 
 	const onClick = (event: React.MouseEvent) => {
 		event.stopPropagation();
@@ -119,6 +123,15 @@ const ActionButton: FC<ActionButtonProps> = props => {
 		props.action?.(button.payload, null, { label: button.title });
 	};
 
+	const handleKeyDown = (event: React.KeyboardEvent) => {
+		if (isURLComponent && event.key === "Enter") {
+			onClick(event as any);
+		}
+		if (!isURLComponent && (event.key === "Enter" || event.key === " ")) {
+			onClick(event as any);
+		}
+	};
+
 	const renderIcon = () => {
 		if (customIcon) return customIcon;
 		if (isWebURL && showUrlIcon) return <LinkIcon />;
@@ -128,6 +141,7 @@ const ActionButton: FC<ActionButtonProps> = props => {
 	return (
 		<Component
 			onClick={onClick}
+			onKeyDown={handleKeyDown}
 			className={classnames(
 				classes.button,
 				isWebURL && classes.url,
@@ -135,10 +149,10 @@ const ActionButton: FC<ActionButtonProps> = props => {
 				disabled && classes.disabled,
 				disabled && "disabled",
 				isPhoneNumber && "phone-number-anchor",
+				isWebURL && "phone-number-anchor",
 			)}
 			aria-label={getAriaLabel()}
 			aria-disabled={disabled}
-			role={isWebURL ? "link" : undefined}
 		>
 			<Typography
 				variant={size === "large" ? "title1-semibold" : "cta-semibold"}
