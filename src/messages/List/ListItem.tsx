@@ -121,6 +121,7 @@ const ListItem: FC<{ element: IWebchatAttachmentElement; isHeaderElement?: boole
 							className={classnames(
 								"webchat-list-template-header-content",
 								classes.headerContent,
+								button && classes.headerContentWithButton,
 							)}
 						>
 							{renderTitles}

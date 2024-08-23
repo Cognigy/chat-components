@@ -55,6 +55,10 @@ article .wrapper .listItemRoot {
 	color: var(--cc-white);
 }
 
+.headerContentWithButton {
+	padding-bottom: 72px; /* 12px headerContent bottom padding + 44px button height + 16px button bottom padding */
+}
+
 .itemTitle {
 	margin-top: 0px;
 	margin-bottom: 0px;
@@ -117,15 +121,20 @@ article .wrapper .listItemRoot {
 	flex-shrink: 0;
 }
 
-.listHeaderButtonWrapper,
-.listItemButtonWrapper {
-	z-index: 1;
-	padding: 0 16px 16px 16px;
+.listHeaderButtonWrapper {
+	position: absolute;
+	bottom: 16px;
+	right: 16px;
+	left: 16px;
 }
 
 .listHeaderButtonWrapper button:focus {
 	border: 2px solid var(--cc-secondary-contrast-color);
 	outline-offset: 0px !important;
+}
+
+.listItemButtonWrapper {
+	padding: 0 16px 16px 16px;
 }
 
 .mainButtonWrapper {
