@@ -123,15 +123,6 @@ const ActionButton: FC<ActionButtonProps> = props => {
 		props.action?.(button.payload, null, { label: button.title });
 	};
 
-	const handleKeyDown = (event: React.KeyboardEvent) => {
-		if (isURLComponent && event.key === "Enter") {
-			onClick(event as any);
-		}
-		if (!isURLComponent && (event.key === "Enter" || event.key === " ")) {
-			onClick(event as any);
-		}
-	};
-
 	const renderIcon = () => {
 		if (customIcon) return customIcon;
 		if (isWebURL && showUrlIcon) return <LinkIcon />;
@@ -141,7 +132,6 @@ const ActionButton: FC<ActionButtonProps> = props => {
 	return (
 		<Component
 			onClick={onClick}
-			onKeyDown={handleKeyDown}
 			className={classnames(
 				classes.button,
 				isWebURL && classes.url,
