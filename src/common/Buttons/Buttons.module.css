@@ -11,9 +11,9 @@ button.actionButton {
 
 /* Primary Button */
 button.primaryButton.actionButton,
-a.primaryButton.actionButton:global(.phone-number-anchor),
+a.primaryButton.actionButton:global(.phone-number-or-url-anchor),
 button.primaryButton.button,
-a.primaryButton.button:global(.phone-number-anchor) {
+a.primaryButton.button:global(.phone-number-or-url-anchor) {
 	width: 100%;
 	border-radius: 10px;
 	background-color: var(--cc-secondary-color);
@@ -55,9 +55,9 @@ button.primaryButton.button:disabled:focus {
 
 /* Secondary Button */
 button.secondaryButton.actionButton,
-a.secondaryButton.actionButton:global(.phone-number-anchor),
+a.secondaryButton.actionButton:global(.phone-number-or-url-anchor),
 button.secondaryButton.button,
-a.secondaryButton.button:global(.phone-number-anchor) {
+a.secondaryButton.button:global(.phone-number-or-url-anchor) {
 	width: 100%;
 	border-radius: 10px;
 	background-color: var(--cc-white);

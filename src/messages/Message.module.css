@@ -29,11 +29,11 @@
 	flex: 1;
 }
 
-.message a:not(:global(.phone-number-anchor)) {
+.message a:not(:global(.phone-number-or-url-anchor)) {
 	color: var(--cc-text-link);
 }
 
-.message a:hover:not(:global(.phone-number-anchor)),
-.message a:focus:not(:global(.phone-number-anchor)) {
+.message a:hover:not(:global(.phone-number-or-url-anchor)),
+.message a:focus:not(:global(.phone-number-or-url-anchor)) {
 	color: var(--cc-text-link-hover);
 }

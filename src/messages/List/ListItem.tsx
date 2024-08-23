@@ -42,22 +42,24 @@ const ListItem: FC<{ element: IWebchatAttachmentElement; isHeaderElement?: boole
 	const subtitleHtml = isSanitizeEnabled ? sanitizeHTML(subtitle) : subtitle;
 	const subtitleId = useRandomId("webchatListTemplateHeaderSubtitle");
 
-	const rootClasses = isHeaderElement
-		? classnames("webchat-list-template-header", classes.headerWrapper)
+	const rootClasses = classnames(classes.listItemRoot, isHeaderElement && classes.headerRoot);
+
+	const contentClasses = isHeaderElement
+		? classnames("webchat-list-template-header", classes.headerContentWrapper)
 		: classnames("webchat-list-template-element", classes.listItemWrapper);
 
 	const renderImage = useMemo(() => {
 		if (!image_url) return null;
 		return (
 			<div
-				className={isHeaderElement ? classes.headerImage : classes.listItemImage}
+				className={classes.listItemImage}
 				style={{ backgroundImage: getBackgroundImage(image_url) }}
-				data-testid={isHeaderElement ? "header-image" : "regular-image"}
+				data-testid="regular-image"
 			>
 				<span role="img" aria-label={image_alt_text || "Attachment Image"} />
 			</div>
 		);
-	}, [image_alt_text, image_url, isHeaderElement]);
+	}, [image_alt_text, image_url]);
 
 	const renderTitles = useMemo(() => {
 		if (!titleHtml && !subtitleHtml) return null;
@@ -94,9 +96,17 @@ const ListItem: FC<{ element: IWebchatAttachmentElement; isHeaderElement?: boole
 	}, [subtitleHtml, subtitleId, titleHtml, isHeaderElement]);
 
 	return (
-		<div role="listitem">
+		<div
+			role="listitem"
+			className={rootClasses}
+			style={{
+				backgroundImage:
+					isHeaderElement && image_url ? getBackgroundImage(image_url) : undefined,
+			}}
+			data-testid={isHeaderElement ? "header-image" : "list-item"}
+		>
 			<div
-				className={rootClasses}
+				className={contentClasses}
 				onClick={handleClick}
 				onKeyDown={handleKeyDown}
 				role={default_action?.url ? "link" : undefined}
@@ -107,24 +117,14 @@ const ListItem: FC<{ element: IWebchatAttachmentElement; isHeaderElement?: boole
 			>
 				{isHeaderElement ? (
 					<>
-						{renderImage}
-						<div className={classes.darkLayer} />
 						<div
 							className={classnames(
 								"webchat-list-template-header-content",
 								classes.headerContent,
+								button && classes.headerContentWithButton,
 							)}
 						>
 							{renderTitles}
-							<PrimaryButton
-								isActionButton
-								action={shouldBeDisabled ? undefined : action}
-								button={button}
-								buttonClassName="webchat-list-template-header-button"
-								containerClassName={classes.listHeaderButtonWrapper}
-								config={config}
-								onEmitAnalytics={onEmitAnalytics}
-							/>
 						</div>
 					</>
 				) : (
@@ -139,7 +139,17 @@ const ListItem: FC<{ element: IWebchatAttachmentElement; isHeaderElement?: boole
 					</div>
 				)}
 			</div>
-			{!isHeaderElement && (
+			{isHeaderElement ? (
+				<PrimaryButton
+					isActionButton
+					action={shouldBeDisabled ? undefined : action}
+					button={button}
+					buttonClassName="webchat-list-template-header-button"
+					containerClassName={classes.listHeaderButtonWrapper}
+					config={config}
+					onEmitAnalytics={onEmitAnalytics}
+				/>
+			) : (
 				<SecondaryButton
 					isActionButton
 					action={shouldBeDisabled ? undefined : action}
