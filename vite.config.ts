@@ -4,7 +4,6 @@ import svgr from "vite-plugin-svgr";
 import cssInjectedByJsPlugin from "vite-plugin-css-injected-by-js";
 import GithubActionsReporter from "vitest-github-actions-reporter";
 import dts from "vite-plugin-dts";
-import mkcert from "vite-plugin-mkcert";
 
 export default defineConfig({
 	plugins: [
@@ -15,7 +14,6 @@ export default defineConfig({
 			insertTypesEntry: true,
 			include: ["src"],
 		}),
-		mkcert(),
 	],
 	test: {
 		environment: "jsdom",
