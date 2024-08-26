@@ -11,7 +11,7 @@ import { IWebchatVideoAttachment } from "@cognigy/socket-client";
 const Video: FC = () => {
 	const { message, config } = useMessageContext();
 	const payload = getChannelPayload(message, config);
-	const { url, altText } =
+	const { url, altText, captionsUrl } =
 		(payload?.message?.attachment as IWebchatVideoAttachment)?.payload || {};
 
 	const downloadTranscriptLinkRef = useRef<HTMLAnchorElement>(null);
@@ -62,6 +62,17 @@ const Video: FC = () => {
 		}
 	}, [playing]);
 
+	const videoCaptionsConfig = {
+		tracks: [
+			{
+				kind: "subtitles",
+				src: captionsUrl as string,
+				srcLang: "en-US", // TODO: Get language from Say node in the future
+				label: "English",
+			},
+		],
+	};
+
 	if (!url) return null;
 
 	return (
@@ -94,6 +105,7 @@ const Video: FC = () => {
 					onReady={handleFocus}
 					onStart={handleOnStart}
 					previewTabIndex={-1} // Remove tabindex from the video preview, as it is handled by the wrapper div
+					config={{ file: captionsUrl ? videoCaptionsConfig : {} }}
 				/>
 			</div>
 			{altText && (
