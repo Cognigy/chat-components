@@ -15,13 +15,13 @@ const Avatar: FC<AvatarProps> = props => {
 	const overrides = (message?.data as any)?._webchat || {};
 
 	useEffect(() => {
-		if (overrides.agentAvatarOverrideUrl) {
-			setAvatarUrl(overrides.agentAvatarOverrideUrl);
+		if (overrides.agentAvatarOverrideUrlOnce) {
+			setAvatarUrl(overrides.agentAvatarOverrideUrlOnce);
 			return;
 		}
 
-		if (overrides.botAvatarOverrideUrl) {
-			setAvatarUrl(overrides.botAvatarOverrideUrl);
+		if (overrides.botAvatarOverrideUrlOnce) {
+			setAvatarUrl(overrides.botAvatarOverrideUrlOnce);
 			return;
 		}
 
@@ -36,8 +36,8 @@ const Avatar: FC<AvatarProps> = props => {
 	}, [
 		message.avatarUrl,
 		message?.source,
-		overrides.agentAvatarOverrideUrl,
-		overrides.botAvatarOverrideUrl,
+		overrides.agentAvatarOverrideUrlOnce,
+		overrides.botAvatarOverrideUrlOnce,
 	]);
 
 	const classNames = classnames(
@@ -49,10 +49,11 @@ const Avatar: FC<AvatarProps> = props => {
 
 	return (
 		<img
-			alt={`${message?.source} avatar`}
+			alt={`${message?.source || "unknown source"} avatar`}
 			className={classNames}
 			src={avatarUrl}
 			onError={() => setAvatarUrl(placeholderAvatar)}
+			data-testid="avatar"
 		/>
 	);
 };
