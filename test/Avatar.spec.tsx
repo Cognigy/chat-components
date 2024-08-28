@@ -3,7 +3,6 @@ import { it, describe, expect } from "vitest";
 import Message from "src/messages/Message";
 
 describe("Avatars", () => {
-
 	const defaultAgentAvatarUrl = "/src/assets/svg/avatar_placeholder.svg";
 	const customAvatarUrl = "https://placewaifu/image/100/100";
 	const agentAvatarOverrideUrlOnce = "https://placewaifu/image/300/300";
