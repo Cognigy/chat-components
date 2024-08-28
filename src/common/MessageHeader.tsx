@@ -44,12 +44,12 @@ const MessageHeader: FC<MessageHeaderProps> = props => {
 
 	let name = message?.avatarName || (isAgentMessage ? "Agent" : "Bot");
 
-	if (overrides.agentAvatarOverrideName) {
-		name = overrides.agentAvatarOverrideName;
+	if (overrides.agentAvatarOverrideNameOnce) {
+		name = overrides.agentAvatarOverrideNameOnce;
 	}
 
-	if (overrides.botAvatarOverrideName) {
-		name = overrides.botAvatarOverrideName;
+	if (overrides.botAvatarOverrideNameOnce) {
+		name = overrides.botAvatarOverrideNameOnce;
 	}
 
 	return (
@@ -58,7 +58,9 @@ const MessageHeader: FC<MessageHeaderProps> = props => {
 			<Typography variant="title2-regular" component="div" className={classes.headerMeta}>
 				{!isUserMessage && (
 					<>
-						<span className={classes["avatar-name"]}>{name}</span>
+						<span data-testid="sender-name" className={classes["avatar-name"]}>
+							{name}
+						</span>
 						<HeaderEllipsis />
 					</>
 				)}

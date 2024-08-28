@@ -305,6 +305,12 @@ const screens: TScreen[] = [
 			},
 			{
 				message: {
+					source: "agent",
+					text: "This is an agent message",
+				},
+			},
+			{
+				message: {
 					source: "bot",
 					text: "Here goes the text.\n\nThe text can also be multiline with <strong>HTML</strong> content",
 					avatarName: "Cognigy",
@@ -317,8 +323,8 @@ const screens: TScreen[] = [
 					data: {
 						//@ts-ignore
 						_webchat: {
-							agentAvatarOverrideUrl: "https://placewaifu.com/image/200/200",
-							agentAvatarOverrideName: "Agent Name Override",
+							agentAvatarOverrideUrlOnce: "https://placewaifu.com/image/200/200",
+							agentAvatarOverrideNameOnce: "Agent Name Override",
 						},
 					},
 				},
