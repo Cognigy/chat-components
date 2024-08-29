@@ -63,6 +63,9 @@ const Video: FC = () => {
 	}, [playing]);
 
 	const videoCaptionsConfig = {
+		attributes: {
+			crossOrigin: "true",
+		},
 		tracks: [
 			{
 				kind: "subtitles",
