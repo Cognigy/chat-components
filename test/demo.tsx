@@ -35,7 +35,7 @@ const action: MessageSender = (text, data) =>
 	alert("Text: " + JSON.stringify(text, null, 2) + " Data: " + JSON.stringify(data, null, 2));
 
 type DeepPartial<T> = {
-    [P in keyof T]?: T[P] extends object ? DeepPartial<T[P]> : T[P];
+	[P in keyof T]?: T[P] extends object ? DeepPartial<T[P]> : T[P];
 };
 
 type TScreen = {
@@ -74,10 +74,10 @@ const screens: TScreen[] = [
 				config: {
 					settings: {
 						widgetSettings: {
-							enableDefaultPreview: true
-						}
-					}
-				}
+							enableDefaultPreview: true,
+						},
+					},
+				},
 			},
 			{
 				message: {
@@ -85,25 +85,25 @@ const screens: TScreen[] = [
 						_cognigy: {
 							_webchat: {
 								message: {
-									text: "RENDER WRONG"
-								}
+									text: "RENDER WRONG",
+								},
 							},
 							_defaultPreview: {
 								message: {
-									text: "RENDER OK"
-								}
+									text: "RENDER OK",
+								},
 							},
-						}
-					}
+						},
+					},
 				},
 				config: {
 					settings: {
 						widgetSettings: {
-							enableDefaultPreview: true
-						}
-					}
-				}
-			}
+							enableDefaultPreview: true,
+						},
+					},
+				},
+			},
 		],
 	},
 	{

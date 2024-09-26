@@ -10,7 +10,7 @@ import { useRandomId } from "src/messages/hooks";
 
 type buttonPayloadCompatibility = {
 	contentType?: string;
-}
+};
 
 export interface ActionButtonsProps {
 	className?: string;
