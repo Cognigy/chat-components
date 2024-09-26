@@ -12,7 +12,8 @@
 								"type": "TextBlock",
 								"size": "Medium",
 								"weight": "Bolder",
-								"text": "I eat only ><_>"
+								"text": "I eat only ><_>",
+								"style": "heading"
 							},
 							{
 								"type": "ColumnSet",
