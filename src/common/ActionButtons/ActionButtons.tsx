@@ -8,10 +8,14 @@ import { MessageProps } from "src/messages/Message";
 import classNames from "classnames";
 import { useRandomId } from "src/messages/hooks";
 
+type buttonPayloadCompatibility = {
+	contentType?: string;
+}
+
 export interface ActionButtonsProps {
 	className?: string;
 	action?: MessageProps["action"];
-	payload: IWebchatButton[] | IWebchatQuickReply[];
+	payload: IWebchatButton[] | Array<IWebchatQuickReply & buttonPayloadCompatibility>;
 	containerClassName?: string;
 	buttonClassName?: string;
 	customIcon?: ReactElement;
