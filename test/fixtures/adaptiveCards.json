@@ -117,7 +117,8 @@
 								"type": "TextBlock",
 								"size": "large",
 								"weight": "bolder",
-								"text": "Large header"
+								"text": "Large header",
+								"style": "heading"
 							},
 							{
 								"type": "Input.Text",
