@@ -85,12 +85,12 @@ const screens: TScreen[] = [
 						_cognigy: {
 							_webchat: {
 								message: {
-									text: "WEBCHAT QUICK REPLIES"
+									text: "RENDER WRONG"
 								}
 							},
 							_defaultPreview: {
 								message: {
-									text: "DEFAULT QUICK REPLIES"
+									text: "RENDER OK"
 								}
 							},
 						}
