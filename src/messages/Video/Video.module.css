@@ -13,6 +13,13 @@ article .player {
 	border-radius: var(--cc-bubble-border-radius);
 }
 
+article .player video {
+	max-width: 295px;
+	object-fit: cover;
+	object-position: left;
+	overflow: hidden;
+}
+
 article .wrapperWithButton {
 	border: 1px solid var(--cc-black-80);
 }
