@@ -71,7 +71,7 @@ const Video: FC = () => {
 				kind: "subtitles",
 				src: captionsUrl as string,
 				srcLang: "en-US", // TODO: Get language from Say node in the future
-				label: "English",
+				label: "On",
 			},
 		],
 	};

@@ -64,6 +64,12 @@ const AdaptiveCard: FC<IAdaptiveCardProps> = props => {
 			if (result) {
 				targetRef.current.innerHTML = "";
 				targetRef.current.appendChild(result);
+				// Add aria-level attribute to heading elements
+				const headings = targetRef.current.querySelectorAll("[role='heading']");
+				headings.forEach(heading => {
+					if (heading.getAttribute("aria-level") === null)
+						heading.setAttribute("aria-level", "2");
+				});
 			}
 		} catch (error) {
 			console.error("Unable to render Adaptive Card: ", error);

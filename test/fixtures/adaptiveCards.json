@@ -12,7 +12,8 @@
 								"type": "TextBlock",
 								"size": "Medium",
 								"weight": "Bolder",
-								"text": "I eat only ><_>"
+								"text": "I eat only ><_>",
+								"style": "heading"
 							},
 							{
 								"type": "ColumnSet",
@@ -116,7 +117,8 @@
 								"type": "TextBlock",
 								"size": "large",
 								"weight": "bolder",
-								"text": "Large header"
+								"text": "Large header",
+								"style": "heading"
 							},
 							{
 								"type": "Input.Text",
