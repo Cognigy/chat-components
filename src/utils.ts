@@ -6,7 +6,13 @@ import { ActionButtonsProps } from "./common/ActionButtons/ActionButtons";
  * Decides between _webchat and _facebook payload.
  */
 export function getChannelPayload(message: IMessage, config?: IWebchatConfig) {
-	const { _facebook, _webchat } = message?.data?._cognigy || {};
+	const { _facebook, _webchat, _defaultPreview } = message?.data?._cognigy || {};
+
+	const defaultPreviewEnabled = config?.settings?.widgetSettings?.enableDefaultPreview;
+
+	if (defaultPreviewEnabled && _defaultPreview) {
+		return _defaultPreview;
+	}
 
 	if (
 		config?.settings?.widgetSettings?.enableStrictMessengerSync &&
@@ -34,7 +40,7 @@ export const isMessageCollatable = (message: IMessage, prevMessage?: IMessage) =
 
 	const difference = Number(message?.timestamp) - Number(prevMessage?.timestamp);
 
-	// XAppSubmitMessages should is a pill, and should always be collated
+	// XAppSubmitMessages is a pill, and should always be collated
 	if (message?.data?._plugin?.type === "x-app-submit") return true;
 
 	// if the previous message was a rating message that displays an event status pill, don't collate

@@ -1,9 +1,10 @@
+// @ts-nocheck
 import React, { Dispatch, FC, SetStateAction, useState } from "react";
 import ReactDOM from "react-dom/client";
 
 import "./demo.css";
 import Message, { MessageProps } from "../src/messages/Message.tsx";
-import { MessageSender } from "../src/messages/types.ts";
+import { IWebchatConfig, MessageSender } from "../src/messages/types.ts";
 
 //fixtures
 import listMessage from "test/fixtures/list.json";
@@ -33,14 +34,78 @@ import { MessageProviderProps } from "src/messages/context.tsx";
 const action: MessageSender = (text, data) =>
 	alert("Text: " + JSON.stringify(text, null, 2) + " Data: " + JSON.stringify(data, null, 2));
 
+type DeepPartial<T> = {
+	[P in keyof T]?: T[P] extends object ? DeepPartial<T[P]> : T[P];
+};
+
 type TScreen = {
 	title: string;
 	anchor: string;
-	messages?: MessageProps[];
+	messages?: Array<Omit<MessageProps, "config"> & { config?: DeepPartial<IWebchatConfig> }>;
 	content?: React.ReactNode[];
 };
 
 const screens: TScreen[] = [
+	{
+		title: "Default Preview",
+		anchor: "default-preview",
+		messages: [
+			{
+				message: {
+					data: {
+						_cognigy: {
+							_defaultPreview: {
+								message: {
+									text: "RENDER OK",
+									quick_replies: [
+										{
+											id: 0.44535334241574,
+											content_type: "postback",
+											payload: "foobar003pb01",
+											title: "foobar003qr01",
+										},
+									],
+								},
+							},
+							_webchat: { message: { text: "RENDER WRONG" } },
+						},
+					},
+				},
+				config: {
+					settings: {
+						widgetSettings: {
+							enableDefaultPreview: true,
+						},
+					},
+				},
+			},
+			{
+				message: {
+					data: {
+						_cognigy: {
+							_webchat: {
+								message: {
+									text: "RENDER WRONG",
+								},
+							},
+							_defaultPreview: {
+								message: {
+									text: "RENDER OK",
+								},
+							},
+						},
+					},
+				},
+				config: {
+					settings: {
+						widgetSettings: {
+							enableDefaultPreview: true,
+						},
+					},
+				},
+			},
+		],
+	},
 	{
 		title: "Adaptive Cards",
 		anchor: "adaptive-cards",

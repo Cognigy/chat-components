@@ -61,7 +61,14 @@ const defaultConfig: MatchConfig[] = [
 				(channelConfig?.message?.attachment as IWebchatTemplateAttachment)?.payload
 					?.template_type === "button";
 
-			return isQuickReplies || isTextWithButtons;
+			const hasMessengerText = channelConfig?.message?.text;
+
+			const isDefaultPreviewEnabled = config?.settings?.widgetSettings?.enableDefaultPreview;
+			const hasDefaultPreview = message?.data?._cognigy?._defaultPreview;
+			// DefaultPreview chooses text over _webchat / _facebook content
+			const shouldSkip = isDefaultPreviewEnabled && !hasDefaultPreview && message.text;
+
+			return !shouldSkip && (isQuickReplies || isTextWithButtons || hasMessengerText);
 		},
 		component: TextWithButtons,
 	},
@@ -132,8 +139,8 @@ const defaultConfig: MatchConfig[] = [
 		component: Gallery,
 	},
 	{
+		// Adaptive Card
 		match: (message, config) => {
-			// Rest of the code...
 			const _webchat = (message?.data?._cognigy?._webchat as IAdaptiveCardMessage)
 				?.adaptiveCard;
 

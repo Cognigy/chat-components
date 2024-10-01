@@ -41,7 +41,14 @@ const ActionButton: FC<ActionButtonProps> = props => {
 	} = props;
 
 	const buttonType =
-		"type" in button ? button.type : "content_type" in button ? button.content_type : null;
+		"type" in button
+			? button.type
+			: "content_type" in button
+			? button.content_type
+			: "contentType" in button
+			? (button as any).contentType
+			: null;
+
 	if (!buttonType) return null;
 
 	const buttonLabel = getWebchatButtonLabel(button) || "";
