@@ -14,7 +14,8 @@ interface TextProps {
 
 const Text: FC<TextProps> = props => {
 	const { message, config } = useMessageContext();
-	const content = props.content || message?.text || "";
+	const text = message?.text?.toString();
+	const content = props.content || text || "";
 
 	const enhancedURLsText = config?.settings?.widgetSettings?.disableRenderURLsAsLinks
 		? content

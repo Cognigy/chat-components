@@ -412,6 +412,13 @@ const screens: TScreen[] = [
 					text: 'Large Image: <img src="https://www.cognigy.com/hs-fs/hubfs/AI%20agent%20business.png?width=1153&height=1024&name=AI%20agent%20business.png" alt="Alt text">',
 				},
 			},
+			{
+				// Number 0 as a text should be rendered as a text message
+				message: {
+					source: "bot",
+					text: 0,
+				},
+			}
 		],
 	},
 	{
