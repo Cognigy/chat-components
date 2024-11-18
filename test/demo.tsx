@@ -418,7 +418,7 @@ const screens: TScreen[] = [
 					source: "bot",
 					text: 0,
 				},
-			}
+			},
 		],
 	},
 	{
