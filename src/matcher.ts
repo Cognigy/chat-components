@@ -179,7 +179,7 @@ const defaultConfig: MatchConfig[] = [
 				return false;
 			}
 
-			return !!message?.text;
+			return message?.text !== null && message?.text !== undefined;
 		},
 		component: Text,
 		name: "Text",
