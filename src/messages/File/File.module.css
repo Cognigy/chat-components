@@ -1,12 +1,40 @@
 article .filesWrapper {
 	display: flex;
+	flex-direction: column;
+	align-items: flex-start;
+	gap: 8px;
+	margin-bottom: 8px;
+}
+
+article:global(.user) .filesWrapper {
+	align-items: flex-end;
+}
+
+article .filePreviewContainer {
+	display: flex;
 	flex-direction: row;
 	flex-wrap: wrap;
 	gap: 8px;
 }
 
-article:global(.user) .filesWrapper {
+article:global(.user) .filePreviewContainer {
 	justify-content: flex-end;
+}
+
+article .imagePreview {
+	border-radius: 15px;
+	max-height: 256px;
+	max-width: 295px;
+	object-fit: cover;
+	object-position: center center;
+}
+
+article .smallImagePrevew {
+	border-radius: 15px;
+	height: 128px;
+	width: 128px;
+	object-fit: cover;
+	object-position: center center;
 }
 
 article .filePreview {
