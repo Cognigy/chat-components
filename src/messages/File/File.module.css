@@ -1,12 +1,55 @@
 article .filesWrapper {
 	display: flex;
+	flex-direction: column;
+	align-items: flex-start;
+	gap: 8px;
+	margin-bottom: 8px;
+}
+
+article:global(.user) .filesWrapper {
+	align-items: flex-end;
+}
+
+article .filePreviewContainer {
+	display: flex;
 	flex-direction: row;
 	flex-wrap: wrap;
 	gap: 8px;
 }
 
-article:global(.user) .filesWrapper {
+article:global(.user) .filePreviewContainer {
 	justify-content: flex-end;
+}
+
+@keyframes webchatImagePreviewPopIn {
+	from {
+		opacity: 0;
+		transform: scale(0.95);
+	}
+	to {
+		opacity: 1;
+		transform: scale(1);
+	}
+}
+
+article .imagePreview {
+	border-radius: 15px;
+	max-height: 256px;
+	max-width: 295px;
+	object-fit: cover;
+	object-position: center center;
+	animation: webchatImagePreviewPopIn 0.2s ease-out;
+	transform-origin: center;
+}
+
+article .smallImagePrevew {
+	border-radius: 15px;
+	height: 128px;
+	width: 128px;
+	object-fit: cover;
+	object-position: center center;
+	animation: webchatImagePreviewPopIn 0.2s ease-out;
+	transform-origin: center;
 }
 
 article .filePreview {
