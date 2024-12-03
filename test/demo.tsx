@@ -419,6 +419,18 @@ const screens: TScreen[] = [
 					text: 0,
 				},
 			},
+			{
+				// Data-only message should not render anything
+				message: {
+					source: "bot",
+					text: "",
+					data: {
+						_test: {
+							aaa: "bbb",
+						},
+					},
+				},
+			},
 		],
 	},
 	{
