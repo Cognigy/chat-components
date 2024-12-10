@@ -1,7 +1,7 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect } from "react";
 
 export const useStreamText = (text: string, isStreaming: boolean) => {
-	const [displayedText, setDisplayedText] = useState('');
+	const [displayedText, setDisplayedText] = useState("");
 
 	useEffect(() => {
 		if (!isStreaming || !text) {
