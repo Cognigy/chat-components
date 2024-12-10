@@ -5,6 +5,7 @@ import { useMessageContext } from "../hooks";
 import { replaceUrlsWithHTMLanchorElem } from "src/utils";
 import { sanitizeHTML } from "src/sanitize";
 import classNames from "classnames";
+import { useStreamText } from "./hooks";
 
 interface TextProps {
 	content?: string;
@@ -16,10 +17,14 @@ const Text: FC<TextProps> = props => {
 	const { message, config } = useMessageContext();
 	const text = message?.text?.toString();
 	const content = props.content || text || "";
+	//@ts-ignore
+	const streamingMode = config?.settings?.behavior?.streamingMode;
+
+	const streamedText = useStreamText(content, streamingMode);
 
 	const enhancedURLsText = config?.settings?.widgetSettings?.disableRenderURLsAsLinks
-		? content
-		: replaceUrlsWithHTMLanchorElem(content);
+		? streamedText
+		: replaceUrlsWithHTMLanchorElem(streamedText);
 
 	const __html = config?.settings?.layout?.disableHtmlContentSanitization
 		? enhancedURLsText

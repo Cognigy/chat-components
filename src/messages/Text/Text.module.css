@@ -11,3 +11,18 @@
 .text img {
 	max-width: 100%;
 }
+
+.streamingChar {
+	display: inline;
+	opacity: 0;
+	animation: fadeIn 0.1s ease forwards;
+  }
+  
+  @keyframes fadeIn {
+	from {
+	  opacity: 0;
+	}
+	to {
+	  opacity: 1;
+	}
+  }
