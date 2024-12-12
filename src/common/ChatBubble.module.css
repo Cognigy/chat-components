@@ -10,6 +10,12 @@
 	white-space: pre-wrap;
 }
 
+.streamingWrapper {
+	border: none;
+	background: none !important;
+	max-width: 90%;
+}
+
 article:global(.bot) .bubble {
 	background: var(--cc-background-bot-message);
 	color: var(--cc-bot-message-contrast-color);

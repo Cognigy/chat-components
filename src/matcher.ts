@@ -179,6 +179,11 @@ const defaultConfig: MatchConfig[] = [
 				return false;
 			}
 
+			// handle message arrays (from streaming mode)
+			if (Array.isArray(message?.text)) {
+				return message?.text.length > 0;
+			}
+
 			return message?.text !== null && message?.text !== undefined && message?.text !== "";
 		},
 		component: Text,

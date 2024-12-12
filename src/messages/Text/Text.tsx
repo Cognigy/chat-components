@@ -13,32 +13,39 @@ interface TextProps {
 	id?: string;
 }
 
+// TODO: do we need to handle also "enableGenericHTMLStyling" for Bubble wrapper?
+
 const Text: FC<TextProps> = props => {
 	const { message, config } = useMessageContext();
-	const text = message?.text?.toString();
+	const text = message?.text;
+	const source = message?.source;
 	const content = props.content || text || "";
-	//@ts-ignore
-	const streamingMode = config?.settings?.behavior?.streamingMode;
+	// const streamingMode = !!config?.settings?.behavior?.streamingMode;
+	const streamingMode = true
 
-	const streamedText = useStreamText(content, streamingMode);
-
-	const enhancedURLsText = config?.settings?.widgetSettings?.disableRenderURLsAsLinks
-		? streamedText
-		: replaceUrlsWithHTMLanchorElem(streamedText);
-
-	const __html = config?.settings?.layout?.disableHtmlContentSanitization
-		? enhancedURLsText
-		: sanitizeHTML(enhancedURLsText);
-
-	// TODO: do we need to handle also "enableGenericHTMLStyling" for Bubble wrapper?
+	const isStreaming = (streamingMode && source === 'bot' && Array.isArray(content))
+	const textStates = useStreamText(content, streamingMode, source);
 
 	return (
-		<ChatBubble>
-			<div
-				id={props?.id}
-				className={classNames(classes.text, props?.className)}
-				dangerouslySetInnerHTML={{ __html: __html }}
-			/>
+		<ChatBubble isStreaming={isStreaming}>
+			{textStates.map((state, index) => {
+				const enhancedURLsText = config?.settings?.widgetSettings?.disableRenderURLsAsLinks
+					? state.displayedText
+					: replaceUrlsWithHTMLanchorElem(state.displayedText);
+
+				const __html = config?.settings?.layout?.disableHtmlContentSanitization
+					? enhancedURLsText
+					: sanitizeHTML(enhancedURLsText);
+
+				return (
+					<div
+						key={index}
+						id={`${props?.id}-${index}`}
+						className={classNames(classes.text, props?.className)}
+						dangerouslySetInnerHTML={{ __html }}
+					/>
+				);
+			})}
 		</ChatBubble>
 	);
 };

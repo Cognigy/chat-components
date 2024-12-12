@@ -445,206 +445,27 @@ const screens: TScreen[] = [
 			},
 			{
 				message: {
-					text: "For a delicious cheese, meat, and veggie omelette, here is a simple recipe idea:",
-					data: {
-						_cognigy: {
-							_messageId: "71e92048-c930-415d-82e1-1bbc21105e5d",
-						},
-					},
 					source: "bot",
-					timestamp: "1701163314138",
-				},
-			},
-			{
-				message: {
-					text: "### Ingredients:",
-					data: {
-						_cognigy: {
-							_messageId: "71e92048-c930-415d-82e1-1bbc21105e5d",
-						},
-					},
-					source: "bot",
-					timestamp: "1701163319138",
-				},
-				prevMessage: {
-					source: "bot",
-					timestamp: "1701163314138",
-				},
-			},
-			{
-				message: {
-					text: "- 3 large eggs",
-					data: {
-						_cognigy: {
-							_messageId: "71e92048-c930-415d-82e1-1bbc21105e5d",
-						},
-					},
-					source: "bot",
-				},
-			},
-			{
-				message: {
-					text: "- 1/4 cup of shredded cheese (such as cheddar or mozzarella)",
-					data: {
-						_cognigy: {
-							_messageId: "71e92048-c930-415d-82e1-1bbc21105e5d",
-						},
-					},
-					source: "bot",
-				},
-			},
-			{
-				message: {
-					text: "- 1/4 cup of cooked ham or bacon, chopped",
-					data: {
-						_cognigy: {
-							_messageId: "71e92048-c930-415d-82e1-1bbc21105e5d",
-						},
-					},
-					source: "bot",
-				},
-			},
-			{
-				message: {
-					text: "- 1/4 cup of mixed vegetables (like bell peppers, onions, and mushrooms), diced",
-					data: {
-						_cognigy: {
-							_messageId: "71e92048-c930-415d-82e1-1bbc21105e5d",
-						},
-					},
-					source: "bot",
-				},
-			},
-			{
-				message: {
-					text: "- Salt and pepper to taste",
-					data: {
-						_cognigy: {
-							_messageId: "71e92048-c930-415d-82e1-1bbc21105e5d",
-						},
-					},
-					source: "bot",
-				},
-			},
-			{
-				message: {
-					text: "- 1 tablespoon of butter or oil for cooking",
-					data: {
-						_cognigy: {
-							_messageId: "71e92048-c930-415d-82e1-1bbc21105e5d",
-						},
-					},
-					source: "bot",
-				},
-			},
-			{
-				message: {
-					text: "### Instructions:",
-					data: {
-						_cognigy: {
-							_messageId: "71e92048-c930-415d-82e1-1bbc21105e5d",
-						},
-					},
-					source: "bot",
-				},
-			},
-			{
-				message: {
-					text: "1. **Prepare the Ingredients**: Ensure the meat is cooked and vegetables are chopped.",
-					data: {
-						_cognigy: {
-							_messageId: "71e92048-c930-415d-82e1-1bbc21105e5d",
-						},
-					},
-					source: "bot",
-				},
-			},
-			{
-				message: {
-					text: "2. **Beat the Eggs**: In a bowl, beat the eggs with a pinch of salt and pepper.",
-					data: {
-						_cognigy: {
-							_messageId: "71e92048-c930-415d-82e1-1bbc21105e5d",
-						},
-					},
-					source: "bot",
-				},
-			},
-			{
-				message: {
-					text: "3. **Cook the Vegetables**: In a non-stick skillet, heat the butter or oil over medium heat.",
-					data: {
-						_cognigy: {
-							_messageId: "71e92048-c930-415d-82e1-1bbc21105e5d",
-						},
-					},
-					source: "bot",
-				},
-			},
-			{
-				message: {
-					text: "Add the vegetables and sauté until they are soft.",
-					data: {
-						_cognigy: {
-							_messageId: "71e92048-c930-415d-82e1-1bbc21105e5d",
-						},
-					},
-					source: "bot",
-				},
-			},
-			{
-				message: {
-					text: "4. **Add the Eggs**: Pour the beaten eggs into the skillet, making sure they cover the vegetables evenly.",
-					data: {
-						_cognigy: {
-							_messageId: "71e92048-c930-415d-82e1-1bbc21105e5d",
-						},
-					},
-					source: "bot",
-				},
-			},
-			{
-				message: {
-					text: "5. **Add Cheese and Meat**: As the eggs begin to set, sprinkle the cheese and meat over one half of the omelette.",
-					data: {
-						_cognigy: {
-							_messageId: "71e92048-c930-415d-82e1-1bbc21105e5d",
-						},
-					},
-					source: "bot",
-				},
-			},
-			{
-				message: {
-					text: "6. **Fold and Serve**: Once the omelette is mostly set, use a spatula to fold it in half.",
-					data: {
-						_cognigy: {
-							_messageId: "71e92048-c930-415d-82e1-1bbc21105e5d",
-						},
-					},
-					source: "bot",
-				},
-			},
-			{
-				message: {
-					text: "Cook for another minute, then slide it onto a plate.",
-					data: {
-						_cognigy: {
-							_messageId: "71e92048-c930-415d-82e1-1bbc21105e5d",
-						},
-					},
-					source: "bot",
-				},
-			},
-			{
-				message: {
-					text: "Would you like to know any variations or tips for cooking the omelette?",
-					data: {
-						_cognigy: {
-							_messageId: "71e92048-c930-415d-82e1-1bbc21105e5d",
-						},
-					},
-					source: "bot",
+					text: [
+						"For a delicious cheese, meat, and veggie omelette, here is a simple recipe idea:",
+						"### Ingredients:",
+						"- 3 large eggs",
+						"- 1/4 cup of shredded cheese (such as cheddar or mozzarella)",
+						"- 1/4 cup of cooked ham or bacon, chopped",
+						"- 1/4 cup of mixed vegetables (like bell peppers, onions, and mushrooms), diced",
+						"- Salt and pepper to taste",
+						"- 1 tablespoon of butter or oil for cooking",
+						"### Instructions:",
+						"1. **Prepare the Ingredients**: Ensure the meat is cooked and vegetables are chopped.",
+						"2. **Beat the Eggs**: In a bowl, beat the eggs with a pinch of salt and pepper.",
+						"3. **Cook the Vegetables**: In a non-stick skillet, heat the butter or oil over medium heat.",
+						"Add the vegetables and sauté until they are soft.",
+						"4. **Add the Eggs**: Pour the beaten eggs into the skillet, making sure they cover the vegetables evenly.",
+						"5. **Add Cheese and Meat**: As the eggs begin to set, sprinkle the cheese and meat over one half of the omelette.",
+						"6. **Fold and Serve**: Once the omelette is mostly set, use a spatula to fold it in half.",
+						"Cook for another minute, then slide it onto a plate.",
+						"Would you like to know any variations or tips for cooking the omelette?",
+					]
 				},
 			},
 			{
@@ -658,10 +479,11 @@ const screens: TScreen[] = [
 					text: "You're welcome!",
 					data: {
 						_cognigy: {
-							_messageId: "a860b998-25f9-4c73-92db-5955ca2f8ef3",
+							_messageId: "71e92048-c930-415d-82e1-1bbc21105e5d",
 						},
 					},
 					source: "bot",
+					timestamp: "1701163314138",
 				},
 			},
 			{
@@ -669,10 +491,15 @@ const screens: TScreen[] = [
 					text: "If you have any more questions or need further assistance, feel free to ask.",
 					data: {
 						_cognigy: {
-							_messageId: "a860b998-25f9-4c73-92db-5955ca2f8ef3",
+							_messageId: "71e92048-c930-415d-82e1-1bbc21105e5d",
 						},
 					},
 					source: "bot",
+					timestamp: "1701163319138",
+				},
+				prevMessage: {
+					source: "bot",
+					timestamp: "1701163314138",
 				},
 			},
 			{

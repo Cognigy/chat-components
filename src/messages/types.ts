@@ -37,6 +37,7 @@ export interface IWebchatSettings {
 		textLinkColor: string;
 	};
 	behavior: {
+		streamingMode: boolean;
 		enableTypingIndicator: boolean;
 		messageDelay: number;
 		inputPlaceholder: string;
@@ -230,6 +231,18 @@ export interface ISendMessageOptions {
 
 	/** marks this message as "collatable", delaying its submission for the enableInputCollation functionality */
 	collate: boolean;
+}
+
+export interface StreamingTextState {
+	isComplete: boolean;
+	displayedText: string;
+}
+
+export interface MessageState {
+	id: number;
+	text: string;
+	isComplete: boolean;
+	displayedText: string;
 }
 
 // TODO: move this one SocketClient repo or reuse an existing interface (IProcessOutputData?)

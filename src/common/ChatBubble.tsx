@@ -6,6 +6,7 @@ import { useMessageContext } from "src/messages/hooks";
 interface IChatBubbleProps {
 	className?: string;
 	children: React.ReactNode;
+	isStreaming?: boolean;
 }
 
 const ChatBubble: FC<IChatBubbleProps> = props => {
@@ -27,6 +28,7 @@ const ChatBubble: FC<IChatBubbleProps> = props => {
 		isUserMessage && classes[userMessageDirection],
 		isBotMessage && classes[botMessageDirection],
 		isAgentMessage && classes[agentMessageDirection],
+		props.isStreaming && classes.streamingWrapper,
 	);
 
 	return <div className={classNames}>{props.children}</div>;
