@@ -12,6 +12,8 @@ a.button {
 	color: var(--cc-primary-contrast-color);
 	border: none;
 	outline: none;
+	overflow: hidden;
+	position: relative;
 }
 
 a.button:global(.phone-number-or-url-anchor) {
@@ -48,4 +50,23 @@ a.button.disabled:focus {
 	background: var(--cc-primary-color-disabled);
 	cursor: default;
 	pointer-events: none;
+}
+
+.buttonLabelWithImage {
+	margin-left: 40px;
+}
+
+.buttonImage {
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+}
+
+.buttonImageContainer {
+	display: flex;
+	position: absolute;
+	left: 0;
+	width: 40px;
+	height: 100%;
+	border-right: 2px solid var(--cc-primary-contrast-color);
 }
