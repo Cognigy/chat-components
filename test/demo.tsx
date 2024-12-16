@@ -261,8 +261,8 @@ const screens: TScreen[] = [
 										},
 										{
 											content_type: "user_phone_number",
-											image_url: "",
-											image_alt_text: "",
+											image_url: "https://placewaifu.com/image/300/50",
+											image_alt_text: "Sample anime character",
 											payload: "0111222333",
 											title: "Call us",
 										},
