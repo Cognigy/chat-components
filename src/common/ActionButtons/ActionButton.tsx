@@ -165,7 +165,11 @@ const ActionButton: FC<ActionButtonProps> = props => {
 					<img
 						src={buttonImage as string}
 						alt={butonImageAltText as string}
-						className={classes.buttonImage}
+						className={classnames(
+							"webchat-template-button-image",
+							classes.buttonImage,
+							disabled && classes.imageDisabled,
+						)}
 					/>
 				</div>
 			)}
