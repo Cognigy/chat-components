@@ -40,7 +40,7 @@ const Text: FC<TextProps> = props => {
 				return (
 					<div
 						key={index}
-						id={`${props?.id}-${index}`}
+						id={props?.id ? `${props?.id}-${index}` : undefined}
 						className={classNames(classes.text, props?.className)}
 						dangerouslySetInnerHTML={{ __html }}
 					/>
