@@ -11,10 +11,14 @@ interface IChatBubbleProps {
 const ChatBubble: FC<IChatBubbleProps> = props => {
 	const { message, config } = useMessageContext();
 	const directionMapping = config?.settings?.widgetSettings?.sourceDirectionMapping;
+	const disableBotOutputBorder = config?.settings?.layout?.disableBotOutputBorder;
+	const botOutputMaxWidth = config?.settings?.layout?.botOutputMaxWidth;
 
 	const isUserMessage = message.source === "user";
 	const isBotMessage = message.source === "bot";
 	const isAgentMessage = message.source === "agent";
+
+	const disableBorder = isBotMessage && disableBotOutputBorder;
 
 	const userMessageDirection = directionMapping?.user || "outgoing";
 	const botMessageDirection = directionMapping?.bot || "incoming";
@@ -27,9 +31,12 @@ const ChatBubble: FC<IChatBubbleProps> = props => {
 		isUserMessage && classes[userMessageDirection],
 		isBotMessage && classes[botMessageDirection],
 		isAgentMessage && classes[agentMessageDirection],
+		disableBorder && classes.disableBorder,
 	);
 
-	return <div className={classNames}>{props.children}</div>;
+	const style = isBotMessage && botOutputMaxWidth ? { maxWidth: `${botOutputMaxWidth}%` } : {};
+
+	return <div className={classNames} style={style}>{props.children}</div>;
 };
 
 export default ChatBubble;
