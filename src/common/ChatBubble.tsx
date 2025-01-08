@@ -17,8 +17,9 @@ const ChatBubble: FC<IChatBubbleProps> = props => {
 	const isUserMessage = message.source === "user";
 	const isBotMessage = message.source === "bot";
 	const isAgentMessage = message.source === "agent";
+	const isEngagementMessage = message.source === "engagement";
 
-	const disableBorder = isBotMessage && disableBotOutputBorder;
+	const disableBorder = (isBotMessage || isEngagementMessage) && disableBotOutputBorder;
 
 	const userMessageDirection = directionMapping?.user || "outgoing";
 	const botMessageDirection = directionMapping?.bot || "incoming";
@@ -34,7 +35,7 @@ const ChatBubble: FC<IChatBubbleProps> = props => {
 		disableBorder && classes.disableBorder,
 	);
 
-	const style = isBotMessage && botOutputMaxWidth ? { maxWidth: `${botOutputMaxWidth}%` } : {};
+	const style = (isBotMessage || isEngagementMessage) && botOutputMaxWidth ? { maxWidth: `${botOutputMaxWidth}%` } : {};
 
 	return <div className={classNames} style={style}>{props.children}</div>;
 };
