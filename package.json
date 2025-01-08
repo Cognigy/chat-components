@@ -31,6 +31,7 @@
 		"@types/react": "^18.2.31",
 		"@types/react-dom": "^18.2.14",
 		"@types/react-flatpickr": "^3.8.11",
+		"@types/react-transition-group": "4.4.12",
 		"@types/remarkable": "^2.0.8",
 		"@typescript-eslint/eslint-plugin": "^6.9.0",
 		"@typescript-eslint/parser": "^6.9.0",
@@ -61,8 +62,10 @@
 		"dompurify": "^3.0.11",
 		"moment": "^2.30.1",
 		"react-flatpickr": "^3.10.13",
+		"react-markdown": "9.0.3",
 		"react-player": "2.16.0",
 		"react-tooltip": "5.28.0",
+		"react-transition-group": "4.4.5",
 		"remarkable": "^2.0.1",
 		"swiper": "^11.1.1"
 	},

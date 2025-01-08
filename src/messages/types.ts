@@ -45,6 +45,7 @@ export interface IWebchatSettings {
 		enableTTS: boolean;
 		focusInputAfterPostback: boolean;
 		enableConnectionStatusIndicator: boolean;
+		renderMarkdown: boolean;
 	};
 	startBehavior: {
 		startBehavior: "none" | "button" | "injection";
@@ -231,6 +232,12 @@ export interface ISendMessageOptions {
 
 	/** marks this message as "collatable", delaying its submission for the enableInputCollation functionality */
 	collate: boolean;
+}
+
+type TMessage = MessageProps["message"];
+
+export interface IStreamingMessage extends TMessage {
+	shouldAnimate?: boolean;
 }
 
 export interface StreamingTextState {
