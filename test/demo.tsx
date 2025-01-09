@@ -454,7 +454,22 @@ const screens: TScreen[] = [
 				config: {
 					settings: {
 						layout: {
-							botOutputMaxWidth: 95,
+							botOutputMaxWidthPercentage: 95,
+						},
+					},
+				}
+			},
+			{
+				message: {
+					source: "bot",
+					text: "This is a message with the bot output border disabled and max width set to 95%",
+				},
+
+				config: {
+					settings: {
+						layout: {
+							disableBotOutputBorder: true,
+							botOutputMaxWidthPercentage: 95,
 						},
 					},
 				}
