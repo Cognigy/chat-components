@@ -35,9 +35,16 @@ const ChatBubble: FC<IChatBubbleProps> = props => {
 		disableBorder && classes.disableBorder,
 	);
 
-	const style = (isBotMessage || isEngagementMessage) && botOutputMaxWidthPercentage ? { maxWidth: `${botOutputMaxWidthPercentage}%` } : {};
+	const style =
+		(isBotMessage || isEngagementMessage) && botOutputMaxWidthPercentage
+			? { maxWidth: `${botOutputMaxWidthPercentage}%` }
+			: {};
 
-	return <div className={classNames} style={style}>{props.children}</div>;
+	return (
+		<div className={classNames} style={style}>
+			{props.children}
+		</div>
+	);
 };
 
 export default ChatBubble;

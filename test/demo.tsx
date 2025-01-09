@@ -443,7 +443,7 @@ const screens: TScreen[] = [
 							disableBotOutputBorder: true,
 						},
 					},
-				}
+				},
 			},
 			{
 				message: {
@@ -457,7 +457,7 @@ const screens: TScreen[] = [
 							botOutputMaxWidthPercentage: 95,
 						},
 					},
-				}
+				},
 			},
 			{
 				message: {
@@ -472,7 +472,7 @@ const screens: TScreen[] = [
 							botOutputMaxWidthPercentage: 95,
 						},
 					},
-				}
+				},
 			},
 		],
 	},
