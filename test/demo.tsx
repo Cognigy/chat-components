@@ -431,6 +431,49 @@ const screens: TScreen[] = [
 					},
 				},
 			},
+			{
+				message: {
+					source: "bot",
+					text: "This is a message with the bot output border disabled",
+				},
+
+				config: {
+					settings: {
+						layout: {
+							disableBotOutputBorder: true,
+						},
+					},
+				},
+			},
+			{
+				message: {
+					source: "bot",
+					text: "This is a message with the bot output max width set to 95%",
+				},
+
+				config: {
+					settings: {
+						layout: {
+							botOutputMaxWidthPercentage: 95,
+						},
+					},
+				},
+			},
+			{
+				message: {
+					source: "bot",
+					text: "This is a message with the bot output border disabled and max width set to 95%",
+				},
+
+				config: {
+					settings: {
+						layout: {
+							disableBotOutputBorder: true,
+							botOutputMaxWidthPercentage: 95,
+						},
+					},
+				},
+			},
 		],
 	},
 	{

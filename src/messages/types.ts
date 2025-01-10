@@ -27,6 +27,9 @@ export interface IWebchatSettings {
 		disableUrlButtonSanitization: boolean;
 		watermark: "default" | "custom" | "none";
 		watermarkText: string;
+		disableBotOutputBorder: boolean;
+		botOutputMaxWidthPercentage: number;
+		chatWindowWidth: number;
 	};
 	colors: {
 		primaryColor: string;
@@ -37,6 +40,8 @@ export interface IWebchatSettings {
 		textLinkColor: string;
 	};
 	behavior: {
+		enableAIAgentNotice: boolean;
+		AIAgentNoticeText: string;
 		enableTypingIndicator: boolean;
 		messageDelay: number;
 		inputPlaceholder: string;
@@ -203,13 +208,11 @@ export interface IWebchatSettings {
 		sourceDirectionMapping: {
 			agent: TSourceDirection;
 			bot: TSourceDirection;
-			engagement: TSourceDirection;
 			user: TSourceDirection;
 		};
 		sourceColorMapping: {
 			agent: TSourceColor;
 			bot: TSourceColor;
-			engagement: TSourceColor;
 			user: TSourceColor;
 		};
 	};

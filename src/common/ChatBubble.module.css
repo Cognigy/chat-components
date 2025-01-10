@@ -10,6 +10,11 @@
 	white-space: pre-wrap;
 }
 
+.bubble.disableBorder {
+	border: none;
+	background: none !important;
+}
+
 article:global(.bot) .bubble {
 	background: var(--cc-background-bot-message);
 	color: var(--cc-bot-message-contrast-color);
