@@ -261,8 +261,8 @@ const screens: TScreen[] = [
 										},
 										{
 											content_type: "user_phone_number",
-											image_url: "",
-											image_alt_text: "",
+											image_url: "https://placewaifu.com/image/300/50",
+											image_alt_text: "Sample anime character",
 											payload: "0111222333",
 											title: "Call us",
 										},
@@ -427,6 +427,49 @@ const screens: TScreen[] = [
 					data: {
 						_test: {
 							aaa: "bbb",
+						},
+					},
+				},
+			},
+			{
+				message: {
+					source: "bot",
+					text: "This is a message with the bot output border disabled",
+				},
+
+				config: {
+					settings: {
+						layout: {
+							disableBotOutputBorder: true,
+						},
+					},
+				},
+			},
+			{
+				message: {
+					source: "bot",
+					text: "This is a message with the bot output max width set to 95%",
+				},
+
+				config: {
+					settings: {
+						layout: {
+							botOutputMaxWidthPercentage: 95,
+						},
+					},
+				},
+			},
+			{
+				message: {
+					source: "bot",
+					text: "This is a message with the bot output border disabled and max width set to 95%",
+				},
+
+				config: {
+					settings: {
+						layout: {
+							disableBotOutputBorder: true,
+							botOutputMaxWidthPercentage: 95,
 						},
 					},
 				},

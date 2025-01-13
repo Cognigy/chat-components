@@ -10,10 +10,9 @@
 	white-space: pre-wrap;
 }
 
-.streamingWrapper {
+.bubble.disableBorder {
 	border: none;
 	background: none !important;
-	max-width: 90%;
 }
 
 article:global(.bot) .bubble {

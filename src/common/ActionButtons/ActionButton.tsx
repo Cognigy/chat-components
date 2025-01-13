@@ -49,6 +49,15 @@ const ActionButton: FC<ActionButtonProps> = props => {
 			? (button as any).contentType
 			: null;
 
+	const buttonImage =
+		"image_url" in button ? button.image_url : "imageUrl" in button ? button.imageUrl : null;
+	const butonImageAltText =
+		"image_alt_text" in button
+			? button.image_alt_text
+			: "imageAltText" in button
+			? button.imageAltText
+			: "";
+
 	if (!buttonType) return null;
 
 	const buttonLabel = getWebchatButtonLabel(button) || "";
@@ -151,10 +160,24 @@ const ActionButton: FC<ActionButtonProps> = props => {
 			aria-label={getAriaLabel()}
 			aria-disabled={disabled}
 		>
+			{!!buttonImage && (
+				<div className={classes.buttonImageContainer}>
+					<img
+						src={buttonImage as string}
+						alt={butonImageAltText as string}
+						className={classnames(
+							"webchat-template-button-image",
+							classes.buttonImage,
+							disabled && classes.imageDisabled,
+						)}
+					/>
+				</div>
+			)}
 			<Typography
 				variant={size === "large" ? "title1-semibold" : "cta-semibold"}
 				component="span"
 				dangerouslySetInnerHTML={{ __html }}
+				className={!!buttonImage && classes.buttonLabelWithImage}
 			/>
 			{renderIcon()}
 		</Component>
