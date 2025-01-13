@@ -54,7 +54,7 @@ const Text: FC<TextProps> = (props) => {
 		: sanitizeHTML(enhancedURLsText);
 
 	return (
-		<ChatBubble isStreaming={isStreaming}>
+		<ChatBubble>
 			{/* Accumulated text */}
 			{
 				renderMarkdown
