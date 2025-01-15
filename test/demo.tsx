@@ -486,7 +486,7 @@ const screens: TScreen[] = [
 						behavior: {
 							streamingMode: true,
 							renderMarkdown: true,
-						},
+						}
 					},
 				},
 				message: {
@@ -500,6 +500,10 @@ const screens: TScreen[] = [
 						behavior: {
 							streamingMode: true,
 							renderMarkdown: true,
+						},
+						layout: {
+							disableBotOutputBorder: true,
+							botOutputMaxWidthPercentage: 95,
 						},
 					},
 				},
@@ -526,7 +530,8 @@ const screens: TScreen[] = [
 						"Would you like to know any variations or tips for cooking the omelette?\n",
 						"Have a great day!",
 					],
-					shouldAnimate: true,
+					animationState: "start",
+					id: "71e92048-c930-415d-82e1-1bbc21105e5d",
 				},
 			},
 			{
@@ -552,7 +557,7 @@ const screens: TScreen[] = [
 					},
 				},
 				message: {
-					text: "You're welcome!",
+					text: ["You're welcome!"],
 					data: {
 						_cognigy: {
 							_messageId: "71e92048-c930-415d-82e1-1bbc21105e5d",
@@ -560,6 +565,8 @@ const screens: TScreen[] = [
 					},
 					source: "bot",
 					timestamp: "1701163314138",
+					id: "71e92048-c930-415d-82e1-1bbc21105e5d",
+					animationState: "start",
 				},
 			},
 			{
@@ -571,7 +578,7 @@ const screens: TScreen[] = [
 					},
 				},
 				message: {
-					text: "If you have any more questions or need further assistance, feel free to ask.",
+					text: ["If you have any more questions or need further assistance, feel free to ask."],
 					data: {
 						_cognigy: {
 							_messageId: "71e92048-c930-415d-82e1-1bbc21105e5d",
@@ -579,6 +586,8 @@ const screens: TScreen[] = [
 					},
 					source: "bot",
 					timestamp: "1701163319138",
+					id: "71e92048-c930-415d-82e1-1bbc21105e5d",
+					animationState: "start",
 				},
 				prevMessage: {
 					source: "bot",
@@ -587,13 +596,15 @@ const screens: TScreen[] = [
 			},
 			{
 				message: {
-					text: "Enjoy your omelette!",
+					text: ["Enjoy your omelette!"],
 					data: {
 						_cognigy: {
 							_messageId: "a860b998-25f9-4c73-92db-5955ca2f8ef3",
 						},
 					},
 					source: "bot",
+					id: "71e92048-c930-415d-82e1-1bbc21105e5d",
+					animationState: "start",
 				},
 			},
 		],

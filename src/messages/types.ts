@@ -240,7 +240,7 @@ export interface ISendMessageOptions {
 type TMessage = MessageProps["message"];
 
 export interface IStreamingMessage extends TMessage {
-	shouldAnimate?: boolean;
+	animationState?: "start" | "animating" | "done" | "exited";
 }
 
 export interface StreamingTextState {

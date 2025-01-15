@@ -1,10 +1,14 @@
-import { FC, useEffect, useState } from "react";
+import { FC, useEffect, useRef, useState } from "react";
 import { CSSTransition } from "react-transition-group";
 import classes from "./StreamingTextAnimation.module.css";
+import { IStreamingMessage } from "../types";
 
 interface StreamingTextAnimationProps {
 	content: string[];                   // text chunks
 	onTextUpdate: (newText: string) => void;
+	onSetMessageAnimated?: (messageId: string, animationState: IStreamingMessage["animationState"]) => void;
+	messageId: string;
+	animationState: IStreamingMessage["animationState"];
 }
 
 /**
@@ -29,12 +33,17 @@ const getTransitionTimeout = (text: string) => {
 const StreamingTextAnimation: FC<StreamingTextAnimationProps> = ({
 	content,
 	onTextUpdate,
+	onSetMessageAnimated,
+	messageId,
+	animationState,
 }) => {
 	const [currentAnimatedText, setCurrentAnimatedText] = useState("");
 	const [typingProgress, setTypingProgress] = useState(0);
 	const [animationQueue, setAnimationQueue] = useState<string[]>([]);
 	const [lastAnimatedIndex, setLastAnimatedIndex] = useState<number | null>(null);
 	const [animationComplete, setAnimationComplete] = useState(false);
+
+	const nodeRef = useRef(null);
 
 	/**
 	 * Whenever `content` changes, queue up any new chunks that haven't been animated yet.
@@ -91,13 +100,26 @@ const StreamingTextAnimation: FC<StreamingTextAnimationProps> = ({
 		setAnimationQueue((prev) => prev.slice(1));
 		setLastAnimatedIndex((prev) => (prev === null ? 0 : prev + 1));
 		setAnimationComplete(false);
-	}, [animationComplete, currentAnimatedText, onTextUpdate]);
+
+		// If there are no more chunks, mark the message as fully animated unless it was exited
+		if (animationQueue.length === 0 && animationState !== "exited" && onSetMessageAnimated) {
+			onSetMessageAnimated(messageId, "done");
+		}
+	}, [animationComplete, currentAnimatedText, onTextUpdate, animationQueue.length, messageId, onSetMessageAnimated, animationState]);
+
+	//cleanup side effect on unmount set as fully animated
+	useEffect(() => {
+		return () => {
+			if (onSetMessageAnimated) onSetMessageAnimated(messageId, "exited");
+		};
+	}, []);
 
 	/**
 	 * Render the “typing in progress” chunk as it appears.
 	 */
 	return (
 		<CSSTransition
+			nodeRef={nodeRef}
 			in={!!currentAnimatedText}
 			timeout={getTransitionTimeout(currentAnimatedText)}
 			classNames={{
@@ -110,7 +132,7 @@ const StreamingTextAnimation: FC<StreamingTextAnimationProps> = ({
 			onEntered={() => setAnimationComplete(true)}
 			unmountOnExit
 		>
-			<span className={classes.typingText}>
+			<span ref={nodeRef} className={classes.typingText}>
 				{currentAnimatedText.slice(0, typingProgress)}
 			</span>
 		</CSSTransition>

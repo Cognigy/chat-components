@@ -25,7 +25,7 @@ and much more. We aim to use these components in various products such as:
 
 ### To test in local Webchat v3 build:
 
-1. In /chat-components run `npm ci && npm run build && npm pack`
+1. In /chat-components run `npm ci && npm pack`
 2. In /Webchat folder run npm i with the correct relative path and file name, e.g. `npm i ../chat-components/cognigy-chat-components-0.36.1.tgz`
 
 ## Release
