@@ -44,10 +44,10 @@ const ActionButton: FC<ActionButtonProps> = props => {
 		"type" in button
 			? button.type
 			: "content_type" in button
-			? button.content_type
-			: "contentType" in button
-			? (button as any).contentType
-			: null;
+				? button.content_type
+				: "contentType" in button
+					? (button as any).contentType
+					: null;
 
 	const buttonImage =
 		"image_url" in button ? button.image_url : "imageUrl" in button ? button.imageUrl : null;
@@ -55,8 +55,8 @@ const ActionButton: FC<ActionButtonProps> = props => {
 		"image_alt_text" in button
 			? button.image_alt_text
 			: "imageAltText" in button
-			? button.imageAltText
-			: "";
+				? button.imageAltText
+				: "";
 
 	if (!buttonType) return null;
 

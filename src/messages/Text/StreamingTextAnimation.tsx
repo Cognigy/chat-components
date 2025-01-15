@@ -4,9 +4,12 @@ import classes from "./StreamingTextAnimation.module.css";
 import { IStreamingMessage } from "../types";
 
 interface StreamingTextAnimationProps {
-	content: string[];                   // text chunks
+	content: string[]; // text chunks
 	onTextUpdate: (newText: string) => void;
-	onSetMessageAnimated?: (messageId: string, animationState: IStreamingMessage["animationState"]) => void;
+	onSetMessageAnimated?: (
+		messageId: string,
+		animationState: IStreamingMessage["animationState"],
+	) => void;
 	messageId: string;
 	animationState: IStreamingMessage["animationState"];
 }
@@ -15,8 +18,8 @@ interface StreamingTextAnimationProps {
  * Calculate a typing speed based on the length of the text
  */
 const getTypingSpeed = (text: string) => {
-	const baseSpeed = 5;   //fastest speed in ms
-	const maxSpeed = 20;   // slowest speed in ms
+	const baseSpeed = 5; //fastest speed in ms
+	const maxSpeed = 20; // slowest speed in ms
 	return Math.max(baseSpeed, Math.min(maxSpeed, text.length / 10));
 };
 
@@ -79,7 +82,7 @@ const StreamingTextAnimation: FC<StreamingTextAnimationProps> = ({
 		}
 
 		const timer = setTimeout(() => {
-			setTypingProgress((prev) => prev + 1);
+			setTypingProgress(prev => prev + 1);
 		}, getTypingSpeed(currentAnimatedText));
 
 		return () => clearTimeout(timer);
@@ -97,15 +100,23 @@ const StreamingTextAnimation: FC<StreamingTextAnimationProps> = ({
 
 		// Reset & proceed to the next chunk
 		setCurrentAnimatedText("");
-		setAnimationQueue((prev) => prev.slice(1));
-		setLastAnimatedIndex((prev) => (prev === null ? 0 : prev + 1));
+		setAnimationQueue(prev => prev.slice(1));
+		setLastAnimatedIndex(prev => (prev === null ? 0 : prev + 1));
 		setAnimationComplete(false);
 
 		// If there are no more chunks, mark the message as fully animated unless it was exited
 		if (animationQueue.length === 0 && animationState !== "exited" && onSetMessageAnimated) {
 			onSetMessageAnimated(messageId, "done");
 		}
-	}, [animationComplete, currentAnimatedText, onTextUpdate, animationQueue.length, messageId, onSetMessageAnimated, animationState]);
+	}, [
+		animationComplete,
+		currentAnimatedText,
+		onTextUpdate,
+		animationQueue.length,
+		messageId,
+		onSetMessageAnimated,
+		animationState,
+	]);
 
 	//cleanup side effect on unmount set as fully animated
 	useEffect(() => {

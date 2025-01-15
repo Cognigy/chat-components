@@ -19,7 +19,7 @@
 
 .markdown > p:only-child {
 	margin: 0;
-  }
+}
 
 .container {
 	display: flex;

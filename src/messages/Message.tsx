@@ -29,7 +29,10 @@ export interface MessageProps {
 	prevMessage?: IMessage;
 	theme?: IWebchatTheme;
 	attributes?: React.HTMLProps<HTMLDivElement> & { styles?: React.CSSProperties };
-	onSetMessageAnimated?: (messageId: string, animationState: IStreamingMessage["animationState"]) => void;
+	onSetMessageAnimated?: (
+		messageId: string,
+		animationState: IStreamingMessage["animationState"],
+	) => void;
 }
 
 const Message: FC<MessageProps> = props => {

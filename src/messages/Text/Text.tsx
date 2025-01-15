@@ -30,7 +30,8 @@ const Text: FC<TextProps> = props => {
 		(message as IStreamingMessage)?.animationState === "animating" ||
 		false;
 
-	const renderMarkdown = config?.settings?.behavior?.renderMarkdown && (source === "bot" || source === "engagement");
+	const renderMarkdown =
+		config?.settings?.behavior?.renderMarkdown && (source === "bot" || source === "engagement");
 	const streamingMode = !!config?.settings?.behavior?.streamingMode;
 
 	const isStreaming = useMemo(

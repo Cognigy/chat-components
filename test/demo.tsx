@@ -486,7 +486,7 @@ const screens: TScreen[] = [
 						behavior: {
 							streamingMode: true,
 							renderMarkdown: true,
-						}
+						},
 					},
 				},
 				message: {
@@ -578,7 +578,9 @@ const screens: TScreen[] = [
 					},
 				},
 				message: {
-					text: ["If you have any more questions or need further assistance, feel free to ask."],
+					text: [
+						"If you have any more questions or need further assistance, feel free to ask.",
+					],
 					data: {
 						_cognigy: {
 							_messageId: "71e92048-c930-415d-82e1-1bbc21105e5d",
