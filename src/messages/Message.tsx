@@ -107,7 +107,10 @@ const Message: FC<MessageProps> = props => {
 			onEmitAnalytics={onEmitAnalytics}
 			openXAppOverlay={openXAppOverlay}
 		>
-			<article className={rootClassName}>
+			<article
+				{...(message.id ? { id: message.id } : {})}
+				className={rootClassName}
+			>
 				{showHeader && <MessageHeader enableAvatar={message.source !== "user"} />}
 				{matchedPlugins.map((plugin, index) =>
 					plugin.component ? (
