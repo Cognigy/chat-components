@@ -15,6 +15,7 @@
 
 .markdown {
 	display: inline;
+	white-space: normal;
 }
 
 .markdown > p:only-child {
