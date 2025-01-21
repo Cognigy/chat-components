@@ -123,7 +123,7 @@ const StreamingTextAnimation: FC<StreamingTextAnimationProps> = ({
 		return () => {
 			if (onSetMessageAnimated) onSetMessageAnimated(messageId, "exited");
 		};
-	}, []);
+	}, [messageId, onSetMessageAnimated]);
 
 	/**
 	 * Render the “typing in progress” chunk as it appears.
