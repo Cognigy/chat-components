@@ -7,7 +7,11 @@ jobs:
         runs-on: ubuntu-latest
         steps:
             - uses: actions/checkout@v4
-            - uses: actionsx/prettier@v2
+            - uses: actions/setup-node@v3
               with:
-                  # We should consider autofixing the issues at some point
-                  args: --check .
+                  node-version: '18'
+
+            - name: Install Dependencies
+              run: npm ci
+            - name: Run Prettier Check
+              run: npx prettier --check .
