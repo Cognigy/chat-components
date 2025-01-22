@@ -8,7 +8,7 @@ import { IStreamingMessage } from "../types";
 import classes from "./Text.module.css";
 import StreamingTextAnimation from "./StreamingTextAnimation";
 import Markdown from "react-markdown";
-import rehypeRaw from 'rehype-raw'
+import rehypeRaw from "rehype-raw";
 
 interface TextProps {
 	content?: string | string[];
