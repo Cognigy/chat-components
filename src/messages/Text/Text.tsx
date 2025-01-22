@@ -8,6 +8,7 @@ import { IStreamingMessage } from "../types";
 import classes from "./Text.module.css";
 import StreamingTextAnimation from "./StreamingTextAnimation";
 import Markdown from "react-markdown";
+import rehypeRaw from 'rehype-raw'
 
 interface TextProps {
 	content?: string | string[];
@@ -68,7 +69,10 @@ const Text: FC<TextProps> = props => {
 		<ChatBubble>
 			{/* Accumulated text */}
 			{renderMarkdown ? (
-				<Markdown className={classNames(classes.markdown, props?.markdownClassName)}>
+				<Markdown
+					className={classNames(classes.markdown, props?.markdownClassName)}
+					rehypePlugins={[rehypeRaw]}
+				>
 					{displayedText}
 				</Markdown>
 			) : (
