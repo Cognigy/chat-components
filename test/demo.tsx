@@ -484,7 +484,7 @@ const screens: TScreen[] = [
 				config: {
 					settings: {
 						behavior: {
-							streamingMode: true,
+							collateStreamedOutputs: true,
 							renderMarkdown: true,
 						},
 					},
@@ -498,7 +498,7 @@ const screens: TScreen[] = [
 				config: {
 					settings: {
 						behavior: {
-							streamingMode: true,
+							collateStreamedOutputs: true,
 							renderMarkdown: true,
 						},
 						layout: {
@@ -538,7 +538,7 @@ const screens: TScreen[] = [
 				config: {
 					settings: {
 						behavior: {
-							streamingMode: true,
+							collateStreamedOutputs: true,
 						},
 					},
 				},
@@ -551,7 +551,7 @@ const screens: TScreen[] = [
 				config: {
 					settings: {
 						behavior: {
-							streamingMode: true,
+							collateStreamedOutputs: true,
 							renderMarkdown: true,
 						},
 					},
@@ -573,7 +573,7 @@ const screens: TScreen[] = [
 				config: {
 					settings: {
 						behavior: {
-							streamingMode: true,
+							collateStreamedOutputs: true,
 						},
 					},
 				},
