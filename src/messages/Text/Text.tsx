@@ -33,11 +33,11 @@ const Text: FC<TextProps> = props => {
 
 	const renderMarkdown =
 		config?.settings?.behavior?.renderMarkdown && (source === "bot" || source === "engagement");
-	const collateStreamedOutputs = !!config?.settings?.behavior?.collateStreamedOutputs;
+	const progressiveStreaming = !!config?.settings?.behavior?.progressiveStreaming;
 
 	const isStreaming = useMemo(
-		() => collateStreamedOutputs && (source === "bot" || source === "engagement") && content,
-		[collateStreamedOutputs, source, content],
+		() => progressiveStreaming && (source === "bot" || source === "engagement") && content,
+		[progressiveStreaming, source, content],
 	);
 
 	// Where we accumulate the typed text
