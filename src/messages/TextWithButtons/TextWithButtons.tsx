@@ -45,6 +45,7 @@ const TextWithButtons: FC = props => {
 					{...props}
 					content={text}
 					className={`webchat-${classType}-template-header`}
+					id={webchatButtonTemplateTextId}
 				/>
 			)}
 
