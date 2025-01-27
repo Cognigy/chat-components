@@ -27,41 +27,41 @@
 }
 
 .markdown table {
-    border-collapse: separate;
+	border-collapse: separate;
 	border-spacing: 0;
-    margin-bottom: 4px;
-    margin-top: 4px;
+	margin-bottom: 4px;
+	margin-top: 4px;
 }
 
 .markdown th {
 	text-align: left;
-    border-top-width: 1px;
-    border-bottom-width: 1px;
-    border-left-width: 1px;
+	border-top-width: 1px;
+	border-bottom-width: 1px;
+	border-left-width: 1px;
 	border-right-width: 0px;
 	background-color: var(--cc-black-90);
 	border-style: solid;
-    border-color: var(--cc-black-80);
-    padding: 4px 12px;
+	border-color: var(--cc-black-80);
+	padding: 4px 12px;
 }
 
 .markdown th:first-child {
-    border-top-left-radius: 6px;
+	border-top-left-radius: 6px;
 }
 
 .markdown th:last-child {
-    border-top-right-radius: 6px;
+	border-top-right-radius: 6px;
 	border-right-width: 1px;
 }
 
 .markdown td {
 	border-style: solid;
 	border-bottom-width: 1px;
-    border-left-width: 1px;
+	border-left-width: 1px;
 	border-top-width: 0px;
 	border-right-width: 0px;
-    border-color: var(--cc-black-80);
-    padding: 4px 12px;
+	border-color: var(--cc-black-80);
+	padding: 4px 12px;
 }
 
 .markdown td:last-child {
@@ -69,11 +69,11 @@
 }
 
 .markdown tbody tr:last-child td:first-child {
-    border-bottom-left-radius: 6px;
+	border-bottom-left-radius: 6px;
 }
 
 .markdown tbody tr:last-child td:last-child {
-    border-bottom-right-radius: 6px;
+	border-bottom-right-radius: 6px;
 }
 
 .container {
