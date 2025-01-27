@@ -91,9 +91,9 @@ export const getRandomId = (prefix = "") => {
  */
 export const replaceUrlsWithHTMLanchorElem = (text: string) => {
 	// Enhanced regex to better capture URLs with parameters
-	// 
+	//
 	const urlMatcherRegex =
-		/(^|\s)(\b(https?):\/\/([-a-zA-Z0-9+&@#\/%?=~_|!:,.;](\p{L}).+)([-.][a-z0-9](\p{L}).+)*\.[a-z]{2,5}(:[0-9]{1,5})?(\/[^\s]*)?(\?[^\s]*)?)/giu
+		/(^|\s)(\b(https?):\/\/([-a-zA-Z0-9+&@#\/%?=~_|!:,.;](\p{L}).+)([-.][a-z0-9](\p{L}).+)*\.[a-z]{2,5}(:[0-9]{1,5})?(\/[^\s]*)?(\?[^\s]*)?)/giu;
 
 	if (typeof text !== "string") return text;
 
