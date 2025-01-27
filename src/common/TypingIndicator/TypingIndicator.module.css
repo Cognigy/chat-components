@@ -15,6 +15,11 @@
 	margin-inline: var(--webchat-message-margin-inline, 20px);
 }
 
+.typingIndicator.disableBorder {
+	border: none;
+	background: none !important;
+}
+
 .incoming {
 	margin-inline-start: none;
 }

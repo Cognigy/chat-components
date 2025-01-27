@@ -10,7 +10,7 @@ import { getFileExtension, getFileName } from "./helper";
 // The mime types we accept for image operations
 const VALID_IMAGE_MIME_TYPES = ["image/jpeg", "image/png", "image/gif", "image/webp"];
 
-const File: FC = () => {
+const File: FC = props => {
 	const { message } = useMessageContext();
 	const attachments = message.data?.attachments as IUploadFileAttachmentData[];
 
@@ -128,7 +128,7 @@ const File: FC = () => {
 					</div>
 				)}
 			</div>
-			{message.text && <Text content={message.text} />}
+			{message.text && <Text {...props} content={message.text} />}
 		</>
 	);
 };

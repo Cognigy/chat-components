@@ -1,0 +1,23 @@
+.typingText {
+	word-break: break-word;
+	display: inline;
+	white-space: pre-wrap;
+}
+
+.typewriter-enter {
+	opacity: 0;
+}
+.typewriter-enter-active {
+	opacity: 1;
+	transition: opacity 200ms;
+}
+.typewriter-enter-done {
+	opacity: 1;
+}
+.typewriter-exit {
+	opacity: 1;
+}
+.typewriter-exit-active {
+	opacity: 0;
+	transition: opacity 200ms;
+}

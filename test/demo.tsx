@@ -477,6 +477,141 @@ const screens: TScreen[] = [
 		],
 	},
 	{
+		title: "Streaming messages with markdown",
+		anchor: "streaming-messages",
+		messages: [
+			{
+				config: {
+					settings: {
+						behavior: {
+							collateStreamedOutputs: true,
+							renderMarkdown: true,
+						},
+					},
+				},
+				message: {
+					source: "user",
+					text: "I want to cook an omelette",
+				},
+			},
+			{
+				config: {
+					settings: {
+						behavior: {
+							collateStreamedOutputs: true,
+							renderMarkdown: true,
+						},
+						layout: {
+							disableBotOutputBorder: true,
+							botOutputMaxWidthPercentage: 95,
+						},
+					},
+				},
+				message: {
+					source: "bot",
+					text: [
+						"For a delicious cheese, meat, and veggie omelette, here is a simple recipe idea:\n",
+						"### Ingredients:\n",
+						"- 3 large eggs\n",
+						"- 1/4 cup of shredded cheese (such as cheddar or mozzarella)\n",
+						"- 1/4 cup of cooked ham or bacon, chopped\n",
+						"- 1/4 cup of mixed vegetables (like bell peppers, onions, and mushrooms), diced\n",
+						"- Salt and pepper to taste\n",
+						"- 1 tablespoon of butter or oil for cooking\n",
+						"### Instructions:\n",
+						"1. **Prepare the Ingredients**: Ensure the meat is cooked and vegetables are chopped.\n",
+						"2. **Beat the Eggs**: In a bowl, beat the eggs with a pinch of salt and pepper.\n",
+						"3. **Cook the Vegetables**: In a non-stick skillet, heat the butter or oil over medium heat.",
+						" Add the vegetables and sauté until they are soft.\n",
+						"4. **Add the Eggs**: Pour the beaten eggs into the skillet, making sure they cover the vegetables evenly.\n",
+						"5. **Add Cheese and Meat**: As the eggs begin to set, sprinkle the cheese and meat over one half of the omelette.\n",
+						"6. **Fold and Serve**: Once the omelette is mostly set, use a spatula to fold it in half. ",
+						"Cook for another minute, then slide it onto a plate.\n\n",
+						"Would you like to know any variations or tips for cooking the omelette?\n",
+						"Have a great day!",
+					],
+					animationState: "start",
+					id: "71e92048-c930-415d-82e1-1bbc21105e5d",
+				},
+			},
+			{
+				config: {
+					settings: {
+						behavior: {
+							collateStreamedOutputs: true,
+						},
+					},
+				},
+				message: {
+					source: "user",
+					text: "thanks!",
+				},
+			},
+			{
+				config: {
+					settings: {
+						behavior: {
+							collateStreamedOutputs: true,
+							renderMarkdown: true,
+						},
+					},
+				},
+				message: {
+					text: ["You're welcome!"],
+					data: {
+						_cognigy: {
+							_messageId: "71e92048-c930-415d-82e1-1bbc21105e5d",
+						},
+					},
+					source: "bot",
+					timestamp: "1701163314138",
+					id: "71e92048-c930-415d-82e1-1bbc21105e5d",
+					animationState: "start",
+				},
+			},
+			{
+				config: {
+					settings: {
+						behavior: {
+							collateStreamedOutputs: true,
+						},
+					},
+				},
+				message: {
+					text: [
+						"If you have any more questions or need further assistance, feel free to ask.",
+					],
+					data: {
+						_cognigy: {
+							_messageId: "71e92048-c930-415d-82e1-1bbc21105e5d",
+						},
+					},
+					source: "bot",
+					timestamp: "1701163319138",
+					id: "71e92048-c930-415d-82e1-1bbc21105e5d",
+					animationState: "start",
+				},
+				prevMessage: {
+					source: "bot",
+					timestamp: "1701163314138",
+				},
+			},
+			{
+				message: {
+					text: ["Enjoy your omelette!"],
+					data: {
+						_cognigy: {
+							_messageId: "a860b998-25f9-4c73-92db-5955ca2f8ef3",
+						},
+					},
+					source: "bot",
+					id: "71e92048-c930-415d-82e1-1bbc21105e5d",
+					animationState: "start",
+				},
+			},
+		],
+	},
+	{
 		title: "xApp Buttons",
 		anchor: "xapp-buttons",
 		messages: [

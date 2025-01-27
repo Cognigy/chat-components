@@ -40,6 +40,7 @@ export interface IWebchatSettings {
 		textLinkColor: string;
 	};
 	behavior: {
+		progressiveStreaming: boolean;
 		enableAIAgentNotice: boolean;
 		AIAgentNoticeText: string;
 		enableTypingIndicator: boolean;
@@ -49,6 +50,7 @@ export interface IWebchatSettings {
 		enableTTS: boolean;
 		focusInputAfterPostback: boolean;
 		enableConnectionStatusIndicator: boolean;
+		renderMarkdown: boolean;
 	};
 	startBehavior: {
 		startBehavior: "none" | "button" | "injection";
@@ -233,6 +235,24 @@ export interface ISendMessageOptions {
 
 	/** marks this message as "collatable", delaying its submission for the enableInputCollation functionality */
 	collate: boolean;
+}
+
+type TMessage = MessageProps["message"];
+
+export interface IStreamingMessage extends TMessage {
+	animationState?: "start" | "animating" | "done" | "exited";
+}
+
+export interface StreamingTextState {
+	isComplete: boolean;
+	displayedText: string;
+}
+
+export interface MessageState {
+	id: number;
+	text: string;
+	isComplete: boolean;
+	displayedText: string;
 }
 
 // TODO: move this one SocketClient repo or reuse an existing interface (IProcessOutputData?)

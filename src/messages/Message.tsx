@@ -4,7 +4,7 @@ import classnames from "classnames";
 import MessageHeader from "../common/MessageHeader";
 import { match, MessagePlugin } from "../matcher";
 import { MessageProvider } from "./context";
-import { IWebchatConfig, IWebchatTheme, MessageSender } from "./types";
+import { IStreamingMessage, IWebchatConfig, IWebchatTheme, MessageSender } from "./types";
 
 import "src/theme.css";
 import classes from "./Message.module.css";
@@ -19,7 +19,7 @@ export interface MessageProps {
 	hasReply?: boolean;
 	isConversationEnded?: boolean;
 	isFullscreen?: boolean;
-	message: IMessage;
+	message: IMessage & { id?: string };
 	onDismissFullscreen?: () => void;
 	onEmitAnalytics?: (event: string, payload?: unknown) => void;
 	onSendMessage?: MessageSender; // = "prop.action", for legacy plugins
@@ -29,6 +29,10 @@ export interface MessageProps {
 	prevMessage?: IMessage;
 	theme?: IWebchatTheme;
 	attributes?: React.HTMLProps<HTMLDivElement> & { styles?: React.CSSProperties };
+	onSetMessageAnimated?: (
+		messageId: string,
+		animationState: IStreamingMessage["animationState"],
+	) => void;
 }
 
 const Message: FC<MessageProps> = props => {
@@ -88,6 +92,7 @@ const Message: FC<MessageProps> = props => {
 					prevMessage={prevMessage}
 					theme={props.theme}
 					attributes={{ styles: { flexGrow: 1, minHeight: 0 } }}
+					onSetMessageAnimated={props.onSetMessageAnimated}
 				/>
 			);
 		}
@@ -102,7 +107,7 @@ const Message: FC<MessageProps> = props => {
 			onEmitAnalytics={onEmitAnalytics}
 			openXAppOverlay={openXAppOverlay}
 		>
-			<article className={rootClassName}>
+			<article {...(message.id ? { id: message.id } : {})} className={rootClassName}>
 				{showHeader && <MessageHeader enableAvatar={message.source !== "user"} />}
 				{matchedPlugins.map((plugin, index) =>
 					plugin.component ? (
@@ -117,6 +122,7 @@ const Message: FC<MessageProps> = props => {
 							onSetFullscreen={onSetFullscreen}
 							prevMessage={prevMessage}
 							theme={props.theme}
+							onSetMessageAnimated={props.onSetMessageAnimated}
 						/>
 					) : null,
 				)}
