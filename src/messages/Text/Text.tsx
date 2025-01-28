@@ -75,10 +75,7 @@ const Text: FC<TextProps> = props => {
 					rehypePlugins={[rehypeRaw]}
 					remarkPlugins={[remarkGfm]}
 					components={{
-						// eslint-disable-next-line @typescript-eslint/no-unused-vars
-						a: ({ node, ...props }) => (
-							<a target="_blank" rel="noreferrer" {...props} />
-						),
+						a: props => <a target="_blank" rel="noreferrer" {...props} />,
 					}}
 				>
 					{displayedText}
