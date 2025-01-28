@@ -6,6 +6,7 @@ import { TSourceDirection } from "src/messages/types";
 interface ITypingIndicator {
 	className?: string;
 	direction?: TSourceDirection;
+	disableBorder?: boolean;
 }
 
 const TypingIndicator: FC<ITypingIndicator> = props => {
@@ -14,6 +15,7 @@ const TypingIndicator: FC<ITypingIndicator> = props => {
 		props.className,
 		"webchat-typing-indicator",
 		props.direction && classes[props.direction],
+		props.disableBorder && classes.disableBorder,
 	);
 
 	return (

@@ -17,7 +17,7 @@ import classNames from "classnames";
  * Currently, QR buttons template behaves differently to "Text with Buttons":
  * - QR buttons get disabled when there is a reply in chat from the user
  */
-const TextWithButtons: FC = () => {
+const TextWithButtons: FC = props => {
 	const { action, message, config, onEmitAnalytics, messageParams, openXAppOverlay } =
 		useMessageContext();
 
@@ -42,6 +42,7 @@ const TextWithButtons: FC = () => {
 		<div className={`webchat-${classType}-template-root`}>
 			{text && (
 				<Text
+					{...props}
 					content={text}
 					className={`webchat-${classType}-template-header`}
 					id={webchatButtonTemplateTextId}
