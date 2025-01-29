@@ -40,7 +40,7 @@ export interface IWebchatSettings {
 		textLinkColor: string;
 	};
 	behavior: {
-		progressiveStreaming: boolean;
+		progressiveMessageRendering: boolean;
 		enableAIAgentNotice: boolean;
 		AIAgentNoticeText: string;
 		enableTypingIndicator: boolean;
