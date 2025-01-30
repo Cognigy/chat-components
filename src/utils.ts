@@ -93,7 +93,7 @@ export const replaceUrlsWithHTMLanchorElem = (text: string) => {
 	// Enhanced regex to better capture URLs with parameters
 	//
 	const urlMatcherRegex =
-		/(^|\s)(\b(https?):\/\/([-A-Z0-9+&@$#/%?=~_|!:,.;\p{L}]*[-A-Z0-9+&$@#/%=~_|\p{L}]))/giu
+		/(^|\s)(\b(https?):\/\/([-A-Z0-9+&@$#/%?=~_|!:,.;\p{L}]*[-A-Z0-9+&$@#/%=~_|\p{L}]))/giu;
 
 	if (typeof text !== "string") return text;
 
