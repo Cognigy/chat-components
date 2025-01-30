@@ -4,11 +4,17 @@ import { Message } from "src/index";
 
 describe("Text Component", () => {
 	describe("Links", () => {
-		test("renders all the links in the single paragra of text by breaking them",async ()=>{
-			render(<Message message={{ text: "This is the text I used for testing: You can visit https://example.com for general information or explore http://www.example.com for detailed guides. For API documentation, check https://subdomain.example.com/path/to/page. Developers often use http://localhost:3000 or https://127.0.0.1 for local testing. Resources like ftp://example.com/resource/file.txt are helpful, and UK visitors can use https://example.co.uk. For specific queries, try https://example.com?query=param&other=value, or jump directly to sections like https://example.com/path?query=param#fragment. To access restricted content, log in with https://user:passw$ord@example.com. For German users, domains such as https://müller.de or https://frühstück.com are also valid, and international users might visit https://täst.com." }} />);
+		test("renders all the links in the single paragra of text by breaking them", async () => {
+			render(
+				<Message
+					message={{
+						text: "This is the text I used for testing: You can visit https://example.com for general information or explore http://www.example.com for detailed guides. For API documentation, check https://subdomain.example.com/path/to/page. Developers often use http://localhost:3000 or https://127.0.0.1 for local testing. Resources like ftp://example.com/resource/file.txt are helpful, and UK visitors can use https://example.co.uk. For specific queries, try https://example.com?query=param&other=value, or jump directly to sections like https://example.com/path?query=param#fragment. To access restricted content, log in with https://user:passw$ord@example.com. For German users, domains such as https://müller.de or https://frühstück.com are also valid, and international users might visit https://täst.com.",
+					}}
+				/>,
+			);
 			const linkElem = screen.getAllByRole("link");
 			expect(linkElem.length).toBe(12);
-		})
+		});
 		test.each([
 			"https://de.wikipedia.org/wiki/Düsseldorf",
 			"https://de.wikipedia.org/wiki/Überlingen",
