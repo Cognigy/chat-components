@@ -52,7 +52,8 @@ export const isMessageCollatable = (message: IMessage, prevMessage?: IMessage) =
 		return false;
 
 	return (
-		prevMessage &&
+		prevMessage && 
+		!!prevMessage.text &&
 		isNaN(difference) === false &&
 		difference < COLLATION_LIMIT &&
 		prevMessage?.source === message?.source
