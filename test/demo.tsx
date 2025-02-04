@@ -188,7 +188,7 @@ const screens: TScreen[] = [
 				},
 			},
 		],
-		content: [<TypingIndicator key={1}/>, <ChatEvent key={2} text="Conversation started" />],
+		content: [<TypingIndicator key={1} />, <ChatEvent key={2} text="Conversation started" />],
 	},
 	{
 		title: "Multimedia messages",
