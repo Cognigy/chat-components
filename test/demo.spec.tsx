@@ -1,8 +1,12 @@
 import { render, screen } from "@testing-library/react";
-import { describe, it, expect } from "vitest";
+import { describe, it, expect, beforeAll, vi } from "vitest";
 import { Demo } from "./demo";
 
 describe("Demo Page UI", () => {
+	beforeAll(()=>{
+		vi.spyOn(Date.prototype, 'toLocaleTimeString').mockReturnValue('12:00 PM');
+		vi.spyOn(window.crypto, 'randomUUID').mockReturnValue('123e4567-e89b-12d3-a456-426614174000');
+	})
 	it("Default Preview", () => {
 		const { asFragment } = render(<Demo />);
 		const defaultPreview = screen.getByText(/Default Preview/);
