@@ -35,6 +35,43 @@ export const getWebchatButtonLabel: getWebchatButtonLabel = button => {
 	return title;
 };
 
+export class CollateMessage {
+	private lastBotMessage: string = '';
+
+	isMessageCollatable(message: IMessage, prevMessage?: IMessage) {
+		const COLLATION_LIMIT = 1000 * 60; // 60 sec
+
+		const difference = Number(message?.timestamp) - Number(prevMessage?.timestamp);
+
+		if (message.source === "user") this.lastBotMessage = ''
+
+		// XAppSubmitMessages is a pill, and should always be collated
+		if (message?.data?._plugin?.type === "x-app-submit") return true;
+
+		// if the previous message was a rating message that displays an event status pill, don't collate
+		if (
+			prevMessage?.source === "user" &&
+			prevMessage?.data?._cognigy?.controlCommands?.[0]?.type === "setRating" &&
+			prevMessage?.data?._cognigy?.controlCommands?.[0]?.parameters?.showRatingStatus === true
+		)
+			return false;
+
+		// If the previous bot message is empty and this is the first message, don't collate
+		if (prevMessage && prevMessage.source === message.source && !prevMessage.text && !this.lastBotMessage) return false;
+
+		const isCollatable = (
+			prevMessage &&
+			isNaN(difference) === false &&
+			difference < COLLATION_LIMIT &&
+			prevMessage?.source === message?.source
+		)
+
+		if (message.source === 'bot' && message.text) this.lastBotMessage = message.text;
+
+		return isCollatable;
+	}
+
+}
 export const isMessageCollatable = (message: IMessage, prevMessage?: IMessage) => {
 	const COLLATION_LIMIT = 1000 * 60; // 60 sec
 
@@ -53,7 +90,6 @@ export const isMessageCollatable = (message: IMessage, prevMessage?: IMessage) =
 
 	return (
 		prevMessage &&
-		!!prevMessage.text &&
 		isNaN(difference) === false &&
 		difference < COLLATION_LIMIT &&
 		prevMessage?.source === message?.source
