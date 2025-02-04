@@ -188,7 +188,7 @@ const screens: TScreen[] = [
 				},
 			},
 		],
-		content: [<TypingIndicator />, <ChatEvent text="Conversation started" />],
+		content: [<TypingIndicator key={1}/>, <ChatEvent key={2} text="Conversation started" />],
 	},
 	{
 		title: "Multimedia messages",
@@ -789,7 +789,7 @@ const Screen: FC<ScreenProps> = props => {
 	);
 };
 
-const Demo = () => {
+export const Demo = () => {
 	const [currentScreen, setCurrentScreen] = useState(() => {
 		const CURRENT_PR = screens[9].anchor;
 
@@ -808,8 +808,10 @@ const Demo = () => {
 	);
 };
 
-ReactDOM.createRoot(document.getElementById("root")!).render(
-	<React.StrictMode>
-		<Demo />
-	</React.StrictMode>,
-);
+if (process.env.NODE_ENV === "development") {
+	ReactDOM.createRoot(document.getElementById("root")!).render(
+		<React.StrictMode>
+			<Demo />
+		</React.StrictMode>,
+	);
+}
