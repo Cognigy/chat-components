@@ -1,6 +1,7 @@
 import { IMessage, IWebchatMessage } from "@cognigy/socket-client";
 import { IWebchatConfig } from "./messages/types";
 import { ActionButtonsProps } from "./common/ActionButtons/ActionButtons";
+import { match, MessagePlugin } from "./matcher";
 
 /**
  * Decides between _webchat and _facebook payload.
@@ -36,17 +37,29 @@ export const getWebchatButtonLabel: getWebchatButtonLabel = button => {
 };
 
 export class CollateMessage {
-	private lastBotMessage: string = '';
+	private firstBotMessage: IMessage | undefined;
+	private readonly COLLATION_LIMIT: number = 1000 * 60; // 60 sec
 
-	isMessageCollatable(message: IMessage, prevMessage?: IMessage) {
-		const COLLATION_LIMIT = 1000 * 60; // 60 sec
+	private isMessageValid(plugins: MessagePlugin[] | undefined, config: IWebchatConfig | undefined, message: IMessage | undefined) {
+		if (!message) return false
+
+		const matchedPlugins = match(message, config, plugins);
+
+		if (!matchedPlugins.length) return false;
+
+		return true;
+	}
+
+	isMessageCollatable(message: IMessage, config?: IWebchatConfig, plugins?: MessagePlugin[], prevMessage?: IMessage) {
 
 		const difference = Number(message?.timestamp) - Number(prevMessage?.timestamp);
 
-		if (message.source === "user") this.lastBotMessage = ''
-
 		// XAppSubmitMessages is a pill, and should always be collated
 		if (message?.data?._plugin?.type === "x-app-submit") return true;
+
+		
+		if (message.source !== 'bot') this.firstBotMessage = undefined;
+
 
 		// if the previous message was a rating message that displays an event status pill, don't collate
 		if (
@@ -56,22 +69,32 @@ export class CollateMessage {
 		)
 			return false;
 
-		// If the previous bot message is empty and this is the first message, don't collate
-		if (prevMessage && prevMessage.source === message.source && !prevMessage.text && !this.lastBotMessage) return false;
 
-		const isCollatable = (
+			const isMessageValid = this.isMessageValid(plugins,config,message);
+			
+		// If this is the first valid bot message don't collate
+		if (!this.firstBotMessage && isMessageValid  && message.source === 'bot') {
+			this.firstBotMessage = message;
+			return false;
+		}
+
+		// const isPrevMessageValid = this.isMessageValid(plugins, config, prevMessage);
+
+		// // If the previous message is invalid and the bot hasn't started messaging then don't collate
+		// if (prevMessage?.source === 'bot' && !isPrevMessageValid && !this.firstBotMessage) {
+		// 	return false;
+		// }
+
+		return (
 			prevMessage &&
 			isNaN(difference) === false &&
-			difference < COLLATION_LIMIT &&
+			difference < this.COLLATION_LIMIT &&
 			prevMessage?.source === message?.source
-		)
-
-		if (message.source === 'bot' && message.text) this.lastBotMessage = message.text;
-
-		return isCollatable;
-	}
+		);
+	};
 
 }
+
 export const isMessageCollatable = (message: IMessage, prevMessage?: IMessage) => {
 	const COLLATION_LIMIT = 1000 * 60; // 60 sec
 

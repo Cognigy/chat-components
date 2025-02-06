@@ -35,7 +35,7 @@ export interface MessageProps {
 	) => void;
 }
 
-const collateMessage = new CollateMessage()
+const collateMessage = new CollateMessage();
 
 const Message: FC<MessageProps> = props => {
 	const {
@@ -53,7 +53,7 @@ const Message: FC<MessageProps> = props => {
 		plugins,
 		prevMessage,
 	} = props;
-	const shouldCollate = collateMessage.isMessageCollatable(message, prevMessage);
+	const shouldCollate = collateMessage.isMessageCollatable(message, config, plugins, prevMessage);
 
 	const showHeader = !shouldCollate && !isFullscreen && !isEventMessage(message);
 
