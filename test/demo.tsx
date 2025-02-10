@@ -772,19 +772,19 @@ const Screen: FC<ScreenProps> = props => {
 	return (
 		<div id="content">
 			<div className={"chatRoot"}>
-					{messages.map((message, index) => (
-						<Message
-							key={index}
-							{...message}
-							config={{
-								initialSessionId: "123",
-							}}
-							action={action}
-							hasReply={messageParams?.hasReply}
-							isConversationEnded={messageParams?.isConversationEnded}
-							openXAppOverlay={url => alert(`Open XApp Overlay, url is: ${url}`)}
-						/>
-					))}
+				{messages.map((message, index) => (
+					<Message
+						key={index}
+						{...message}
+						config={{
+							initialSessionId: "123",
+						}}
+						action={action}
+						hasReply={messageParams?.hasReply}
+						isConversationEnded={messageParams?.isConversationEnded}
+						openXAppOverlay={url => alert(`Open XApp Overlay, url is: ${url}`)}
+					/>
+				))}
 				{props.content}
 			</div>
 			<MessageParams messageParams={messageParams} setMessageParams={setMessageParams} />

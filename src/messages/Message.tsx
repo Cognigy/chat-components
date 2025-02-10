@@ -108,8 +108,6 @@ const Message: FC<MessageProps> = props => {
 		}
 	}
 
-	
-
 	return (
 		<MessageProvider
 			action={action}

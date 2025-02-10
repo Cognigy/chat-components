@@ -39,9 +39,7 @@ export const getWebchatButtonLabel: getWebchatButtonLabel = button => {
 export class CollateMessage {
 	private firstBotMessageMap: Map<string, IMessage> = new Map();
 	private readonly COLLATION_LIMIT: number = 1000 * 60; // 60 sec
-	private SESSION_ID: string = 'default';
-
-	
+	private SESSION_ID: string = "default";
 
 	private isMessageValid(
 		plugins: MessagePlugin[] | undefined,
