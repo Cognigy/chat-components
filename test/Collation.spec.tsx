@@ -2,6 +2,7 @@ import { render } from "@testing-library/react";
 import { it, describe, expect } from "vitest";
 import Message from "../src/messages/Message";
 import { IMessage } from "@cognigy/socket-client";
+import { CollationProvider } from "src/messages/collation";
 
 describe("Collation", () => {
 	it("collates if timestamp is in limit", () => {
@@ -108,37 +109,37 @@ describe("Collation", () => {
 		const userMessage: IMessage = {
 			text: "hi",
 			source: "user",
-			timestamp: String(Date.now())
+			timestamp: String(Date.now()),
 		};
 		const botMessage1: IMessage = {
 			source: "bot",
-			data: {  },
-			timestamp: String(Date.now())
+			data: {},
+			timestamp: String(Date.now()),
 		};
 		const botMessage2: IMessage = {
 			text: "Hello there!",
 			source: "bot",
-			timestamp: String(Date.now())
+			timestamp: String(Date.now()),
 		};
 		const botMessage3: IMessage = {
 			source: "bot",
-			data: {  },
-			timestamp: String(Date.now())
+			data: {},
+			timestamp: String(Date.now()),
 		};
 		const botMessage4: IMessage = {
 			text: "How can I help you?",
 			source: "bot",
-			timestamp: String(Date.now())
+			timestamp: String(Date.now()),
 		};
 
 		const { getAllByTestId } = render(
-			<>
+			<CollationProvider sessionId="test">
 				<Message message={userMessage} />
 				<Message message={botMessage1} prevMessage={userMessage} />
 				<Message message={botMessage2} prevMessage={botMessage1} />
 				<Message message={botMessage3} prevMessage={botMessage2} />
 				<Message message={botMessage4} prevMessage={botMessage3} />
-			</>
+			</CollationProvider>,
 		);
 
 		const messageHeaders = getAllByTestId("message-header");

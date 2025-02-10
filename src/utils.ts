@@ -37,8 +37,11 @@ export const getWebchatButtonLabel: getWebchatButtonLabel = button => {
 };
 
 export class CollateMessage {
-	private firstBotMessage: IMessage | undefined;
+	private firstBotMessageMap: Map<string, IMessage> = new Map();
 	private readonly COLLATION_LIMIT: number = 1000 * 60; // 60 sec
+	private SESSION_ID: string = 'default';
+
+	
 
 	private isMessageValid(
 		plugins: MessagePlugin[] | undefined,
@@ -62,10 +65,15 @@ export class CollateMessage {
 	) {
 		const difference = Number(message?.timestamp) - Number(prevMessage?.timestamp);
 
+		if (config?.initialSessionId) {
+			this.SESSION_ID = config.initialSessionId;
+		}
+
 		// XAppSubmitMessages is a pill, and should always be collated
 		if (message?.data?._plugin?.type === "x-app-submit") return true;
 
-		if (message.source !== "bot") this.firstBotMessage = undefined;
+		if (message.source !== "bot" && config?.initialSessionId)
+			this.firstBotMessageMap.delete(this.SESSION_ID);
 
 		// if the previous message was a rating message that displays an event status pill, don't collate
 		if (
@@ -78,17 +86,14 @@ export class CollateMessage {
 		const isMessageValid = this.isMessageValid(plugins, config, message);
 
 		// If this is the first valid bot message don't collate
-		if (!this.firstBotMessage && isMessageValid && message.source === "bot") {
-			this.firstBotMessage = message;
+		if (
+			!this.firstBotMessageMap.get(this.SESSION_ID) &&
+			isMessageValid &&
+			message.source === "bot"
+		) {
+			this.firstBotMessageMap.set(this.SESSION_ID, message);
 			return false;
 		}
-
-		// const isPrevMessageValid = this.isMessageValid(plugins, config, prevMessage);
-
-		// // If the previous message is invalid and the bot hasn't started messaging then don't collate
-		// if (prevMessage?.source === 'bot' && !isPrevMessageValid && !this.firstBotMessage) {
-		// 	return false;
-		// }
 
 		return (
 			prevMessage &&
