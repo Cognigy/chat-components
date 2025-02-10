@@ -258,6 +258,7 @@ export interface MessageState {
 // TODO: move this one SocketClient repo or reuse an existing interface (IProcessOutputData?)
 export type MessageSender = (
 	text?: string,
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	data?: Record<string, any> | null,
 	options?: Partial<ISendMessageOptions>,
 ) => void;

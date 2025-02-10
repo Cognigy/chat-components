@@ -669,6 +669,7 @@ const screens: TScreen[] = [
 											buttons: [
 												{
 													title: "Open XApp Button",
+													// eslint-disable-next-line @typescript-eslint/no-explicit-any
 													type: "openXApp" as any,
 													payload:
 														"https://static.test?token=3c7feaf07c76d49699eaa0073d0afcdafd48dba2aa7a4dfc7acb18d0057c29c0",
