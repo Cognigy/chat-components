@@ -1,4 +1,4 @@
-import { FC, useEffect, useLayoutEffect, useMemo } from "react";
+import { FC, useMemo } from "react";
 import classnames from "classnames";
 
 import MessageHeader from "../common/MessageHeader";
