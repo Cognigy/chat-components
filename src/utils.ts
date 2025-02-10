@@ -40,8 +40,12 @@ export class CollateMessage {
 	private firstBotMessage: IMessage | undefined;
 	private readonly COLLATION_LIMIT: number = 1000 * 60; // 60 sec
 
-	private isMessageValid(plugins: MessagePlugin[] | undefined, config: IWebchatConfig | undefined, message: IMessage | undefined) {
-		if (!message) return false
+	private isMessageValid(
+		plugins: MessagePlugin[] | undefined,
+		config: IWebchatConfig | undefined,
+		message: IMessage | undefined,
+	) {
+		if (!message) return false;
 
 		const matchedPlugins = match(message, config, plugins);
 
@@ -50,16 +54,18 @@ export class CollateMessage {
 		return true;
 	}
 
-	isMessageCollatable(message: IMessage, config?: IWebchatConfig, plugins?: MessagePlugin[], prevMessage?: IMessage) {
-
+	isMessageCollatable(
+		message: IMessage,
+		config?: IWebchatConfig,
+		plugins?: MessagePlugin[],
+		prevMessage?: IMessage,
+	) {
 		const difference = Number(message?.timestamp) - Number(prevMessage?.timestamp);
 
 		// XAppSubmitMessages is a pill, and should always be collated
 		if (message?.data?._plugin?.type === "x-app-submit") return true;
 
-		
-		if (message.source !== 'bot') this.firstBotMessage = undefined;
-
+		if (message.source !== "bot") this.firstBotMessage = undefined;
 
 		// if the previous message was a rating message that displays an event status pill, don't collate
 		if (
@@ -69,11 +75,10 @@ export class CollateMessage {
 		)
 			return false;
 
+		const isMessageValid = this.isMessageValid(plugins, config, message);
 
-			const isMessageValid = this.isMessageValid(plugins,config,message);
-			
 		// If this is the first valid bot message don't collate
-		if (!this.firstBotMessage && isMessageValid  && message.source === 'bot') {
+		if (!this.firstBotMessage && isMessageValid && message.source === "bot") {
 			this.firstBotMessage = message;
 			return false;
 		}
@@ -91,8 +96,7 @@ export class CollateMessage {
 			difference < this.COLLATION_LIMIT &&
 			prevMessage?.source === message?.source
 		);
-	};
-
+	}
 }
 
 export const isMessageCollatable = (message: IMessage, prevMessage?: IMessage) => {
