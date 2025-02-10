@@ -24,7 +24,6 @@ describe("Message Matcher", () => {
 			},
 		];
 		const matchResult = match(message, undefined, config);
-		console.log(matchResult);
 		expect(matchResult[0]?.name).toBe("component");
 	});
 });

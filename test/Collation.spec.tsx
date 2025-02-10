@@ -103,4 +103,45 @@ describe("Collation", () => {
 		const messageHeaders = getAllByTestId("message-header");
 		expect(messageHeaders).toHaveLength(1);
 	});
+
+	it("handles collation with empty messages correctly", () => {
+		const userMessage: IMessage = {
+			text: "hi",
+			source: "user",
+			timestamp: String(Date.now())
+		};
+		const botMessage1: IMessage = {
+			source: "bot",
+			data: {  },
+			timestamp: String(Date.now())
+		};
+		const botMessage2: IMessage = {
+			text: "Hello there!",
+			source: "bot",
+			timestamp: String(Date.now())
+		};
+		const botMessage3: IMessage = {
+			source: "bot",
+			data: {  },
+			timestamp: String(Date.now())
+		};
+		const botMessage4: IMessage = {
+			text: "How can I help you?",
+			source: "bot",
+			timestamp: String(Date.now())
+		};
+
+		const { getAllByTestId } = render(
+			<>
+				<Message message={userMessage} />
+				<Message message={botMessage1} prevMessage={userMessage} />
+				<Message message={botMessage2} prevMessage={botMessage1} />
+				<Message message={botMessage3} prevMessage={botMessage2} />
+				<Message message={botMessage4} prevMessage={botMessage3} />
+			</>
+		);
+
+		const messageHeaders = getAllByTestId("message-header");
+		expect(messageHeaders).toHaveLength(2);
+	});
 });
