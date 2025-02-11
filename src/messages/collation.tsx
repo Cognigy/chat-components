@@ -11,14 +11,10 @@ interface CollationProviderProps {
 }
 
 // Provider component
-export function CollationProvider({ children }: CollationProviderProps) {
+function CollationProvider({ children }: CollationProviderProps) {
 	const instance = new CollateMessage();
 
 	return <CollationContext.Provider value={instance}>{children}</CollationContext.Provider>;
 }
 
-// Custom hook for using the collation context
-export function useCollation(): CollateMessage | undefined {
-	const context = useContext(CollationContext);
-	return context ?? undefined;
-}
+export { CollationContext, CollationProvider };

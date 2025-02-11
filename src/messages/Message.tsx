@@ -10,7 +10,7 @@ import "src/theme.css";
 import classes from "./Message.module.css";
 import { CollateMessage, isEventMessage } from "../utils";
 import { IMessage } from "@cognigy/socket-client";
-import { useCollation } from "./collation";
+import { useCollation } from "./hooks";
 
 export interface MessageProps {
 	action?: MessageSender;
