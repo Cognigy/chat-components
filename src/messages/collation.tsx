@@ -1,4 +1,4 @@
-import React, { createContext, useContext } from "react";
+import React, { createContext } from "react";
 import { CollateMessage } from "src/utils";
 
 // Create the context with undefined as initial value
