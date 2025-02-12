@@ -63,7 +63,7 @@ export class CollateMessage {
 	) {
 		const difference = Number(message?.timestamp) - Number(prevMessage?.timestamp);
 
-		if (config?.initialSessionId) {
+		if (config?.initialSessionId && !this.SESSION_ID) {
 			this.SESSION_ID = config.initialSessionId;
 		}
 
