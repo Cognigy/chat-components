@@ -167,6 +167,67 @@ const screens: TScreen[] = [
 					timestamp: "1701163314138",
 				},
 			},
+			{
+				message: {
+					text: "Has header",
+					source: "bot",
+					timestamp: "1701163319000",
+				},
+			},
+			{
+				message: {
+					text: "",
+					data: { _some: "" },
+					source: "bot",
+					timestamp: "1701163319111",
+				},
+				prevMessage: {
+					source: "bot",
+					timestamp: "1701163314000",
+				},
+			},
+			{
+				message: {
+					text: "Has NO header",
+					data: { _some: "" },
+					source: "bot",
+					timestamp: "1701163319222",
+				},
+				prevMessage: {
+					source: "bot",
+					timestamp: "1701163314111",
+				},
+			},
+			{
+				message: {
+					text: "This message is from user",
+					source: "user",
+					timestamp: "1701163314138",
+				},
+			},
+			{
+				message: {
+					text: "",
+					data: { DoesNotRender: "" },
+					source: "bot",
+					timestamp: "1701163319888",
+				},
+				prevMessage: {
+					source: "user",
+					timestamp: "1701163314138",
+				},
+			},
+			{
+				message: {
+					text: "Has header",
+					source: "bot",
+					timestamp: "170116331999",
+				},
+				prevMessage: {
+					source: "bot",
+					timestamp: "1701163319888",
+				},
+			},
 		],
 	},
 	{
