@@ -2,7 +2,6 @@ import { render } from "@testing-library/react";
 import { it, describe, expect } from "vitest";
 import Message from "../src/messages/Message";
 import { IMessage } from "@cognigy/socket-client";
-import { CollationProvider } from "src/messages/collation";
 
 describe("Collation", () => {
 	it("collates if timestamp is in limit", () => {
@@ -149,7 +148,7 @@ describe("Collation", () => {
 		};
 
 		const { getAllByTestId } = render(
-			<CollationProvider sessionId="test">
+			<>
 				<Message message={botMessage1} />
 				<Message message={botMessage2} prevMessage={botMessage1} />
 				<Message message={botMessage3} prevMessage={botMessage2} />
@@ -157,7 +156,7 @@ describe("Collation", () => {
 				<Message message={userMessage1} prevMessage={botMessage4} />
 				<Message message={botMessage5} prevMessage={userMessage1} />
 				<Message message={botMessage6} prevMessage={botMessage5} />
-			</CollationProvider>,
+			</>,
 		);
 
 		const messageHeaders = getAllByTestId("message-header");
