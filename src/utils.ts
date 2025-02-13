@@ -1,6 +1,7 @@
 import { IMessage, IWebchatMessage } from "@cognigy/socket-client";
 import { IWebchatConfig } from "./messages/types";
 import { ActionButtonsProps } from "./common/ActionButtons/ActionButtons";
+import { match, MessagePlugin } from "./matcher";
 
 /**
  * Decides between _webchat and _facebook payload.
@@ -34,6 +35,71 @@ export const getWebchatButtonLabel: getWebchatButtonLabel = button => {
 	}
 	return title;
 };
+
+export class CollateMessage {
+	private firstBotMessageMap: Map<string, IMessage> = new Map();
+	private readonly COLLATION_LIMIT: number = 1000 * 60; // 60 sec
+	private SESSION_ID: string = "default";
+
+	private isMessageValid(
+		plugins: MessagePlugin[] | undefined,
+		config: IWebchatConfig | undefined,
+		message: IMessage | undefined,
+	) {
+		if (!message) return false;
+
+		const matchedPlugins = match(message, config, plugins);
+
+		if (!matchedPlugins.length) return false;
+
+		return true;
+	}
+
+	isMessageCollatable(
+		message: IMessage,
+		config?: IWebchatConfig,
+		plugins?: MessagePlugin[],
+		prevMessage?: IMessage,
+	) {
+		const difference = Number(message?.timestamp) - Number(prevMessage?.timestamp);
+
+		if (config?.initialSessionId && !this.SESSION_ID) {
+			this.SESSION_ID = config.initialSessionId;
+		}
+
+		// XAppSubmitMessages is a pill, and should always be collated
+		if (message?.data?._plugin?.type === "x-app-submit") return true;
+
+		if (message.source !== "bot") this.firstBotMessageMap.delete(this.SESSION_ID);
+
+		// if the previous message was a rating message that displays an event status pill, don't collate
+		if (
+			prevMessage?.source === "user" &&
+			prevMessage?.data?._cognigy?.controlCommands?.[0]?.type === "setRating" &&
+			prevMessage?.data?._cognigy?.controlCommands?.[0]?.parameters?.showRatingStatus === true
+		)
+			return false;
+
+		const isMessageValid = this.isMessageValid(plugins, config, message);
+
+		// If this is the first valid bot message don't collate
+		if (
+			!this.firstBotMessageMap.get(this.SESSION_ID) &&
+			isMessageValid &&
+			message.source === "bot"
+		) {
+			this.firstBotMessageMap.set(this.SESSION_ID, message);
+			return false;
+		}
+
+		return (
+			prevMessage &&
+			isNaN(difference) === false &&
+			difference < this.COLLATION_LIMIT &&
+			prevMessage?.source === message?.source
+		);
+	}
+}
 
 export const isMessageCollatable = (message: IMessage, prevMessage?: IMessage) => {
 	const COLLATION_LIMIT = 1000 * 60; // 60 sec

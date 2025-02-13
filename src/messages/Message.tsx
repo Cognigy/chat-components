@@ -8,8 +8,9 @@ import { IStreamingMessage, IWebchatConfig, IWebchatTheme, MessageSender } from 
 
 import "src/theme.css";
 import classes from "./Message.module.css";
-import { isEventMessage, isMessageCollatable } from "../utils";
+import { CollateMessage, isEventMessage } from "../utils";
 import { IMessage } from "@cognigy/socket-client";
+import { useCollation } from "./hooks";
 
 export interface MessageProps {
 	action?: MessageSender;
@@ -35,6 +36,8 @@ export interface MessageProps {
 	) => void;
 }
 
+const defaultCollate = new CollateMessage();
+
 const Message: FC<MessageProps> = props => {
 	const {
 		action,
@@ -51,7 +54,14 @@ const Message: FC<MessageProps> = props => {
 		plugins,
 		prevMessage,
 	} = props;
-	const shouldCollate = isMessageCollatable(message, prevMessage);
+
+	// Get the collation instance from the context
+	const collate = useCollation();
+
+	// If it is not in the context, use the default collation instance
+	const shouldCollate = collate
+		? collate.isMessageCollatable(message, config, plugins, prevMessage)
+		: defaultCollate.isMessageCollatable(message, config, plugins, prevMessage);
 
 	const showHeader = !shouldCollate && !isFullscreen && !isEventMessage(message);
 
