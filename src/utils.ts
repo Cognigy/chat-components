@@ -70,7 +70,7 @@ export class CollateMessage {
 		// XAppSubmitMessages is a pill, and should always be collated
 		if (message?.data?._plugin?.type === "x-app-submit") return true;
 
-		if (message.source !== "bot" && config?.initialSessionId)
+		if (message.source !== "bot")
 			this.firstBotMessageMap.delete(this.SESSION_ID);
 
 		// if the previous message was a rating message that displays an event status pill, don't collate

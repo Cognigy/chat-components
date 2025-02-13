@@ -106,43 +106,61 @@ describe("Collation", () => {
 	});
 
 	it("handles collation with empty messages correctly", () => {
-		const userMessage: IMessage = {
-			text: "hi",
-			source: "user",
-			timestamp: String(Date.now()),
-		};
 		const botMessage1: IMessage = {
+			text: "First message always has a header",
 			source: "bot",
-			data: {},
-			timestamp: String(Date.now()),
+			timestamp: "1701163314138",
 		};
 		const botMessage2: IMessage = {
-			text: "Hello there!",
+			text: "This message does not have a header",
 			source: "bot",
-			timestamp: String(Date.now()),
+			timestamp: "1701163319138",
 		};
 		const botMessage3: IMessage = {
-			source: "bot",
-			data: {},
-			timestamp: String(Date.now()),
+			text: "This message has a new a header",
+			source: "agent",
+			timestamp: "1701163314138",
 		};
 		const botMessage4: IMessage = {
-			text: "How can I help you?",
+			text: "Has header",
 			source: "bot",
+			timestamp: "1701163319000",
+		};
+
+		const botMessage5: IMessage = {
+			text: "",
+			//@ts-expect-error
+			data: { _some: "" },
+			source: "bot",
+			timestamp: "1701163319111",
+		};
+
+		const botMessage6: IMessage = {
+			text: "Has NO header",
+			//@ts-expect-error
+			data: { _some: "" },
+			source: "bot",
+			timestamp: "1701163319222",
+		};
+		const userMessage1: IMessage = {
+			text: "Help me find the id",
+			source: "user",
 			timestamp: String(Date.now()),
 		};
 
 		const { getAllByTestId } = render(
 			<CollationProvider sessionId="test">
-				<Message message={userMessage} />
-				<Message message={botMessage1} prevMessage={userMessage} />
+				<Message message={botMessage1} />
 				<Message message={botMessage2} prevMessage={botMessage1} />
 				<Message message={botMessage3} prevMessage={botMessage2} />
 				<Message message={botMessage4} prevMessage={botMessage3} />
+				<Message message={userMessage1} prevMessage={botMessage4} />
+				<Message message={botMessage5} prevMessage={userMessage1} />
+				<Message message={botMessage6} prevMessage={botMessage5} />
 			</CollationProvider>,
 		);
 
 		const messageHeaders = getAllByTestId("message-header");
-		expect(messageHeaders).toHaveLength(2);
+		expect(messageHeaders).toHaveLength(5);
 	});
 });
