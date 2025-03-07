@@ -241,6 +241,7 @@ type TMessage = MessageProps["message"];
 
 export interface IStreamingMessage extends TMessage {
 	animationState?: "start" | "animating" | "done" | "exited";
+	finishReason?: string;
 }
 
 export interface StreamingTextState {

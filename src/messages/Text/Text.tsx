@@ -20,6 +20,7 @@ interface TextProps {
 		messageId: string,
 		animationState: IStreamingMessage["animationState"],
 	) => void;
+	currentAnimationMessageId?: string;
 }
 
 const Text: FC<TextProps> = props => {
@@ -96,6 +97,7 @@ const Text: FC<TextProps> = props => {
 					onSetMessageAnimated={props.onSetMessageAnimated}
 					animationState={(message as IStreamingMessage)?.animationState}
 					messageId={message.id}
+					finishReason={(message as IStreamingMessage)?.finishReason}
 				/>
 			)}
 		</ChatBubble>
