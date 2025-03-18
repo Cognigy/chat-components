@@ -1,4 +1,4 @@
-import { FC } from "react";
+import { FC, useState } from "react";
 
 import { Text } from "src/messages";
 
@@ -21,6 +21,14 @@ const TextWithButtons: FC = props => {
 	const { action, message, config, onEmitAnalytics, messageParams, openXAppOverlay } =
 		useMessageContext();
 
+	const progressiveMessageRendering = !!config?.settings?.behavior?.progressiveMessageRendering;
+	const botOutputMaxWidthPercentage = config?.settings?.layout?.botOutputMaxWidthPercentage;
+
+	const isBotMessage = message.source === "bot";
+	const isEngagementMessage = message.source === "engagement";
+
+	const [showActionButtons, setShowActionButtons] = useState(progressiveMessageRendering ? false : true);
+
 	const webchatButtonTemplateTextId = useRandomId("webchatButtonTemplateHeader");
 
 	const payload = getChannelPayload(message, config);
@@ -38,6 +46,10 @@ const TextWithButtons: FC = props => {
 
 	const classType = isQuickReplies ? "quick-reply" : "buttons";
 
+	const containerStyle = isBotMessage || isEngagementMessage && botOutputMaxWidthPercentage
+		? { maxWidth: `${botOutputMaxWidthPercentage}%` }
+		: {};
+
 	return (
 		<div className={`webchat-${classType}-template-root`}>
 			{text && (
@@ -46,23 +58,27 @@ const TextWithButtons: FC = props => {
 					content={text}
 					className={`webchat-${classType}-template-header`}
 					id={webchatButtonTemplateTextId}
+					handleShowActionButtons={setShowActionButtons}
 				/>
 			)}
 
-			<ActionButtons
-				action={modifiedAction}
-				buttonClassName={classNames(classes.button, `webchat-${classType}-template-button`)}
+			{showActionButtons && (
+				<ActionButtons
+					action={modifiedAction}
+					buttonClassName={classNames(classes.button, `webchat-${classType}-template-button`)}
 				containerClassName={classNames(
 					classes.buttons,
 					isQuickReplies && "webchat-quick-reply-template-replies-container",
 				)}
+					containerStyle={containerStyle}
 				payload={buttons}
 				showUrlIcon
 				config={config}
 				onEmitAnalytics={onEmitAnalytics}
 				templateTextId={webchatButtonTemplateTextId}
-				openXAppOverlay={openXAppOverlay}
-			/>
+					openXAppOverlay={openXAppOverlay}
+				/>
+			)}
 		</div>
 	);
 };

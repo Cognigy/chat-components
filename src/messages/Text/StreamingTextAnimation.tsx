@@ -13,16 +13,18 @@ interface StreamingTextAnimationProps {
 	messageId: string;
 	animationState: IStreamingMessage["animationState"];
 	finishReason: string | undefined;
+	handleShowActionButtons?: (show: boolean) => void;
 }
 
 /**
  * Calculate a typing speed based on the length of the text
  */
 const getTypingSpeed = (text: string) => {
-	const baseSpeed = 5; //fastest speed in ms
-	const maxSpeed = 20; // slowest speed in ms
-	return Math.max(baseSpeed, Math.min(maxSpeed, text.length / 10));
-};
+	const baseSpeed = 5;  // Fastest speed (ms per character)
+	const maxSpeed = 20;  // Slowest speed (ms per character)
+	const speed = maxSpeed - Math.min(maxSpeed - baseSpeed, text.length / 10);
+	return speed;
+};  
 
 /**
  * Calculate how long the CSSTransition should last
@@ -41,6 +43,7 @@ const StreamingTextAnimation: FC<StreamingTextAnimationProps> = ({
 	messageId,
 	animationState,
 	finishReason,
+	handleShowActionButtons,
 }) => {
 	const [currentAnimatedText, setCurrentAnimatedText] = useState("");
 	const [typingProgress, setTypingProgress] = useState(0);
@@ -106,9 +109,12 @@ const StreamingTextAnimation: FC<StreamingTextAnimationProps> = ({
 		setLastAnimatedIndex(prev => (prev === null ? 0 : prev + 1));
 		setAnimationComplete(false);
 
-		// If there are no more chunks, and the message is finished, mark the message as fully animated unless it was exited
-		if (animationQueue.length === 0 && finishReason && animationState !== "exited" && onSetMessageAnimated) {
+		// If there are no more chunks after this one, and the message is finished, mark the message as fully animated unless it was exited
+		if (animationQueue.length === 1 && finishReason && animationState !== "exited" && onSetMessageAnimated) {
 			onSetMessageAnimated(messageId, "done");
+			if (handleShowActionButtons) {
+				handleShowActionButtons(true);
+			}
 		}
 	}, [
 		animationComplete,
@@ -119,6 +125,7 @@ const StreamingTextAnimation: FC<StreamingTextAnimationProps> = ({
 		onSetMessageAnimated,
 		animationState,
 		finishReason,
+		handleShowActionButtons,
 	]);
 
 	//cleanup side effect on unmount set as fully animated
@@ -129,7 +136,7 @@ const StreamingTextAnimation: FC<StreamingTextAnimationProps> = ({
 	}, [messageId, onSetMessageAnimated]);
 
 	/**
-	 * Render the “typing in progress” chunk as it appears.
+	 * Render the "typing in progress" chunk as it appears.
 	 */
 	return (
 		<CSSTransition
