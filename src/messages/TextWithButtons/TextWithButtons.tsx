@@ -27,7 +27,9 @@ const TextWithButtons: FC = props => {
 	const isBotMessage = message.source === "bot";
 	const isEngagementMessage = message.source === "engagement";
 
-	const [showActionButtons, setShowActionButtons] = useState(progressiveMessageRendering ? false : true);
+	const [showActionButtons, setShowActionButtons] = useState(
+		progressiveMessageRendering ? false : true,
+	);
 
 	const webchatButtonTemplateTextId = useRandomId("webchatButtonTemplateHeader");
 
@@ -46,9 +48,10 @@ const TextWithButtons: FC = props => {
 
 	const classType = isQuickReplies ? "quick-reply" : "buttons";
 
-	const containerStyle = isBotMessage || isEngagementMessage && botOutputMaxWidthPercentage
-		? { maxWidth: `${botOutputMaxWidthPercentage}%` }
-		: {};
+	const containerStyle =
+		isBotMessage || (isEngagementMessage && botOutputMaxWidthPercentage)
+			? { maxWidth: `${botOutputMaxWidthPercentage}%` }
+			: {};
 
 	return (
 		<div className={`webchat-${classType}-template-root`}>
@@ -65,17 +68,20 @@ const TextWithButtons: FC = props => {
 			{showActionButtons && (
 				<ActionButtons
 					action={modifiedAction}
-					buttonClassName={classNames(classes.button, `webchat-${classType}-template-button`)}
-				containerClassName={classNames(
-					classes.buttons,
-					isQuickReplies && "webchat-quick-reply-template-replies-container",
-				)}
+					buttonClassName={classNames(
+						classes.button,
+						`webchat-${classType}-template-button`,
+					)}
+					containerClassName={classNames(
+						classes.buttons,
+						isQuickReplies && "webchat-quick-reply-template-replies-container",
+					)}
 					containerStyle={containerStyle}
-				payload={buttons}
-				showUrlIcon
-				config={config}
-				onEmitAnalytics={onEmitAnalytics}
-				templateTextId={webchatButtonTemplateTextId}
+					payload={buttons}
+					showUrlIcon
+					config={config}
+					onEmitAnalytics={onEmitAnalytics}
+					templateTextId={webchatButtonTemplateTextId}
 					openXAppOverlay={openXAppOverlay}
 				/>
 			)}
