@@ -13,7 +13,6 @@ interface StreamingTextAnimationProps {
 	messageId: string;
 	animationState: IStreamingMessage["animationState"];
 	finishReason: string | undefined;
-	handleShowActionButtons?: (show: boolean) => void;
 }
 
 /**
@@ -43,7 +42,6 @@ const StreamingTextAnimation: FC<StreamingTextAnimationProps> = ({
 	messageId,
 	animationState,
 	finishReason,
-	handleShowActionButtons,
 }) => {
 	const [currentAnimatedText, setCurrentAnimatedText] = useState("");
 	const [typingProgress, setTypingProgress] = useState(0);
@@ -117,9 +115,6 @@ const StreamingTextAnimation: FC<StreamingTextAnimationProps> = ({
 			onSetMessageAnimated
 		) {
 			onSetMessageAnimated(messageId, "done");
-			if (handleShowActionButtons) {
-				handleShowActionButtons(true);
-			}
 		}
 	}, [
 		animationComplete,
@@ -130,7 +125,6 @@ const StreamingTextAnimation: FC<StreamingTextAnimationProps> = ({
 		onSetMessageAnimated,
 		animationState,
 		finishReason,
-		handleShowActionButtons,
 	]);
 
 	//cleanup side effect on unmount set as fully animated

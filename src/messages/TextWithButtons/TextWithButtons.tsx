@@ -1,4 +1,4 @@
-import { FC, useState } from "react";
+import { FC } from "react";
 
 import { Text } from "src/messages";
 
@@ -9,6 +9,7 @@ import { getChannelPayload } from "src/utils";
 import ActionButtons from "src/common/ActionButtons/ActionButtons";
 import { IWebchatTemplateAttachment } from "@cognigy/socket-client";
 import classNames from "classnames";
+import { IStreamingMessage } from "../types";
 
 /**
  * Combines Text with Buttons + Quick Replies media types as
@@ -27,9 +28,9 @@ const TextWithButtons: FC = props => {
 	const isBotMessage = message.source === "bot";
 	const isEngagementMessage = message.source === "engagement";
 
-	const [showActionButtons, setShowActionButtons] = useState(
-		progressiveMessageRendering ? false : true,
-	);
+	const stillAnimating =
+		(message as IStreamingMessage).animationState === "animating" ||
+		(message as IStreamingMessage).animationState === "start";
 
 	const webchatButtonTemplateTextId = useRandomId("webchatButtonTemplateHeader");
 
@@ -61,11 +62,10 @@ const TextWithButtons: FC = props => {
 					content={text}
 					className={`webchat-${classType}-template-header`}
 					id={webchatButtonTemplateTextId}
-					handleShowActionButtons={setShowActionButtons}
 				/>
 			)}
 
-			{showActionButtons && (
+			{(!progressiveMessageRendering || !stillAnimating) && (
 				<ActionButtons
 					action={modifiedAction}
 					buttonClassName={classNames(

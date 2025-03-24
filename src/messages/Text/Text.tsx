@@ -20,7 +20,6 @@ interface TextProps {
 		messageId: string,
 		animationState: IStreamingMessage["animationState"],
 	) => void;
-	handleShowActionButtons?: (show: boolean) => void;
 }
 
 const Text: FC<TextProps> = props => {
@@ -98,7 +97,6 @@ const Text: FC<TextProps> = props => {
 					animationState={(message as IStreamingMessage)?.animationState}
 					messageId={message.id}
 					finishReason={(message as IStreamingMessage)?.finishReason}
-					handleShowActionButtons={props.handleShowActionButtons}
 				/>
 			)}
 		</ChatBubble>
