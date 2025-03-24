@@ -1,4 +1,4 @@
-import { FC } from "react";
+import { FC, useEffect } from "react";
 
 import { Text } from "src/messages";
 
@@ -11,6 +11,13 @@ import { IWebchatTemplateAttachment } from "@cognigy/socket-client";
 import classNames from "classnames";
 import { IStreamingMessage } from "../types";
 
+interface ITextWithButtonsProps {
+	onSetMessageAnimated?: (
+		messageId: string,
+		animationState: IStreamingMessage["animationState"],
+	) => void;
+}
+
 /**
  * Combines Text with Buttons + Quick Replies media types as
  * they are same in Webchat v3
@@ -18,7 +25,9 @@ import { IStreamingMessage } from "../types";
  * Currently, QR buttons template behaves differently to "Text with Buttons":
  * - QR buttons get disabled when there is a reply in chat from the user
  */
-const TextWithButtons: FC = props => {
+const TextWithButtons: FC = (props: ITextWithButtonsProps) => {
+	const { onSetMessageAnimated } = props;
+
 	const { action, message, config, onEmitAnalytics, messageParams, openXAppOverlay } =
 		useMessageContext();
 
@@ -27,6 +36,27 @@ const TextWithButtons: FC = props => {
 
 	const isBotMessage = message.source === "bot";
 	const isEngagementMessage = message.source === "engagement";
+
+	useEffect(() => {
+		if (
+			progressiveMessageRendering &&
+			(isBotMessage || isEngagementMessage) &&
+			onSetMessageAnimated &&
+			message.id &&
+			message.animationState === "start" &&
+			!message.text
+		) {
+			onSetMessageAnimated(message.id as string, "done");
+		}
+	}, [
+		progressiveMessageRendering,
+		isBotMessage,
+		isEngagementMessage,
+		onSetMessageAnimated,
+		message.id,
+		message.animationState,
+		message.text,
+	]);
 
 	const stillAnimating =
 		(message as IStreamingMessage).animationState === "animating" ||

@@ -20,7 +20,7 @@ export interface MessageProps {
 	hasReply?: boolean;
 	isConversationEnded?: boolean;
 	isFullscreen?: boolean;
-	message: IMessage & { id?: string };
+	message: IMessage & { id?: string; animationState?: "start" | "animating" | "done" | "exited" };
 	onDismissFullscreen?: () => void;
 	onEmitAnalytics?: (event: string, payload?: unknown) => void;
 	onSendMessage?: MessageSender; // = "prop.action", for legacy plugins
