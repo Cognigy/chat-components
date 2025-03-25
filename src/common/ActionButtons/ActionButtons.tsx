@@ -17,6 +17,7 @@ export interface ActionButtonsProps {
 	action?: MessageProps["action"];
 	payload: IWebchatButton[] | Array<IWebchatQuickReply & buttonPayloadCompatibility>;
 	containerClassName?: string;
+	containerStyle?: React.CSSProperties;
 	buttonClassName?: string;
 	customIcon?: ReactElement;
 	showUrlIcon?: boolean;
@@ -33,6 +34,7 @@ export const ActionButtons: FC<ActionButtonsProps> = props => {
 		payload,
 		buttonClassName,
 		containerClassName,
+		containerStyle,
 		action,
 		customIcon,
 		showUrlIcon,
@@ -103,6 +105,7 @@ export const ActionButtons: FC<ActionButtonsProps> = props => {
 			)}
 			<div
 				className={classnames(className, classes.buttons, containerClassName)}
+				style={containerStyle || {}}
 				role={buttons.length > 1 ? "group" : undefined}
 				aria-labelledby={
 					buttons.length > 1 && templateTextId

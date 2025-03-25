@@ -12,15 +12,17 @@ interface StreamingTextAnimationProps {
 	) => void;
 	messageId: string;
 	animationState: IStreamingMessage["animationState"];
+	finishReason: string | undefined;
 }
 
 /**
  * Calculate a typing speed based on the length of the text
  */
 const getTypingSpeed = (text: string) => {
-	const baseSpeed = 5; //fastest speed in ms
-	const maxSpeed = 20; // slowest speed in ms
-	return Math.max(baseSpeed, Math.min(maxSpeed, text.length / 10));
+	const baseSpeed = 5; // Fastest speed (ms per character)
+	const maxSpeed = 20; // Slowest speed (ms per character)
+	const speed = maxSpeed - Math.min(maxSpeed - baseSpeed, text.length / 10);
+	return speed;
 };
 
 /**
@@ -39,6 +41,7 @@ const StreamingTextAnimation: FC<StreamingTextAnimationProps> = ({
 	onSetMessageAnimated,
 	messageId,
 	animationState,
+	finishReason,
 }) => {
 	const [currentAnimatedText, setCurrentAnimatedText] = useState("");
 	const [typingProgress, setTypingProgress] = useState(0);
@@ -104,8 +107,13 @@ const StreamingTextAnimation: FC<StreamingTextAnimationProps> = ({
 		setLastAnimatedIndex(prev => (prev === null ? 0 : prev + 1));
 		setAnimationComplete(false);
 
-		// If there are no more chunks, mark the message as fully animated unless it was exited
-		if (animationQueue.length === 0 && animationState !== "exited" && onSetMessageAnimated) {
+		// If there are no more chunks after this one, and the message is finished, mark the message as fully animated unless it was exited
+		if (
+			animationQueue.length === 1 &&
+			finishReason &&
+			animationState !== "exited" &&
+			onSetMessageAnimated
+		) {
 			onSetMessageAnimated(messageId, "done");
 		}
 	}, [
@@ -116,6 +124,7 @@ const StreamingTextAnimation: FC<StreamingTextAnimationProps> = ({
 		messageId,
 		onSetMessageAnimated,
 		animationState,
+		finishReason,
 	]);
 
 	//cleanup side effect on unmount set as fully animated
@@ -126,7 +135,7 @@ const StreamingTextAnimation: FC<StreamingTextAnimationProps> = ({
 	}, [messageId, onSetMessageAnimated]);
 
 	/**
-	 * Render the “typing in progress” chunk as it appears.
+	 * Render the "typing in progress" chunk as it appears.
 	 */
 	return (
 		<CSSTransition

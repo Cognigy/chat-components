@@ -96,6 +96,7 @@ const Text: FC<TextProps> = props => {
 					onSetMessageAnimated={props.onSetMessageAnimated}
 					animationState={(message as IStreamingMessage)?.animationState}
 					messageId={message.id}
+					finishReason={(message as IStreamingMessage)?.finishReason}
 				/>
 			)}
 		</ChatBubble>
