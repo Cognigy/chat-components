@@ -535,6 +535,18 @@ const screens: TScreen[] = [
 					},
 				},
 			},
+			{
+				message: {
+					text: "<loading>\n",
+					source: "bot",
+				},
+			},
+			{
+				message: {
+					text: "<p>Hello world</p>",
+					source: "bot",
+				},
+			},
 		],
 	},
 	{

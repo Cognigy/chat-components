@@ -227,4 +227,15 @@ const config: Config = {
 	ALLOWED_ATTR: allowedHtmlAttributes,
 };
 
-export const sanitizeHTML = (text: string) => DOMPurify.sanitize(text, config).toString();
+export const sanitizeHTML = (text: string) => {
+	DOMPurify.addHook("beforeSanitizeElements", (node: Element) => {
+		if (node instanceof HTMLUnknownElement) {
+			const unClosedTag = `<${node.tagName.toLowerCase()}>${node.innerHTML}`;
+			const closedTag = `<${node.tagName.toLowerCase()}>${node.innerHTML}</${node.tagName.toLowerCase()}>`;
+			node.replaceWith(unClosedTag === text ? unClosedTag : closedTag);
+		}
+	});
+	const result = DOMPurify.sanitize(text, config).toString();
+	DOMPurify.removeAllHooks();
+	return result;
+};
