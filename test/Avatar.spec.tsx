@@ -35,7 +35,7 @@ describe("Avatars", () => {
 			render(<Message message={messageDefault} />);
 		});
 
-		expect(screen.getByTestId("avatar")).toHaveAttribute("src", defaultAgentAvatarUrl);
+		expect(screen.getByTestId("agent-avatar")).toHaveAttribute("src", defaultAgentAvatarUrl);
 	});
 
 	it("shows the avatar from the avatarUrl prop", async () => {
@@ -43,7 +43,7 @@ describe("Avatars", () => {
 			render(<Message message={messageAvatarUrl} />);
 		});
 
-		expect(screen.getByTestId("avatar")).toHaveAttribute("src", customAvatarUrl);
+		expect(screen.getByTestId("agent-avatar")).toHaveAttribute("src", customAvatarUrl);
 	});
 
 	it("shows the avatar from the override mechanism", async () => {
@@ -51,7 +51,7 @@ describe("Avatars", () => {
 			render(<Message message={messageAvatarOverride} />);
 		});
 
-		expect(screen.getByTestId("avatar")).toHaveAttribute("src", agentAvatarOverrideUrlOnce);
+		expect(screen.getByTestId("agent-avatar")).toHaveAttribute("src", agentAvatarOverrideUrlOnce);
 	});
 
 	it("shows the sender name from the override mechanism", async () => {
