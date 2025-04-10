@@ -1,6 +1,7 @@
 import { FC } from "react";
 import classes from "./MessageHeader.module.css";
 import classnames from "classnames";
+import mainClasses from "src/main.module.css";
 import { useMessageContext } from "src/messages/hooks";
 import Avatar from "./Avatar";
 import { HeaderEllipsis } from "src/assets/svg";
@@ -52,10 +53,24 @@ const MessageHeader: FC<MessageHeaderProps> = props => {
 		name = overrides.botAvatarOverrideNameOnce;
 	}
 
+	const timestamp = new Date(recievedAt).toLocaleTimeString([], {
+		hour: "2-digit",
+		minute: "2-digit",
+	});
+
 	return (
 		<header className={className} data-testid="message-header">
 			{props.enableAvatar && <Avatar />}
-			<Typography variant="title2-regular" component="div" className={classes.headerMeta}>
+			<span className={mainClasses.srOnly}>
+				{`At ${timestamp}, `}
+				{isUserMessage ? "You said:" : `${name} said:`}
+			</span>
+			<Typography
+				variant="title2-regular"
+				component="div"
+				className={classes.headerMeta}
+				aria-hidden="true"
+			>
 				{!isUserMessage && (
 					<>
 						<span data-testid="sender-name" className={classes["avatar-name"]}>
@@ -65,12 +80,7 @@ const MessageHeader: FC<MessageHeaderProps> = props => {
 					</>
 				)}
 				<span>
-					<time className={classes.timestamp}>
-						{new Date(recievedAt).toLocaleTimeString([], {
-							hour: "2-digit",
-							minute: "2-digit",
-						})}
-					</time>
+					<time className={classes.timestamp}>{timestamp}</time>
 				</span>
 			</Typography>
 		</header>
