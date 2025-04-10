@@ -51,7 +51,10 @@ describe("Avatars", () => {
 			render(<Message message={messageAvatarOverride} />);
 		});
 
-		expect(screen.getByTestId("agent-avatar")).toHaveAttribute("src", agentAvatarOverrideUrlOnce);
+		expect(screen.getByTestId("agent-avatar")).toHaveAttribute(
+			"src",
+			agentAvatarOverrideUrlOnce,
+		);
 	});
 
 	it("shows the sender name from the override mechanism", async () => {
