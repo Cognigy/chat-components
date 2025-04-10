@@ -10,6 +10,7 @@ export interface TypographyProps extends CSSProperties {
 	component?: keyof JSX.IntrinsicElements;
 	dangerouslySetInnerHTML?: { __html: string | TrustedHTML } | undefined;
 	id?: string;
+	"aria-hidden"?: boolean;
 }
 
 type TagVariants =
@@ -57,6 +58,7 @@ const Typography: FC<TypographyProps> = props => {
 		color,
 		dangerouslySetInnerHTML,
 		id,
+		"aria-hidden": ariaHidden,
 		...restProps
 	} = props;
 	const Component = component ?? variantsMapping[variant];
@@ -68,6 +70,7 @@ const Typography: FC<TypographyProps> = props => {
 			style={{ color: typographyColor, ...style, ...restProps }}
 			dangerouslySetInnerHTML={dangerouslySetInnerHTML}
 			id={id}
+			aria-hidden={ariaHidden}
 		>
 			{children}
 		</Component>

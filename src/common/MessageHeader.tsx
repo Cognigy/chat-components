@@ -69,7 +69,7 @@ const MessageHeader: FC<MessageHeaderProps> = props => {
 				variant="title2-regular"
 				component="div"
 				className={classes.headerMeta}
-				aria-hidden="true"
+				aria-hidden={true}
 			>
 				{!isUserMessage && (
 					<>
