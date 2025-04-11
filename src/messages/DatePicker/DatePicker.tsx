@@ -122,6 +122,13 @@ const DatePicker: FC = () => {
 	};
 	const closeDatePickerLabel =
 		config?.settings?.customTranslations?.ariaLabels?.closeDatePicker || "Close DatePicker";
+	const datePickerDescriptionForSr =
+		config?.settings?.customTranslations?.screenReader?.datePickerDescription ||
+		`Please use Left/ Right arrows to move focus to previous/ next day.
+		 Please use Up/ Down arrows to move focus to the same day of previous/
+		 next week. Please use Control + Left/ Right arrows to change the grid of
+		 dates to previous/ next month. Please use Control + Up/ Down arrows to
+		 change the grid of dates to previous/ next year.`;
 
 	return (
 		<div data-testid="datepicker-message">
@@ -147,11 +154,7 @@ const DatePicker: FC = () => {
 						className={classnames(classes.header, "webchat-plugin-date-picker-header")}
 					>
 						<span className={mainClasses.srOnly} id={datePickerDescription}>
-							Please use Left/ Right arrows to move focus to previous/ next day.
-							Please use Up/ Down arrows to move focus to the same day of previous/
-							next week. Please use Control + Left/ Right arrows to change the grid of
-							dates to previous/ next month. Please use Control + Up/ Down arrows to
-							change the grid of dates to previous/ next year.
+							{datePickerDescriptionForSr}
 						</span>
 						<span className={classes.left}></span>
 						<span className={classes.center}>

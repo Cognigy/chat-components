@@ -122,7 +122,11 @@ export interface IWebchatSettings {
 			closeFullsizeImageModal?: string;
 			attachmentImage?: string;
 		};
-		screenReader?: {};
+		screenReader?: {
+			datePickerDescription?: string;
+			with?: string;
+			buttonsOrLinksIn: string;
+		};
 	};
 	teaserMessage: {
 		text: string;
