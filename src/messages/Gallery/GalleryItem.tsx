@@ -48,7 +48,8 @@ const GalleryItem: FC<GallerySlideProps> = props => {
 			handleClick();
 		}
 	};
-
+	const opensInNewTab =
+		config?.settings.customTranslations?.ariaLabels?.opensInNewTab ?? "Opens in new tab";
 	return (
 		<div className={classnames("webchat-carousel-template-frame", classes.slideItem)}>
 			<div className={classnames(classes.top, hasExtraInfo && classes.hasExtraInfo)}>
@@ -79,7 +80,7 @@ const GalleryItem: FC<GallerySlideProps> = props => {
 					id={contentId}
 					aria-describedby={default_action?.url && subtitle ? subtitleId : undefined}
 					aria-labelledby={default_action?.url && title ? titleId : undefined}
-					aria-label={default_action?.url ? `${titleHtml}. Opens in new tab` : undefined}
+					aria-label={default_action?.url ? `${titleHtml}. ${opensInNewTab}` : undefined}
 				>
 					{subtitle && (
 						<Typography

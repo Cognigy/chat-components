@@ -39,7 +39,6 @@ const ActionButton: FC<ActionButtonProps> = props => {
 		size,
 		openXAppOverlay,
 	} = props;
-
 	const buttonType =
 		"type" in button
 			? button.type
@@ -71,14 +70,16 @@ const ActionButton: FC<ActionButtonProps> = props => {
 
 	const isWebURL = "type" in button && button.type === "web_url";
 	const isWebURLButtonTargetBlank = isWebURL && button.target !== "_self";
-
+	const opensInNewTabLabel =
+		config?.settings?.customTranslations?.ariaLabels?.opensInNewTab || "Opens in new tab";
+	const itemLabel = config?.settings?.customTranslations?.ariaLabels?.item || "Item";
 	const getAriaLabel = () => {
 		const isURLInNewTab = isWebURL && isWebURLButtonTargetBlank;
-		const newTabURLButtonTitle = `${buttonTitle}. Opens in new tab`;
+		const newTabURLButtonTitle = `${buttonTitle}. ${opensInNewTabLabel}`;
 		const buttonTitleWithTarget = isURLInNewTab ? newTabURLButtonTitle : button.title;
 
 		if (total > 1) {
-			return `Item ${position} of ${total}: ${buttonTitleWithTarget}`;
+			return `${itemLabel} ${position} of ${total}: ${buttonTitleWithTarget}`;
 		} else if (total <= 1 && isURLInNewTab) {
 			return newTabURLButtonTitle;
 		}

@@ -10,7 +10,7 @@ import { PrimaryButton } from "src/common/Buttons";
 import mainClasses from "src/main.module.css";
 
 const DatePicker: FC = () => {
-	const { action, message, messageParams } = useMessageContext();
+	const { action, message, messageParams, config } = useMessageContext();
 	const options = useMemo(() => getOptionsFromMessage(message), [message]);
 
 	const [showPicker, setShowPicker] = useState(false);
@@ -120,6 +120,8 @@ const DatePicker: FC = () => {
 			}
 		}
 	};
+	const closeDatePickerLabel =
+		config?.settings?.customTranslations?.ariaLabels?.closeDatePicker || "Close DatePicker";
 
 	return (
 		<div data-testid="datepicker-message">
@@ -163,7 +165,7 @@ const DatePicker: FC = () => {
 						</span>
 						<button
 							onClick={handleClose}
-							aria-label="Close DatePicker"
+							aria-label={closeDatePickerLabel}
 							className={classes.right}
 							data-testid="button-close"
 						>

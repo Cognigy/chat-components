@@ -47,16 +47,17 @@ const ListItem: FC<{ element: IWebchatAttachmentElement; isHeaderElement?: boole
 	const contentClasses = isHeaderElement
 		? classnames("webchat-list-template-header", classes.headerContentWrapper)
 		: classnames("webchat-list-template-element", classes.listItemWrapper);
-
 	const renderImage = useMemo(() => {
 		if (!image_url) return null;
+		const attachImageLabel =
+			config?.settings.customTranslations?.ariaLabels?.attachmentImage || "Attachment Image";
 		return (
 			<div
 				className={classes.listItemImage}
 				style={{ backgroundImage: getBackgroundImage(image_url) }}
 				data-testid="regular-image"
 			>
-				<span role="img" aria-label={image_alt_text || "Attachment Image"} />
+				<span role="img" aria-label={image_alt_text || attachImageLabel} />
 			</div>
 		);
 	}, [image_alt_text, image_url]);
@@ -95,6 +96,8 @@ const ListItem: FC<{ element: IWebchatAttachmentElement; isHeaderElement?: boole
 		);
 	}, [subtitleHtml, subtitleId, titleHtml, isHeaderElement]);
 
+	const opensInNewTabLabel =
+		config?.settings.customTranslations?.ariaLabels?.opensInNewTab || "Opens in new tab";
 	return (
 		<div
 			role="listitem"
@@ -110,7 +113,7 @@ const ListItem: FC<{ element: IWebchatAttachmentElement; isHeaderElement?: boole
 				onClick={handleClick}
 				onKeyDown={handleKeyDown}
 				role={default_action?.url ? "link" : undefined}
-				aria-label={default_action?.url ? `${titleHtml}. Opens in new tab` : undefined}
+				aria-label={default_action?.url ? `${titleHtml}. ${opensInNewTabLabel}` : undefined}
 				aria-describedby={subtitle ? subtitleId : undefined}
 				tabIndex={default_action?.url ? 0 : -1}
 				style={default_action?.url && !shouldBeDisabled ? { cursor: "pointer" } : {}}

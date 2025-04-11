@@ -106,6 +106,24 @@ export interface IWebchatSettings {
 			}[];
 		};
 	};
+	customTranslations?: {
+		ariaLabels?: {
+			opensInNewTab?: string;
+			item?: string;
+			audioPlaybackProgress?: string;
+			pauseAudio?: string;
+			playAudio?: string;
+			playVideo?: string;
+			downloadTranscript?: string;
+			closeDatePicker?: string;
+			viewImageInFullsize?: string;
+			lightbox?: string;
+			downloadFullsizeImage?: string;
+			closeFullsizeImageModal?: string;
+			attachmentImage?: string;
+		};
+		screenReader?: {};
+	};
 	teaserMessage: {
 		text: string;
 		teaserMessageDelay: number;
