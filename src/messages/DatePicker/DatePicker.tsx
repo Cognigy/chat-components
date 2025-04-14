@@ -10,7 +10,7 @@ import { PrimaryButton } from "src/common/Buttons";
 import mainClasses from "src/main.module.css";
 
 const DatePicker: FC = () => {
-	const { action, message, messageParams } = useMessageContext();
+	const { action, message, messageParams, config } = useMessageContext();
 	const options = useMemo(() => getOptionsFromMessage(message), [message]);
 
 	const [showPicker, setShowPicker] = useState(false);
@@ -120,6 +120,15 @@ const DatePicker: FC = () => {
 			}
 		}
 	};
+	const closeDatePickerLabel =
+		config?.settings?.customTranslations?.ariaLabels?.closeDatePicker || "Close DatePicker";
+	const datePickerDescriptionForSr =
+		config?.settings?.customTranslations?.ariaLabels?.datePickerDescription ||
+		`Please use Left/ Right arrows to move focus to previous/ next day.
+		 Please use Up/ Down arrows to move focus to the same day of previous/
+		 next week. Please use Control + Left/ Right arrows to change the grid of
+		 dates to previous/ next month. Please use Control + Up/ Down arrows to
+		 change the grid of dates to previous/ next year.`;
 
 	return (
 		<div data-testid="datepicker-message">
@@ -145,11 +154,7 @@ const DatePicker: FC = () => {
 						className={classnames(classes.header, "webchat-plugin-date-picker-header")}
 					>
 						<span className={mainClasses.srOnly} id={datePickerDescription}>
-							Please use Left/ Right arrows to move focus to previous/ next day.
-							Please use Up/ Down arrows to move focus to the same day of previous/
-							next week. Please use Control + Left/ Right arrows to change the grid of
-							dates to previous/ next month. Please use Control + Up/ Down arrows to
-							change the grid of dates to previous/ next year.
+							{datePickerDescriptionForSr}
 						</span>
 						<span className={classes.left}></span>
 						<span className={classes.center}>
@@ -163,7 +168,7 @@ const DatePicker: FC = () => {
 						</span>
 						<button
 							onClick={handleClose}
-							aria-label="Close DatePicker"
+							aria-label={closeDatePickerLabel}
 							className={classes.right}
 							data-testid="button-close"
 						>

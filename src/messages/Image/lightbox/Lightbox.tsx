@@ -2,10 +2,11 @@ import { FC, useEffect } from "react";
 import { useImageMessageContext } from "../hooks";
 import classes from "./Lightbox.module.css";
 import LightboxHeader from "./LightboxHeader";
+import { useMessageContext } from "src/messages/hooks";
 
 const Lightbox: FC = () => {
 	const { url, altText, onClose } = useImageMessageContext();
-
+	const { config } = useMessageContext();
 	useEffect(() => {
 		const close = (event: KeyboardEvent) => {
 			event.code === "Escape" && onClose && onClose();
@@ -27,9 +28,10 @@ const Lightbox: FC = () => {
 		event.preventDefault();
 		onClose();
 	};
+	const lightboxLabel = config?.settings.customTranslations?.ariaLabels?.lightbox || "Lightbox";
 
 	return (
-		<div role="dialog" aria-label="Lightbox" className={classes.wrapper}>
+		<div role="dialog" aria-label={lightboxLabel} className={classes.wrapper}>
 			<div className={classes.content} onClick={handleOnClickBackdrop}>
 				<img
 					className={classes.fullImage}

@@ -3,6 +3,7 @@ import classes from "./Audio.module.css";
 import { AudioPause, AudioPlay, DownloadIcon } from "src/assets/svg";
 import ReactPlayer from "react-player";
 import { Tooltip } from "react-tooltip";
+import { useMessageContext } from "../hooks";
 
 type ControlsProps = {
 	playerRef: MutableRefObject<ReactPlayer | null>;
@@ -16,8 +17,8 @@ type ControlsProps = {
 
 const Controls: FC<ControlsProps> = props => {
 	const { playerRef, playing, progress, duration, altText, handlePlay, handlePause } = props;
-
 	const downloadTranscriptLinkRef = useRef<HTMLAnchorElement>(null);
+	const { config } = useMessageContext();
 
 	const togglePlayAndPause = () => {
 		if (playing) {
@@ -72,7 +73,16 @@ const Controls: FC<ControlsProps> = props => {
 		const secondsText = `${seconds} seconds`;
 		return `${hoursText}${minutesText}${secondsText}`;
 	};
-
+	const audioPlaybackProgressLabel =
+		config?.settings?.customTranslations?.ariaLabels?.audioPlaybackProgress ||
+		"Audio playback progress";
+	const playAudioLabel =
+		config?.settings?.customTranslations?.ariaLabels?.playAudio || "Play audio";
+	const pauseAudioLabel =
+		config?.settings?.customTranslations?.ariaLabels?.pauseAudio || "Pause audio";
+	const downloadTranscriptLabel =
+		config?.settings?.customTranslations?.ariaLabels?.downloadTranscript ||
+		"Download transcript";
 	return (
 		<div className={classes.audioWrapper} data-testid="audio-controls">
 			<div className={classes.controls}>
@@ -88,7 +98,7 @@ const Controls: FC<ControlsProps> = props => {
 						step="any"
 						value={progress}
 						aria-valuetext={`${timeToText(formatTime)} remaining`}
-						aria-label="Audio playback progress"
+						aria-label={audioPlaybackProgressLabel}
 						onMouseDown={handleSeekStart}
 						onTouchStart={handleSeekStart}
 						onChange={handleSeekChange}
@@ -106,7 +116,7 @@ const Controls: FC<ControlsProps> = props => {
 					<button
 						className={classes.playButton}
 						onClick={togglePlayAndPause}
-						aria-label={playing ? "Pause audio" : "Play audio"}
+						aria-label={playing ? pauseAudioLabel : playAudioLabel}
 					>
 						{playing ? <AudioPause /> : <AudioPlay />}
 					</button>
@@ -117,11 +127,11 @@ const Controls: FC<ControlsProps> = props => {
 				<>
 					<button
 						onClick={handleDownloadTranscript}
-						aria-label="Download transcript"
+						aria-label={downloadTranscriptLabel}
 						className={classes.downloadButton}
 						data-tooltip-id="downloadTranscriptButton"
 						data-tooltip-place="top"
-						data-tooltip-content="Download transcript"
+						data-tooltip-content={downloadTranscriptLabel}
 						data-testid="download-transcript-button"
 					>
 						<DownloadIcon />

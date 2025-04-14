@@ -77,7 +77,8 @@ const Video: FC = () => {
 	};
 
 	if (!url) return null;
-
+	const playVideoLabel =
+		config?.settings.customTranslations?.ariaLabels?.playVideo || "Play Video";
 	return (
 		// Latest version of ReactPlayer at the moment supports previewTabIndex and previewArialLabel props for passing tabindex and aria-label to the video preview button (light mode),
 		// But, does not support passing a role prop to the preview button.
@@ -89,7 +90,7 @@ const Video: FC = () => {
 				data-testid="video-message"
 				role={lightMode ? "button" : undefined}
 				tabIndex={lightMode ? 0 : -1}
-				aria-label={lightMode ? "Play Video" : undefined}
+				aria-label={lightMode ? playVideoLabel : undefined}
 				onKeyDown={handleKeyDown}
 			>
 				<ReactPlayer

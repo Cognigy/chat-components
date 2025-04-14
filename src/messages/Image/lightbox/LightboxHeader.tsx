@@ -2,10 +2,11 @@ import { FC, KeyboardEvent, useEffect, useRef } from "react";
 import { useImageMessageContext } from "../hooks";
 import classes from "./Lightbox.module.css";
 import { CloseIcon, DownloadIcon } from "src/assets/svg";
+import { useMessageContext } from "src/messages/hooks";
 
 const LightboxHeader: FC = () => {
 	const { url, altText, onClose } = useImageMessageContext();
-
+	const { config } = useMessageContext();
 	const firstButton = useRef<HTMLButtonElement>(null);
 
 	useEffect(() => {
@@ -30,6 +31,12 @@ const LightboxHeader: FC = () => {
 		event.code === "Enter" && onClose && onClose();
 	};
 
+	const downloadFullsizeImageLabel =
+		config?.settings.customTranslations?.ariaLabels?.downloadFullsizeImage ||
+		"Download fullsize image";
+	const closeFullsizeImageModalLabel =
+		config?.settings.customTranslations?.ariaLabels?.closeFullsizeImageModal ||
+		"Close fullsize image modal";
 	return (
 		<div className={classes.header}>
 			<div className={classes.caption}>{altText}</div>
@@ -38,7 +45,7 @@ const LightboxHeader: FC = () => {
 					ref={firstButton}
 					onClick={handleDownload}
 					onKeyDown={handleKeyDownload}
-					aria-label="Download fullsize image"
+					aria-label={downloadFullsizeImageLabel}
 					className={classes.icon}
 				>
 					<DownloadIcon />
@@ -46,7 +53,7 @@ const LightboxHeader: FC = () => {
 				<button
 					onClick={onClose}
 					onKeyDown={handleKeyClose}
-					aria-label="Close fullsize image modal"
+					aria-label={closeFullsizeImageModalLabel}
 					className={classes.icon}
 				>
 					<CloseIcon />

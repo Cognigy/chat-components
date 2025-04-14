@@ -32,6 +32,9 @@ const ImageThumb = forwardRef((_props, ref) => {
 		fixedImage: isDynamicRatio,
 	});
 
+	const viewImageInFullsizeLabel =
+		config?.settings.customTranslations?.ariaLabels?.viewImageInFullsize ||
+		"View Image in fullsize";
 	return (
 		<div className={wrapperClasses}>
 			<div
@@ -41,7 +44,7 @@ const ImageThumb = forwardRef((_props, ref) => {
 				onKeyDown={handleKeyDown}
 				tabIndex={isDownloadable ? 0 : -1}
 				role={isDownloadable ? "button" : undefined}
-				aria-label={isDownloadable ? "View Image in fullsize" : undefined}
+				aria-label={isDownloadable ? viewImageInFullsizeLabel : undefined}
 				data-testid="image-message"
 			>
 				{isImageBroken ? (
