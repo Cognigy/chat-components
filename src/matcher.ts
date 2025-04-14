@@ -183,6 +183,13 @@ const defaultConfig: MatchConfig[] = [
 			if (Array.isArray(message?.text)) {
 				return message?.text.length > 0;
 			}
+			// Handle messages from LLMs if it only contains any escape sequences and markdown is disabled
+			if (
+				message.text?.match?.(/^(?:[\n\t\r\f\b\v\s])+$/)?.length &&
+				!config?.settings.behavior.renderMarkdown &&
+				!config?.settings.behavior.collateStreamedOutputs
+			)
+				return false;
 
 			return message?.text !== null && message?.text !== undefined && message?.text !== "";
 		},

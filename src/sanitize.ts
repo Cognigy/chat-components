@@ -227,4 +227,20 @@ const config: Config = {
 	ALLOWED_ATTR: allowedHtmlAttributes,
 };
 
-export const sanitizeHTML = (text: string) => DOMPurify.sanitize(text, config).toString();
+export const sanitizeHTML = (text: string) => {
+	DOMPurify.addHook("beforeSanitizeElements", (node: Element) => {
+		if (node instanceof HTMLUnknownElement) {
+			const unClosedTag = `<${node.tagName.toLowerCase()}>${node.innerHTML}`;
+			const closedTag = `<${node.tagName.toLowerCase()}>${node.innerHTML}</${node.tagName.toLowerCase()}>`;
+			node.replaceWith(unClosedTag === text ? unClosedTag : closedTag);
+		}
+	});
+
+	// Some texts from Agentic AI starts with a </\w+ closing tag which doesn't go through the hooks. Dompurify will remove them.
+	// The following will avoid is a fallback
+	if (text?.startsWith("</")) return text.replace("<", "&lt;").replace(">", "&gt;");
+
+	const result = DOMPurify.sanitize(text, config).toString();
+	DOMPurify.removeAllHooks();
+	return result;
+};
