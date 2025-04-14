@@ -77,8 +77,8 @@ const GalleryItem: FC<GallerySlideProps> = props => {
 					onKeyDown={handleKeyDown}
 					role={default_action?.url ? "link" : undefined}
 					id={contentId}
-					aria-describedby={subtitle ? subtitleId : undefined}
-					aria-labelledby={title ? titleId : undefined}
+					aria-describedby={default_action?.url && subtitle ? subtitleId : undefined}
+					aria-labelledby={default_action?.url && title ? titleId : undefined}
 					aria-label={default_action?.url ? `${titleHtml}. Opens in new tab` : undefined}
 				>
 					{subtitle && (
@@ -100,6 +100,7 @@ const GalleryItem: FC<GallerySlideProps> = props => {
 							action={shouldBeDisabled ? undefined : action}
 							config={config}
 							onEmitAnalytics={onEmitAnalytics}
+							templateTextId={title ? titleId : undefined}
 						/>
 					)}
 				</div>

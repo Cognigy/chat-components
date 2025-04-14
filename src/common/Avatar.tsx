@@ -49,11 +49,11 @@ const Avatar: FC<AvatarProps> = props => {
 
 	return (
 		<img
-			alt={`${message?.source || "unknown source"} avatar`}
+			alt=""
 			className={classNames}
 			src={avatarUrl}
 			onError={() => setAvatarUrl(placeholderAvatar)}
-			data-testid="avatar"
+			data-testid={`${message?.source || "unknown source"}-avatar`}
 		/>
 	);
 };

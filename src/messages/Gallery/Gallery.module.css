@@ -180,12 +180,13 @@ article :global(.swiper).wrapper :global(.swiper-pagination-bullet) {
 	opacity: 1;
 }
 article :global(.swiper).wrapper :global(.swiper-pagination-bullet):focus {
+	background-color: var(--cc-primary-color);
 	box-shadow: 0 0 0 4px var(--cc-primary-color-opacity-10);
 	outline: none;
 }
 article :global(.swiper).wrapper :global(.swiper-pagination-bullet):focus-visible {
-	background-color: var(--cc-primary-color);
-	outline: "none";
+	outline: 2px solid var(--cc-primary-color);
+	outline-offset: 2px;
 }
 article :global(.swiper).wrapper :global(button.swiper-pagination-bullet) {
 	border: none;
@@ -203,7 +204,7 @@ article :global(.swiper).wrapper :global(.swiper-pagination-bullet:only-child) {
 }
 article :global(.swiper).wrapper :global(.swiper-pagination-bullet-active) {
 	opacity: 1;
-	background: var(--cc-primary-color);
+	background-color: black;
 }
 article
 	:global(.swiper).wrapper
