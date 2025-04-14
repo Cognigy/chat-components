@@ -543,7 +543,19 @@ const screens: TScreen[] = [
 			},
 			{
 				message: {
-					text: "<p>Hello world</p>",
+					text: "<p>This message in between opening loading and closing loading tag from Agentic AI</p>",
+					source: "bot",
+				},
+			},
+			{
+				message: {
+					text: "\n",
+					source: "bot",
+				},
+			},
+			{
+				message: {
+					text: "</loading>\n",
 					source: "bot",
 				},
 			},

@@ -235,6 +235,11 @@ export const sanitizeHTML = (text: string) => {
 			node.replaceWith(unClosedTag === text ? unClosedTag : closedTag);
 		}
 	});
+
+	// Some texts from Agentic AI starts with a </\w+ closing tag which doesn't go through the hooks. Dompurify will remove them.
+	// The following will avoid is a fallback
+	if (text.startsWith("</")) return text.replace("<", "&lt;").replace(">", "&gt;");
+
 	const result = DOMPurify.sanitize(text, config).toString();
 	DOMPurify.removeAllHooks();
 	return result;
