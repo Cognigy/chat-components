@@ -72,14 +72,13 @@ const ActionButton: FC<ActionButtonProps> = props => {
 	const isWebURLButtonTargetBlank = isWebURL && button.target !== "_self";
 	const opensInNewTabLabel =
 		config?.settings?.customTranslations?.ariaLabels?.opensInNewTab || "Opens in new tab";
-	const itemLabel = "Item";
 	const getAriaLabel = () => {
 		const isURLInNewTab = isWebURL && isWebURLButtonTargetBlank;
 		const newTabURLButtonTitle = `${buttonTitle}. ${opensInNewTabLabel}`;
 		const buttonTitleWithTarget = isURLInNewTab ? newTabURLButtonTitle : button.title;
 
 		if (total > 1) {
-			return `${itemLabel} ${position} of ${total}: ${buttonTitleWithTarget}`;
+			return `Item ${position} of ${total}: ${buttonTitleWithTarget}`;
 		} else if (total <= 1 && isURLInNewTab) {
 			return newTabURLButtonTitle;
 		}
