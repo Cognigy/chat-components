@@ -109,7 +109,6 @@ export interface IWebchatSettings {
 	customTranslations?: {
 		ariaLabels?: {
 			opensInNewTab?: string;
-			item?: string;
 			audioPlaybackProgress?: string;
 			pauseAudio?: string;
 			playAudio?: string;
@@ -121,11 +120,7 @@ export interface IWebchatSettings {
 			downloadFullsizeImage?: string;
 			closeFullsizeImageModal?: string;
 			attachmentImage?: string;
-		};
-		screenReader?: {
 			datePickerDescription?: string;
-			with?: string;
-			buttonsOrLinksIn: string;
 		};
 	};
 	teaserMessage: {

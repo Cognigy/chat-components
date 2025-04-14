@@ -72,7 +72,7 @@ const ActionButton: FC<ActionButtonProps> = props => {
 	const isWebURLButtonTargetBlank = isWebURL && button.target !== "_self";
 	const opensInNewTabLabel =
 		config?.settings?.customTranslations?.ariaLabels?.opensInNewTab || "Opens in new tab";
-	const itemLabel = config?.settings?.customTranslations?.ariaLabels?.item || "Item";
+	const itemLabel = "Item";
 	const getAriaLabel = () => {
 		const isURLInNewTab = isWebURL && isWebURLButtonTargetBlank;
 		const newTabURLButtonTitle = `${buttonTitle}. ${opensInNewTabLabel}`;

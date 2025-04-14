@@ -92,12 +92,7 @@ export const ActionButtons: FC<ActionButtonsProps> = props => {
 			openXAppOverlay={props.openXAppOverlay}
 		/>
 	));
-	const buttonsScreenLeaderLabel =
-		(config?.settings.customTranslations?.screenReader?.with || "With") +
-		" " +
-		buttons.length +
-		(config?.settings.customTranslations?.screenReader?.buttonsOrLinksIn ||
-			"buttons or links in");
+
 	return (
 		<>
 			{buttons.length > 1 && templateTextId && (
@@ -105,7 +100,7 @@ export const ActionButtons: FC<ActionButtonsProps> = props => {
 					className={classNames(mainClasses.srOnly, "sr-only")}
 					id={`srOnly-${templateTextId}`}
 				>
-					{buttonsScreenLeaderLabel}
+					{`With ${buttons.length} buttons or links in`}
 				</span>
 			)}
 			<div
