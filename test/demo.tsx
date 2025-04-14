@@ -555,6 +555,12 @@ const screens: TScreen[] = [
 			},
 			{
 				message: {
+					text: "\n\v\t",
+					source: "bot",
+				},
+			},
+			{
+				message: {
 					text: "</loading>\n",
 					source: "bot",
 				},
