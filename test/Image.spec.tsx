@@ -37,7 +37,7 @@ describe("Message Image", () => {
 		});
 
 		expect(screen.queryByRole("button")).not.toBeInTheDocument();
-		expect(screen.queryByLabelText("View Image in fullsize")).not.toBeInTheDocument();
+		expect(screen.queryByLabelText("View full-size image")).not.toBeInTheDocument();
 	});
 
 	// Downloadable Image
@@ -47,7 +47,7 @@ describe("Message Image", () => {
 		});
 
 		expect(screen.queryByRole("button")).toBeInTheDocument();
-		expect(screen.queryByLabelText("View Image in fullsize")).toBeInTheDocument();
+		expect(screen.queryByLabelText("View full-size image")).toBeInTheDocument();
 	});
 
 	// Lightbox
@@ -58,10 +58,10 @@ describe("Message Image", () => {
 
 		fireEvent.click(screen.getByRole("button"));
 
-		waitFor(() => expect(screen.getByLabelText("Lightbox")).toBeInTheDocument());
+		waitFor(() => expect(screen.getByLabelText("Full-size image viewer")).toBeInTheDocument());
 
-		waitForElementToBeRemoved(screen.queryByLabelText("Lightbox"));
+		waitForElementToBeRemoved(screen.queryByLabelText("Full-size image viewer"));
 
-		fireEvent.click(screen.getByLabelText("Close fullsize image modal"));
+		fireEvent.click(screen.getByLabelText("Close full-size image viewer"));
 	});
 });

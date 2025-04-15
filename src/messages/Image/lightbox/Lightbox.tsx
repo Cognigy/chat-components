@@ -28,7 +28,9 @@ const Lightbox: FC = () => {
 		event.preventDefault();
 		onClose();
 	};
-	const lightboxLabel = config?.settings.customTranslations?.ariaLabels?.lightbox || "Lightbox";
+	const lightboxLabel =
+		config?.settings.customTranslations?.ariaLabels?.fullSizeImageViewerTitle ||
+		"Full-size image viewer";
 
 	return (
 		<div role="dialog" aria-label={lightboxLabel} className={classes.wrapper}>
@@ -36,7 +38,7 @@ const Lightbox: FC = () => {
 				<img
 					className={classes.fullImage}
 					data-test="image-lightbox"
-					alt={altText || "Attachment Full"}
+					alt={altText}
 					src={url}
 					onClick={handleOnClickImage}
 					onTouchMove={handleOnSwipeImage}

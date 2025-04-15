@@ -108,17 +108,17 @@ export interface IWebchatSettings {
 		};
 	};
 	customTranslations?: {
-		network_error: string;
-		no_network: string;
-		reconnect: string;
-		reconnecting: string;
-		delete_all_conversations: string;
-		delete_all_conversations_confirmation: string;
-		delete_conversation: string;
-		delete_conversation_confirmation: string;
-		delete: string;
-		delete_anyway: string;
-		cancel: string;
+		network_error?: string;
+		no_network?: string;
+		reconnect?: string;
+		reconnecting?: string;
+		delete_all_conversations?: string;
+		delete_all_conversations_confirmation?: string;
+		delete_conversation?: string;
+		delete_conversation_confirmation?: string;
+		delete?: string;
+		delete_anyway?: string;
+		cancel?: string;
 		ariaLabels?: {
 			scrollToBottom?: string;
 			closeDialog?: string;
@@ -153,10 +153,9 @@ export interface IWebchatSettings {
 			downloadTranscript?: string;
 			closeDatePicker?: string;
 			viewImageInFullsize?: string;
-			lightbox?: string;
+			fullSizeImageViewerTitle?: string;
 			downloadFullsizeImage?: string;
 			closeFullsizeImageModal?: string;
-			attachmentImage?: string;
 			datePickerDescription?: string;
 		};
 	};

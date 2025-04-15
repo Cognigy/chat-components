@@ -83,6 +83,7 @@ const Controls: FC<ControlsProps> = props => {
 	const downloadTranscriptLabel =
 		config?.settings?.customTranslations?.ariaLabels?.downloadTranscript ||
 		"Download transcript";
+
 	return (
 		<div className={classes.audioWrapper} data-testid="audio-controls">
 			<div className={classes.controls}>

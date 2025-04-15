@@ -33,10 +33,11 @@ const LightboxHeader: FC = () => {
 
 	const downloadFullsizeImageLabel =
 		config?.settings.customTranslations?.ariaLabels?.downloadFullsizeImage ||
-		"Download fullsize image";
+		"Download full-size image";
 	const closeFullsizeImageModalLabel =
 		config?.settings.customTranslations?.ariaLabels?.closeFullsizeImageModal ||
-		"Close fullsize image modal";
+		"Close full-size image viewer";
+
 	return (
 		<div className={classes.header}>
 			<div className={classes.caption}>{altText}</div>

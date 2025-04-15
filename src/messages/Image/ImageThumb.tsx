@@ -34,7 +34,7 @@ const ImageThumb = forwardRef((_props, ref) => {
 
 	const viewImageInFullsizeLabel =
 		config?.settings.customTranslations?.ariaLabels?.viewImageInFullsize ||
-		"View Image in fullsize";
+		"View full-size image";
 	return (
 		<div className={wrapperClasses}>
 			<div
@@ -50,11 +50,7 @@ const ImageThumb = forwardRef((_props, ref) => {
 				{isImageBroken ? (
 					<span className={classes.brokenImage} />
 				) : (
-					<img
-						src={url}
-						alt={altText || "Attachment Image"}
-						onError={() => setImageBroken(true)}
-					/>
+					<img src={url} alt={altText} onError={() => setImageBroken(true)} />
 				)}
 			</div>
 			{button && (
