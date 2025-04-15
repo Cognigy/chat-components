@@ -29,7 +29,8 @@ const Lightbox: FC = () => {
 		onClose();
 	};
 	const lightboxLabel =
-		config?.settings.customTranslations?.ariaLabels?.fullSizeImageViewerTitle || "Full-size image viewer";
+		config?.settings.customTranslations?.ariaLabels?.fullSizeImageViewerTitle ||
+		"Full-size image viewer";
 
 	return (
 		<div role="dialog" aria-label={lightboxLabel} className={classes.wrapper}>
