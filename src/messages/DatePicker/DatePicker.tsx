@@ -121,7 +121,7 @@ const DatePicker: FC = () => {
 		}
 	};
 	const closeDatePickerLabel =
-		config?.settings?.customTranslations?.ariaLabels?.closeDatePicker || "Close DatePicker";
+		config?.settings?.customTranslations?.ariaLabels?.closeDatePicker || "Close date-picker";
 	const datePickerDescriptionForSr =
 		config?.settings?.customTranslations?.ariaLabels?.datePickerDescription ||
 		`Please use Left/ Right arrows to move focus to previous/ next day.

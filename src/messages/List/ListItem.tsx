@@ -47,17 +47,17 @@ const ListItem: FC<{ element: IWebchatAttachmentElement; isHeaderElement?: boole
 	const contentClasses = isHeaderElement
 		? classnames("webchat-list-template-header", classes.headerContentWrapper)
 		: classnames("webchat-list-template-element", classes.listItemWrapper);
+
 	const renderImage = useMemo(() => {
 		if (!image_url) return null;
-		const attachImageLabel =
-			config?.settings.customTranslations?.ariaLabels?.attachmentImage || "Attachment Image";
+
 		return (
 			<div
 				className={classes.listItemImage}
 				style={{ backgroundImage: getBackgroundImage(image_url) }}
 				data-testid="regular-image"
 			>
-				<span role="img" aria-label={image_alt_text || attachImageLabel} />
+				<span role="img" aria-label={image_alt_text} />
 			</div>
 		);
 	}, [image_alt_text, image_url]);

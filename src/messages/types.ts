@@ -153,10 +153,9 @@ export interface IWebchatSettings {
 			downloadTranscript?: string;
 			closeDatePicker?: string;
 			viewImageInFullsize?: string;
-			lightbox?: string;
+			fullSizeImageViewerTitle?: string;
 			downloadFullsizeImage?: string;
 			closeFullsizeImageModal?: string;
-			attachmentImage?: string;
 			datePickerDescription?: string;
 		};
 	};
