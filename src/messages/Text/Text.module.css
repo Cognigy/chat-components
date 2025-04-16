@@ -21,6 +21,13 @@
 .markdown > p:only-child {
 	margin: 0;
 }
+.markdown *:first-child {
+	margin-top: 0;
+}
+
+.markdown *:last-child {
+	margin-bottom: 0;
+}
 
 .markdown p:last-child {
 	display: inline;
