@@ -33,9 +33,11 @@ button.button:focus,
 a.button:focus {
 	background: var(--cc-primary-color-hover);
 }
-button.button:focus-visible,
-a.button:focus-visible,
-a.button:global(.phone-number-or-url-anchor):focus-visible {
+
+/* Explicitly increase the specificity of the :focus-visible selector by including the parent [data-cognigy-webchat-root] selector. This ensures custom focus styles override Firefox's default dotted outline. */
+[data-cognigy-webchat-root] button.button:focus-visible,
+[data-cognigy-webchat-root] a.button:focus-visible,
+[data-cognigy-webchat-root] a.button:global(.phone-number-or-url-anchor):focus-visible {
 	outline: 2px solid var(--cc-primary-color);
 	outline-offset: 2px;
 	box-shadow: 0 0 0 4px var(--cc-primary-contrast-color);
