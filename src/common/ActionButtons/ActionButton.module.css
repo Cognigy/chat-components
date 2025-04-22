@@ -38,6 +38,7 @@ a.button:focus-visible,
 a.button:global(.phone-number-or-url-anchor):focus-visible {
 	outline: 2px solid var(--cc-primary-color);
 	outline-offset: 2px;
+	box-shadow: 0 0 0 4px var(--cc-primary-contrast-color);
 }
 
 button.button:disabled,

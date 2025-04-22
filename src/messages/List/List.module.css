@@ -128,11 +128,6 @@ article .wrapper .listItemRoot {
 	left: 16px;
 }
 
-.listHeaderButtonWrapper button:focus {
-	border: 2px solid var(--cc-secondary-contrast-color);
-	outline-offset: 0px !important;
-}
-
 .listItemButtonWrapper {
 	padding: 0 16px 16px 16px;
 }
