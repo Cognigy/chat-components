@@ -100,7 +100,7 @@ export const ActionButtons: FC<ActionButtonsProps> = props => {
 					className={classNames(mainClasses.srOnly, "sr-only")}
 					id={`srOnly-${templateTextId}`}
 				>
-					{`With ${buttons.length} buttons or links in`}
+					{`Contains ${buttons.length} buttons or links`}
 				</span>
 			)}
 			<div

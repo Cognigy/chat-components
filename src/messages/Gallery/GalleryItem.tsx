@@ -55,7 +55,7 @@ const GalleryItem: FC<GallerySlideProps> = props => {
 			<div className={classnames(classes.top, hasExtraInfo && classes.hasExtraInfo)}>
 				<Typography
 					variant="body-semibold"
-					component="h2"
+					component="h3"
 					dangerouslySetInnerHTML={{ __html: titleHtml }}
 					className="webchat-carousel-template-title"
 					id={titleId}

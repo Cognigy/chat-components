@@ -69,7 +69,7 @@ const ListItem: FC<{ element: IWebchatAttachmentElement; isHeaderElement?: boole
 				{titleHtml && (
 					<Typography
 						variant={isHeaderElement ? "h2-semibold" : "title1-semibold"}
-						component="h2"
+						component="h3"
 						dangerouslySetInnerHTML={{ __html: titleHtml }}
 						className={classnames(
 							isHeaderElement

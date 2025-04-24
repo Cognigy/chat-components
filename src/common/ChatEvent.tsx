@@ -13,7 +13,7 @@ const ChatEvent: FC<ChatEventProps> = props => {
 	const { text, className, id } = props;
 
 	return (
-		<div className={classnames(classes.eventPill, className)} id={id}>
+		<div className={classnames(classes.eventPill, className)} id={id} aria-live="assertive">
 			<div className={classes.eventPillTextWrapper}>
 				<Typography variant="title2-semibold" component="div">
 					{text}
