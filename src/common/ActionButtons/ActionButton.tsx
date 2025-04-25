@@ -21,7 +21,7 @@ interface ActionButtonProps extends React.HTMLAttributes<HTMLButtonElement> {
 	onEmitAnalytics: MessageProps["onEmitAnalytics"];
 	size?: "small" | "large";
 	openXAppOverlay?: (url: string | undefined) => void;
-	onSetScreenReaderBtnLabel?: (label: string) => void;
+	onRegisterScreenReaderLabel?: (label: string) => void;
 }
 
 /**
@@ -39,7 +39,7 @@ const ActionButton: FC<ActionButtonProps> = props => {
 		onEmitAnalytics,
 		size,
 		openXAppOverlay,
-		onSetScreenReaderBtnLabel,
+		onRegisterScreenReaderLabel,
 	} = props;
 	const buttonType =
 		"type" in button
@@ -65,10 +65,9 @@ const ActionButton: FC<ActionButtonProps> = props => {
 		: sanitizeHTML(buttonLabel);
 
 	useEffect(() => {
-		if (!onSetScreenReaderBtnLabel) return;
-		if (!__html) return;
-		onSetScreenReaderBtnLabel(__html);
-	}, [__html, onSetScreenReaderBtnLabel]);
+		if (!onRegisterScreenReaderLabel || !__html) return;
+		onRegisterScreenReaderLabel(__html);
+	}, [__html]); // eslint-disable-line react-hooks/exhaustive-deps
 
 	if (!buttonType) return null;
 

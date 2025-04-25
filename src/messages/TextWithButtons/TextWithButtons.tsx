@@ -16,7 +16,7 @@ interface ITextWithButtonsProps {
 		messageId: string,
 		animationState: IStreamingMessage["animationState"],
 	) => void;
-	onSetLiveRegionContent?: (text: string) => void;
+	onSetLiveRegionText?: (text: string) => void;
 }
 
 /**
@@ -27,7 +27,7 @@ interface ITextWithButtonsProps {
  * - QR buttons get disabled when there is a reply in chat from the user
  */
 const TextWithButtons: FC = (props: ITextWithButtonsProps) => {
-	const { onSetMessageAnimated, onSetLiveRegionContent } = props;
+	const { onSetMessageAnimated, onSetLiveRegionText } = props;
 	const [textContent, setScreenReaderTextContent] = useState<string>("");
 	const [buttonLabels, setScreenReaderButtonLabels] = useState<string[]>([]);
 	const previousLiveContentRef = useRef<string | undefined>(undefined);
@@ -40,6 +40,12 @@ const TextWithButtons: FC = (props: ITextWithButtonsProps) => {
 
 	const isBotMessage = message.source === "bot";
 	const isEngagementMessage = message.source === "engagement";
+
+	const payload = getChannelPayload(message, config);
+
+	const attachments = payload?.message?.attachment as IWebchatTemplateAttachment;
+	const text = attachments?.payload?.text || payload?.message?.text || "";
+	const buttons = attachments?.payload?.buttons || payload?.message?.quick_replies || [];
 
 	useEffect(() => {
 		if (
@@ -64,17 +70,17 @@ const TextWithButtons: FC = (props: ITextWithButtonsProps) => {
 
 	useEffect(() => {
 		const getLiveRegionContent = () => {
-			if (!!textContent && buttonLabels.length > 0) {
+			if (!!textContent && buttonLabels.length > 0 && buttonLabels.length === buttons.length) {
 				return `${textContent}${buttonLabels.length > 0 ? " Available options: " + buttonLabels.join(", ") : ""}`;
 			}
 		};
 
 		const liveRegionContent = getLiveRegionContent();
 		if (liveRegionContent && liveRegionContent !== previousLiveContentRef.current) {
-			onSetLiveRegionContent?.(liveRegionContent);
+			onSetLiveRegionText?.(liveRegionContent);
 			previousLiveContentRef.current = liveRegionContent;
 		}
-	}, [textContent, buttonLabels, onSetLiveRegionContent]);
+	}, [textContent, buttonLabels, onSetLiveRegionText, buttons.length]);
 
 	const stillAnimating =
 		(message as IStreamingMessage).animationState === "animating" ||
@@ -82,14 +88,8 @@ const TextWithButtons: FC = (props: ITextWithButtonsProps) => {
 
 	const webchatButtonTemplateTextId = useRandomId("webchatButtonTemplateHeader");
 
-	const payload = getChannelPayload(message, config);
-
 	const isQuickReplies =
 		payload?.message?.quick_replies && payload.message.quick_replies.length > 0;
-
-	const attachments = payload?.message?.attachment as IWebchatTemplateAttachment;
-	const text = attachments?.payload?.text || payload?.message?.text || "";
-	const buttons = attachments?.payload?.buttons || payload?.message?.quick_replies || [];
 
 	const shouldBeDisabled =
 		(isQuickReplies && messageParams?.hasReply) || messageParams?.isConversationEnded;
@@ -132,7 +132,7 @@ const TextWithButtons: FC = (props: ITextWithButtonsProps) => {
 					onEmitAnalytics={onEmitAnalytics}
 					templateTextId={webchatButtonTemplateTextId}
 					openXAppOverlay={openXAppOverlay}
-					onSetScreenReaderBtnLabel={label =>
+					onRegisterScreenReaderLabel={label =>
 						setScreenReaderButtonLabels(prev => [...prev, label])
 					}
 				/>

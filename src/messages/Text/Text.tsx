@@ -20,13 +20,13 @@ interface TextProps {
 		messageId: string,
 		animationState: IStreamingMessage["animationState"],
 	) => void;
-	onSetLiveRegionContent?: (text: string) => void;
+	onSetLiveRegionText?: (text: string) => void;
 	onSetScreenReaderBtnLabel?: (text: string) => void;
 }
 
 const Text: FC<TextProps> = props => {
 	const { message, config } = useMessageContext();
-	const { onSetLiveRegionContent, onSetScreenReaderBtnLabel } = props;
+	const { onSetLiveRegionText, onSetScreenReaderBtnLabel } = props;
 	const text = message?.text;
 	const source = message?.source;
 	const content = props.content || text || "";
@@ -75,11 +75,11 @@ const Text: FC<TextProps> = props => {
 	useEffect(() => {
 		if (onSetScreenReaderBtnLabel) {
 			onSetScreenReaderBtnLabel(__html);
-		} else if (onSetLiveRegionContent && __html && __html !== previousLiveContentRef.current) {
-			onSetLiveRegionContent(__html);
+		} else if (onSetLiveRegionText && __html && __html !== previousLiveContentRef.current) {
+			onSetLiveRegionText(__html);
 			previousLiveContentRef.current = __html;
 		}
-	}, [__html, onSetLiveRegionContent, onSetScreenReaderBtnLabel]);
+	}, [__html, onSetLiveRegionText, onSetScreenReaderBtnLabel]);
 
 	return (
 		<ChatBubble>

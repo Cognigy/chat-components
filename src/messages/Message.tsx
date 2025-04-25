@@ -34,7 +34,7 @@ export interface MessageProps {
 		messageId: string,
 		animationState: IStreamingMessage["animationState"],
 	) => void;
-	onSetLiveRegionContent?: (text: string) => void;
+	onSetLiveRegionText?: (text: string) => void;
 }
 
 const defaultCollate = new CollateMessage();
@@ -104,7 +104,7 @@ const Message: FC<MessageProps> = props => {
 					theme={props.theme}
 					attributes={{ styles: { flexGrow: 1, minHeight: 0 } }}
 					onSetMessageAnimated={props.onSetMessageAnimated}
-					onSetLiveRegionContent={props.onSetLiveRegionContent}
+					onSetLiveRegionText={props.onSetLiveRegionText}
 				/>
 			);
 		}
@@ -135,7 +135,7 @@ const Message: FC<MessageProps> = props => {
 							prevMessage={prevMessage}
 							theme={props.theme}
 							onSetMessageAnimated={props.onSetMessageAnimated}
-							onSetLiveRegionContent={props.onSetLiveRegionContent}
+							onSetLiveRegionText={props.onSetLiveRegionText}
 						/>
 					) : null,
 				)}
