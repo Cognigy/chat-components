@@ -1,11 +1,11 @@
-import { FC, Fragment, useEffect, useRef, useState } from "react";
+import { FC, Fragment, useCallback, useEffect, useRef, useState } from "react";
 import ListItem from "./ListItem";
 import { useMessageContext, useRandomId } from "src/messages/hooks";
 import mainclasses from "src/main.module.css";
 import classes from "./List.module.css";
 import classnames from "classnames";
 import { PrimaryButton } from "src/common/Buttons";
-import { getChannelPayload } from "src/utils";
+import { getChannelPayload, getLiveRegionContent } from "src/utils";
 import { IWebchatAttachmentElement, IWebchatTemplateAttachment } from "@cognigy/socket-client";
 
 interface IListProps {
@@ -56,24 +56,7 @@ const List: FC<IListProps> = props => {
 	}, [config?.settings?.widgetSettings?.enableAutoFocus, listTemplateId]);
 
 	useEffect(() => {
-		const getLiveRegionText = () => {
-			const labels = Object.values(listItemLiveRegionLabels);
-			if (labels.length === 0) return;
-
-			const headerLabel = headerElement && labels[0];
-			const listItems = headerElement ? labels.slice(1) : labels;
-			const listItemLabels = listItems.length > 0 ? listItems.join(", ") : "";
-
-			if (headerLabel && listItemLabels) {
-				return `${headerLabel}. Available list items: ${listItemLabels}`;
-			} else if (listItemLabels) {
-				return `Available list items: ${listItemLabels}`;
-			} else if (headerLabel) {
-				return headerLabel;
-			}
-		};
-
-		const liveRegionText = getLiveRegionText();
+		const liveRegionText = getLiveRegionContent("list", listItemLiveRegionLabels);
 
 		if (
 			onSetLiveRegionText &&
@@ -84,7 +67,14 @@ const List: FC<IListProps> = props => {
 			onSetLiveRegionText(liveRegionText);
 			previousLiveContentRef.current = liveRegionText;
 		}
-	}, [onSetLiveRegionText, listItemLiveRegionLabels, headerElement, elements]);
+	}, [onSetLiveRegionText, listItemLiveRegionLabels, elements]);
+
+	const handleListItemLiveRegionLabel = useCallback((index: number, label: string) => {
+		setListItemLiveRegionLabels(prev => {
+			if (prev[index] === label) return prev;
+			return { ...prev, [index]: label };
+		});
+	}, []);
 
 	if (!elements || elements?.length === 0) return null;
 
@@ -101,7 +91,7 @@ const List: FC<IListProps> = props => {
 					headingLevel="h3"
 					id={`header-${listTemplateId}`}
 					onSetScreenReaderLabel={(text: string) => {
-						setListItemLiveRegionLabels(prev => ({ ...prev, 0: text }));
+						handleListItemLiveRegionLabel(0, text);
 					}}
 				/>
 			)}
@@ -115,10 +105,7 @@ const List: FC<IListProps> = props => {
 								headingLevel={headerElement ? "h4" : "h3"}
 								id={`${listTemplateId}-${index}`}
 								onSetScreenReaderLabel={(text: string) => {
-									setListItemLiveRegionLabels(prev => ({
-										...prev,
-										[index + 1]: text, // Add 1 to account for the header element
-									}));
+									handleListItemLiveRegionLabel(index + 1, text);
 								}}
 							/>
 							{button && index === regularElements.length - 1 && (

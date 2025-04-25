@@ -169,3 +169,46 @@ export const replaceUrlsWithHTMLanchorElem = (text: string) => {
 
 	return enhancedText;
 };
+
+export type MessageType = "list" | "textWithButtons";
+
+/**
+ * Computes the live region text based on the message type and provided data.
+ * @param messageType The type of the message (e.g., "list", "textWithButtons").
+ * @param data The data required to compute the live region text.
+ * @returns The computed live region text.
+ */
+export const getLiveRegionContent = (messageType: MessageType, data: any): string | undefined => {
+	switch (messageType) {
+		case "textWithButtons": {
+			const { textContent, buttonLabels } = data;
+
+			if (!!textContent && buttonLabels.length > 0) {
+				return `${textContent}${" Available options: " + buttonLabels.join(", ")}`;
+			}
+			return undefined;
+		}
+
+		case "list": {
+			const headerLabel = data[0];
+
+			const itemLabels = Object.keys(data)
+				.filter(key => key !== "0")
+				.map(key => data[key])
+				.join(", ");
+			if (headerLabel && itemLabels) {
+				return `${headerLabel}. Available list items: ${itemLabels}`;
+			}
+			if (itemLabels) {
+				return `Available list items: ${itemLabels}`;
+			}
+			if (headerLabel) {
+				return headerLabel;
+			}
+			return undefined;
+		}
+
+		default:
+			return undefined;
+	}
+};

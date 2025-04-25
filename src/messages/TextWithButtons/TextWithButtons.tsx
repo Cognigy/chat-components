@@ -5,7 +5,7 @@ import { Text } from "src/messages";
 import classes from "./TextWithButtons.module.css";
 import { useMessageContext, useRandomId } from "../hooks";
 
-import { getChannelPayload } from "src/utils";
+import { getChannelPayload, getLiveRegionContent } from "src/utils";
 import ActionButtons from "src/common/ActionButtons/ActionButtons";
 import { IWebchatTemplateAttachment } from "@cognigy/socket-client";
 import classNames from "classnames";
@@ -69,14 +69,13 @@ const TextWithButtons: FC = (props: ITextWithButtonsProps) => {
 	]);
 
 	useEffect(() => {
-		const getLiveRegionContent = () => {
-			if (!!textContent && buttonLabels.length > 0 && buttonLabels.length === buttons.length) {
-				return `${textContent}${buttonLabels.length > 0 ? " Available options: " + buttonLabels.join(", ") : ""}`;
-			}
-		};
-
-		const liveRegionContent = getLiveRegionContent();
-		if (liveRegionContent && liveRegionContent !== previousLiveContentRef.current) {
+		const data = { textContent, buttonLabels };
+		const liveRegionContent = getLiveRegionContent("textWithButtons", data);
+		if (
+			liveRegionContent &&
+			liveRegionContent !== previousLiveContentRef.current &&
+			buttonLabels.length === buttons.length
+		) {
 			onSetLiveRegionText?.(liveRegionContent);
 			previousLiveContentRef.current = liveRegionContent;
 		}
