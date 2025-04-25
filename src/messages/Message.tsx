@@ -52,6 +52,8 @@ const Message: FC<MessageProps> = props => {
 		onEmitAnalytics,
 		onSetFullscreen,
 		openXAppOverlay,
+		onSetMessageAnimated,
+		onSetLiveRegionText,
 		plugins,
 		prevMessage,
 	} = props;
@@ -134,8 +136,8 @@ const Message: FC<MessageProps> = props => {
 							onSetFullscreen={onSetFullscreen}
 							prevMessage={prevMessage}
 							theme={props.theme}
-							onSetMessageAnimated={props.onSetMessageAnimated}
-							onSetLiveRegionText={props.onSetLiveRegionText}
+							onSetMessageAnimated={onSetMessageAnimated}
+							onSetLiveRegionText={onSetLiveRegionText}
 						/>
 					) : null,
 				)}

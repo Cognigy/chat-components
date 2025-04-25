@@ -1,4 +1,4 @@
-import { FC, Fragment, useEffect } from "react";
+import { FC, Fragment, useEffect, useRef, useState } from "react";
 import ListItem from "./ListItem";
 import { useMessageContext, useRandomId } from "src/messages/hooks";
 import mainclasses from "src/main.module.css";
@@ -8,14 +8,25 @@ import { PrimaryButton } from "src/common/Buttons";
 import { getChannelPayload } from "src/utils";
 import { IWebchatAttachmentElement, IWebchatTemplateAttachment } from "@cognigy/socket-client";
 
-const List: FC = () => {
+interface IListProps {
+	onSetLiveRegionText?: (text: string) => void;
+}
+
+const List: FC<IListProps> = props => {
 	const { message, messageParams, config, action, onEmitAnalytics } = useMessageContext();
 	const payload = getChannelPayload(message, config);
+
+	const [listItemLiveRegionLabels, setListItemLiveRegionLabels] = useState<
+		Record<number, string>
+	>({});
+
+	const previousLiveContentRef = useRef<string | undefined>(undefined);
+
+	const { onSetLiveRegionText } = props;
 
 	const { elements, top_element_style, buttons } =
 		(payload?.message?.attachment as IWebchatTemplateAttachment)?.payload || {};
 
-	// We support the "large" string to maintain compatibility with old format
 	const showTopElementLarge = top_element_style === "large" || top_element_style === true;
 
 	const regularElements = showTopElementLarge ? elements?.slice(1) : elements;
@@ -44,26 +55,78 @@ const List: FC = () => {
 		}, 200);
 	}, [config?.settings?.widgetSettings?.enableAutoFocus, listTemplateId]);
 
+	useEffect(() => {
+		const getLiveRegionText = () => {
+			const labels = Object.values(listItemLiveRegionLabels);
+			if (labels.length === 0) return;
+
+			const headerLabel = headerElement && labels[0];
+			const listItems = headerElement ? labels.slice(1) : labels;
+			const listItemLabels = listItems.length > 0 ? listItems.join(", ") : "";
+
+			if (headerLabel && listItemLabels) {
+				return `${headerLabel}. Available list items: ${listItemLabels}`;
+			} else if (listItemLabels) {
+				return `Available list items: ${listItemLabels}`;
+			} else if (headerLabel) {
+				return headerLabel;
+			}
+		};
+
+		const liveRegionText = getLiveRegionText();
+
+		if (
+			onSetLiveRegionText &&
+			liveRegionText &&
+			liveRegionText !== previousLiveContentRef.current &&
+			elements?.length === Object.keys(listItemLiveRegionLabels).length
+		) {
+			onSetLiveRegionText(liveRegionText);
+			previousLiveContentRef.current = liveRegionText;
+		}
+	}, [onSetLiveRegionText, listItemLiveRegionLabels, headerElement, elements]);
+
 	if (!elements || elements?.length === 0) return null;
 
 	return (
 		<div
 			className={classnames("webchat-list-template-root", classes.wrapper)}
-			role="list"
 			id={listTemplateId}
 			data-testid="list-message"
 		>
-			{headerElement && <ListItem element={headerElement} isHeaderElement />}
-			{regularElements &&
-				regularElements.map((element: IWebchatAttachmentElement, index: number) => (
-					<Fragment key={index}>
-						{index > 0 && <div className={mainclasses.divider} />}
-						<ListItem element={element} />
-						{button && index === regularElements.length - 1 && (
-							<div className={mainclasses.divider} />
-						)}
-					</Fragment>
-				))}
+			{headerElement && (
+				<ListItem
+					element={headerElement}
+					isHeaderElement
+					headingLevel="h3"
+					id={`header-${listTemplateId}`}
+					onSetScreenReaderLabel={(text: string) => {
+						setListItemLiveRegionLabels(prev => ({ ...prev, 0: text }));
+					}}
+				/>
+			)}
+			<ul aria-labelledby={headerElement ? `listHeader-header-${listTemplateId}` : undefined}>
+				{regularElements &&
+					regularElements.map((element: IWebchatAttachmentElement, index: number) => (
+						<Fragment key={index}>
+							{index > 0 && <div className={mainclasses.divider} />}
+							<ListItem
+								element={element}
+								headingLevel={headerElement ? "h4" : "h3"}
+								id={`${listTemplateId}-${index}`}
+								onSetScreenReaderLabel={(text: string) => {
+									setListItemLiveRegionLabels(prev => ({
+										...prev,
+										[index + 1]: text, // Add 1 to account for the header element
+									}));
+								}}
+							/>
+							{button && index === regularElements.length - 1 && (
+								<div className={mainclasses.divider} />
+							)}
+						</Fragment>
+					))}
+			</ul>
 			{button && (
 				<PrimaryButton
 					isActionButton
