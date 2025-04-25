@@ -1,4 +1,4 @@
-import { FC, useEffect, useMemo, useState } from "react";
+import { FC, useEffect, useMemo, useRef, useState } from "react";
 import classNames from "classnames";
 import { useMessageContext } from "../hooks";
 import ChatBubble from "../../common/ChatBubble";
@@ -20,10 +20,13 @@ interface TextProps {
 		messageId: string,
 		animationState: IStreamingMessage["animationState"],
 	) => void;
+	onSetLiveRegionContent?: (text: string) => void;
+	onSetScreenReaderBtnLabel?: (text: string) => void;
 }
 
 const Text: FC<TextProps> = props => {
 	const { message, config } = useMessageContext();
+	const { onSetLiveRegionContent, onSetScreenReaderBtnLabel } = props;
 	const text = message?.text;
 	const source = message?.source;
 	const content = props.content || text || "";
@@ -31,6 +34,8 @@ const Text: FC<TextProps> = props => {
 		(message as IStreamingMessage)?.animationState === "start" ||
 		(message as IStreamingMessage)?.animationState === "animating" ||
 		false;
+
+	const previousLiveContentRef = useRef<string | undefined>(undefined);
 
 	const renderMarkdown =
 		config?.settings?.behavior?.renderMarkdown && (source === "bot" || source === "engagement");
@@ -66,6 +71,15 @@ const Text: FC<TextProps> = props => {
 	const __html = config?.settings?.layout?.disableHtmlContentSanitization
 		? enhancedURLsText
 		: sanitizeHTML(enhancedURLsText);
+
+	useEffect(() => {
+		if (onSetScreenReaderBtnLabel) {
+			onSetScreenReaderBtnLabel(__html);
+		} else if (onSetLiveRegionContent && __html && __html !== previousLiveContentRef.current) {
+			onSetLiveRegionContent(__html);
+			previousLiveContentRef.current = __html;
+		}
+	}, [__html, onSetLiveRegionContent, onSetScreenReaderBtnLabel]);
 
 	return (
 		<ChatBubble>

@@ -1,4 +1,4 @@
-import { FC, ReactElement } from "react";
+import { FC, ReactElement, useEffect } from "react";
 import classnames from "classnames";
 import { ActionButtonsProps } from "./ActionButtons";
 import { getWebchatButtonLabel } from "src/utils";
@@ -21,6 +21,7 @@ interface ActionButtonProps extends React.HTMLAttributes<HTMLButtonElement> {
 	onEmitAnalytics: MessageProps["onEmitAnalytics"];
 	size?: "small" | "large";
 	openXAppOverlay?: (url: string | undefined) => void;
+	onSetScreenReaderBtnLabel?: (label: string) => void;
 }
 
 /**
@@ -38,6 +39,7 @@ const ActionButton: FC<ActionButtonProps> = props => {
 		onEmitAnalytics,
 		size,
 		openXAppOverlay,
+		onSetScreenReaderBtnLabel,
 	} = props;
 	const buttonType =
 		"type" in button
@@ -57,12 +59,18 @@ const ActionButton: FC<ActionButtonProps> = props => {
 				? button.imageAltText
 				: "";
 
-	if (!buttonType) return null;
-
 	const buttonLabel = getWebchatButtonLabel(button) || "";
 	const __html = config?.settings?.layout?.disableHtmlContentSanitization
 		? buttonLabel
 		: sanitizeHTML(buttonLabel);
+
+	useEffect(() => {
+		if (!onSetScreenReaderBtnLabel) return;
+		if (!__html) return;
+		onSetScreenReaderBtnLabel(__html);
+	}, [__html, onSetScreenReaderBtnLabel]);
+
+	if (!buttonType) return null;
 
 	const isPhoneNumber =
 		button.payload && (buttonType === "phone_number" || buttonType === "user_phone_number");
