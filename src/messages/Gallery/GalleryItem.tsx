@@ -97,6 +97,7 @@ const GalleryItem: FC<GallerySlideProps> = props => {
 								buttonClasses.actionButton,
 								"webchat-carousel-template-button",
 							)}
+							buttonListItemClassName={classes.buttonListItem}
 							payload={buttons}
 							action={shouldBeDisabled ? undefined : action}
 							config={config}

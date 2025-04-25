@@ -60,6 +60,10 @@
 	margin: 0px;
 }
 
+.slideItem .bottom .buttonListItem {
+	width: 100%;
+}
+
 /* 
 ** SWIPER MAIN
 ** The following styles are a porting from the original swiper/css and related modules.
