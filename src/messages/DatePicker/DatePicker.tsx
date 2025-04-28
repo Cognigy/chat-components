@@ -8,11 +8,14 @@ import { getFocusableElements } from "src/utils";
 import { CloseIcon } from "src/assets/svg";
 import Typography from "src/common/Typography";
 import { PrimaryButton } from "src/common/Buttons";
-import mainClasses from "src/main.module.css";
 
 const DatePicker: FC = () => {
 	const { action, message, messageParams, config } = useMessageContext();
-	const options = useMemo(() => getOptionsFromMessage(message), [message]);
+
+	const options = useMemo(
+		() => getOptionsFromMessage(message, config?.settings?.customTranslations),
+		[message, config?.settings?.customTranslations],
+	);
 
 	const [showPicker, setShowPicker] = useState(false);
 	const [currentDate, setCurrentDate] = useState("");
@@ -20,7 +23,6 @@ const DatePicker: FC = () => {
 	const openButtonRef = useRef<HTMLButtonElement>(null);
 
 	const datePickerHeading = useRandomId("webchatDatePickerHeading");
-	const datePickerDescription = useRandomId("webchatDatePickerContentDescription");
 
 	if (!message?.data?._plugin || message.data._plugin.type !== "date-picker") return;
 
@@ -102,13 +104,6 @@ const DatePicker: FC = () => {
 
 	const closeDatePickerLabel =
 		config?.settings?.customTranslations?.ariaLabels?.closeDatePicker || "Close date-picker";
-	const datePickerDescriptionForSr =
-		config?.settings?.customTranslations?.ariaLabels?.datePickerDescription ||
-		`Please use Left/ Right arrows to move focus to previous/ next day.
-		 Please use Up/ Down arrows to move focus to the same day of previous/
-		 next week. Please use Control + Left/ Right arrows to change the grid of
-		 dates to previous/ next month. Please use Control + Up/ Down arrows to
-		 change the grid of dates to previous/ next year.`;
 
 	return (
 		<div data-testid="datepicker-message">
@@ -132,19 +127,15 @@ const DatePicker: FC = () => {
 					role="dialog"
 					aria-modal="true"
 					aria-labelledby={datePickerHeading}
-					aria-describedby={datePickerDescription}
 				>
 					<div
 						className={classnames(classes.header, "webchat-plugin-date-picker-header")}
 					>
-						<span className={mainClasses.srOnly} id={datePickerDescription}>
-							{datePickerDescriptionForSr}
-						</span>
 						<span className={classes.left}></span>
 						<span className={classes.center}>
 							<Typography
 								variant="h2-semibold"
-								component="span"
+								component="h3"
 								className="webchat-list-template-header-title"
 							>
 								{eventName || "Calendar"}
