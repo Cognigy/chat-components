@@ -3,12 +3,13 @@ import l10n from "flatpickr/dist/l10n";
 import { Options } from "flatpickr/dist/types/options";
 import { key as LocaleKey } from "flatpickr/dist/types/locale";
 import { IMessage } from "@cognigy/socket-client";
+import { IWebchatSettings } from "../types";
 import customElements from "./flatpickr-plugins/customElements";
 import arrowIcon from "src/assets/svg/arrow_back.svg?raw";
 
 export const getOptionsFromMessage = (
 	message: IMessage,
-	customTranslations?: { [key: string]: string | object },
+	customTranslations?: IWebchatSettings["customTranslations"],
 ) => {
 	if (!message?.data?._plugin || message.data._plugin.type !== "date-picker") return;
 

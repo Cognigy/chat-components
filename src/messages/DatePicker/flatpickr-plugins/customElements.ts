@@ -1,9 +1,10 @@
 import { Plugin } from "flatpickr/dist/types/options";
 import { Instance } from "flatpickr/dist/types/instance";
+import { IWebchatSettings } from "src/messages/types";
 
 export interface Config {
 	arrowIcon: string;
-	customTranslations?: { [key: string]: string | object };
+	customTranslations?: IWebchatSettings["customTranslations"];
 }
 
 /**
@@ -81,7 +82,7 @@ function customElements(pluginConfig: Config): Plugin {
 				".flatpickr-next-month",
 			) as HTMLElement;
 			if (prevButton) {
-				const prevButtonAriaLabel = customTranslations?.datePickerPreviousMonth as string;
+				const prevButtonAriaLabel = customTranslations?.ariaLabels?.datePickerPreviousMonth;
 				prevButton.setAttribute("aria-label", prevButtonAriaLabel || "Previous month");
 				prevButton.setAttribute("role", "button");
 				if (!prevButton.classList.contains("flatpickr-disabled")) {
@@ -95,7 +96,7 @@ function customElements(pluginConfig: Config): Plugin {
 				}
 			}
 			if (nextButton) {
-				const nextButtonAriaLabel = customTranslations?.datePickerNextMonth as string;
+				const nextButtonAriaLabel = customTranslations?.ariaLabels?.datePickerNextMonth;
 				nextButton.setAttribute("aria-label", nextButtonAriaLabel || "Next month");
 				nextButton.setAttribute("role", "button");
 				if (!nextButton.classList.contains("flatpickr-disabled")) {
@@ -137,8 +138,7 @@ function customElements(pluginConfig: Config): Plugin {
 			const monthLabel = document.createElement("label");
 			monthLabel.setAttribute("for", "webchat-monthSelector-datepicker");
 
-			monthLabel.textContent =
-				(customTranslations?.datePickerMonthLabel as string) || "Month";
+			monthLabel.textContent = customTranslations?.datePickerMonthLabel || "Month";
 
 			monthYearDiv?.prepend(monthLabel);
 
@@ -160,7 +160,7 @@ function customElements(pluginConfig: Config): Plugin {
 
 			const yearLabel = document.createElement("label");
 			yearLabel.setAttribute("for", "yearSelector-datepicker");
-			yearLabel.textContent = (customTranslations?.datePickerYearLabel as string) || "Year";
+			yearLabel.textContent = customTranslations?.datePickerYearLabel || "Year";
 
 			yearInputWrapper?.prepend(yearLabel);
 
