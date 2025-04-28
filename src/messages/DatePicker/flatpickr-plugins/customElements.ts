@@ -130,41 +130,59 @@ function customElements(pluginConfig: Config): Plugin {
 			const monthSelector = monthYearDiv?.getElementsByClassName(
 				"flatpickr-monthDropdown-months",
 			)?.[0] as HTMLElement;
-			monthSelector?.setAttribute("id", "webchat-monthSelector-datepicker");
-			monthSelector?.classList.add("webchat-monthSelector-datepicker");
-			// unset aria-label attribute from month input to avoid redundancy
-			monthSelector?.removeAttribute("aria-label");
 
-			const monthLabel = document.createElement("label");
-			monthLabel.setAttribute("for", "webchat-monthSelector-datepicker");
+			if (monthSelector) {
+				monthSelector.setAttribute("id", "webchat-monthSelector-datepicker");
+				monthSelector.classList.add("webchat-monthSelector-datepicker");
+				// Remove aria-label attribute from month input to avoid redundancy
+				monthSelector.removeAttribute("aria-label");
 
-			monthLabel.textContent = customTranslations?.datePickerMonthLabel || "Month";
+				// Check if a label already exists for the monthSelector
+				const existingLabel = monthYearDiv?.querySelector(
+					"label[for='webchat-monthSelector-datepicker']",
+				);
 
-			monthYearDiv?.prepend(monthLabel);
+				// If no label exists, create and prepend a new one
+				if (!existingLabel) {
+					const monthLabel = document.createElement("label");
+					monthLabel.setAttribute("for", "webchat-monthSelector-datepicker");
+					monthLabel.textContent = customTranslations?.datePickerMonthLabel || "Month";
+					monthYearDiv?.prepend(monthLabel);
+				}
 
-			monthSelector?.setAttribute("tabindex", "0");
+				monthSelector.setAttribute("tabindex", "0");
+			}
 		}
 
 		// Set necessary label and attributes to year input for accessibility
 		function setYearSelectAlly() {
 			const monthYearDiv =
 				fp?.calendarContainer?.getElementsByClassName("flatpickr-current-month")[0];
-
+		
 			const yearInput = monthYearDiv?.getElementsByClassName("cur-year")?.[0] as HTMLElement;
-
-			const yearInputWrapper = yearInput?.parentElement as HTMLElement;
-			yearInput?.setAttribute("id", "yearSelector-datepicker");
-			yearInput?.classList.add("yearSelector-datepicker");
-			// unset aria-label attribute from year input to avaoid redundancy
-			yearInput?.removeAttribute("aria-label");
-
-			const yearLabel = document.createElement("label");
-			yearLabel.setAttribute("for", "yearSelector-datepicker");
-			yearLabel.textContent = customTranslations?.datePickerYearLabel || "Year";
-
-			yearInputWrapper?.prepend(yearLabel);
-
-			yearInput?.setAttribute("tabindex", "0");
+		
+			if (yearInput) {
+				const yearInputWrapper = yearInput?.parentElement as HTMLElement;
+				yearInput.setAttribute("id", "yearSelector-datepicker");
+				yearInput.classList.add("yearSelector-datepicker");
+				// Remove aria-label attribute from year input to avoid redundancy
+				yearInput.removeAttribute("aria-label");
+		
+				// Check if a label already exists for the yearInput
+				const existingLabel = yearInputWrapper?.querySelector(
+					"label[for='yearSelector-datepicker']",
+				);
+		
+				// If no label exists, create and prepend a new one
+				if (!existingLabel) {
+					const yearLabel = document.createElement("label");
+					yearLabel.setAttribute("for", "yearSelector-datepicker");
+					yearLabel.textContent = customTranslations?.datePickerYearLabel || "Year";
+					yearInputWrapper?.prepend(yearLabel);
+				}
+		
+				yearInput.setAttribute("tabindex", "0");
+			}
 		}
 
 		// Set necessary attributes to time picker fields for accessibility
