@@ -35,9 +35,9 @@
 .header .right {
 	display: flex;
 	align-items: center;
-	justify-content: flex-end;
-	width: 20px;
-	height: 20px;
+	justify-content: center;
+	width: 24px;
+	height: 24px;
 	cursor: pointer;
 	border: none;
 	outline: none;
@@ -45,6 +45,12 @@
 	padding: 0;
 	background-color: transparent;
 	box-sizing: border-box;
+	border-radius: 4px;
+}
+
+.header .right:focus {
+	outline: 2px solid var(--cc-primary-color);
+	outline-offset: 2px;
 }
 
 .content {
@@ -150,6 +156,17 @@
 	cursor: pointer;
 	display: inline-flex;
 	z-index: 3;
+	width: 24px;
+	height: 24px;
+	justify-content: center;
+	align-items: center;
+	border-radius: 4px;
+}
+
+.wrapper .content :global(.flatpickr-months .flatpickr-prev-month):focus-visible,
+.wrapper .content :global(.flatpickr-months .flatpickr-next-month):focus-visible {
+	outline: 2px solid var(--cc-primary-color);
+	outline-offset: 2px;
 }
 
 .wrapper .content :global(.flatpickr-months .flatpickr-prev-month.flatpickr-disabled),
@@ -241,8 +258,7 @@
 	border-color: var(--cc-black-60);
 }
 .wrapper .content :global(.flatpickr-current-month .flatpickr-monthDropdown-months:focus) {
-	border-color: var(--cc-black-60);
-	outline: none;
+	outline: 2px solid var(--cc-primary-color);
 }
 .wrapper .content :global(.flatpickr-current-month .flatpickr-monthDropdown-months option) {
 	font-weight: normal;
@@ -279,7 +295,7 @@
 }
 
 .wrapper .content :global(.flatpickr-current-month input.cur-year:focus) {
-	outline: 0;
+	outline: 2px solid var(--cc-primary-color);
 }
 
 .wrapper .content :global(.flatpickr-current-month input.cur-year[disabled]),
