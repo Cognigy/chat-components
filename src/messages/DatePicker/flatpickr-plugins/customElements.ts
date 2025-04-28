@@ -71,6 +71,7 @@ function customElements(pluginConfig: Config): Plugin {
 			}
 		}
 
+		// Set necessary attributes to make Previous and Next month buttons accessible
 		function setNavButtonsAlly() {
 			const prevButton = fp?.calendarContainer?.querySelector(
 				".flatpickr-prev-month",
@@ -102,22 +103,18 @@ function customElements(pluginConfig: Config): Plugin {
 			}
 		}
 
-		function setTimeAlly() {
-			fp?.calendarContainer?.setAttribute("tabIndex", "0");
-			fp?.calendarContainer?.setAttribute("aria-labelledby", "webchatDatePickerHeaderLabel");
-
-			if (fp?.config?.enableTime) {
-				const hourField = fp?.timeContainer?.getElementsByClassName("flatpickr-hour")?.[0];
-				hourField?.setAttribute("tabIndex", "0");
-				const minutesField =
-					fp?.timeContainer?.getElementsByClassName("flatpickr-minute")?.[0];
-				minutesField?.setAttribute("tabIndex", "0");
-				const amPmField = fp?.timeContainer?.getElementsByClassName("flatpickr-am-pm")?.[0];
-				amPmField?.setAttribute("tabIndex", "0");
-				amPmField?.setAttribute("role", "button");
+		// Remove tabindex from calender container and set it to innerContainer
+		function setDateSelectAlly() {
+			fp?.calendarContainer?.setAttribute("tabindex", "-1");
+			const daysContainer = fp?.calendarContainer?.getElementsByClassName(
+				"flatpickr-innerContainer",
+			)[0];
+			if (daysContainer) {
+				daysContainer.setAttribute("tabindex", "0");
 			}
 		}
 
+		// Set necessary label and attributes to month select for accessibility
 		function setMonthSelectAlly() {
 			const monthYearDiv =
 				fp?.calendarContainer?.getElementsByClassName("flatpickr-current-month")[0];
@@ -140,6 +137,7 @@ function customElements(pluginConfig: Config): Plugin {
 			monthSelector?.setAttribute("tabindex", "0");
 		}
 
+		// Set necessary label and attributes to year input for accessibility
 		function setYearSelectAlly() {
 			const monthYearDiv =
 				fp?.calendarContainer?.getElementsByClassName("flatpickr-current-month")[0];
@@ -161,10 +159,27 @@ function customElements(pluginConfig: Config): Plugin {
 			yearInput?.setAttribute("tabindex", "0");
 		}
 
+		// Set necessary attributes to time picker fields for accessibility
+		function setTimeAlly() {
+			fp?.calendarContainer?.setAttribute("aria-labelledby", "webchatDatePickerHeaderLabel");
+
+			if (fp?.config?.enableTime) {
+				const hourField = fp?.timeContainer?.getElementsByClassName("flatpickr-hour")?.[0];
+				hourField?.setAttribute("tabIndex", "0");
+				const minutesField =
+					fp?.timeContainer?.getElementsByClassName("flatpickr-minute")?.[0];
+				minutesField?.setAttribute("tabIndex", "0");
+				const amPmField = fp?.timeContainer?.getElementsByClassName("flatpickr-am-pm")?.[0];
+				amPmField?.setAttribute("tabIndex", "0");
+				amPmField?.setAttribute("role", "button");
+			}
+		}
+
 		return {
 			onReady: [
 				upsertTimeArrows,
 				buildTimeArrows,
+				setDateSelectAlly,
 				setTimeAlly,
 				setMonthSelectAlly,
 				setYearSelectAlly,
@@ -182,8 +197,11 @@ function customElements(pluginConfig: Config): Plugin {
 			],
 			onValueUpdate: [
 				upsertTimeArrows,
+				setDateSelectAlly,
+				setTimeAlly,
 				setMonthSelectAlly,
 				setYearSelectAlly,
+				setNavButtonsAlly,
 			],
 		};
 	};
