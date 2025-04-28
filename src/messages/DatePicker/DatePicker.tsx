@@ -137,11 +137,15 @@ const DatePicker: FC = () => {
 				disabled={shouldBeDisabled}
 				data-testid="button-open"
 				ref={openButtonRef}
+				aria-expanded={showPicker}
+				aria-controls={`webchat-plugin-date-picker-${message.id}`}
+				aria-haspopup="dialog"
 			>
 				{openText}
 			</PrimaryButton>
 			{showPicker && (
 				<div
+					id={`webchat-plugin-date-picker-${message.id}`}
 					className={classnames(classes.wrapper, "webchat-plugin-date-picker")}
 					onKeyDown={handleKeyDown}
 					tabIndex={0}
@@ -171,6 +175,7 @@ const DatePicker: FC = () => {
 							aria-label={closeDatePickerLabel}
 							className={classes.right}
 							data-testid="button-close"
+							autoFocus
 						>
 							<CloseIcon />
 						</button>
