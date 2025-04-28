@@ -80,26 +80,30 @@ function customElements(pluginConfig: Config): Plugin {
 				".flatpickr-next-month",
 			) as HTMLElement;
 			if (prevButton) {
-				prevButton.setAttribute("tabindex", "0");
 				prevButton.setAttribute("aria-label", "Previous month");
 				prevButton.setAttribute("role", "button");
-				prevButton.addEventListener("keydown", event => {
-					if (event.key === "Enter" || event.key === " ") {
-						event.preventDefault();
-						fp.changeMonth(-1); // Move to the previous month
-					}
-				});
+				if (!prevButton.classList.contains("flatpickr-disabled")) {
+					prevButton.setAttribute("tabindex", "0");
+					prevButton.addEventListener("keydown", event => {
+						if (event.key === "Enter" || event.key === " ") {
+							event.preventDefault();
+							fp.changeMonth(-1); // Move to the previous month
+						}
+					});
+				}
 			}
 			if (nextButton) {
-				nextButton.setAttribute("tabindex", "0");
 				nextButton.setAttribute("aria-label", "Next month");
 				nextButton.setAttribute("role", "button");
-				nextButton.addEventListener("keydown", event => {
-					if (event.key === "Enter" || event.key === " ") {
-						event.preventDefault();
-						fp.changeMonth(1); // Move to the next month
-					}
-				});
+				if (!nextButton.classList.contains("flatpickr-disabled")) {
+					nextButton.setAttribute("tabindex", "0");
+					nextButton.addEventListener("keydown", event => {
+						if (event.key === "Enter" || event.key === " ") {
+							event.preventDefault();
+							fp.changeMonth(1); // Move to the next month
+						}
+					});
+				}
 			}
 		}
 
