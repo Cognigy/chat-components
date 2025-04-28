@@ -106,7 +106,7 @@ const DatePicker: FC = () => {
 				calender?.focus(); // Move focus to calender from submit button
 			} else if (isLastTimeInputFieldFocused) {
 				event.preventDefault();
-				button?.focus(); // Move focus to cancel button from last time input field
+				button?.focus(); // Move focus to submit button from last time input field
 			}
 		}
 		// Handle Reverse Tab Navigation

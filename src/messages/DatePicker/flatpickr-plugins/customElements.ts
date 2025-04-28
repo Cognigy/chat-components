@@ -71,9 +71,38 @@ function customElements(pluginConfig: Config): Plugin {
 			}
 		}
 
-		function setTimeAlly() {
-			fp?.calendarContainer?.focus();
+		function setNavButtonsAlly() {
+			const prevButton = fp?.calendarContainer?.querySelector(
+				".flatpickr-prev-month",
+			) as HTMLElement;
+			const nextButton = fp?.calendarContainer?.querySelector(
+				".flatpickr-next-month",
+			) as HTMLElement;
+			if (prevButton) {
+				prevButton.setAttribute("tabindex", "0");
+				prevButton.setAttribute("aria-label", "Previous month");
+				prevButton.setAttribute("role", "button");
+				prevButton.addEventListener("keydown", event => {
+					if (event.key === "Enter" || event.key === " ") {
+						event.preventDefault();
+						fp.changeMonth(-1); // Move to the previous month
+					}
+				});
+			}
+			if (nextButton) {
+				nextButton.setAttribute("tabindex", "0");
+				nextButton.setAttribute("aria-label", "Next month");
+				nextButton.setAttribute("role", "button");
+				nextButton.addEventListener("keydown", event => {
+					if (event.key === "Enter" || event.key === " ") {
+						event.preventDefault();
+						fp.changeMonth(1); // Move to the next month
+					}
+				});
+			}
+		}
 
+		function setTimeAlly() {
 			fp?.calendarContainer?.setAttribute("tabIndex", "0");
 			fp?.calendarContainer?.setAttribute("aria-labelledby", "webchatDatePickerHeaderLabel");
 
@@ -96,17 +125,19 @@ function customElements(pluginConfig: Config): Plugin {
 			const monthSelector = monthYearDiv?.getElementsByClassName(
 				"flatpickr-monthDropdown-months",
 			)?.[0] as HTMLElement;
-			monthSelector?.setAttribute("id", "monthSelector-datepicker");
-			monthSelector?.classList.add("monthSelector-datepicker");
-			// unset aria-label attribute from month input to avaoid redundancy
+			monthSelector?.setAttribute("id", "webchat-monthSelector-datepicker");
+			monthSelector?.classList.add("webchat-monthSelector-datepicker");
+			// unset aria-label attribute from month input to avoid redundancy
 			monthSelector?.removeAttribute("aria-label");
 
 			const monthLabel = document.createElement("label");
-			monthLabel.setAttribute("for", "monthSelector-datepicker");
+			monthLabel.setAttribute("for", "webchat-monthSelector-datepicker");
 
 			monthLabel.textContent = "Month";
 
 			monthYearDiv?.prepend(monthLabel);
+
+			monthSelector?.setAttribute("tabindex", "0");
 		}
 
 		function setYearSelectAlly() {
@@ -126,6 +157,8 @@ function customElements(pluginConfig: Config): Plugin {
 			yearLabel.textContent = "Year";
 
 			yearInputWrapper?.prepend(yearLabel);
+
+			yearInput?.setAttribute("tabindex", "0");
 		}
 
 		return {
@@ -135,6 +168,8 @@ function customElements(pluginConfig: Config): Plugin {
 				setTimeAlly,
 				setMonthSelectAlly,
 				setYearSelectAlly,
+				setNavButtonsAlly,
+
 				() => {
 					fp?.loadedPlugins?.push("customElements");
 				},
@@ -145,7 +180,11 @@ function customElements(pluginConfig: Config): Plugin {
 				},
 				handleWeekNumbers,
 			],
-			onValueUpdate: [upsertTimeArrows],
+			onValueUpdate: [
+				upsertTimeArrows,
+				setMonthSelectAlly,
+				setYearSelectAlly,
+			],
 		};
 	};
 }
