@@ -170,49 +170,6 @@ export const replaceUrlsWithHTMLanchorElem = (text: string) => {
 	return enhancedText;
 };
 
-// /**
-//  * Utility function to get focusable elements and optionally find the next or previous focusable element.
-//  * @param element The container element to search for focusable elements.
-//  * @param currentElement Optional. The current element to find the next or previous focusable element relative to it.
-//  * @returns An object containing the first, last, all focusable elements, and the next/previous focusable elements.
-//  */
-// export const getFocusableElements = (element: HTMLElement, currentElement?: HTMLElement) => {
-// 	// Get all interactive elements in the given element
-// 	const interactiveEls = element?.querySelectorAll(
-// 		'a[href], button, input, textarea, select, details,[tabindex]:not([tabindex="-1"])',
-// 	);
-// 	const interactiveElsArray = interactiveEls && Array.from(interactiveEls);
-
-// 	// Filter all the interactive elements that are not disabled or have aria-hidden 'true'
-// 	const focusable = interactiveElsArray?.filter(
-// 		el => !el.hasAttribute("disabled") && !el.getAttribute("aria-hidden"),
-// 	);
-
-// 	// Get the first and last focusable elements
-// 	const firstFocusable = focusable && (focusable[0] as HTMLElement);
-// 	const lastFocusable = focusable && (focusable[focusable.length - 1] as HTMLElement);
-
-// 	// Initialize next and previous focusable elements
-// 	let nextFocusable: HTMLElement | null = null;
-// 	let prevFocusable: HTMLElement | null = null;
-
-// 	// If a currentElement is provided, calculate next and previous focusable elements
-// 	if (currentElement && focusable) {
-// 		const currentIndex = focusable.indexOf(currentElement);
-
-// 		if (currentIndex !== -1) {
-// 			nextFocusable =
-// 				(focusable[currentIndex + 1] as HTMLElement) || (focusable[0] as HTMLElement);
-// 			prevFocusable =
-// 				(focusable[currentIndex - 1] as HTMLElement) ||
-// 				(focusable[focusable.length - 1] as HTMLElement);
-// 		}
-// 	}
-
-// 	// Return all focusable elements and their bounds
-// 	return { firstFocusable, lastFocusable, focusable, nextFocusable, prevFocusable };
-// };
-
 /**
  * Utility function to get focusable elements and find the next or previous focusable element relative to the currently focused element.
  * @param element The container element to search for focusable elements.
