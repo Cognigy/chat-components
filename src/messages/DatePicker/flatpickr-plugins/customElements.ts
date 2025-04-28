@@ -158,21 +158,21 @@ function customElements(pluginConfig: Config): Plugin {
 		function setYearSelectAlly() {
 			const monthYearDiv =
 				fp?.calendarContainer?.getElementsByClassName("flatpickr-current-month")[0];
-		
+
 			const yearInput = monthYearDiv?.getElementsByClassName("cur-year")?.[0] as HTMLElement;
-		
+
 			if (yearInput) {
 				const yearInputWrapper = yearInput?.parentElement as HTMLElement;
 				yearInput.setAttribute("id", "yearSelector-datepicker");
 				yearInput.classList.add("yearSelector-datepicker");
 				// Remove aria-label attribute from year input to avoid redundancy
 				yearInput.removeAttribute("aria-label");
-		
+
 				// Check if a label already exists for the yearInput
 				const existingLabel = yearInputWrapper?.querySelector(
 					"label[for='yearSelector-datepicker']",
 				);
-		
+
 				// If no label exists, create and prepend a new one
 				if (!existingLabel) {
 					const yearLabel = document.createElement("label");
@@ -180,7 +180,7 @@ function customElements(pluginConfig: Config): Plugin {
 					yearLabel.textContent = customTranslations?.datePickerYearLabel || "Year";
 					yearInputWrapper?.prepend(yearLabel);
 				}
-		
+
 				yearInput.setAttribute("tabindex", "0");
 			}
 		}
