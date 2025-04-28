@@ -1,11 +1,11 @@
-import { FC, useEffect, useRef, useState } from "react";
+import { FC, useEffect, useState } from "react";
 
 import { Text } from "src/messages";
 
 import classes from "./TextWithButtons.module.css";
-import { useMessageContext, useRandomId } from "../hooks";
+import { useLiveRegion, useMessageContext, useRandomId } from "../hooks";
 
-import { getChannelPayload, getLiveRegionContent } from "src/utils";
+import { getChannelPayload } from "src/utils";
 import ActionButtons from "src/common/ActionButtons/ActionButtons";
 import { IWebchatTemplateAttachment } from "@cognigy/socket-client";
 import classNames from "classnames";
@@ -30,7 +30,6 @@ const TextWithButtons: FC = (props: ITextWithButtonsProps) => {
 	const { onSetMessageAnimated, onSetLiveRegionText } = props;
 	const [textContent, setScreenReaderTextContent] = useState<string>("");
 	const [buttonLabels, setScreenReaderButtonLabels] = useState<string[]>([]);
-	const previousLiveContentRef = useRef<string | undefined>(undefined);
 
 	const { action, message, config, onEmitAnalytics, messageParams, openXAppOverlay } =
 		useMessageContext();
@@ -68,18 +67,12 @@ const TextWithButtons: FC = (props: ITextWithButtonsProps) => {
 		message.text,
 	]);
 
-	useEffect(() => {
-		const data = { textContent, buttonLabels };
-		const liveRegionContent = getLiveRegionContent("textWithButtons", data);
-		if (
-			liveRegionContent &&
-			liveRegionContent !== previousLiveContentRef.current &&
-			buttonLabels.length === buttons.length
-		) {
-			onSetLiveRegionText?.(liveRegionContent);
-			previousLiveContentRef.current = liveRegionContent;
-		}
-	}, [textContent, buttonLabels, onSetLiveRegionText, buttons.length]);
+	useLiveRegion({
+		messageType: "textWithButtons",
+		data: { textContent, buttonLabels },
+		onSetLiveRegionText,
+		validation: () => buttonLabels.length === buttons.length,
+	});
 
 	const stillAnimating =
 		(message as IStreamingMessage).animationState === "animating" ||

@@ -1,11 +1,11 @@
-import { FC, Fragment, useCallback, useEffect, useRef, useState } from "react";
+import { FC, Fragment, useCallback, useEffect, useState } from "react";
 import ListItem from "./ListItem";
-import { useMessageContext, useRandomId } from "src/messages/hooks";
+import { useLiveRegion, useMessageContext, useRandomId } from "src/messages/hooks";
 import mainclasses from "src/main.module.css";
 import classes from "./List.module.css";
 import classnames from "classnames";
 import { PrimaryButton } from "src/common/Buttons";
-import { getChannelPayload, getLiveRegionContent } from "src/utils";
+import { getChannelPayload } from "src/utils";
 import { IWebchatAttachmentElement, IWebchatTemplateAttachment } from "@cognigy/socket-client";
 
 interface IListProps {
@@ -19,8 +19,6 @@ const List: FC<IListProps> = props => {
 	const [listItemLiveRegionLabels, setListItemLiveRegionLabels] = useState<
 		Record<number, string>
 	>({});
-
-	const previousLiveContentRef = useRef<string | undefined>(undefined);
 
 	const { onSetLiveRegionText } = props;
 
@@ -55,19 +53,12 @@ const List: FC<IListProps> = props => {
 		}, 200);
 	}, [config?.settings?.widgetSettings?.enableAutoFocus, listTemplateId]);
 
-	useEffect(() => {
-		const liveRegionText = getLiveRegionContent("list", listItemLiveRegionLabels);
-
-		if (
-			onSetLiveRegionText &&
-			liveRegionText &&
-			liveRegionText !== previousLiveContentRef.current &&
-			elements?.length === Object.keys(listItemLiveRegionLabels).length
-		) {
-			onSetLiveRegionText(liveRegionText);
-			previousLiveContentRef.current = liveRegionText;
-		}
-	}, [onSetLiveRegionText, listItemLiveRegionLabels, elements]);
+	useLiveRegion({
+		messageType: "list",
+		data: listItemLiveRegionLabels,
+		onSetLiveRegionText,
+		validation: () => elements?.length === Object.keys(listItemLiveRegionLabels).length,
+	});
 
 	const handleListItemLiveRegionLabel = useCallback((index: number, label: string) => {
 		setListItemLiveRegionLabels(prev => {

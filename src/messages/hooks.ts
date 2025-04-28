@@ -1,7 +1,8 @@
-import { useContext, useState } from "react";
+import { useContext, useState, useEffect, useRef } from "react";
 import { MessageContext } from "./context.tsx";
 import { CollateMessage, getRandomId } from "src/utils.ts";
 import { CollationContext } from "./collation.tsx";
+import { getLiveRegionContent, MessageType } from "src/utils";
 
 function useMessageContext() {
 	const state = useContext(MessageContext);
@@ -25,4 +26,36 @@ function useCollation(): CollateMessage | undefined {
 	return context ?? undefined;
 }
 
-export { useMessageContext, useRandomId, useCollation };
+// Custom hook for setting the live region text for the screen reader when new messages arrive
+interface IUseLiveRegionProps {
+	messageType: MessageType;
+	data: any;
+	onSetLiveRegionText?: (text: string) => void;
+	validation?: () => boolean;
+}
+
+const useLiveRegion = ({
+	messageType,
+	data,
+	onSetLiveRegionText,
+	validation,
+}: IUseLiveRegionProps) => {
+	const previousLiveContentRef = useRef<string | undefined>(undefined);
+
+	useEffect(() => {
+		if (validation && !validation()) return;
+
+		const liveRegionContent = getLiveRegionContent(messageType, data);
+
+		if (
+			liveRegionContent &&
+			liveRegionContent !== previousLiveContentRef.current &&
+			onSetLiveRegionText
+		) {
+			onSetLiveRegionText(liveRegionContent);
+			previousLiveContentRef.current = liveRegionContent;
+		}
+	}, [messageType, data, onSetLiveRegionText, validation]);
+};
+
+export { useMessageContext, useRandomId, useCollation, useLiveRegion };

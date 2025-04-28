@@ -196,6 +196,7 @@ export const getLiveRegionContent = (messageType: MessageType, data: any): strin
 				.filter(key => key !== "0")
 				.map(key => data[key])
 				.join(", ");
+
 			if (headerLabel && itemLabels) {
 				return `${headerLabel}. Available list items: ${itemLabels}`;
 			}
