@@ -9,9 +9,10 @@ export interface Config {
 
 /**
  * Custom flatpickr plugin that adds some DOM elements for webchat v3 design
- * It handles timeContainer, weekNumbers and dayElements
+ * It handles timeContainer, weekNumbers, and custom accessibility logic for some datepicker elements.
  */
 function customElements(pluginConfig: Config): Plugin {
+	// fp`refers to the Flatpickr instance
 	return function (fp: Instance) {
 		const { arrowIcon, customTranslations } = pluginConfig;
 
@@ -122,6 +123,37 @@ function customElements(pluginConfig: Config): Plugin {
 			}
 		}
 
+		// Observe month selector for changes and set tabindex again to 0. This is to ensure that the month selector is focusable all the time
+		function observeMonthSelector() {
+			const monthYearDiv =
+				fp?.calendarContainer?.getElementsByClassName("flatpickr-current-month")[0];
+
+			const monthSelector = monthYearDiv?.getElementsByClassName(
+				"flatpickr-monthDropdown-months",
+			)?.[0] as HTMLElement;
+
+			if (monthSelector) {
+				if (monthSelector.dataset.observed === "true") return;
+
+				let timeout: NodeJS.Timeout | null = null;
+
+				const observer = new MutationObserver(() => {
+					if (timeout) clearTimeout(timeout);
+
+					timeout = setTimeout(() => {
+						monthSelector.setAttribute("tabindex", "0");
+					}, 100);
+				});
+
+				observer.observe(monthSelector, {
+					attributes: true,
+					childList: false,
+					subtree: false,
+				});
+				monthSelector.dataset.observed = "true";
+			}
+		}
+
 		// Set necessary label and attributes to month select for accessibility
 		function setMonthSelectAlly() {
 			const monthYearDiv =
@@ -151,6 +183,20 @@ function customElements(pluginConfig: Config): Plugin {
 				}
 
 				monthSelector.setAttribute("tabindex", "0");
+
+				monthSelector.addEventListener("keydown", event => {
+					// If Enter, stop propagation to Flatpickr's internal handlers, so that the select menu to open
+					if (event.key === "Enter") {
+						event.stopPropagation();
+					}
+					// If Arrow Up or Down, Change month field to prev or next month
+					if (event.key === "ArrowUp" || event.key === "ArrowDown") {
+						event.preventDefault();
+						event.stopPropagation();
+						const isNext = event.key === "ArrowDown";
+						fp.changeMonth(isNext ? 1 : -1);
+					}
+				});
 			}
 		}
 
@@ -210,6 +256,7 @@ function customElements(pluginConfig: Config): Plugin {
 				setMonthSelectAlly,
 				setYearSelectAlly,
 				setNavButtonsAlly,
+				observeMonthSelector,
 
 				() => {
 					fp?.loadedPlugins?.push("customElements");
@@ -221,14 +268,7 @@ function customElements(pluginConfig: Config): Plugin {
 				},
 				handleWeekNumbers,
 			],
-			onValueUpdate: [
-				upsertTimeArrows,
-				setDateSelectAlly,
-				setTimeAlly,
-				setMonthSelectAlly,
-				setYearSelectAlly,
-				setNavButtonsAlly,
-			],
+			onValueUpdate: [upsertTimeArrows],
 		};
 	};
 }
