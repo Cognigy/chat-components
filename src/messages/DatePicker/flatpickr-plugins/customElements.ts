@@ -185,7 +185,7 @@ function customElements(pluginConfig: Config): Plugin {
 				monthSelector.setAttribute("tabindex", "0");
 
 				monthSelector.addEventListener("keydown", event => {
-					// If Enter, stop propagation to Flatpickr's internal handlers, so that the select menu to open
+					// If Enter, stop propagation to Flatpickr's internal handlers, so that the select menu can open
 					if (event.key === "Enter") {
 						event.stopPropagation();
 					}
