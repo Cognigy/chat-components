@@ -3,15 +3,19 @@ import classes from "./DatePicker.module.css";
 import classnames from "classnames";
 import Flatpickr from "react-flatpickr";
 import { useMessageContext, useRandomId } from "src/messages/hooks";
-import { getOptionsFromMessage } from "./helpers";
+import { getOptionsFromMessage, getTimePickerFields } from "./helpers";
+import { getFocusableElements } from "src/utils";
 import { CloseIcon } from "src/assets/svg";
 import Typography from "src/common/Typography";
 import { PrimaryButton } from "src/common/Buttons";
-import mainClasses from "src/main.module.css";
 
 const DatePicker: FC = () => {
 	const { action, message, messageParams, config } = useMessageContext();
-	const options = useMemo(() => getOptionsFromMessage(message), [message]);
+
+	const options = useMemo(
+		() => getOptionsFromMessage(message, config?.settings?.customTranslations),
+		[message, config?.settings?.customTranslations],
+	);
 
 	const [showPicker, setShowPicker] = useState(false);
 	const [currentDate, setCurrentDate] = useState("");
@@ -19,7 +23,6 @@ const DatePicker: FC = () => {
 	const openButtonRef = useRef<HTMLButtonElement>(null);
 
 	const datePickerHeading = useRandomId("webchatDatePickerHeading");
-	const datePickerDescription = useRandomId("webchatDatePickerContentDescription");
 
 	if (!message?.data?._plugin || message.data._plugin.type !== "date-picker") return;
 
@@ -58,77 +61,49 @@ const DatePicker: FC = () => {
 
 	const handleKeyDown = (event: KeyboardEvent) => {
 		const webchatWindow = document.querySelector("div.webchat-plugin-date-picker");
-		const button = document.querySelector(
-			"div.webchat-plugin-date-picker-footer button",
-		) as HTMLButtonElement;
 
-		const calenderElements = webchatWindow?.getElementsByClassName("flatpickr-calendar");
-		const calender = calenderElements?.[0] as HTMLElement;
+		const { firstFocusable, lastFocusable, nextFocusable, prevFocusable } =
+			getFocusableElements(webchatWindow as HTMLElement);
 
 		const tabKeyPress = !event.shiftKey && event.key === "Tab";
 		const shiftTabKeyPress = event.shiftKey && event.key === "Tab";
 
-		// Find last input field of time picker
-		const minutesAsLastTimeInput = !!enableTime && time_24hr;
-		const amPmAsLastTimeInput = !!enableTime && !time_24hr;
-
-		// Time input fields
-		const hourField = webchatWindow?.getElementsByClassName(
-			"flatpickr-hour",
-		)?.[0] as HTMLElement;
-		const minutesField = webchatWindow?.getElementsByClassName(
-			"flatpickr-minute",
-		)?.[0] as HTMLElement;
-		const amPmField = webchatWindow?.getElementsByClassName(
-			"flatpickr-am-pm",
-		)?.[0] as HTMLElement;
-
-		// Check if last time input field is focused
-		const isLastTimeInputFieldFocused =
-			(minutesAsLastTimeInput && event.target === minutesField) ||
-			(amPmAsLastTimeInput && event.target === amPmField);
+		const { firstTimePickerField, lastTimePickerField } = getTimePickerFields(
+			webchatWindow as HTMLElement,
+			!!enableTime,
+			!!time_24hr,
+		);
 
 		// Close Date picker on pressing Escape
 		if (event.key === "Esc" || event.key === "Escape") {
 			handleClose();
 		}
 
-		// add flash effect on focus
-		if (tabKeyPress || shiftTabKeyPress) {
-			calender.classList.add("flash-focus");
-		}
-
-		// Focus should be trapped within date-picker
-		// Handle Tab Navigation
+		// Ensure focus is trapped within the entire date picker component, overriding Flatpickr's default behavior of trapping focus only within the time picker.
 		if (tabKeyPress) {
-			if (event.target === button) {
+			// Handle Tab navigation
+			if (event.target === lastFocusable) {
 				event.preventDefault();
-				calender?.focus(); // Move focus to calender from submit button
-			} else if (isLastTimeInputFieldFocused) {
+				firstFocusable?.focus();
+			} else if (event.target === lastTimePickerField) {
 				event.preventDefault();
-				button?.focus(); // Move focus to cancel button from last time input field
+				nextFocusable?.focus();
 			}
 		}
-		// Handle Reverse Tab Navigation
 		if (shiftTabKeyPress) {
-			if (event.target === calender) {
+			// Handle Reverse Tab Navigation
+			if (event.target === firstFocusable) {
 				event.preventDefault();
-				button?.focus(); // Move focus to Submit button from calender
-			} else if (event.target === hourField) {
+				lastFocusable?.focus();
+			} else if (event.target === firstTimePickerField) {
 				event.preventDefault();
-				calender?.focus(); // Move focus to calender from hour input field
+				prevFocusable?.focus();
 			}
 		}
 	};
+
 	const closeDatePickerLabel =
 		config?.settings?.customTranslations?.ariaLabels?.closeDatePicker || "Close date-picker";
-	const datePickerDescriptionForSr =
-		config?.settings?.customTranslations?.ariaLabels?.datePickerDescription ||
-		`Please use Left/ Right arrows to move focus to previous/ next day.
-		 Please use Up/ Down arrows to move focus to the same day of previous/
-		 next week. Please use Control + Left/ Right arrows to change the grid of
-		 dates to previous/ next month. Please use Control + Up/ Down arrows to
-		 change the grid of dates to previous/ next year.`;
 
 	return (
 		<div data-testid="datepicker-message">
@@ -152,19 +127,15 @@ const DatePicker: FC = () => {
 					role="dialog"
 					aria-modal="true"
 					aria-labelledby={datePickerHeading}
-					aria-describedby={datePickerDescription}
 				>
 					<div
 						className={classnames(classes.header, "webchat-plugin-date-picker-header")}
 					>
-						<span className={mainClasses.srOnly} id={datePickerDescription}>
-							{datePickerDescriptionForSr}
-						</span>
 						<span className={classes.left}></span>
 						<span className={classes.center}>
 							<Typography
 								variant="h2-semibold"
-								component="span"
+								component="h3"
 								className="webchat-list-template-header-title"
 							>
 								{eventName || "Calendar"}
@@ -175,6 +146,7 @@ const DatePicker: FC = () => {
 							aria-label={closeDatePickerLabel}
 							className={classes.right}
 							data-testid="button-close"
+							autoFocus
 						>
 							<CloseIcon />
 						</button>

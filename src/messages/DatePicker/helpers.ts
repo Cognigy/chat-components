@@ -3,10 +3,14 @@ import l10n from "flatpickr/dist/l10n";
 import { Options } from "flatpickr/dist/types/options";
 import { key as LocaleKey } from "flatpickr/dist/types/locale";
 import { IMessage } from "@cognigy/socket-client";
+import { IWebchatSettings } from "../types";
 import customElements from "./flatpickr-plugins/customElements";
 import arrowIcon from "src/assets/svg/arrow_back.svg?raw";
 
-export const getOptionsFromMessage = (message: IMessage) => {
+export const getOptionsFromMessage = (
+	message: IMessage,
+	customTranslations?: IWebchatSettings["customTranslations"],
+) => {
 	if (!message?.data?._plugin || message.data._plugin.type !== "date-picker") return;
 
 	const data = message.data._plugin.data;
@@ -106,7 +110,7 @@ export const getOptionsFromMessage = (message: IMessage) => {
 		formatDate: !data.dateFormat
 			? (date: Date) => moment(date).locale(momentLocaleId).format(dateFormatLocalString)
 			: undefined,
-		plugins: [customElements({ arrowIcon })],
+		plugins: [customElements({ arrowIcon, customTranslations: customTranslations || {} })],
 	};
 
 	const enable_disable =
@@ -154,4 +158,32 @@ export const getOptionsFromMessage = (message: IMessage) => {
 	}
 
 	return options;
+};
+
+/**
+ * Determines the first and last time picker fields in the time picker.
+ * @param webchatWindow The container element for the date picker.
+ * @param enableTime Whether time selection is enabled.
+ * @param time_24hr Whether 24-hour time format is enabled.
+ * @returns An object containing the first and last time picker fields.
+ */
+export const getTimePickerFields = (
+	webchatWindow: HTMLElement | null,
+	enableTime: boolean,
+	time_24hr: boolean,
+) => {
+	if (!enableTime || !webchatWindow) {
+		return { firstTimePickerField: null, lastTimePickerField: null };
+	}
+
+	const hourField = webchatWindow?.getElementsByClassName("flatpickr-hour")?.[0] as HTMLElement;
+	const minutesField = webchatWindow?.getElementsByClassName(
+		"flatpickr-minute",
+	)?.[0] as HTMLElement;
+	const amPmField = webchatWindow?.getElementsByClassName("flatpickr-am-pm")?.[0] as HTMLElement;
+
+	const firstTimePickerField = hourField;
+	const lastTimePickerField = time_24hr ? minutesField : amPmField;
+
+	return { firstTimePickerField, lastTimePickerField };
 };
