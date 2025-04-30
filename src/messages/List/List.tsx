@@ -8,19 +8,13 @@ import { PrimaryButton } from "src/common/Buttons";
 import { getChannelPayload } from "src/utils";
 import { IWebchatAttachmentElement, IWebchatTemplateAttachment } from "@cognigy/socket-client";
 
-interface IListProps {
-	onSetLiveRegionText?: (text: string) => void;
-}
-
-const List: FC<IListProps> = props => {
+const List: FC = () => {
 	const { message, messageParams, config, action, onEmitAnalytics } = useMessageContext();
 	const payload = getChannelPayload(message, config);
 
 	const [listItemLiveRegionLabels, setListItemLiveRegionLabels] = useState<
 		Record<number, string>
 	>({});
-
-	const { onSetLiveRegionText } = props;
 
 	const { elements, top_element_style, buttons } =
 		(payload?.message?.attachment as IWebchatTemplateAttachment)?.payload || {};
@@ -56,7 +50,6 @@ const List: FC<IListProps> = props => {
 	useLiveRegion({
 		messageType: "list",
 		data: listItemLiveRegionLabels,
-		onSetLiveRegionText,
 		validation: () => elements?.length === Object.keys(listItemLiveRegionLabels).length,
 	});
 

@@ -16,7 +16,6 @@ interface ITextWithButtonsProps {
 		messageId: string,
 		animationState: IStreamingMessage["animationState"],
 	) => void;
-	onSetLiveRegionText?: (text: string) => void;
 }
 
 /**
@@ -27,7 +26,7 @@ interface ITextWithButtonsProps {
  * - QR buttons get disabled when there is a reply in chat from the user
  */
 const TextWithButtons: FC = (props: ITextWithButtonsProps) => {
-	const { onSetMessageAnimated, onSetLiveRegionText } = props;
+	const { onSetMessageAnimated } = props;
 	const [textContent, setScreenReaderTextContent] = useState<string>("");
 	const [buttonLabels, setScreenReaderButtonLabels] = useState<string[]>([]);
 
@@ -70,7 +69,6 @@ const TextWithButtons: FC = (props: ITextWithButtonsProps) => {
 	useLiveRegion({
 		messageType: "textWithButtons",
 		data: { textContent, buttonLabels },
-		onSetLiveRegionText,
 		validation: () => buttonLabels.length === buttons.length,
 	});
 

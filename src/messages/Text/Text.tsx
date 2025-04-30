@@ -20,13 +20,12 @@ interface TextProps {
 		messageId: string,
 		animationState: IStreamingMessage["animationState"],
 	) => void;
-	onSetLiveRegionText?: (text: string) => void;
 	onSetScreenReaderBtnLabel?: (text: string) => void;
 }
 
 const Text: FC<TextProps> = props => {
-	const { message, config } = useMessageContext();
-	const { onSetLiveRegionText, onSetScreenReaderBtnLabel } = props;
+	const { message, config, onSetLiveRegionText } = useMessageContext();
+	const { onSetScreenReaderBtnLabel } = props;
 	const text = message?.text;
 	const source = message?.source;
 	const content = props.content || text || "";

@@ -22,13 +22,39 @@ const MessageContext = createContext<MessageContextValue>(undefined);
  * - onEmitAnalytics
  * - config
  * - messageParams
+ * - openXAppOverlay
+ * - onSetLiveRegionText
  */
 const MessageProvider: FC<MessageProviderProps> = props => {
-	const { message, messageParams, action, onEmitAnalytics, config, openXAppOverlay } = props;
+	const {
+		message,
+		messageParams,
+		action,
+		onEmitAnalytics,
+		config,
+		openXAppOverlay,
+		onSetLiveRegionText,
+	} = props;
 
 	const contextValue = useMemo(
-		() => ({ message, action, onEmitAnalytics, config, messageParams, openXAppOverlay }),
-		[message, action, onEmitAnalytics, config, messageParams, openXAppOverlay],
+		() => ({
+			message,
+			action,
+			onEmitAnalytics,
+			config,
+			messageParams,
+			openXAppOverlay,
+			onSetLiveRegionText,
+		}),
+		[
+			message,
+			action,
+			onEmitAnalytics,
+			config,
+			messageParams,
+			openXAppOverlay,
+			onSetLiveRegionText,
+		],
 	);
 
 	return <MessageContext.Provider value={contextValue}>{props.children}</MessageContext.Provider>;

@@ -106,7 +106,6 @@ const Message: FC<MessageProps> = props => {
 					theme={props.theme}
 					attributes={{ styles: { flexGrow: 1, minHeight: 0 } }}
 					onSetMessageAnimated={props.onSetMessageAnimated}
-					onSetLiveRegionText={props.onSetLiveRegionText}
 				/>
 			);
 		}
@@ -120,6 +119,7 @@ const Message: FC<MessageProps> = props => {
 			messageParams={messageParams}
 			onEmitAnalytics={onEmitAnalytics}
 			openXAppOverlay={openXAppOverlay}
+			onSetLiveRegionText={onSetLiveRegionText}
 		>
 			<article {...(message.id ? { id: message.id } : {})} className={rootClassName}>
 				{showHeader && <MessageHeader enableAvatar={message.source !== "user"} />}
@@ -137,7 +137,6 @@ const Message: FC<MessageProps> = props => {
 							prevMessage={prevMessage}
 							theme={props.theme}
 							onSetMessageAnimated={onSetMessageAnimated}
-							onSetLiveRegionText={onSetLiveRegionText}
 						/>
 					) : null,
 				)}

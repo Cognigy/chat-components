@@ -30,17 +30,12 @@ function useCollation(): CollateMessage | undefined {
 interface IUseLiveRegionProps {
 	messageType: MessageType;
 	data: any;
-	onSetLiveRegionText?: (text: string) => void;
 	validation?: () => boolean;
 }
 
-const useLiveRegion = ({
-	messageType,
-	data,
-	onSetLiveRegionText,
-	validation,
-}: IUseLiveRegionProps) => {
+const useLiveRegion = ({ messageType, data, validation }: IUseLiveRegionProps) => {
 	const previousLiveContentRef = useRef<string | undefined>(undefined);
+	const { onSetLiveRegionText } = useMessageContext();
 
 	useEffect(() => {
 		if (validation && !validation()) return;
