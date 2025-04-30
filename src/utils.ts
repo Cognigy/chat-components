@@ -212,6 +212,8 @@ export const getLiveRegionContent = (messageType: MessageType, data: any): strin
 		default:
 			return undefined;
 	}
+};
+
 /**
  * Utility function to get focusable elements and find the next or previous focusable element relative to the currently focused element.
  * @param element The container element to search for focusable elements.
