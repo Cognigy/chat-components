@@ -35,7 +35,7 @@ interface IUseLiveRegionProps {
 
 const useLiveRegion = ({ messageType, data, validation }: IUseLiveRegionProps) => {
 	const previousLiveContentRef = useRef<string | undefined>(undefined);
-	const { onSetLiveRegionText } = useMessageContext();
+	const { onSetLiveRegionText, "data-message-id": dataMessageId } = useMessageContext();
 
 	useEffect(() => {
 		if (validation && !validation()) return;
@@ -45,12 +45,13 @@ const useLiveRegion = ({ messageType, data, validation }: IUseLiveRegionProps) =
 		if (
 			liveRegionContent &&
 			liveRegionContent !== previousLiveContentRef.current &&
-			onSetLiveRegionText
+			onSetLiveRegionText &&
+			dataMessageId
 		) {
-			onSetLiveRegionText(liveRegionContent);
+			onSetLiveRegionText(dataMessageId, liveRegionContent);
 			previousLiveContentRef.current = liveRegionContent;
 		}
-	}, [messageType, data, onSetLiveRegionText, validation]);
+	}, [messageType, data, onSetLiveRegionText, validation, dataMessageId]);
 };
 
 export { useMessageContext, useRandomId, useCollation, useLiveRegion };

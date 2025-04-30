@@ -24,7 +24,12 @@ interface TextProps {
 }
 
 const Text: FC<TextProps> = props => {
-	const { message, config, onSetLiveRegionText } = useMessageContext();
+	const {
+		message,
+		config,
+		onSetLiveRegionText,
+		"data-message-id": dataMessageId,
+	} = useMessageContext();
 	const { onSetScreenReaderBtnLabel } = props;
 	const text = message?.text;
 	const source = message?.source;
@@ -74,11 +79,16 @@ const Text: FC<TextProps> = props => {
 	useEffect(() => {
 		if (onSetScreenReaderBtnLabel) {
 			onSetScreenReaderBtnLabel(__html);
-		} else if (onSetLiveRegionText && __html && __html !== previousLiveContentRef.current) {
-			onSetLiveRegionText(__html);
+		} else if (
+			onSetLiveRegionText &&
+			__html &&
+			__html !== previousLiveContentRef.current &&
+			dataMessageId
+		) {
+			onSetLiveRegionText(dataMessageId, __html);
 			previousLiveContentRef.current = __html;
 		}
-	}, [__html, onSetLiveRegionText, onSetScreenReaderBtnLabel]);
+	}, [__html, onSetLiveRegionText, onSetScreenReaderBtnLabel, dataMessageId]);
 
 	return (
 		<ChatBubble>

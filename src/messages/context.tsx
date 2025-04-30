@@ -24,11 +24,13 @@ const MessageContext = createContext<MessageContextValue>(undefined);
  * - messageParams
  * - openXAppOverlay
  * - onSetLiveRegionText
+ * - data-message-id
  */
 const MessageProvider: FC<MessageProviderProps> = props => {
 	const {
 		message,
 		messageParams,
+		"data-message-id": dataMessageId,
 		action,
 		onEmitAnalytics,
 		config,
@@ -43,6 +45,7 @@ const MessageProvider: FC<MessageProviderProps> = props => {
 			onEmitAnalytics,
 			config,
 			messageParams,
+			"data-message-id": dataMessageId,
 			openXAppOverlay,
 			onSetLiveRegionText,
 		}),
@@ -52,6 +55,7 @@ const MessageProvider: FC<MessageProviderProps> = props => {
 			onEmitAnalytics,
 			config,
 			messageParams,
+			dataMessageId,
 			openXAppOverlay,
 			onSetLiveRegionText,
 		],

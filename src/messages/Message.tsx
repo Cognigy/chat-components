@@ -34,7 +34,8 @@ export interface MessageProps {
 		messageId: string,
 		animationState: IStreamingMessage["animationState"],
 	) => void;
-	onSetLiveRegionText?: (text: string) => void;
+	onSetLiveRegionText?: (id: string, text: string) => void;
+	"data-message-id"?: string;
 }
 
 const defaultCollate = new CollateMessage();
@@ -56,6 +57,7 @@ const Message: FC<MessageProps> = props => {
 		onSetLiveRegionText,
 		plugins,
 		prevMessage,
+		"data-message-id": dataMessageId,
 	} = props;
 
 	// Get the collation instance from the context
@@ -119,9 +121,14 @@ const Message: FC<MessageProps> = props => {
 			messageParams={messageParams}
 			onEmitAnalytics={onEmitAnalytics}
 			openXAppOverlay={openXAppOverlay}
+			data-message-id={dataMessageId}
 			onSetLiveRegionText={onSetLiveRegionText}
 		>
-			<article {...(message.id ? { id: message.id } : {})} className={rootClassName}>
+			<article
+				{...(message.id ? { id: message.id } : {})}
+				className={rootClassName}
+				data-message-id={dataMessageId}
+			>
 				{showHeader && <MessageHeader enableAvatar={message.source !== "user"} />}
 				{matchedPlugins.map((plugin, index) =>
 					plugin.component ? (
