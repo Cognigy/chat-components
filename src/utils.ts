@@ -169,3 +169,57 @@ export const replaceUrlsWithHTMLanchorElem = (text: string) => {
 
 	return enhancedText;
 };
+
+/**
+ * Utility function to get focusable elements and find the next or previous focusable element relative to the currently focused element.
+ * @param element The container element to search for focusable elements.
+ * @returns An object containing the first, last, all focusable elements, and the next/previous focusable elements.
+ */
+export const getFocusableElements = (element: HTMLElement) => {
+	// Get all interactive elements in the given element
+	const interactiveEls = element?.querySelectorAll(
+		'a[href], button, input, textarea, select, details,[tabindex]:not([tabindex="-1"])',
+	);
+	const interactiveElsArray = interactiveEls && Array.from(interactiveEls);
+
+	// Filter all the interactive elements that are not disabled or have aria-hidden 'true'
+	const focusable = interactiveElsArray?.filter(
+		el =>
+			!el.hasAttribute("disabled") &&
+			!el.getAttribute("aria-hidden") &&
+			!(el instanceof HTMLInputElement && el.readOnly) &&
+			!(el instanceof HTMLTextAreaElement && el.readOnly),
+	);
+
+	// Get the first and last focusable elements
+	const firstFocusable = focusable && (focusable[0] as HTMLElement);
+	const lastFocusable = focusable && (focusable[focusable.length - 1] as HTMLElement);
+
+	// Determine the currently focused element inside the container
+	const activeElement = document.activeElement as HTMLElement;
+	let currentElement: HTMLElement | null = null;
+
+	if (activeElement && element.contains(activeElement)) {
+		currentElement = activeElement;
+	}
+
+	// Initialize next and previous focusable elements
+	let nextFocusable: HTMLElement | null = null;
+	let prevFocusable: HTMLElement | null = null;
+
+	// If a currentElement is found, calculate next and previous focusable elements
+	if (currentElement && focusable) {
+		const currentIndex = focusable.indexOf(currentElement);
+
+		if (currentIndex !== -1) {
+			nextFocusable =
+				(focusable[currentIndex + 1] as HTMLElement) || (focusable[0] as HTMLElement); // Wrap around to the first element
+			prevFocusable =
+				(focusable[currentIndex - 1] as HTMLElement) ||
+				(focusable[focusable.length - 1] as HTMLElement); // Wrap around to the last element
+		}
+	}
+
+	// Return all focusable elements and their bounds
+	return { firstFocusable, lastFocusable, focusable, nextFocusable, prevFocusable };
+};
