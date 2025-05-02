@@ -179,6 +179,7 @@ export type MessageType =
 	| "video"
 	| "audio"
 	| "file"
+	| "event"
 	| "custom";
 
 /**
@@ -279,6 +280,15 @@ export const getLiveRegionContent = (messageType: MessageType, data: any): strin
 						`File ${index + 1}: '${attachment.fileName}', size ${getSizeLabel(attachment.size)}.`,
 				)
 				.join(" ")}`;
+		}
+
+		// Event status pills are ignore from the live region as they have their own aria-live="assertive" attribute
+		case "event": {
+			const { dataMessageId } = data;
+			if (dataMessageId) {
+				return `IGNORE-${dataMessageId}`;
+			}
+			return undefined;
 		}
 
 		default:
