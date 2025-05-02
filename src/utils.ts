@@ -170,16 +170,33 @@ export const replaceUrlsWithHTMLanchorElem = (text: string) => {
 	return enhancedText;
 };
 
-export type MessageType = "list" | "textWithButtons";
+export type MessageType =
+	| "list"
+	| "textWithButtons"
+	| "text"
+	| "image"
+	| "video"
+	| "audio"
+	| "file"
+	| "custom";
 
 /**
  * Computes the live region text based on the message type and provided data.
- * @param messageType The type of the message (e.g., "list", "textWithButtons").
+ * @param messageType The type of the message.
  * @param data The data required to compute the live region text.
  * @returns The computed live region text.
  */
 export const getLiveRegionContent = (messageType: MessageType, data: any): string | undefined => {
 	switch (messageType) {
+		case "text": {
+			const { text } = data;
+
+			if (text) {
+				return text;
+			}
+			return undefined;
+		}
+
 		case "textWithButtons": {
 			const { textContent, buttonLabels } = data;
 
@@ -207,6 +224,42 @@ export const getLiveRegionContent = (messageType: MessageType, data: any): strin
 				return headerLabel;
 			}
 			return undefined;
+		}
+
+		case "image": {
+			const { altText, isDownloadable } = data;
+			const altTextLabel = altText ?? "";
+
+			if (isDownloadable) {
+				return `An image with download option. ${altTextLabel}`;
+			} else {
+				return `A new image. ${altTextLabel}`;
+			}
+		}
+
+		case "video": {
+			const { hasTranscript, hasCaptions } = data;
+
+			if (hasTranscript && hasCaptions) {
+				return "A video with transcript and captions.";
+			}
+			if (hasTranscript) {
+				return "A video with transcript.";
+			}
+			if (hasCaptions) {
+				return "A video with captions.";
+			}
+			return "A new video.";
+		}
+
+		case "audio": {
+			const { hasTrascript } = data;
+
+			if (hasTrascript) {
+				return "An audio message with transcript.";
+			}
+
+			return "A new audio.";
 		}
 
 		default:

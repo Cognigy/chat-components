@@ -1,6 +1,6 @@
-import { FC, useEffect, useMemo, useRef, useState } from "react";
+import { FC, useEffect, useMemo, useState } from "react";
 import classNames from "classnames";
-import { useMessageContext } from "../hooks";
+import { useLiveRegion, useMessageContext } from "../hooks";
 import ChatBubble from "../../common/ChatBubble";
 import { replaceUrlsWithHTMLanchorElem } from "src/utils";
 import { sanitizeHTML } from "src/sanitize";
@@ -27,9 +27,8 @@ const Text: FC<TextProps> = props => {
 	const {
 		message,
 		config,
-		onSetLiveRegionText,
-		"data-message-id": dataMessageId,
 	} = useMessageContext();
+
 	const { onSetScreenReaderBtnLabel } = props;
 	const text = message?.text;
 	const source = message?.source;
@@ -39,7 +38,6 @@ const Text: FC<TextProps> = props => {
 		(message as IStreamingMessage)?.animationState === "animating" ||
 		false;
 
-	const previousLiveContentRef = useRef<string | undefined>(undefined);
 
 	const renderMarkdown =
 		config?.settings?.behavior?.renderMarkdown && (source === "bot" || source === "engagement");
@@ -76,19 +74,17 @@ const Text: FC<TextProps> = props => {
 		? enhancedURLsText
 		: sanitizeHTML(enhancedURLsText);
 
+	useLiveRegion({
+		messageType: "text",
+		data: { text: __html},
+		validation: () => !onSetScreenReaderBtnLabel,
+	})
+
 	useEffect(() => {
 		if (onSetScreenReaderBtnLabel) {
 			onSetScreenReaderBtnLabel(__html);
-		} else if (
-			onSetLiveRegionText &&
-			__html &&
-			__html !== previousLiveContentRef.current &&
-			dataMessageId
-		) {
-			onSetLiveRegionText(dataMessageId, __html);
-			previousLiveContentRef.current = __html;
-		}
-	}, [__html, onSetLiveRegionText, onSetScreenReaderBtnLabel, dataMessageId]);
+		} 
+	}, [__html, onSetScreenReaderBtnLabel]);
 
 	return (
 		<ChatBubble>

@@ -2,7 +2,7 @@ import { forwardRef, useState } from "react";
 import classes from "./Image.module.css";
 import classnames from "classnames/bind";
 import { useImageMessageContext } from "./hooks";
-import { useMessageContext } from "src/messages/hooks";
+import { useLiveRegion, useMessageContext } from "src/messages/hooks";
 import { PrimaryButton } from "src/common/Buttons";
 import { DownloadIcon } from "src/assets/svg";
 
@@ -35,6 +35,9 @@ const ImageThumb = forwardRef((_props, ref) => {
 	const viewImageInFullsizeLabel =
 		config?.settings.customTranslations?.ariaLabels?.viewImageInFullsize ||
 		"View full-size image";
+
+	useLiveRegion({ messageType: "image", data: { isDownloadable, altText } });
+
 	return (
 		<div className={wrapperClasses}>
 			<div
@@ -50,7 +53,7 @@ const ImageThumb = forwardRef((_props, ref) => {
 				{isImageBroken ? (
 					<span className={classes.brokenImage} />
 				) : (
-					<img src={url} alt={altText} onError={() => setImageBroken(true)} />
+					<img src={url} alt={altText || ""} onError={() => setImageBroken(true)} />
 				)}
 			</div>
 			{button && (

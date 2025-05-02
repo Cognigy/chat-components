@@ -4,7 +4,7 @@ import classes from "./Video.module.css";
 import classnames from "classnames";
 import PrimaryButton from "src/common/Buttons/PrimaryButton";
 import { DownloadIcon, VideoPlayIcon } from "src/assets/svg";
-import { useMessageContext } from "src/messages/hooks";
+import { useLiveRegion, useMessageContext } from "src/messages/hooks";
 import { getChannelPayload } from "src/utils";
 import { IWebchatVideoAttachment } from "@cognigy/socket-client";
 
@@ -19,6 +19,12 @@ const Video: FC = () => {
 
 	const videoPlayerWrapperRef = useRef<HTMLDivElement>(null);
 	const videoPlayerRef = useRef<ReactPlayer>(null);
+
+	useLiveRegion({
+		messageType: "video",
+		data: { hasTranscript: !!altText, hasCaptions: !!captionsUrl },
+		validation: () => !!url,
+	});
 
 	const handleFocus = useCallback(
 		(player: ReactPlayer) => {
