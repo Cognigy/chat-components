@@ -2,17 +2,20 @@ import { FC } from "react";
 import classes from "./File.module.css";
 import classnames from "classnames";
 import { IUploadFileAttachmentData } from "@cognigy/socket-client";
-import { useMessageContext } from "src/messages/hooks";
+import { useLiveRegion, useMessageContext } from "src/messages/hooks";
 import { Typography } from "src/index";
 import { Text } from "src/messages";
-import { getFileExtension, getFileName } from "./helper";
-
-// The mime types we accept for image operations
-const VALID_IMAGE_MIME_TYPES = ["image/jpeg", "image/png", "image/gif", "image/webp"];
+import { getFileExtension, getFileName, getSizeLabel, isImageAttachment } from "./helper";
 
 const File: FC = props => {
 	const { message } = useMessageContext();
 	const attachments = message.data?.attachments as IUploadFileAttachmentData[];
+
+	useLiveRegion({
+		messageType: "file",
+		data: { attachments },
+		validation: () => !!attachments && attachments.length > 0,
+	});
 
 	if (!attachments || attachments.length === 0) return null;
 
@@ -21,20 +24,12 @@ const File: FC = props => {
 	const nonImages: IUploadFileAttachmentData[] = [];
 
 	attachments.forEach(attachment => {
-		if (VALID_IMAGE_MIME_TYPES.includes(attachment.mimeType)) {
+		if (isImageAttachment(attachment.mimeType)) {
 			images.push(attachment);
 		} else {
 			nonImages.push(attachment);
 		}
 	});
-
-	const getSizeLabel = (size: number) => {
-		if (size > 1000000) {
-			return `${(size / 1000000).toFixed(2)} MB`;
-		}
-
-		return `${(size / 1000).toFixed(2)} KB`;
-	};
 
 	return (
 		<>

@@ -1,7 +1,8 @@
-import { IMessage, IWebchatMessage } from "@cognigy/socket-client";
+import { IMessage, IUploadFileAttachmentData, IWebchatMessage } from "@cognigy/socket-client";
 import { IWebchatConfig } from "./messages/types";
 import { ActionButtonsProps } from "./common/ActionButtons/ActionButtons";
 import { match, MessagePlugin } from "./matcher";
+import { getSizeLabel, isImageAttachment } from "./messages/File/helper";
 
 /**
  * Decides between _webchat and _facebook payload.
@@ -260,6 +261,24 @@ export const getLiveRegionContent = (messageType: MessageType, data: any): strin
 			}
 
 			return "A new audio.";
+		}
+
+		case "file": {
+			const { attachments } = data;
+
+			if (attachments.length === 1) {
+				const { fileName, size, mimeType } = attachments[0] as IUploadFileAttachmentData;
+				const sizeLabel = getSizeLabel(size);
+				const type = isImageAttachment(mimeType) ? "image" : "file";
+				return `A new ${type} named '${fileName}' with size ${sizeLabel}.`;
+			}
+
+			return `${attachments.length} new files have been received. ${attachments
+				.map(
+					(attachment: IUploadFileAttachmentData, index: number) =>
+						`File ${index + 1}: '${attachment.fileName}', size ${getSizeLabel(attachment.size)}.`,
+				)
+				.join(" ")}`;
 		}
 
 		default:

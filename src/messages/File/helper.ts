@@ -16,3 +16,18 @@ export const getFileExtension = (fileNameWithExtension: string) => {
 		return null;
 	}
 };
+
+export const getSizeLabel = (size: number) => {
+	if (size > 1000000) {
+		return `${(size / 1000000).toFixed(2)} MB`;
+	}
+
+	return `${(size / 1000).toFixed(2)} KB`;
+};
+
+// The mime types we accept for image operations
+export const VALID_IMAGE_MIME_TYPES = ["image/jpeg", "image/png", "image/gif", "image/webp"];
+
+export const isImageAttachment = (mimeType: string): boolean => {
+	return VALID_IMAGE_MIME_TYPES.includes(mimeType);
+};
