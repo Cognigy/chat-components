@@ -70,7 +70,7 @@ const MessageHeader: FC<MessageHeaderProps> = props => {
 		<header className={className} data-testid="message-header">
 			{props.enableAvatar && <Avatar />}
 			<span className={mainClasses.srOnly}>
-				At {timestamp}, {sourceInfo}
+				<span data-skip-live-region>At {timestamp},</span> {sourceInfo}
 			</span>
 			<Typography
 				variant="title2-regular"
