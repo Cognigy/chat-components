@@ -35,23 +35,29 @@ interface IUseLiveRegionProps {
 
 const useLiveRegion = ({ messageType, data, validation }: IUseLiveRegionProps) => {
 	const previousLiveContentRef = useRef<string | undefined>(undefined);
-	const { onSetLiveRegionText, "data-message-id": dataMessageId } = useMessageContext();
+	const {
+		onSetLiveRegionText,
+		"data-message-id": dataMessageId,
+		headerInfo,
+	} = useMessageContext();
 
 	useEffect(() => {
 		if (validation && !validation()) return;
 
-		const liveRegionContent = getLiveRegionContent(messageType, data);
+		const messageContent = getLiveRegionContent(messageType, data);
 
 		if (
-			liveRegionContent &&
-			liveRegionContent !== previousLiveContentRef.current &&
+			messageContent &&
+			messageContent !== previousLiveContentRef.current &&
 			onSetLiveRegionText &&
 			dataMessageId
 		) {
+			const liveRegionContent = `${headerInfo} ${messageContent}`;
+
 			onSetLiveRegionText(dataMessageId, liveRegionContent);
-			previousLiveContentRef.current = liveRegionContent;
+			previousLiveContentRef.current = messageContent;
 		}
-	}, [messageType, data, onSetLiveRegionText, validation, dataMessageId]);
+	}, [messageType, data, onSetLiveRegionText, validation, dataMessageId, headerInfo]);
 };
 
 export { useMessageContext, useRandomId, useCollation, useLiveRegion };

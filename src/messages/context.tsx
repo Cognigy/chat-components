@@ -7,6 +7,8 @@ interface MessageProviderProps extends MessageProps {
 		hasReply: MessageProps["hasReply"];
 		isConversationEnded: MessageProps["isConversationEnded"];
 	};
+	headerInfo?: string;
+	onSetHeaderInfo?: (headerInfo: string) => void;
 }
 
 export type MessageContextValue = Omit<MessageProviderProps, "children"> | undefined;
@@ -22,6 +24,8 @@ const MessageContext = createContext<MessageContextValue>(undefined);
  * - onEmitAnalytics
  * - config
  * - messageParams
+ * - headerInfo
+ * - onSetHeaderinfo
  * - openXAppOverlay
  * - onSetLiveRegionText
  * - data-message-id
@@ -36,6 +40,8 @@ const MessageProvider: FC<MessageProviderProps> = props => {
 		config,
 		openXAppOverlay,
 		onSetLiveRegionText,
+		headerInfo,
+		onSetHeaderInfo,
 	} = props;
 
 	const contextValue = useMemo(
@@ -48,6 +54,8 @@ const MessageProvider: FC<MessageProviderProps> = props => {
 			"data-message-id": dataMessageId,
 			openXAppOverlay,
 			onSetLiveRegionText,
+			headerInfo,
+			onSetHeaderInfo,
 		}),
 		[
 			message,
@@ -58,6 +66,8 @@ const MessageProvider: FC<MessageProviderProps> = props => {
 			dataMessageId,
 			openXAppOverlay,
 			onSetLiveRegionText,
+			headerInfo,
+			onSetHeaderInfo,
 		],
 	);
 

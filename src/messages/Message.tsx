@@ -1,4 +1,4 @@
-import { FC, useMemo } from "react";
+import { FC, useMemo, useState } from "react";
 import classnames from "classnames";
 
 import MessageHeader from "../common/MessageHeader";
@@ -70,6 +70,8 @@ const Message: FC<MessageProps> = props => {
 
 	const showHeader = !shouldCollate && !isFullscreen && !isEventMessage(message);
 
+	const [headerInfo, setHeaderInfo] = useState<string>("");
+
 	const rootClassName = classnames(
 		"webchat-message-row",
 		message.source,
@@ -123,6 +125,8 @@ const Message: FC<MessageProps> = props => {
 			openXAppOverlay={openXAppOverlay}
 			data-message-id={dataMessageId}
 			onSetLiveRegionText={onSetLiveRegionText}
+			headerInfo={headerInfo}
+			onSetHeaderInfo={setHeaderInfo}
 		>
 			<article
 				{...(message.id ? { id: message.id } : {})}
