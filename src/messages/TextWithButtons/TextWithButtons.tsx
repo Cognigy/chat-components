@@ -27,8 +27,8 @@ interface ITextWithButtonsProps {
  */
 const TextWithButtons: FC = (props: ITextWithButtonsProps) => {
 	const { onSetMessageAnimated } = props;
-	const [textContent, setScreenReaderTextContent] = useState<string>("");
-	const [buttonLabels, setScreenReaderButtonLabels] = useState<string[]>([]);
+	const [liveRegionTextContent, setLiveRegionTextContent] = useState<string>("");
+	const [liveRegionButtonLabels, setLiveRegionButtonLabels] = useState<string[]>([]);
 
 	const { action, message, config, onEmitAnalytics, messageParams, openXAppOverlay } =
 		useMessageContext();
@@ -68,8 +68,8 @@ const TextWithButtons: FC = (props: ITextWithButtonsProps) => {
 
 	useLiveRegion({
 		messageType: "textWithButtons",
-		data: { textContent, buttonLabels },
-		validation: () => buttonLabels.length === buttons.length,
+		data: { text: liveRegionTextContent, buttons: liveRegionButtonLabels },
+		validation: () => liveRegionButtonLabels.length === buttons.length,
 	});
 
 	const stillAnimating =
@@ -100,7 +100,7 @@ const TextWithButtons: FC = (props: ITextWithButtonsProps) => {
 					content={text}
 					className={`webchat-${classType}-template-header`}
 					id={webchatButtonTemplateTextId}
-					onSetScreenReaderBtnLabel={setScreenReaderTextContent}
+					onRegisterLiveRegionText={setLiveRegionTextContent}
 				/>
 			)}
 
@@ -122,8 +122,8 @@ const TextWithButtons: FC = (props: ITextWithButtonsProps) => {
 					onEmitAnalytics={onEmitAnalytics}
 					templateTextId={webchatButtonTemplateTextId}
 					openXAppOverlay={openXAppOverlay}
-					onRegisterScreenReaderLabel={label =>
-						setScreenReaderButtonLabels(prev => [...prev, label])
+					onRegisterLiveRegionButtons={label =>
+						setLiveRegionButtonLabels(prev => [...prev, label])
 					}
 				/>
 			)}

@@ -20,16 +20,13 @@ interface TextProps {
 		messageId: string,
 		animationState: IStreamingMessage["animationState"],
 	) => void;
-	onSetScreenReaderBtnLabel?: (text: string) => void;
+	onRegisterLiveRegionText?: (text: string) => void;
 }
 
 const Text: FC<TextProps> = props => {
-	const {
-		message,
-		config,
-	} = useMessageContext();
+	const { message, config } = useMessageContext();
 
-	const { onSetScreenReaderBtnLabel } = props;
+	const { onRegisterLiveRegionText } = props;
 	const text = message?.text;
 	const source = message?.source;
 	const content = props.content || text || "";
@@ -37,7 +34,6 @@ const Text: FC<TextProps> = props => {
 		(message as IStreamingMessage)?.animationState === "start" ||
 		(message as IStreamingMessage)?.animationState === "animating" ||
 		false;
-
 
 	const renderMarkdown =
 		config?.settings?.behavior?.renderMarkdown && (source === "bot" || source === "engagement");
@@ -76,15 +72,15 @@ const Text: FC<TextProps> = props => {
 
 	useLiveRegion({
 		messageType: "text",
-		data: { text: __html},
-		validation: () => !onSetScreenReaderBtnLabel,
-	})
+		data: { text: __html },
+		validation: () => !onRegisterLiveRegionText,
+	});
 
 	useEffect(() => {
-		if (onSetScreenReaderBtnLabel) {
-			onSetScreenReaderBtnLabel(__html);
-		} 
-	}, [__html, onSetScreenReaderBtnLabel]);
+		if (onRegisterLiveRegionText) {
+			onRegisterLiveRegionText(__html);
+		}
+	}, [__html, onRegisterLiveRegionText]);
 
 	return (
 		<ChatBubble>

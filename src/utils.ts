@@ -200,10 +200,10 @@ export const getLiveRegionContent = (messageType: MessageType, data: any): strin
 		}
 
 		case "textWithButtons": {
-			const { textContent, buttonLabels } = data;
+			const { text, buttons } = data;
 
-			if (!!textContent && buttonLabels.length > 0) {
-				return `${textContent}${" Available options: " + buttonLabels.join(", ")}`;
+			if (!!text && buttons.length > 0) {
+				return `${text}${" Available options: " + buttons.join(", ")}`;
 			}
 			return undefined;
 		}
