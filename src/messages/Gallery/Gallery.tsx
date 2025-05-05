@@ -10,7 +10,7 @@ import GalleryItem from "./GalleryItem";
 import { IWebchatAttachmentElement, IWebchatTemplateAttachment } from "@cognigy/socket-client";
 
 const Gallery: FC = () => {
-	const { message, config } = useMessageContext();
+	const { message, config, "data-message-id": dataMessageId } = useMessageContext();
 	const payload = getChannelPayload(message, config);
 	const { elements } =
 		(payload?.message?.attachment as IWebchatTemplateAttachment)?.payload || {};
@@ -37,6 +37,16 @@ const Gallery: FC = () => {
 			}, 200);
 		}
 	}, [carouselContentId, config?.settings?.widgetSettings?.enableAutoFocus]);
+
+	// Remove the default `aria-live="polite"` attribute added by React-Swiper to the `.swiper-wrapper`.
+	// This ensures that the gallery message does not interfere with other live region announcements.
+	useEffect(() => {
+		const galleryMessage = document.querySelector(`[data-message-id="${dataMessageId}"]`);
+		const swiperWrapper = galleryMessage?.querySelector(".swiper-wrapper");
+		if (swiperWrapper) {
+			swiperWrapper.removeAttribute("aria-live");
+		}
+	}, [dataMessageId]);
 
 	if (!elements || elements?.length === 0) return null;
 
