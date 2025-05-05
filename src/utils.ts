@@ -235,7 +235,7 @@ export const getLiveRegionContent = (messageType: MessageType, data: any): strin
 			if (isDownloadable) {
 				return `An image with download option. ${altTextLabel}`;
 			} else {
-				return `A new image. ${altTextLabel}`;
+				return `An image. ${altTextLabel}`;
 			}
 		}
 
@@ -251,7 +251,7 @@ export const getLiveRegionContent = (messageType: MessageType, data: any): strin
 			if (hasCaptions) {
 				return "A video with captions.";
 			}
-			return "A new video.";
+			return "A video message.";
 		}
 
 		case "audio": {
@@ -261,7 +261,7 @@ export const getLiveRegionContent = (messageType: MessageType, data: any): strin
 				return "An audio message with transcript.";
 			}
 
-			return "A new audio.";
+			return "An audio message.";
 		}
 
 		case "file": {
@@ -271,10 +271,10 @@ export const getLiveRegionContent = (messageType: MessageType, data: any): strin
 				const { fileName, size, mimeType } = attachments[0] as IUploadFileAttachmentData;
 				const sizeLabel = getSizeLabel(size);
 				const type = isImageAttachment(mimeType) ? "image" : "file";
-				return `A new ${type} named '${fileName}' with size ${sizeLabel}.`;
+				return `A ${type} named '${fileName}' with size ${sizeLabel}.`;
 			}
 
-			return `${attachments.length} new files have been received. ${attachments
+			return `${attachments.length} files have been received. ${attachments
 				.map(
 					(attachment: IUploadFileAttachmentData, index: number) =>
 						`File ${index + 1}: '${attachment.fileName}', size ${getSizeLabel(attachment.size)}.`,
