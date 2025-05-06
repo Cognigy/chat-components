@@ -2,7 +2,7 @@ import { useContext, useState, useEffect, useRef } from "react";
 import { MessageContext } from "./context.tsx";
 import { CollateMessage, getRandomId } from "src/utils.ts";
 import { CollationContext } from "./collation.tsx";
-import { getLiveRegionContent, MessageType } from "src/utils";
+import { getLiveRegionContent, MessageType } from "./live-region-helper.ts";
 
 function useMessageContext() {
 	const state = useContext(MessageContext);

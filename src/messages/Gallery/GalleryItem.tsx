@@ -30,6 +30,9 @@ const GalleryItem: FC<GallerySlideProps> = props => {
 
 	const shouldBeDisabled = messageParams?.isConversationEnded;
 
+	const opensInNewTab =
+		config?.settings.customTranslations?.ariaLabels?.opensInNewTab ?? "Opens in new tab";
+
 	const handleClick = () => {
 		if (!default_action?.url) return;
 
@@ -48,8 +51,7 @@ const GalleryItem: FC<GallerySlideProps> = props => {
 			handleClick();
 		}
 	};
-	const opensInNewTab =
-		config?.settings.customTranslations?.ariaLabels?.opensInNewTab ?? "Opens in new tab";
+
 	return (
 		<div className={classnames("webchat-carousel-template-frame", classes.slideItem)}>
 			<div className={classnames(classes.top, hasExtraInfo && classes.hasExtraInfo)}>
@@ -65,7 +67,7 @@ const GalleryItem: FC<GallerySlideProps> = props => {
 				) : (
 					<img
 						src={image_url}
-						alt={image_alt_text || "Attachment Image"}
+						alt={image_alt_text || ""}
 						className={classes.slideImage}
 						onError={() => setImageBroken(true)}
 					/>

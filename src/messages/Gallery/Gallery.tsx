@@ -1,8 +1,9 @@
-import { FC, useEffect } from "react";
-import { useMessageContext, useRandomId } from "src/messages/hooks";
+import { FC, useEffect, useMemo } from "react";
+import { useLiveRegion, useMessageContext, useRandomId } from "src/messages/hooks";
 import classes from "./Gallery.module.css";
 import classnames from "classnames";
 import { getChannelPayload } from "src/utils";
+import { getGalleryContent } from "./helper";
 import { ArrowBack as ArrowNavIcon } from "src/assets/svg";
 import { Navigation, Pagination, A11y } from "swiper/modules";
 import { Swiper, SwiperSlide } from "swiper/react";
@@ -11,6 +12,8 @@ import { IWebchatAttachmentElement, IWebchatTemplateAttachment } from "@cognigy/
 
 const Gallery: FC = () => {
 	const { message, config, "data-message-id": dataMessageId } = useMessageContext();
+	const isSanitizeEnabled = !config?.settings?.layout?.disableHtmlContentSanitization;
+
 	const payload = getChannelPayload(message, config);
 	const { elements } =
 		(payload?.message?.attachment as IWebchatTemplateAttachment)?.payload || {};
@@ -48,6 +51,18 @@ const Gallery: FC = () => {
 		}
 	}, [dataMessageId]);
 
+	// Gather the gallery content for live region announcements
+	const slides = useMemo(
+		() => getGalleryContent(elements, isSanitizeEnabled),
+		[elements, isSanitizeEnabled],
+	);
+
+	useLiveRegion({
+		messageType: "gallery",
+		data: { slides },
+		validation: () => !!elements && elements.length > 0 && slides.length === elements.length,
+	});
+
 	if (!elements || elements?.length === 0) return null;
 
 	if (elements.length === 1)
@@ -76,7 +91,6 @@ const Gallery: FC = () => {
 					<GalleryItem slide={element} contentId={`${carouselContentId}-${i}`} />
 				</SwiperSlide>
 			))}
-
 			<button className="gallery-button-prev">
 				<ArrowNavIcon />
 			</button>

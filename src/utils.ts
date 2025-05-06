@@ -1,8 +1,7 @@
-import { IMessage, IUploadFileAttachmentData, IWebchatMessage } from "@cognigy/socket-client";
+import { IMessage, IWebchatMessage } from "@cognigy/socket-client";
 import { IWebchatConfig } from "./messages/types";
 import { ActionButtonsProps } from "./common/ActionButtons/ActionButtons";
 import { match, MessagePlugin } from "./matcher";
-import { getSizeLabel, isImageAttachment } from "./messages/File/helper";
 
 /**
  * Decides between _webchat and _facebook payload.
@@ -169,131 +168,6 @@ export const replaceUrlsWithHTMLanchorElem = (text: string) => {
 	});
 
 	return enhancedText;
-};
-
-export type MessageType =
-	| "list"
-	| "textWithButtons"
-	| "text"
-	| "image"
-	| "video"
-	| "audio"
-	| "file"
-	| "event"
-	| "custom";
-
-/**
- * Computes the live region text based on the message type and provided data.
- * @param messageType The type of the message.
- * @param data The data required to compute the live region text.
- * @returns The computed live region text.
- */
-export const getLiveRegionContent = (messageType: MessageType, data: any): string | undefined => {
-	switch (messageType) {
-		case "text": {
-			const { text } = data;
-
-			if (text) {
-				return text;
-			}
-			return undefined;
-		}
-
-		case "textWithButtons": {
-			const { text, buttons } = data;
-
-			if (!!text && buttons.length > 0) {
-				return `${text}${" Available options: " + buttons.join(", ")}`;
-			}
-			return undefined;
-		}
-
-		case "list": {
-			const headerLabel = data[0];
-
-			const itemLabels = Object.keys(data)
-				.filter(key => key !== "0")
-				.map(key => data[key])
-				.join(", ");
-
-			if (headerLabel && itemLabels) {
-				return `${headerLabel}. Available list items: ${itemLabels}`;
-			}
-			if (itemLabels) {
-				return `Available list items: ${itemLabels}`;
-			}
-			if (headerLabel) {
-				return headerLabel;
-			}
-			return undefined;
-		}
-
-		case "image": {
-			const { altText, isDownloadable } = data;
-			const altTextLabel = altText ?? "";
-
-			if (isDownloadable) {
-				return `An image with download option. ${altTextLabel}`;
-			} else {
-				return `An image. ${altTextLabel}`;
-			}
-		}
-
-		case "video": {
-			const { hasTranscript, hasCaptions } = data;
-
-			if (hasTranscript && hasCaptions) {
-				return "A video with transcript and captions.";
-			}
-			if (hasTranscript) {
-				return "A video with transcript.";
-			}
-			if (hasCaptions) {
-				return "A video with captions.";
-			}
-			return "A video message.";
-		}
-
-		case "audio": {
-			const { hasTrascript } = data;
-
-			if (hasTrascript) {
-				return "An audio message with transcript.";
-			}
-
-			return "An audio message.";
-		}
-
-		case "file": {
-			const { attachments } = data;
-
-			if (attachments.length === 1) {
-				const { fileName, size, mimeType } = attachments[0] as IUploadFileAttachmentData;
-				const sizeLabel = getSizeLabel(size);
-				const type = isImageAttachment(mimeType) ? "image" : "file";
-				return `A ${type} named '${fileName}' with size ${sizeLabel}.`;
-			}
-
-			return `${attachments.length} files have been received. ${attachments
-				.map(
-					(attachment: IUploadFileAttachmentData, index: number) =>
-						`File ${index + 1}: '${attachment.fileName}', size ${getSizeLabel(attachment.size)}.`,
-				)
-				.join(" ")}`;
-		}
-
-		// Event status pills are ignore from the live region as they have their own aria-live="assertive" attribute
-		case "event": {
-			const { dataMessageId } = data;
-			if (dataMessageId) {
-				return `IGNORE-${dataMessageId}`;
-			}
-			return undefined;
-		}
-
-		default:
-			return undefined;
-	}
 };
 
 /**

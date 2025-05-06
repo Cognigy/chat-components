@@ -76,6 +76,7 @@ const Text: FC<TextProps> = props => {
 		validation: () => !onRegisterLiveRegionText,
 	});
 
+	// Text content for live screen reader announcement
 	useEffect(() => {
 		if (onRegisterLiveRegionText) {
 			onRegisterLiveRegionText(__html);
