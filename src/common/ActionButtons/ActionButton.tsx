@@ -1,7 +1,7 @@
 import { FC, ReactElement } from "react";
 import classnames from "classnames";
 import { ActionButtonsProps } from "./ActionButtons";
-import { getWebchatButtonLabel } from "src/utils";
+import { getWebchatButtonLabel, interpolateString } from "src/utils";
 import { sanitizeHTML } from "src/sanitize";
 import { sanitizeUrl } from "@braintree/sanitize-url";
 import classes from "./ActionButton.module.css";
@@ -76,9 +76,18 @@ const ActionButton: FC<ActionButtonProps> = props => {
 		const isURLInNewTab = isWebURL && isWebURLButtonTargetBlank;
 		const newTabURLButtonTitle = `${buttonTitle}. ${opensInNewTabLabel}`;
 		const buttonTitleWithTarget = isURLInNewTab ? newTabURLButtonTitle : button.title;
+		const actionButtonAriaLabel = interpolateString(
+			config?.settings?.customTranslations?.ariaLabels?.actionButtonAriaLabel ??
+				"Item {position} of {total}: {buttonTitleWithTarget}",
+			{
+				position: position.toString(),
+				total: total.toString(),
+				buttonTitleWithTarget: buttonTitleWithTarget,
+			},
+		);
 
 		if (total > 1) {
-			return `Item ${position} of ${total}: ${buttonTitleWithTarget}`;
+			return actionButtonAriaLabel;
 		} else if (total <= 1 && isURLInNewTab) {
 			return newTabURLButtonTitle;
 		}

@@ -7,6 +7,7 @@ import { FC, ReactElement, useEffect } from "react";
 import { MessageProps } from "src/messages/Message";
 import classNames from "classnames";
 import { useRandomId } from "src/messages/hooks";
+import { interpolateString } from "src/utils";
 
 type buttonPayloadCompatibility = {
 	contentType?: string;
@@ -92,7 +93,13 @@ export const ActionButtons: FC<ActionButtonsProps> = props => {
 			openXAppOverlay={props.openXAppOverlay}
 		/>
 	));
-
+	const actionButtonTextSr = interpolateString(
+		config?.settings.customTranslations?.ariaLabels?.actionButtonTextSr ??
+			`With {buttons} buttons or links in`,
+		{
+			buttons: buttons.length.toString(),
+		},
+	);
 	return (
 		<>
 			{buttons.length > 1 && templateTextId && (
@@ -100,7 +107,7 @@ export const ActionButtons: FC<ActionButtonsProps> = props => {
 					className={classNames(mainClasses.srOnly, "sr-only")}
 					id={`srOnly-${templateTextId}`}
 				>
-					{`With ${buttons.length} buttons or links in`}
+					{actionButtonTextSr}
 				</span>
 			)}
 			<div
