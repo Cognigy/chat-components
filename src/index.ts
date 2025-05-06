@@ -6,6 +6,7 @@ import Message, { MessageProps } from "./messages/Message";
 import TypingIndicator from "./common/TypingIndicator";
 import Typography, { TypographyProps } from "./common/Typography/Typography";
 import ChatEvent, { ChatEventProps } from "./common/ChatEvent";
+import { interpolateString } from "./utils";
 
 import "@fontsource/figtree/400.css";
 import "@fontsource/figtree/400-italic.css";
@@ -25,6 +26,7 @@ export {
 	ChatEvent,
 	PrimaryButton,
 	SecondaryButton,
+	interpolateString as formatTemplate,
 };
 
 export type { MessageProps, TypographyProps, ChatEventProps };

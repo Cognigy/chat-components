@@ -223,3 +223,10 @@ export const getFocusableElements = (element: HTMLElement) => {
 	// Return all focusable elements and their bounds
 	return { firstFocusable, lastFocusable, focusable, nextFocusable, prevFocusable };
 };
+
+export function interpolateString(template: string, replacements: Record<string, string>): string {
+	const result = template.replace(/{(\w+)}/g, (match, key) => {
+		return key in replacements ? replacements[key] : match;
+	});
+	return result;
+}

@@ -6,6 +6,7 @@ import { useMessageContext } from "src/messages/hooks";
 import Avatar from "./Avatar";
 import { HeaderEllipsis } from "src/assets/svg";
 import Typography from "./Typography/Typography";
+import { interpolateString } from "src/utils";
 
 interface MessageHeaderProps {
 	enableAvatar?: boolean;
@@ -57,14 +58,19 @@ const MessageHeader: FC<MessageHeaderProps> = props => {
 		hour: "2-digit",
 		minute: "2-digit",
 	});
-
+	const messageHeaderSrText =
+		config?.settings.customTranslations?.ariaLabels?.messageHeaderSrText;
+	const formattedMessageHeader = interpolateString(
+		messageHeaderSrText ?? "At {time}, {speaker} said:",
+		{
+			time: timestamp,
+			speaker: isUserMessage ? "You" : name,
+		},
+	);
 	return (
 		<header className={className} data-testid="message-header">
 			{props.enableAvatar && <Avatar />}
-			<span className={mainClasses.srOnly}>
-				{`At ${timestamp}, `}
-				{isUserMessage ? "You said:" : `${name} said:`}
-			</span>
+			<span className={mainClasses.srOnly}>{formattedMessageHeader}</span>
 			<Typography
 				variant="title2-regular"
 				component="div"
