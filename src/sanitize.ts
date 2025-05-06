@@ -244,3 +244,19 @@ export const sanitizeHTML = (text: string) => {
 	DOMPurify.removeAllHooks();
 	return result;
 };
+
+/**
+ * Sanitizes content if sanitization is enabled.
+ * @param content - The content to sanitize.
+ * @param isSanitizeEnabled - Whether to sanitize the content.
+ * @returns The sanitized or raw content.
+ */
+export const sanitizeContent = (
+	content: string | undefined,
+	isSanitizeEnabled: boolean,
+): string => {
+	if (!content) {
+		return "";
+	}
+	return isSanitizeEnabled ? sanitizeHTML(content) : content;
+};

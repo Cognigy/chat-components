@@ -1,4 +1,4 @@
-import { FC, useEffect, useState } from "react";
+import { FC, useEffect, useMemo } from "react";
 
 import { Text } from "src/messages";
 
@@ -10,6 +10,7 @@ import ActionButtons from "src/common/ActionButtons/ActionButtons";
 import { IWebchatTemplateAttachment } from "@cognigy/socket-client";
 import classNames from "classnames";
 import { IStreamingMessage } from "../types";
+import { getTextWithButtonsContent } from "./helper";
 
 interface ITextWithButtonsProps {
 	onSetMessageAnimated?: (
@@ -27,8 +28,6 @@ interface ITextWithButtonsProps {
  */
 const TextWithButtons: FC = (props: ITextWithButtonsProps) => {
 	const { onSetMessageAnimated } = props;
-	const [liveRegionTextContent, setLiveRegionTextContent] = useState<string>("");
-	const [liveRegionButtonLabels, setLiveRegionButtonLabels] = useState<string[]>([]);
 
 	const { action, message, config, onEmitAnalytics, messageParams, openXAppOverlay } =
 		useMessageContext();
@@ -66,10 +65,18 @@ const TextWithButtons: FC = (props: ITextWithButtonsProps) => {
 		message.text,
 	]);
 
+	const isSanitizeEnabled = !config?.settings?.layout?.disableHtmlContentSanitization;
+
+	const textWithButtonsContent = useMemo(() => {
+		return getTextWithButtonsContent({ text, buttons }, isSanitizeEnabled);
+	}, [text, buttons, isSanitizeEnabled]);
+
+	const { textContent, buttonLabels } = textWithButtonsContent;
+
 	useLiveRegion({
 		messageType: "textWithButtons",
-		data: { text: liveRegionTextContent, buttons: liveRegionButtonLabels },
-		validation: () => liveRegionButtonLabels.length === buttons.length,
+		data: { text: textContent, buttons: buttonLabels },
+		validation: () => buttonLabels.length === buttons.length,
 	});
 
 	const stillAnimating =
@@ -100,7 +107,7 @@ const TextWithButtons: FC = (props: ITextWithButtonsProps) => {
 					content={text}
 					className={`webchat-${classType}-template-header`}
 					id={webchatButtonTemplateTextId}
-					onRegisterLiveRegionText={setLiveRegionTextContent}
+					ignoreLiveRegion
 				/>
 			)}
 
@@ -122,9 +129,6 @@ const TextWithButtons: FC = (props: ITextWithButtonsProps) => {
 					onEmitAnalytics={onEmitAnalytics}
 					templateTextId={webchatButtonTemplateTextId}
 					openXAppOverlay={openXAppOverlay}
-					onRegisterLiveRegionButtons={label =>
-						setLiveRegionButtonLabels(prev => [...prev, label])
-					}
 				/>
 			)}
 		</div>

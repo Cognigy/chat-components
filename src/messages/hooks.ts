@@ -53,7 +53,6 @@ const useLiveRegion = ({ messageType, data, validation }: IUseLiveRegionProps) =
 			dataMessageId
 		) {
 			const liveRegionContent = `${headerInfo} ${messageContent}`;
-
 			onSetLiveRegionText(dataMessageId, liveRegionContent);
 			previousLiveContentRef.current = messageContent;
 		}

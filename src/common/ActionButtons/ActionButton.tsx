@@ -1,4 +1,4 @@
-import { FC, ReactElement, useEffect } from "react";
+import { FC, ReactElement } from "react";
 import classnames from "classnames";
 import { ActionButtonsProps } from "./ActionButtons";
 import { getWebchatButtonLabel } from "src/utils";
@@ -21,7 +21,6 @@ interface ActionButtonProps extends React.HTMLAttributes<HTMLButtonElement> {
 	onEmitAnalytics: MessageProps["onEmitAnalytics"];
 	size?: "small" | "large";
 	openXAppOverlay?: (url: string | undefined) => void;
-	onRegisterLiveRegionButtons?: (label: string) => void;
 }
 
 /**
@@ -39,7 +38,6 @@ const ActionButton: FC<ActionButtonProps> = props => {
 		onEmitAnalytics,
 		size,
 		openXAppOverlay,
-		onRegisterLiveRegionButtons,
 	} = props;
 	const buttonType =
 		"type" in button
@@ -63,11 +61,6 @@ const ActionButton: FC<ActionButtonProps> = props => {
 	const __html = config?.settings?.layout?.disableHtmlContentSanitization
 		? buttonLabel
 		: sanitizeHTML(buttonLabel);
-
-	useEffect(() => {
-		if (!onRegisterLiveRegionButtons || !__html) return;
-		onRegisterLiveRegionButtons(__html);
-	}, [__html]); // eslint-disable-line react-hooks/exhaustive-deps
 
 	if (!buttonType) return null;
 

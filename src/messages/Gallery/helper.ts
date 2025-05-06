@@ -1,10 +1,10 @@
 import { IWebchatAttachmentElement } from "@cognigy/socket-client";
-import { sanitizeHTML } from "src/sanitize";
+import { sanitizeContent } from "src/sanitize";
 import { getWebchatButtonLabel } from "src/utils";
 
 export interface GalleryLiveContent {
 	slideText: string;
-	buttonLabels: string[];
+	buttonLabels: string[] | undefined;
 }
 
 /**
@@ -37,17 +37,4 @@ export const getGalleryContent = (
 			buttonLabels,
 		};
 	});
-};
-
-/**
- * Sanitizes content if sanitization is enabled.
- * @param content - The content to sanitize.
- * @param isSanitizeEnabled - Whether to sanitize the content.
- * @returns The sanitized or raw content.
- */
-const sanitizeContent = (content: string | undefined, isSanitizeEnabled: boolean): string => {
-	if (!content) {
-		return "";
-	}
-	return isSanitizeEnabled ? sanitizeHTML(content) : content;
 };

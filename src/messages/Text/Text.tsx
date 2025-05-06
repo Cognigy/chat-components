@@ -20,13 +20,12 @@ interface TextProps {
 		messageId: string,
 		animationState: IStreamingMessage["animationState"],
 	) => void;
-	onRegisterLiveRegionText?: (text: string) => void;
+	ignoreLiveRegion?: boolean;
 }
 
 const Text: FC<TextProps> = props => {
 	const { message, config } = useMessageContext();
 
-	const { onRegisterLiveRegionText } = props;
 	const text = message?.text;
 	const source = message?.source;
 	const content = props.content || text || "";
@@ -73,15 +72,8 @@ const Text: FC<TextProps> = props => {
 	useLiveRegion({
 		messageType: "text",
 		data: { text: __html },
-		validation: () => !onRegisterLiveRegionText,
+		validation: () => !props.ignoreLiveRegion,
 	});
-
-	// Text content for live screen reader announcement
-	useEffect(() => {
-		if (onRegisterLiveRegionText) {
-			onRegisterLiveRegionText(__html);
-		}
-	}, [__html, onRegisterLiveRegionText]);
 
 	return (
 		<ChatBubble>

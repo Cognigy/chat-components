@@ -25,7 +25,6 @@ export interface ActionButtonsProps {
 	size?: "small" | "large";
 	templateTextId?: string;
 	openXAppOverlay?: (url: string | undefined) => void;
-	onRegisterLiveRegionButtons?: (label: string) => void;
 }
 
 export const ActionButtons: FC<ActionButtonsProps> = props => {
@@ -43,7 +42,6 @@ export const ActionButtons: FC<ActionButtonsProps> = props => {
 		onEmitAnalytics,
 		size,
 		templateTextId,
-		onRegisterLiveRegionButtons,
 	} = props;
 
 	const webchatButtonTemplateButtonId = useRandomId("webchatButtonTemplateButton");
@@ -92,7 +90,6 @@ export const ActionButtons: FC<ActionButtonsProps> = props => {
 				size={size ? size : "small"}
 				id={`${webchatButtonTemplateButtonId}-${index}`}
 				openXAppOverlay={props.openXAppOverlay}
-				onRegisterLiveRegionButtons={onRegisterLiveRegionButtons}
 			/>
 		);
 
