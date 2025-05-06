@@ -164,17 +164,20 @@ const getAudioContent = (data: { hasTranscript: boolean }): string | undefined =
 	return data.hasTranscript ? "An audio message with transcript." : "An audio message.";
 };
 
-const getFileContent = (data: { attachments: IUploadFileAttachmentData[] }): string | undefined => {
-	const { attachments } = data;
+const getFileContent = (data: {
+	text: string;
+	attachments: IUploadFileAttachmentData[];
+}): string | undefined => {
+	const { text, attachments } = data;
 
 	if (attachments.length === 1) {
 		const { fileName, size, mimeType } = attachments[0];
 		const sizeLabel = getSizeLabel(size);
 		const type = isImageAttachment(mimeType) ? "image" : "file";
-		return `A ${type} named '${fileName}' with size ${sizeLabel}.`;
+		return `${text}. A ${type} named '${fileName}' with size ${sizeLabel}.`;
 	}
 
-	return `${attachments.length} files. ${attachments
+	return `${text}. ${attachments.length} files. ${attachments
 		.map(
 			(attachment, index) =>
 				`File ${index + 1}: '${attachment.fileName}', size ${getSizeLabel(attachment.size)}.`,

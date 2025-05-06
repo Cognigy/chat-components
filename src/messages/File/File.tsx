@@ -10,10 +10,11 @@ import { getFileExtension, getFileName, getSizeLabel, isImageAttachment } from "
 const File: FC = props => {
 	const { message } = useMessageContext();
 	const attachments = message.data?.attachments as IUploadFileAttachmentData[];
+	const text = message.text;
 
 	useLiveRegion({
 		messageType: "file",
-		data: { attachments },
+		data: { text, attachments },
 		validation: () => !!attachments && attachments.length > 0,
 	});
 
@@ -123,7 +124,7 @@ const File: FC = props => {
 					</div>
 				)}
 			</div>
-			{message.text && <Text {...props} content={message.text} />}
+			{text && <Text {...props} content={text} ignoreLiveRegion />}
 		</>
 	);
 };
