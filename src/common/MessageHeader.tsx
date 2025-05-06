@@ -6,6 +6,7 @@ import { useMessageContext } from "src/messages/hooks";
 import Avatar from "./Avatar";
 import { HeaderEllipsis } from "src/assets/svg";
 import Typography from "./Typography/Typography";
+import { interpolateString } from "src/utils";
 
 interface MessageHeaderProps {
 	enableAvatar?: boolean;

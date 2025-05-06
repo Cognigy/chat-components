@@ -5,6 +5,7 @@ import classes from "./ActionButtons.module.css";
 import { FC, ReactElement, useEffect } from "react";
 import { MessageProps } from "src/messages/Message";
 import { useRandomId } from "src/messages/hooks";
+import { interpolateString } from "src/utils";
 
 type buttonPayloadCompatibility = {
 	contentType?: string;

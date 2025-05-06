@@ -777,6 +777,94 @@ const screens: TScreen[] = [
 			},
 		],
 	},
+	{
+		title: "Custom Translations",
+		anchor: "custom-translations",
+		messages: [
+			{
+				message: {
+					text: "Hello World",
+					source: "user",
+				},
+				config: {
+					settings: {
+						widgetSettings: {
+							enableDefaultPreview: true,
+						},
+						customTranslations: {
+							ariaLabels: {
+								messageHeaderSrText: "A las {time}, {speaker} dijo:",
+							},
+						},
+					},
+				},
+			},
+			{
+				message: {
+					data: {
+						_cognigy: {
+							_defaultPreview: {
+								message: {
+									text: "RENDER OK",
+									quick_replies: [
+										{
+											id: 0.44535334241574,
+											content_type: "postback",
+											payload: "foobar003pb01",
+											title: "foobar003qr01",
+										},
+									],
+								},
+							},
+							_webchat: { message: { text: "RENDER WRONG" } },
+						},
+					},
+				},
+				config: {
+					settings: {
+						widgetSettings: {
+							enableDefaultPreview: true,
+						},
+						customTranslations: {
+							ariaLabels: {
+								messageHeaderSrText: "A las {time}, {speaker} dijo:",
+							},
+						},
+					},
+				},
+			},
+			{
+				message: {
+					data: {
+						_cognigy: {
+							_webchat: {
+								message: {
+									text: "RENDER WRONG",
+								},
+							},
+							_defaultPreview: {
+								message: {
+									text: "RENDER OK",
+								},
+							},
+						},
+					},
+				},
+				config: {
+					settings: {
+						widgetSettings: {
+							enableDefaultPreview: true,
+						},
+						customTranslations: {
+							ariaLabels: {
+								messageHeaderSrText: "Um {time} , {speaker} hat gesagt:",
+							},
+						},
+					},
+				},
+			},
+		],
+	},
 ];
 
 interface MenuProps {
