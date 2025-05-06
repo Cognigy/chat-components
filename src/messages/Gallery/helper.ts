@@ -30,7 +30,7 @@ export const getGalleryContent = (
 			sanitizeContent(getWebchatButtonLabel(button), isSanitizeEnabled),
 		);
 
-		const slideText = `${title}. ${subtitle}.`;
+		const slideText = `${title}. ${subtitle}`;
 
 		return {
 			slideText,

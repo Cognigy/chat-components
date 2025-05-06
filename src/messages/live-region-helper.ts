@@ -64,7 +64,7 @@ const getTextWithButtonsContent = (data: {
 	const { text, buttons } = data;
 
 	if (text && buttons.length > 0) {
-		return `${text}. Available options: ${buttons.join(", ")}`;
+		return `${text}. Available options: ${formatListWithFullStop(buttons)}`;
 	}
 
 	return text || undefined;
@@ -81,7 +81,7 @@ const getGalleryContent = (data: { slides: any[] }): string | undefined => {
 		const { slideText, buttonLabels } = slides[0];
 		const actionsText =
 			buttonLabels && buttonLabels.length > 0
-				? `Available actions: ${buttonLabels.join(", ")}`
+				? `Available actions: ${formatListWithFullStop(buttonLabels)}`
 				: undefined;
 
 		return slideText && actionsText
@@ -95,7 +95,7 @@ const getGalleryContent = (data: { slides: any[] }): string | undefined => {
 			const { slideText, buttonLabels } = slide;
 			const actionsText =
 				buttonLabels && buttonLabels.length > 0
-					? `Available actions: ${buttonLabels.join(", ")}`
+					? `Available actions: ${formatListWithFullStop(buttonLabels)}`
 					: undefined;
 
 			return slideText && actionsText
@@ -112,10 +112,11 @@ const getGalleryContent = (data: { slides: any[] }): string | undefined => {
 
 const getListContent = (data: any): string | undefined => {
 	const headerLabel = data[0];
-	const itemLabels = Object.keys(data)
+	const items = Object.keys(data)
 		.filter(key => key !== "0")
-		.map(key => data[key])
-		.join(", ");
+		.map(key => data[key]);
+
+	const itemLabels = formatListWithFullStop(items);
 
 	if (headerLabel && itemLabels) {
 		return `${headerLabel}. Available list items: ${itemLabels}`;
@@ -185,4 +186,23 @@ const getEventContent = (data: { dataMessageId: string }): string | undefined =>
 	// Event status pills are ignored from the live region announcement as they have their own aria-live="assertive" attribute.
 	// Webchat will check for the IGNORE- prefix in the liveContent and will skip announcement.
 	return data.dataMessageId ? `IGNORE-${data.dataMessageId}` : undefined;
+};
+
+/**
+ * Formats a list of strings by joining them with commas and adding a full stop to the last item.
+ * @param items The list of strings to format.
+ * @returns A formatted string with a full stop at the end.
+ */
+const formatListWithFullStop = (items: string[]): string => {
+	if (!items || items.length === 0) {
+		return "";
+	}
+
+	if (items.length === 1) {
+		return `${items[0]}.`;
+	}
+
+	const allButLast = items.slice(0, -1).join(", ");
+	const lastItem = items[items.length - 1];
+	return `${allButLast}, and ${lastItem}.`;
 };
