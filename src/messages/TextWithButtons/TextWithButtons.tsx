@@ -42,7 +42,10 @@ const TextWithButtons: FC = (props: ITextWithButtonsProps) => {
 
 	const attachments = payload?.message?.attachment as IWebchatTemplateAttachment;
 	const text = attachments?.payload?.text || payload?.message?.text || "";
-	const buttons = attachments?.payload?.buttons || payload?.message?.quick_replies || [];
+	const buttons = useMemo(
+		() => attachments?.payload?.buttons || payload?.message?.quick_replies || [],
+		[attachments?.payload?.buttons, payload?.message?.quick_replies],
+	);
 
 	useEffect(() => {
 		if (
