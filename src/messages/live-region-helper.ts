@@ -207,5 +207,5 @@ const formatListWithFullStop = (items: string[]): string => {
 
 	const allButLast = items.slice(0, -1).join(", ");
 	const lastItem = items[items.length - 1];
-	return `${allButLast}, and ${lastItem}.`;
+	return `${allButLast}, ${lastItem}.`;
 };
