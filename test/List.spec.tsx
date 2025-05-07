@@ -62,6 +62,6 @@ describe("Message List", () => {
 		const { getByRole, getAllByRole } = render(<Message message={message} />);
 
 		expect(getByRole("list")).toBeInTheDocument();
-		expect(getAllByRole("listitem")).toHaveLength(5);
+		expect(getAllByRole("listitem")).toHaveLength(4); // Header element is not a list item
 	});
 });

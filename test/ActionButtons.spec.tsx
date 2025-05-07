@@ -20,7 +20,7 @@ describe("Action Buttons", () => {
 			render(<Message message={message} />);
 		});
 
-		expect(screen.getByRole("group")).toBeInTheDocument();
+		expect(screen.getByRole("list")).toBeInTheDocument();
 		expect(screen.getAllByRole("button", { name: /foobar005b(1|2|3|4)/ })).toHaveLength(2);
 		expect(screen.getAllByRole("link", { name: /foobar005b(1|2|3|4)/ })).toHaveLength(2);
 	});
@@ -30,7 +30,7 @@ describe("Action Buttons", () => {
 			render(<Message message={message} />);
 		});
 
-		expect(screen.getAllByLabelText(/Item (1|2|3|4) of 4: foobar005b(1|2|3|4)/)).toHaveLength(
+		expect(screen.getAllByLabelText(/(1|2|3|4) of 4: foobar005b(1|2|3|4)/)).toHaveLength(
 			4,
 		);
 	});
@@ -40,7 +40,7 @@ describe("Action Buttons", () => {
 			render(<Message message={message} />);
 		});
 
-		const phoneButton = screen.getByLabelText(/Item 4 of 4: foobar005b4/);
+		const phoneButton = screen.getByLabelText(/4 of 4: foobar005b4/);
 		expect(phoneButton).toHaveAttribute("href", "tel:000111222");
 	});
 
