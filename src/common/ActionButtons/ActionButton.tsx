@@ -57,12 +57,12 @@ const ActionButton: FC<ActionButtonProps> = props => {
 				? button.imageAltText
 				: "";
 
+	if (!buttonType) return null;
+
 	const buttonLabel = getWebchatButtonLabel(button) || "";
 	const __html = config?.settings?.layout?.disableHtmlContentSanitization
 		? buttonLabel
 		: sanitizeHTML(buttonLabel);
-
-	if (!buttonType) return null;
 
 	const isPhoneNumber =
 		button.payload && (buttonType === "phone_number" || buttonType === "user_phone_number");
