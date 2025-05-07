@@ -30,9 +30,7 @@ describe("Action Buttons", () => {
 			render(<Message message={message} />);
 		});
 
-		expect(screen.getAllByLabelText(/(1|2|3|4) of 4: foobar005b(1|2|3|4)/)).toHaveLength(
-			4,
-		);
+		expect(screen.getAllByLabelText(/(1|2|3|4) of 4: foobar005b(1|2|3|4)/)).toHaveLength(4);
 	});
 
 	it("renders phone number button as anchor element with 'href' attribute", async () => {
