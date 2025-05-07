@@ -7,6 +7,8 @@
 	max-width: 295px;
 }
 
-ol, ul, li {
-    all: unset;
+ol,
+ul,
+li {
+	all: unset;
 }
