@@ -1,3 +1,6 @@
+const ONE_MB = 1000000;
+const ONE_KB = 1000;
+
 export const getFileName = (fileNameWithExtension: string) => {
 	const splitName = fileNameWithExtension.split(".");
 	if (splitName.length > 1) {
@@ -18,11 +21,11 @@ export const getFileExtension = (fileNameWithExtension: string) => {
 };
 
 export const getSizeLabel = (size: number) => {
-	if (size > 1000000) {
-		return `${(size / 1000000).toFixed(2)} MB`;
+	if (size > ONE_MB) {
+		return `${(size / ONE_MB).toFixed(2)} MB`;
 	}
 
-	return `${(size / 1000).toFixed(2)} KB`;
+	return `${(size / ONE_KB).toFixed(2)} KB`;
 };
 
 // The mime types we accept for image operations
