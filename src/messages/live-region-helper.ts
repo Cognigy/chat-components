@@ -13,54 +13,72 @@ export type MessageType =
 	| "event"
 	| "custom";
 
+type TTextData = { text: string };
+type TTextWithButtonsData = { text: string; buttons: string[] };
+type TGalleryData = { slides: { slideText?: string; buttonLabels?: string[] }[] };
+type TListData = { [key: string]: string };
+type TImageData = { altText: string; isDownloadable: boolean };
+type TVideoData = { hasTranscript: boolean; hasCaptions: boolean };
+type TAudioData = { hasTranscript: boolean };
+type TFileData = { text: string; attachments: IUploadFileAttachmentData[] };
+type TEventData = { dataMessageId: string };
+
+type MessageData =
+	| TTextData
+	| TTextWithButtonsData
+	| TGalleryData
+	| TListData
+	| TImageData
+	| TVideoData
+	| TAudioData
+	| TFileData
+	| TEventData;
+
 /**
  * Computes the live region text based on the message type and provided data.
  * @param messageType The type of the message.
  * @param data The data required to compute the live region text.
  * @returns The computed live region text.
  */
-export const getLiveRegionContent = (messageType: MessageType, data: any): string | undefined => {
+export const getLiveRegionContent = (messageType: MessageType, data: MessageData) => {
 	switch (messageType) {
 		case "text":
-			return getTextContent(data);
+			return getTextContent(data as TTextData);
 
 		case "textWithButtons":
-			return getTextWithButtonsContent(data);
+			return getTextWithButtonsContent(data as TTextWithButtonsData);
 
 		case "gallery":
-			return getGalleryContent(data);
+			return getGalleryContent(data as TGalleryData);
 
 		case "list":
-			return getListContent(data);
+			return getListContent(data as TListData);
 
 		case "image":
-			return getImageContent(data);
+			return getImageContent(data as TImageData);
 
 		case "video":
-			return getVideoContent(data);
+			return getVideoContent(data as TVideoData);
 
 		case "audio":
-			return getAudioContent(data);
+			return getAudioContent(data as TAudioData);
 
 		case "file":
-			return getFileContent(data);
+			return getFileContent(data as TFileData);
 
 		case "event":
-			return getEventContent(data);
+			return getEventContent(data as TEventData);
 
 		default:
 			return undefined;
 	}
 };
 
-const getTextContent = (data: { text: string }): string | undefined => {
+const getTextContent = (data: TTextData) => {
 	return data.text || undefined;
 };
 
-const getTextWithButtonsContent = (data: {
-	text: string;
-	buttons: string[];
-}): string | undefined => {
+const getTextWithButtonsContent = (data: TTextWithButtonsData) => {
 	const { text, buttons } = data;
 
 	if (text && buttons.length > 0) {
@@ -70,7 +88,7 @@ const getTextWithButtonsContent = (data: {
 	return text || undefined;
 };
 
-const getGalleryContent = (data: { slides: any[] }): string | undefined => {
+const getGalleryContent = (data: TGalleryData) => {
 	const { slides } = data;
 
 	if (!slides || slides.length === 0) {
@@ -110,7 +128,7 @@ const getGalleryContent = (data: { slides: any[] }): string | undefined => {
 	return `${slidesCountText} ${slidesContent}`;
 };
 
-const getListContent = (data: any): string | undefined => {
+const getListContent = (data: TListData) => {
 	const headerLabel = data[0];
 	const items = Object.keys(data)
 		.filter(key => key !== "0")
@@ -130,10 +148,7 @@ const getListContent = (data: any): string | undefined => {
 	return undefined;
 };
 
-const getImageContent = (data: {
-	altText: string;
-	isDownloadable: boolean;
-}): string | undefined => {
+const getImageContent = (data: TImageData) => {
 	const { altText, isDownloadable } = data;
 	const altTextLabel = altText ?? "";
 
@@ -142,10 +157,7 @@ const getImageContent = (data: {
 		: `An image. ${altTextLabel}`;
 };
 
-const getVideoContent = (data: {
-	hasTranscript: boolean;
-	hasCaptions: boolean;
-}): string | undefined => {
+const getVideoContent = (data: TVideoData) => {
 	const { hasTranscript, hasCaptions } = data;
 
 	if (hasTranscript && hasCaptions) {
@@ -160,14 +172,11 @@ const getVideoContent = (data: {
 	return "A video message.";
 };
 
-const getAudioContent = (data: { hasTranscript: boolean }): string | undefined => {
+const getAudioContent = (data: TAudioData) => {
 	return data.hasTranscript ? "An audio message with transcript." : "An audio message.";
 };
 
-const getFileContent = (data: {
-	text: string;
-	attachments: IUploadFileAttachmentData[];
-}): string | undefined => {
+const getFileContent = (data: TFileData) => {
 	const { text, attachments } = data;
 
 	if (attachments.length === 1) {
@@ -185,7 +194,7 @@ const getFileContent = (data: {
 		.join(" ")}`;
 };
 
-const getEventContent = (data: { dataMessageId: string }): string | undefined => {
+const getEventContent = (data: TEventData) => {
 	// Event status pills are ignored from the live region announcement as they have their own aria-live="assertive" attribute.
 	// Webchat will check for the IGNORE- prefix in the liveContent and will skip announcement.
 	return data.dataMessageId ? `IGNORE-${data.dataMessageId}` : undefined;
