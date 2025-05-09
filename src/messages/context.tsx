@@ -7,7 +7,7 @@ interface MessageProviderProps extends MessageProps {
 		hasReply: MessageProps["hasReply"];
 		isConversationEnded: MessageProps["isConversationEnded"];
 	};
-	headerInfo?: string;
+	headerInfo?: string | null;
 	onSetHeaderInfo?: (headerInfo: string) => void;
 }
 

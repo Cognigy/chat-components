@@ -1,4 +1,4 @@
-import { FC, useMemo, useState } from "react";
+import { FC, useMemo, useState, useEffect } from "react";
 import classnames from "classnames";
 
 import MessageHeader from "../common/MessageHeader";
@@ -70,7 +70,13 @@ const Message: FC<MessageProps> = props => {
 
 	const showHeader = !shouldCollate && !isFullscreen && !isEventMessage(message);
 
-	const [headerInfo, setHeaderInfo] = useState<string>("");
+	const [headerInfo, setHeaderInfo] = useState<string | null>("");
+
+	useEffect(() => {
+		if (!showHeader) {
+			setHeaderInfo(null);
+		}
+	}, [showHeader]);
 
 	const rootClassName = classnames(
 		"webchat-message-row",

@@ -46,15 +46,18 @@ const useLiveRegion = ({ messageType, data, validation }: IUseLiveRegionProps) =
 
 		const messageContent = getLiveRegionContent(messageType, data);
 
+		const liveRegionContent =
+			headerInfo !== null ? `${headerInfo} ${messageContent}` : messageContent;
+
 		if (
 			messageContent &&
-			messageContent !== previousLiveContentRef.current &&
+			headerInfo !== "" &&
+			liveRegionContent !== previousLiveContentRef.current &&
 			onSetLiveRegionText &&
 			dataMessageId
 		) {
-			const liveRegionContent = `${headerInfo} ${messageContent}`;
-			onSetLiveRegionText(dataMessageId, liveRegionContent);
-			previousLiveContentRef.current = messageContent;
+			onSetLiveRegionText(dataMessageId, liveRegionContent as string);
+			previousLiveContentRef.current = liveRegionContent;
 		}
 	}, [messageType, data, onSetLiveRegionText, validation, dataMessageId, headerInfo]);
 };
