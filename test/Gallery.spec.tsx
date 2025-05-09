@@ -16,7 +16,7 @@ describe("Message Gallery", () => {
 	it("renders images inside gallery", () => {
 		const { getAllByAltText } = render(<Message message={message} />);
 
-		expect(getAllByAltText("Attachment Image")).toHaveLength(8);
+		expect(getAllByAltText("foobar004g1")).toHaveLength(8);
 	});
 
 	it("renders subtitles", () => {

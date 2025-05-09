@@ -72,13 +72,15 @@ const ActionButton: FC<ActionButtonProps> = props => {
 	const isWebURLButtonTargetBlank = isWebURL && button.target !== "_self";
 	const opensInNewTabLabel =
 		config?.settings?.customTranslations?.ariaLabels?.opensInNewTab || "Opens in new tab";
+
 	const getAriaLabel = () => {
 		const isURLInNewTab = isWebURL && isWebURLButtonTargetBlank;
 		const newTabURLButtonTitle = `${buttonTitle}. ${opensInNewTabLabel}`;
 		const buttonTitleWithTarget = isURLInNewTab ? newTabURLButtonTitle : button.title;
 
+		//TODO: Test if adding the position and total is necessary in ariaLabels, by testing with NVDA. ORCA does not announce it with just default ol and li tags
 		if (total > 1) {
-			return `Item ${position} of ${total}: ${buttonTitleWithTarget}`;
+			return `${position} of ${total}: ${buttonTitleWithTarget}`;
 		} else if (total <= 1 && isURLInNewTab) {
 			return newTabURLButtonTitle;
 		}

@@ -1,4 +1,4 @@
-import { FC } from "react";
+import { FC, useEffect } from "react";
 import classes from "./MessageHeader.module.css";
 import classnames from "classnames";
 import mainClasses from "src/main.module.css";
@@ -18,7 +18,7 @@ interface MessageHeaderProps {
  * - Timestamp
  */
 const MessageHeader: FC<MessageHeaderProps> = props => {
-	const { message, config } = useMessageContext();
+	const { message, config, onSetHeaderInfo } = useMessageContext();
 
 	const directionMapping = config?.settings?.widgetSettings?.sourceDirectionMapping;
 
@@ -58,12 +58,19 @@ const MessageHeader: FC<MessageHeaderProps> = props => {
 		minute: "2-digit",
 	});
 
+	const sourceInfo = isUserMessage ? "You said:" : `${name} said:`;
+
+	useEffect(() => {
+		if (onSetHeaderInfo) {
+			onSetHeaderInfo(sourceInfo);
+		}
+	}, [onSetHeaderInfo, sourceInfo]);
+
 	return (
 		<header className={className} data-testid="message-header">
 			{props.enableAvatar && <Avatar />}
 			<span className={mainClasses.srOnly}>
-				{`At ${timestamp}, `}
-				{isUserMessage ? "You said:" : `${name} said:`}
+				<span data-skip-live-region>At {timestamp},</span> {sourceInfo}
 			</span>
 			<Typography
 				variant="title2-regular"

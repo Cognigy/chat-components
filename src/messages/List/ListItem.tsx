@@ -1,4 +1,4 @@
-import { FC, useMemo, KeyboardEvent } from "react";
+import { FC, useMemo, KeyboardEvent, useEffect } from "react";
 import classes from "./List.module.css";
 import { useMessageContext, useRandomId } from "src/messages/hooks";
 import { sanitizeHTML } from "src/sanitize";
@@ -9,9 +9,17 @@ import { sanitizeUrl } from "@braintree/sanitize-url";
 import { IWebchatAttachmentElement } from "@cognigy/socket-client";
 import { Typography } from "src/index";
 
-const ListItem: FC<{ element: IWebchatAttachmentElement; isHeaderElement?: boolean }> = props => {
+interface IListItemProps {
+	element: IWebchatAttachmentElement;
+	isHeaderElement?: boolean;
+	headingLevel?: "h3" | "h4";
+	id: string;
+	onSetScreenReaderLabel?: (text: string) => void;
+}
+
+const ListItem: FC<IListItemProps> = props => {
 	const { action, config, onEmitAnalytics, messageParams } = useMessageContext();
-	const { element, isHeaderElement } = props;
+	const { element, isHeaderElement, headingLevel, id, onSetScreenReaderLabel } = props;
 	const { title, subtitle, image_url, image_alt_text, default_action, buttons } = element;
 	const button = buttons && buttons?.[0];
 
@@ -48,6 +56,12 @@ const ListItem: FC<{ element: IWebchatAttachmentElement; isHeaderElement?: boole
 		? classnames("webchat-list-template-header", classes.headerContentWrapper)
 		: classnames("webchat-list-template-element", classes.listItemWrapper);
 
+	useEffect(() => {
+		if (onSetScreenReaderLabel && titleHtml) {
+			onSetScreenReaderLabel(titleHtml);
+		}
+	}, [onSetScreenReaderLabel, titleHtml]);
+
 	const renderImage = useMemo(() => {
 		if (!image_url) return null;
 
@@ -69,7 +83,7 @@ const ListItem: FC<{ element: IWebchatAttachmentElement; isHeaderElement?: boole
 				{titleHtml && (
 					<Typography
 						variant={isHeaderElement ? "h2-semibold" : "title1-semibold"}
-						component="h2"
+						component={headingLevel}
 						dangerouslySetInnerHTML={{ __html: titleHtml }}
 						className={classnames(
 							isHeaderElement
@@ -77,6 +91,7 @@ const ListItem: FC<{ element: IWebchatAttachmentElement; isHeaderElement?: boole
 								: "webchat-list-template-element-title",
 							subtitleHtml ? classes.itemTitleWithSubtitle : classes.itemTitle,
 						)}
+						id={isHeaderElement ? `listHeader-${id}` : `listItemHeader-${id}`}
 					/>
 				)}
 				{subtitleHtml && (
@@ -94,19 +109,23 @@ const ListItem: FC<{ element: IWebchatAttachmentElement; isHeaderElement?: boole
 				)}
 			</>
 		);
-	}, [subtitleHtml, subtitleId, titleHtml, isHeaderElement]);
+	}, [subtitleHtml, subtitleId, titleHtml, isHeaderElement, headingLevel, id]);
 
 	const opensInNewTabLabel =
 		config?.settings.customTranslations?.ariaLabels?.opensInNewTab || "Opens in new tab";
+
+	const Component = isHeaderElement ? "div" : "li";
+
 	return (
-		<div
-			role="listitem"
+		<Component
+			role={isHeaderElement ? undefined : "listitem"}
 			className={rootClasses}
 			style={{
 				backgroundImage:
 					isHeaderElement && image_url ? getBackgroundImage(image_url) : undefined,
 			}}
 			data-testid={isHeaderElement ? "header-image" : "list-item"}
+			id={id}
 		>
 			<div
 				className={contentClasses}
@@ -163,7 +182,7 @@ const ListItem: FC<{ element: IWebchatAttachmentElement; isHeaderElement?: boole
 					onEmitAnalytics={onEmitAnalytics}
 				/>
 			)}
-		</div>
+		</Component>
 	);
 };
 

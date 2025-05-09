@@ -1,8 +1,9 @@
-import { FC, useEffect } from "react";
-import { useMessageContext, useRandomId } from "src/messages/hooks";
+import { FC, useEffect, useMemo } from "react";
+import { useLiveRegion, useMessageContext, useRandomId } from "src/messages/hooks";
 import classes from "./Gallery.module.css";
 import classnames from "classnames";
 import { getChannelPayload } from "src/utils";
+import { getGalleryContent } from "./helper";
 import { ArrowBack as ArrowNavIcon } from "src/assets/svg";
 import { Navigation, Pagination, A11y } from "swiper/modules";
 import { Swiper, SwiperSlide } from "swiper/react";
@@ -10,7 +11,9 @@ import GalleryItem from "./GalleryItem";
 import { IWebchatAttachmentElement, IWebchatTemplateAttachment } from "@cognigy/socket-client";
 
 const Gallery: FC = () => {
-	const { message, config } = useMessageContext();
+	const { message, config, "data-message-id": dataMessageId } = useMessageContext();
+	const isSanitizeEnabled = !config?.settings?.layout?.disableHtmlContentSanitization;
+
 	const payload = getChannelPayload(message, config);
 	const { elements } =
 		(payload?.message?.attachment as IWebchatTemplateAttachment)?.payload || {};
@@ -37,6 +40,28 @@ const Gallery: FC = () => {
 			}, 200);
 		}
 	}, [carouselContentId, config?.settings?.widgetSettings?.enableAutoFocus]);
+
+	// Remove the default `aria-live="polite"` attribute added by React-Swiper to the `.swiper-wrapper`.
+	// This ensures that the gallery message does not interfere with other live region announcements.
+	useEffect(() => {
+		const galleryMessage = document.querySelector(`[data-message-id="${dataMessageId}"]`);
+		const swiperWrapper = galleryMessage?.querySelector(".swiper-wrapper");
+		if (swiperWrapper) {
+			swiperWrapper.removeAttribute("aria-live");
+		}
+	}, [dataMessageId]);
+
+	// Gather the gallery content for live region announcements
+	const slides = useMemo(
+		() => getGalleryContent(elements, isSanitizeEnabled),
+		[elements, isSanitizeEnabled],
+	);
+
+	useLiveRegion({
+		messageType: "gallery",
+		data: { slides },
+		validation: () => !!elements && elements.length > 0 && slides.length === elements.length,
+	});
 
 	if (!elements || elements?.length === 0) return null;
 
@@ -66,7 +91,6 @@ const Gallery: FC = () => {
 					<GalleryItem slide={element} contentId={`${carouselContentId}-${i}`} />
 				</SwiperSlide>
 			))}
-
 			<button className="gallery-button-prev">
 				<ArrowNavIcon />
 			</button>

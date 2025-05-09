@@ -1,6 +1,6 @@
-import { FC, Fragment, useEffect } from "react";
+import { FC, Fragment, useCallback, useEffect, useState } from "react";
 import ListItem from "./ListItem";
-import { useMessageContext, useRandomId } from "src/messages/hooks";
+import { useLiveRegion, useMessageContext, useRandomId } from "src/messages/hooks";
 import mainclasses from "src/main.module.css";
 import classes from "./List.module.css";
 import classnames from "classnames";
@@ -12,10 +12,13 @@ const List: FC = () => {
 	const { message, messageParams, config, action, onEmitAnalytics } = useMessageContext();
 	const payload = getChannelPayload(message, config);
 
+	const [listItemLiveRegionLabels, setListItemLiveRegionLabels] = useState<
+		Record<number, string>
+	>({});
+
 	const { elements, top_element_style, buttons } =
 		(payload?.message?.attachment as IWebchatTemplateAttachment)?.payload || {};
 
-	// We support the "large" string to maintain compatibility with old format
 	const showTopElementLarge = top_element_style === "large" || top_element_style === true;
 
 	const regularElements = showTopElementLarge ? elements?.slice(1) : elements;
@@ -44,26 +47,57 @@ const List: FC = () => {
 		}, 200);
 	}, [config?.settings?.widgetSettings?.enableAutoFocus, listTemplateId]);
 
+	useLiveRegion({
+		messageType: "list",
+		data: listItemLiveRegionLabels,
+		validation: () => elements?.length === Object.keys(listItemLiveRegionLabels).length,
+	});
+
+	const handleListItemLiveRegionLabel = useCallback((index: number, label: string) => {
+		setListItemLiveRegionLabels(prev => {
+			if (prev[index] === label) return prev;
+			return { ...prev, [index]: label };
+		});
+	}, []);
+
 	if (!elements || elements?.length === 0) return null;
 
 	return (
 		<div
 			className={classnames("webchat-list-template-root", classes.wrapper)}
-			role="list"
 			id={listTemplateId}
 			data-testid="list-message"
 		>
-			{headerElement && <ListItem element={headerElement} isHeaderElement />}
-			{regularElements &&
-				regularElements.map((element: IWebchatAttachmentElement, index: number) => (
-					<Fragment key={index}>
-						{index > 0 && <div className={mainclasses.divider} />}
-						<ListItem element={element} />
-						{button && index === regularElements.length - 1 && (
-							<div className={mainclasses.divider} />
-						)}
-					</Fragment>
-				))}
+			{headerElement && (
+				<ListItem
+					element={headerElement}
+					isHeaderElement
+					headingLevel="h3"
+					id={`header-${listTemplateId}`}
+					onSetScreenReaderLabel={(text: string) => {
+						handleListItemLiveRegionLabel(0, text);
+					}}
+				/>
+			)}
+			<ul aria-labelledby={headerElement ? `listHeader-header-${listTemplateId}` : undefined}>
+				{regularElements &&
+					regularElements.map((element: IWebchatAttachmentElement, index: number) => (
+						<Fragment key={index}>
+							{index > 0 && <div className={mainclasses.divider} />}
+							<ListItem
+								element={element}
+								headingLevel={headerElement ? "h4" : "h3"}
+								id={`${listTemplateId}-${index}`}
+								onSetScreenReaderLabel={(text: string) => {
+									handleListItemLiveRegionLabel(index + 1, text);
+								}}
+							/>
+							{button && index === regularElements.length - 1 && (
+								<div className={mainclasses.divider} />
+							)}
+						</Fragment>
+					))}
+			</ul>
 			{button && (
 				<PrimaryButton
 					isActionButton

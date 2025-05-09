@@ -43,6 +43,7 @@ const SecondaryButton = forwardRef<HTMLButtonElement, SecondaryButtonProps>((pro
 	return (
 		<ActionButtons
 			containerClassName={containerClassName}
+			buttonListItemClassName={classes.buttonListItem}
 			buttonClassName={classnames(
 				classes.secondaryButton,
 				classes.actionButton,

@@ -93,3 +93,7 @@ button.secondaryButton.button:disabled:focus {
 	border: 1px solid var(--cc-secondary-color-disabled);
 	background-color: var(--cc-white);
 }
+
+.buttonListItem {
+	width: 100%;
+}

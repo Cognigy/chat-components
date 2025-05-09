@@ -1,6 +1,6 @@
 import { FC, useEffect, useMemo, useState } from "react";
 import classNames from "classnames";
-import { useMessageContext } from "../hooks";
+import { useLiveRegion, useMessageContext } from "../hooks";
 import ChatBubble from "../../common/ChatBubble";
 import { replaceUrlsWithHTMLanchorElem } from "src/utils";
 import { sanitizeHTML } from "src/sanitize";
@@ -20,10 +20,12 @@ interface TextProps {
 		messageId: string,
 		animationState: IStreamingMessage["animationState"],
 	) => void;
+	ignoreLiveRegion?: boolean;
 }
 
 const Text: FC<TextProps> = props => {
 	const { message, config } = useMessageContext();
+
 	const text = message?.text;
 	const source = message?.source;
 	const content = props.content || text || "";
@@ -66,6 +68,12 @@ const Text: FC<TextProps> = props => {
 	const __html = config?.settings?.layout?.disableHtmlContentSanitization
 		? enhancedURLsText
 		: sanitizeHTML(enhancedURLsText);
+
+	useLiveRegion({
+		messageType: "text",
+		data: { text: __html },
+		validation: () => !props.ignoreLiveRegion,
+	});
 
 	return (
 		<ChatBubble>

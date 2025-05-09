@@ -1,15 +1,16 @@
-import { FC, useEffect } from "react";
+import { FC, useEffect, useMemo } from "react";
 
 import { Text } from "src/messages";
 
 import classes from "./TextWithButtons.module.css";
-import { useMessageContext, useRandomId } from "../hooks";
+import { useLiveRegion, useMessageContext, useRandomId } from "../hooks";
 
 import { getChannelPayload } from "src/utils";
 import ActionButtons from "src/common/ActionButtons/ActionButtons";
 import { IWebchatTemplateAttachment } from "@cognigy/socket-client";
 import classNames from "classnames";
 import { IStreamingMessage } from "../types";
+import { getTextWithButtonsContent } from "./helper";
 
 interface ITextWithButtonsProps {
 	onSetMessageAnimated?: (
@@ -37,6 +38,15 @@ const TextWithButtons: FC = (props: ITextWithButtonsProps) => {
 	const isBotMessage = message.source === "bot";
 	const isEngagementMessage = message.source === "engagement";
 
+	const payload = getChannelPayload(message, config);
+
+	const attachments = payload?.message?.attachment as IWebchatTemplateAttachment;
+	const text = attachments?.payload?.text || payload?.message?.text || "";
+	const buttons = useMemo(
+		() => attachments?.payload?.buttons || payload?.message?.quick_replies || [],
+		[attachments?.payload?.buttons, payload?.message?.quick_replies],
+	);
+
 	useEffect(() => {
 		if (
 			progressiveMessageRendering &&
@@ -58,20 +68,28 @@ const TextWithButtons: FC = (props: ITextWithButtonsProps) => {
 		message.text,
 	]);
 
+	const isSanitizeEnabled = !config?.settings?.layout?.disableHtmlContentSanitization;
+
+	const textWithButtonsContent = useMemo(() => {
+		return getTextWithButtonsContent({ text, buttons }, isSanitizeEnabled);
+	}, [text, buttons, isSanitizeEnabled]);
+
+	const { textContent, buttonLabels } = textWithButtonsContent;
+
+	useLiveRegion({
+		messageType: "textWithButtons",
+		data: { text: textContent, buttons: buttonLabels },
+		validation: () => buttonLabels.length === buttons.length,
+	});
+
 	const stillAnimating =
 		(message as IStreamingMessage).animationState === "animating" ||
 		(message as IStreamingMessage).animationState === "start";
 
 	const webchatButtonTemplateTextId = useRandomId("webchatButtonTemplateHeader");
 
-	const payload = getChannelPayload(message, config);
-
 	const isQuickReplies =
 		payload?.message?.quick_replies && payload.message.quick_replies.length > 0;
-
-	const attachments = payload?.message?.attachment as IWebchatTemplateAttachment;
-	const text = attachments?.payload?.text || payload?.message?.text || "";
-	const buttons = attachments?.payload?.buttons || payload?.message?.quick_replies || [];
 
 	const shouldBeDisabled =
 		(isQuickReplies && messageParams?.hasReply) || messageParams?.isConversationEnded;
@@ -92,6 +110,7 @@ const TextWithButtons: FC = (props: ITextWithButtonsProps) => {
 					content={text}
 					className={`webchat-${classType}-template-header`}
 					id={webchatButtonTemplateTextId}
+					ignoreLiveRegion
 				/>
 			)}
 

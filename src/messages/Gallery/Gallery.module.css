@@ -47,7 +47,7 @@
 	border-bottom-right-radius: 0px;
 }
 
-.slideItem .top h2 {
+.slideItem .top h3 {
 	position: absolute;
 	margin: 0px;
 	margin-inline-start: 8px;
@@ -58,6 +58,10 @@
 .slideItem .bottom p {
 	padding: 0px;
 	margin: 0px;
+}
+
+.slideItem .bottom .buttonListItem {
+	width: 100%;
 }
 
 /* 

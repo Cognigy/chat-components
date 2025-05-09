@@ -6,3 +6,9 @@
 	gap: 8px;
 	max-width: 295px;
 }
+
+ol,
+ul,
+li {
+	all: unset;
+}

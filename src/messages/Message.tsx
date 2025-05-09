@@ -1,4 +1,4 @@
-import { FC, useMemo } from "react";
+import { FC, useMemo, useState, useEffect } from "react";
 import classnames from "classnames";
 
 import MessageHeader from "../common/MessageHeader";
@@ -34,6 +34,8 @@ export interface MessageProps {
 		messageId: string,
 		animationState: IStreamingMessage["animationState"],
 	) => void;
+	onSetLiveRegionText?: (id: string, text: string) => void;
+	"data-message-id"?: string;
 }
 
 const defaultCollate = new CollateMessage();
@@ -51,8 +53,11 @@ const Message: FC<MessageProps> = props => {
 		onEmitAnalytics,
 		onSetFullscreen,
 		openXAppOverlay,
+		onSetMessageAnimated,
+		onSetLiveRegionText,
 		plugins,
 		prevMessage,
+		"data-message-id": dataMessageId,
 	} = props;
 
 	// Get the collation instance from the context
@@ -64,6 +69,14 @@ const Message: FC<MessageProps> = props => {
 		: defaultCollate.isMessageCollatable(message, config, plugins, prevMessage);
 
 	const showHeader = !shouldCollate && !isFullscreen && !isEventMessage(message);
+
+	const [headerInfo, setHeaderInfo] = useState<string | null>("");
+
+	useEffect(() => {
+		if (!showHeader) {
+			setHeaderInfo(null);
+		}
+	}, [showHeader]);
 
 	const rootClassName = classnames(
 		"webchat-message-row",
@@ -116,8 +129,16 @@ const Message: FC<MessageProps> = props => {
 			messageParams={messageParams}
 			onEmitAnalytics={onEmitAnalytics}
 			openXAppOverlay={openXAppOverlay}
+			data-message-id={dataMessageId}
+			onSetLiveRegionText={onSetLiveRegionText}
+			headerInfo={headerInfo}
+			onSetHeaderInfo={setHeaderInfo}
 		>
-			<article {...(message.id ? { id: message.id } : {})} className={rootClassName}>
+			<article
+				{...(message.id ? { id: message.id } : {})}
+				className={rootClassName}
+				data-message-id={dataMessageId}
+			>
 				{showHeader && <MessageHeader enableAvatar={message.source !== "user"} />}
 				{matchedPlugins.map((plugin, index) =>
 					plugin.component ? (
@@ -132,7 +153,7 @@ const Message: FC<MessageProps> = props => {
 							onSetFullscreen={onSetFullscreen}
 							prevMessage={prevMessage}
 							theme={props.theme}
-							onSetMessageAnimated={props.onSetMessageAnimated}
+							onSetMessageAnimated={onSetMessageAnimated}
 						/>
 					) : null,
 				)}

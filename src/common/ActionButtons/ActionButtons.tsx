@@ -1,11 +1,9 @@
 import { IWebchatButton, IWebchatQuickReply } from "@cognigy/socket-client";
 import { ActionButton } from ".";
 import classnames from "classnames";
-import mainClasses from "src/main.module.css";
 import classes from "./ActionButtons.module.css";
 import { FC, ReactElement, useEffect } from "react";
 import { MessageProps } from "src/messages/Message";
-import classNames from "classnames";
 import { useRandomId } from "src/messages/hooks";
 
 type buttonPayloadCompatibility = {
@@ -19,6 +17,7 @@ export interface ActionButtonsProps {
 	containerClassName?: string;
 	containerStyle?: React.CSSProperties;
 	buttonClassName?: string;
+	buttonListItemClassName?: string;
 	customIcon?: ReactElement;
 	showUrlIcon?: boolean;
 	config: MessageProps["config"];
@@ -33,6 +32,7 @@ export const ActionButtons: FC<ActionButtonsProps> = props => {
 		className,
 		payload,
 		buttonClassName,
+		buttonListItemClassName,
 		containerClassName,
 		containerStyle,
 		action,
@@ -74,49 +74,50 @@ export const ActionButtons: FC<ActionButtonsProps> = props => {
 		return true;
 	});
 
-	const buttonElements = buttons.map((button, index: number) => (
-		<ActionButton
-			className={buttonClassName}
-			key={index}
-			button={button}
-			action={action}
-			position={index + 1}
-			total={payload.length}
-			disabled={action === undefined}
-			customIcon={customIcon}
-			showUrlIcon={showUrlIcon}
-			config={config}
-			onEmitAnalytics={onEmitAnalytics}
-			size={size ? size : "small"}
-			id={`${webchatButtonTemplateButtonId}-${index}`}
-			openXAppOverlay={props.openXAppOverlay}
-		/>
-	));
+	const buttonElements = buttons.map((button, index: number) => {
+		const actionButton = (
+			<ActionButton
+				className={buttonClassName}
+				button={button}
+				action={action}
+				disabled={action === undefined}
+				position={index + 1}
+				total={buttons.length}
+				customIcon={customIcon}
+				showUrlIcon={showUrlIcon}
+				config={config}
+				onEmitAnalytics={onEmitAnalytics}
+				size={size ? size : "small"}
+				id={`${webchatButtonTemplateButtonId}-${index}`}
+				openXAppOverlay={props.openXAppOverlay}
+			/>
+		);
+
+		return buttons.length > 1 ? (
+			<li
+				key={index}
+				className={buttonListItemClassName}
+				aria-posinset={index + 1}
+				aria-setsize={buttons.length}
+			>
+				{actionButton}
+			</li>
+		) : (
+			actionButton
+		);
+	});
+
+	const Component = buttons.length > 1 ? "ul" : "div";
 
 	return (
-		<>
-			{buttons.length > 1 && templateTextId && (
-				<span
-					className={classNames(mainClasses.srOnly, "sr-only")}
-					id={`srOnly-${templateTextId}`}
-				>
-					{`With ${buttons.length} buttons or links in`}
-				</span>
-			)}
-			<div
-				className={classnames(className, classes.buttons, containerClassName)}
-				style={containerStyle || {}}
-				role={buttons.length > 1 ? "group" : undefined}
-				aria-labelledby={
-					buttons.length > 1 && templateTextId
-						? `${templateTextId} srOnly-${templateTextId}`
-						: undefined
-				}
-				data-testid="action-buttons"
-			>
-				{buttonElements}
-			</div>
-		</>
+		<Component
+			className={classnames(className, classes.buttons, containerClassName)}
+			style={containerStyle || {}}
+			aria-labelledby={templateTextId}
+			data-testid="action-buttons"
+		>
+			{buttonElements}
+		</Component>
 	);
 };
 
