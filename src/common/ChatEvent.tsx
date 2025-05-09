@@ -2,17 +2,17 @@ import { FC } from "react";
 import classes from "./ChatEvent.module.css";
 import classnames from "classnames";
 import Typography from "./Typography/Typography";
-import { useLiveRegion, useMessageContext } from "src/messages/hooks";
+import { useLiveRegion } from "src/messages/hooks";
 
 export interface ChatEventProps {
 	text?: string;
 	className?: string;
 	id?: string;
+	dataMessageId?: string;
 }
 
 const ChatEvent: FC<ChatEventProps> = props => {
-	const { text, className, id } = props;
-	const { "data-message-id": dataMessageId } = useMessageContext();
+	const { text, className, id, dataMessageId } = props;
 
 	useLiveRegion({
 		messageType: "event",
