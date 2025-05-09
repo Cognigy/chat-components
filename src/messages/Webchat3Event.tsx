@@ -1,9 +1,15 @@
 import { FC } from "react";
-import { useMessageContext } from "src/messages/hooks";
+import { useLiveRegion, useMessageContext } from "src/messages/hooks";
 import ChatEvent from "src/common/ChatEvent";
 
 const Webchat3Event: FC = () => {
-	const { message } = useMessageContext();
+	const { message, "data-message-id": dataMessageId } = useMessageContext();
+
+	useLiveRegion({
+		messageType: "event",
+		data: { dataMessageId },
+		validation: () => !!dataMessageId,
+	});
 
 	if (message?.data?._cognigy?._webchat3?.type !== "liveAgentEvent") return null;
 
