@@ -2,22 +2,15 @@ import { FC } from "react";
 import classes from "./ChatEvent.module.css";
 import classnames from "classnames";
 import Typography from "./Typography/Typography";
-import { useLiveRegion } from "src/messages/hooks";
 
 export interface ChatEventProps {
 	text?: string;
 	className?: string;
 	id?: string;
-	dataMessageId?: string;
 }
 
 const ChatEvent: FC<ChatEventProps> = props => {
-	const { text, className, id, dataMessageId } = props;
-
-	useLiveRegion({
-		messageType: "event",
-		data: { dataMessageId },
-	});
+	const { text, className, id } = props;
 
 	return (
 		<div className={classnames(classes.eventPill, className)} id={id} aria-live="assertive">
