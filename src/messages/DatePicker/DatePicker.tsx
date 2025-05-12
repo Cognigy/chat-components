@@ -135,7 +135,7 @@ const DatePicker: FC = () => {
 						<span className={classes.center}>
 							<Typography
 								variant="h2-semibold"
-								component="h3"
+								component="h4"
 								className="webchat-list-template-header-title"
 							>
 								{eventName || "Calendar"}
