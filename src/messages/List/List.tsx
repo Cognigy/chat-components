@@ -72,7 +72,7 @@ const List: FC = () => {
 				<ListItem
 					element={headerElement}
 					isHeaderElement
-					headingLevel="h3"
+					headingLevel="h4"
 					id={`header-${listTemplateId}`}
 					onSetScreenReaderLabel={(text: string) => {
 						handleListItemLiveRegionLabel(0, text);
@@ -86,7 +86,7 @@ const List: FC = () => {
 							{index > 0 && <div className={mainclasses.divider} />}
 							<ListItem
 								element={element}
-								headingLevel={headerElement ? "h4" : "h3"}
+								headingLevel={headerElement ? "h5" : "h4"}
 								id={`${listTemplateId}-${index}`}
 								onSetScreenReaderLabel={(text: string) => {
 									handleListItemLiveRegionLabel(index + 1, text);

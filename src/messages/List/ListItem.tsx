@@ -12,7 +12,7 @@ import { Typography } from "src/index";
 interface IListItemProps {
 	element: IWebchatAttachmentElement;
 	isHeaderElement?: boolean;
-	headingLevel?: "h3" | "h4";
+	headingLevel?: "h4" | "h5";
 	id: string;
 	onSetScreenReaderLabel?: (text: string) => void;
 }
