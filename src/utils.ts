@@ -225,8 +225,8 @@ export const getFocusableElements = (element: HTMLElement) => {
 };
 
 export function interpolateString(template: string, replacements: Record<string, string>): string {
-	const result = template.replace(/{(\w+)}/g, (match, key) => {
-		return key in replacements ? replacements[key] : match;
+	const result = template.replace(/{(\w+)}/g, (_, key) => {
+		return key in replacements ? replacements[key] : "";
 	});
 	return result;
 }

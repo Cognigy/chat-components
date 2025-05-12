@@ -4,6 +4,7 @@ import { AudioPause, AudioPlay, DownloadIcon } from "src/assets/svg";
 import ReactPlayer from "react-player";
 import { Tooltip } from "react-tooltip";
 import { useMessageContext } from "../hooks";
+import { interpolateString } from "src/utils";
 
 type ControlsProps = {
 	playerRef: MutableRefObject<ReactPlayer | null>;
@@ -83,7 +84,8 @@ const Controls: FC<ControlsProps> = props => {
 	const downloadTranscriptLabel =
 		config?.settings?.customTranslations?.ariaLabels?.downloadTranscript ||
 		"Download transcript";
-
+	const audioTimeRemaningLabel =
+		config?.settings?.customTranslations?.ariaLabels?.audioTimeRemaining ?? "{time} remaining";
 	return (
 		<div className={classes.audioWrapper} data-testid="audio-controls">
 			<div className={classes.controls}>
@@ -98,7 +100,9 @@ const Controls: FC<ControlsProps> = props => {
 						max={0.999999}
 						step="any"
 						value={progress}
-						aria-valuetext={`${timeToText(formatTime)} remaining`}
+						aria-valuetext={interpolateString(audioTimeRemaningLabel, {
+							time: timeToText(formatTime),
+						})}
 						aria-label={audioPlaybackProgressLabel}
 						onMouseDown={handleSeekStart}
 						onTouchStart={handleSeekStart}

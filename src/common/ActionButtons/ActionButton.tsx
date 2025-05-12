@@ -77,19 +77,18 @@ const ActionButton: FC<ActionButtonProps> = props => {
 		const isURLInNewTab = isWebURL && isWebURLButtonTargetBlank;
 		const newTabURLButtonTitle = `${buttonTitle}. ${opensInNewTabLabel}`;
 		const buttonTitleWithTarget = isURLInNewTab ? newTabURLButtonTitle : button.title;
-		const actionButtonAriaLabel = interpolateString(
-			config?.settings?.customTranslations?.ariaLabels?.actionButtonAriaLabel ??
-				"Item {position} of {total}: {buttonTitleWithTarget}",
-			{
-				position: position.toString(),
-				total: total.toString(),
-				buttonTitleWithTarget: buttonTitleWithTarget,
-			},
-		);
 
 		//TODO: Test if adding the position and total is necessary in ariaLabels, by testing with NVDA. ORCA does not announce it with just default ol and li tags
 		if (total > 1) {
-			return `${position} of ${total}: ${buttonTitleWithTarget}`;
+			return interpolateString(
+				config?.settings?.customTranslations?.ariaLabels?.actionButton ??
+					"{position} of {total}: {buttonTitleWithTarget}",
+				{
+					position: position.toString(),
+					total: total.toString(),
+					buttonTitleWithTarget: buttonTitleWithTarget,
+				},
+			);
 		} else if (total <= 1 && isURLInNewTab) {
 			return newTabURLButtonTitle;
 		}
