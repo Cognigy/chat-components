@@ -68,7 +68,7 @@ const AdaptiveCard: FC<IAdaptiveCardProps> = props => {
 				const headings = targetRef.current.querySelectorAll("[role='heading']");
 				headings.forEach(heading => {
 					if (heading.getAttribute("aria-level") === null)
-						heading.setAttribute("aria-level", "2");
+						heading.setAttribute("aria-level", "4");
 				});
 			}
 		} catch (error) {
