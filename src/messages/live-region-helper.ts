@@ -130,7 +130,7 @@ const getGalleryContent = (data: TGalleryData, config?: IWebchatConfig) => {
 	);
 	const slidesContentAriaLabel =
 		config?.settings.customTranslations?.ariaLabels?.slidesContent ??
-		"Slide {index}: {slideText}. {actionsText}";
+		"Slide {index}: {slideText}. {galleryContent}";
 	const slidesContent = slides
 		.map((slide, index) => {
 			const { slideText, buttonLabels } = slide;
@@ -145,13 +145,13 @@ const getGalleryContent = (data: TGalleryData, config?: IWebchatConfig) => {
 				? interpolateString(slidesContentAriaLabel, {
 						index: `${index + 1}`,
 						slideText: `${slideText}`,
-						actionsText: `${actionsText}`,
+						galleyContent: `${actionsText}`,
 					})
 				: slideText
 					? interpolateString(slidesContentAriaLabel, {
 							index: `${index + 1}`,
 							slideText: `${slideText}`,
-							actionsText: "",
+							galleyContent: "",
 						})
 					: undefined;
 		})
