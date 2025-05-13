@@ -184,7 +184,7 @@ export interface IWebchatSettings {
 				singleFile?: string;
 				multipleFiles?: string;
 			};
-			messageHeader: {
+			messageHeader?: {
 				user?: string;
 				bot?: string;
 				timestamp?: string;

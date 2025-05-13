@@ -60,7 +60,7 @@ const MessageHeader: FC<MessageHeaderProps> = props => {
 	});
 
 	const sourceInfo = isUserMessage
-		? (config?.settings.customTranslations?.ariaLabels?.messageHeader.user ?? "You said:")
+		? (config?.settings.customTranslations?.ariaLabels?.messageHeader?.user ?? "You said:")
 		: interpolateString(
 				config?.settings.customTranslations?.ariaLabels?.messageHeader?.bot ??
 					"{name} said:",
