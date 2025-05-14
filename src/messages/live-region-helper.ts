@@ -87,13 +87,9 @@ const getTextContent = (data: TTextData) => {
 const getTextWithButtonsContent = (data: TTextWithButtonsData, config?: IWebchatConfig) => {
 	const { text, buttons } = data;
 	const textWithButtonsAriaLabel =
-		config?.settings.customTranslations?.ariaLabels?.textWithButtons ??
-		"{text}. Available options: {buttons}";
+		config?.settings.customTranslations?.ariaLabels?.buttonGroupLabel ?? "Available actions:";
 	if (text && buttons.length > 0) {
-		return interpolateString(textWithButtonsAriaLabel, {
-			text,
-			buttons: formatListWithFullStop(buttons),
-		});
+		return `${text}. ${textWithButtonsAriaLabel} ${formatListWithFullStop(buttons)}`;
 	}
 
 	return text || undefined;
@@ -106,15 +102,13 @@ const getGalleryContent = (data: TGalleryData, config?: IWebchatConfig) => {
 		return undefined;
 	}
 	const galleryContentAriaLabel =
-		config?.settings.customTranslations?.ariaLabels?.galleryContent ??
-		"Available actions: {buttonLabels}";
+		config?.settings.customTranslations?.ariaLabels?.buttonGroupLabel ?? "Available actions:";
+
 	if (slides.length === 1) {
 		const { slideText, buttonLabels } = slides[0];
 		const actionsText =
 			buttonLabels && buttonLabels.length > 0
-				? interpolateString(galleryContentAriaLabel, {
-						buttonLabels: formatListWithFullStop(buttonLabels),
-					})
+				? galleryContentAriaLabel + " " + formatListWithFullStop(buttonLabels)
 				: undefined;
 
 		return slideText && actionsText
@@ -129,30 +123,19 @@ const getGalleryContent = (data: TGalleryData, config?: IWebchatConfig) => {
 		},
 	);
 	const slidesContentAriaLabel =
-		config?.settings.customTranslations?.ariaLabels?.slidesContent ??
-		"Slide {index}: {slideText}. {galleryContent}";
+		config?.settings.customTranslations?.ariaLabels?.slide ?? "Slide";
 	const slidesContent = slides
 		.map((slide, index) => {
 			const { slideText, buttonLabels } = slide;
 			const actionsText =
 				buttonLabels && buttonLabels.length > 0
-					? interpolateString(galleryContentAriaLabel, {
-							buttonLabels: formatListWithFullStop(buttonLabels),
-						})
+					? galleryContentAriaLabel + " " + formatListWithFullStop(buttonLabels)
 					: undefined;
 
 			return slideText && actionsText
-				? interpolateString(slidesContentAriaLabel, {
-						index: `${index + 1}`,
-						slideText: `${slideText}`,
-						galleryContent: `${actionsText}`,
-					})
+				? `${slidesContentAriaLabel}: ${index + 1} :${slideText} ${actionsText}`
 				: slideText
-					? interpolateString(slidesContentAriaLabel, {
-							index: `${index + 1}`,
-							slideText: `${slideText}`,
-							galleryContent: "",
-						})
+					? `${slidesContentAriaLabel}: ${index + 1} :${slideText}`
 					: undefined;
 		})
 		.filter(Boolean)
@@ -170,19 +153,13 @@ const getListContent = (data: TListData, config?: IWebchatConfig) => {
 	const itemLabels = formatListWithFullStop(items);
 
 	const listContentAriaLabel =
-		config?.settings.customTranslations?.ariaLabels?.listContent ??
-		"{headerLabel} Available list items: {itemLabels}";
+		config?.settings.customTranslations?.ariaLabels?.listItemGroupLabel ??
+		"Available list items:";
 	if (headerLabel && itemLabels) {
-		return interpolateString(listContentAriaLabel, {
-			headerLabel: headerLabel + ".",
-			itemLabels,
-		});
+		return headerLabel + "." + listContentAriaLabel + itemLabels;
 	}
 	if (itemLabels) {
-		return interpolateString(listContentAriaLabel, {
-			headerLabel: "",
-			itemLabels,
-		});
+		return listContentAriaLabel + itemLabels;
 	}
 	if (headerLabel) {
 		return headerLabel;
@@ -195,17 +172,14 @@ const getImageContent = (data: TImageData, config?: IWebchatConfig) => {
 	const altTextLabel = altText ?? "";
 	const dowloadableImageContentAriaLabel =
 		config?.settings.customTranslations?.ariaLabels?.imageContent?.downloadable ??
-		"An image with download option. {altTextLabel}";
+		"An image with download option.";
 	const nonDownloadableImageContentAriaLabel =
 		config?.settings.customTranslations?.ariaLabels?.imageContent?.nonDownloadable ??
-		"An image. {altTextLabel}";
-	return isDownloadable
-		? interpolateString(dowloadableImageContentAriaLabel, {
-				altTextLabel: altTextLabel,
-			})
-		: interpolateString(nonDownloadableImageContentAriaLabel, {
-				altTextLabel: altTextLabel,
-			});
+		"An image.";
+	return (
+		(isDownloadable ? dowloadableImageContentAriaLabel : nonDownloadableImageContentAriaLabel) +
+		altTextLabel
+	);
 };
 
 const getVideoContent = (data: TVideoData, config?: IWebchatConfig) => {
@@ -252,7 +226,7 @@ const getFileContent = (data: TFileData, config?: IWebchatConfig) => {
 	const { text, attachments } = data;
 	const singleFileContentAriaLabel =
 		config?.settings.customTranslations?.ariaLabels?.fileContent?.singleFile ??
-		"{text}. A {type} named '{fileName}' with size {sizeLabel}.";
+		"A {type} named '{fileName}' with size {sizeLabel}.";
 	const multipleFilesContentAriaLabel =
 		config?.settings.customTranslations?.ariaLabels?.fileContent?.multipleFiles ??
 		"File {index}: '{fileName}', size {sizeLabel}.";
@@ -260,12 +234,14 @@ const getFileContent = (data: TFileData, config?: IWebchatConfig) => {
 		const { fileName, size, mimeType } = attachments[0];
 		const sizeLabel = getSizeLabel(size);
 		const type = isImageAttachment(mimeType) ? "image" : "file";
-		return interpolateString(singleFileContentAriaLabel, {
-			text,
-			type,
-			fileName,
-			sizeLabel,
-		});
+		return (
+			`${text}.` +
+			interpolateString(singleFileContentAriaLabel, {
+				type,
+				fileName,
+				sizeLabel,
+			})
+		);
 	}
 
 	return `${text}. ${attachments.length} files. ${attachments
