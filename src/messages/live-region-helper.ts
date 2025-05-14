@@ -107,13 +107,13 @@ const getGalleryContent = (data: TGalleryData, config?: IWebchatConfig) => {
 	}
 	const galleryContentAriaLabel =
 		config?.settings.customTranslations?.ariaLabels?.galleryContent ??
-		"Available actions: {buttonlabels}";
+		"Available actions: {buttonLabels}";
 	if (slides.length === 1) {
 		const { slideText, buttonLabels } = slides[0];
 		const actionsText =
 			buttonLabels && buttonLabels.length > 0
 				? interpolateString(galleryContentAriaLabel, {
-						buttonlabels: formatListWithFullStop(buttonLabels),
+						buttonLabels: formatListWithFullStop(buttonLabels),
 					})
 				: undefined;
 
@@ -137,7 +137,7 @@ const getGalleryContent = (data: TGalleryData, config?: IWebchatConfig) => {
 			const actionsText =
 				buttonLabels && buttonLabels.length > 0
 					? interpolateString(galleryContentAriaLabel, {
-							buttonlabels: formatListWithFullStop(buttonLabels),
+							buttonLabels: formatListWithFullStop(buttonLabels),
 						})
 					: undefined;
 
@@ -145,13 +145,13 @@ const getGalleryContent = (data: TGalleryData, config?: IWebchatConfig) => {
 				? interpolateString(slidesContentAriaLabel, {
 						index: `${index + 1}`,
 						slideText: `${slideText}`,
-						galleyContent: `${actionsText}`,
+						galleryContent: `${actionsText}`,
 					})
 				: slideText
 					? interpolateString(slidesContentAriaLabel, {
 							index: `${index + 1}`,
 							slideText: `${slideText}`,
-							galleyContent: "",
+							galleryContent: "",
 						})
 					: undefined;
 		})
