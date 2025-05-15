@@ -160,7 +160,7 @@ export interface IWebchatSettings {
 			closeFullsizeImageModal?: string;
 			datePickerPreviousMonth?: string;
 			datePickerNextMonth?: string;
-			actionButton?: string;
+			actionButtonPositionText?: string;
 			buttonGroupLabel?: string;
 			slidesCountText?: string;
 			slide?: string;

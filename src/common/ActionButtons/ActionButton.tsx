@@ -80,14 +80,17 @@ const ActionButton: FC<ActionButtonProps> = props => {
 
 		//TODO: Test if adding the position and total is necessary in ariaLabels, by testing with NVDA. ORCA does not announce it with just default ol and li tags
 		if (total > 1) {
-			return interpolateString(
-				config?.settings?.customTranslations?.ariaLabels?.actionButton ??
-					"{position} of {total}: {buttonTitleWithTarget}",
-				{
-					position: position.toString(),
-					total: total.toString(),
-					buttonTitleWithTarget: buttonTitleWithTarget,
-				},
+			return (
+				interpolateString(
+					config?.settings?.customTranslations?.ariaLabels?.actionButtonPositionText ??
+						"{position} of {total}",
+					{
+						position: position.toString(),
+						total: total.toString(),
+					},
+				) +
+				": " +
+				buttonTitleWithTarget
 			);
 		} else if (total <= 1 && isURLInNewTab) {
 			return newTabURLButtonTitle;
