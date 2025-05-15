@@ -135,7 +135,7 @@ const getGalleryContent = (data: TGalleryData, config?: IWebchatConfig) => {
 			return slideText && actionsText
 				? `${slidesContentAriaLabel}: ${index + 1} :${slideText} ${actionsText}`
 				: slideText
-					? `${slidesContentAriaLabel}: ${index + 1} :${slideText}`
+					? `${slidesContentAriaLabel} ${index + 1}: ${slideText}`
 					: undefined;
 		})
 		.filter(Boolean)
