@@ -133,7 +133,7 @@ const getGalleryContent = (data: TGalleryData, config?: IWebchatConfig) => {
 					: undefined;
 
 			return slideText && actionsText
-				? `${slidesContentAriaLabel}: ${index + 1} :${slideText} ${actionsText}`
+				? `${slidesContentAriaLabel}: ${index + 1} :${slideText}. ${actionsText}`
 				: slideText
 					? `${slidesContentAriaLabel} ${index + 1}: ${slideText}`
 					: undefined;
@@ -156,10 +156,10 @@ const getListContent = (data: TListData, config?: IWebchatConfig) => {
 		config?.settings.customTranslations?.ariaLabels?.listItemGroupLabel ??
 		"Available list items:";
 	if (headerLabel && itemLabels) {
-		return headerLabel + "." + listContentAriaLabel + itemLabels;
+		return `${headerLabel}. ${listContentAriaLabel} ${itemLabels}`;
 	}
 	if (itemLabels) {
-		return listContentAriaLabel + itemLabels;
+		return `${listContentAriaLabel} ${itemLabels}`;
 	}
 	if (headerLabel) {
 		return headerLabel;
