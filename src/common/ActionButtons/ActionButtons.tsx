@@ -89,6 +89,7 @@ export const ActionButtons: FC<ActionButtonsProps> = props => {
 				onEmitAnalytics={onEmitAnalytics}
 				size={size ? size : "small"}
 				id={`${webchatButtonTemplateButtonId}-${index}`}
+				key={`${webchatButtonTemplateButtonId}-${index}`}
 				openXAppOverlay={props.openXAppOverlay}
 			/>
 		);

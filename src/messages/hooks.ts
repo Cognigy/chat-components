@@ -39,12 +39,13 @@ const useLiveRegion = ({ messageType, data, validation }: IUseLiveRegionProps) =
 		onSetLiveRegionText,
 		"data-message-id": dataMessageId,
 		headerInfo,
+		config,
 	} = useMessageContext();
 
 	useEffect(() => {
 		if (validation && !validation()) return;
 
-		const messageContent = getLiveRegionContent(messageType, data);
+		const messageContent = getLiveRegionContent(messageType, data, config);
 
 		const liveRegionContent =
 			headerInfo !== null ? `${headerInfo} ${messageContent}` : messageContent;
@@ -59,7 +60,7 @@ const useLiveRegion = ({ messageType, data, validation }: IUseLiveRegionProps) =
 			onSetLiveRegionText(dataMessageId, liveRegionContent as string);
 			previousLiveContentRef.current = liveRegionContent;
 		}
-	}, [messageType, data, onSetLiveRegionText, validation, dataMessageId, headerInfo]);
+	}, [messageType, data, onSetLiveRegionText, validation, dataMessageId, headerInfo, config]);
 };
 
 export { useMessageContext, useRandomId, useCollation, useLiveRegion };

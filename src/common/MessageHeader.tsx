@@ -6,6 +6,7 @@ import { useMessageContext } from "src/messages/hooks";
 import Avatar from "./Avatar";
 import { HeaderEllipsis } from "src/assets/svg";
 import Typography from "./Typography/Typography";
+import { interpolateString } from "src/utils";
 
 interface MessageHeaderProps {
 	enableAvatar?: boolean;
@@ -58,7 +59,15 @@ const MessageHeader: FC<MessageHeaderProps> = props => {
 		minute: "2-digit",
 	});
 
-	const sourceInfo = isUserMessage ? "You said:" : `${name} said:`;
+	const sourceInfo = isUserMessage
+		? (config?.settings.customTranslations?.ariaLabels?.messageHeader?.user ?? "You said:")
+		: interpolateString(
+				config?.settings.customTranslations?.ariaLabels?.messageHeader?.bot ??
+					"{name} said:",
+				{
+					name,
+				},
+			);
 
 	useEffect(() => {
 		if (onSetHeaderInfo) {
@@ -70,7 +79,16 @@ const MessageHeader: FC<MessageHeaderProps> = props => {
 		<header className={className} data-testid="message-header">
 			{props.enableAvatar && <Avatar />}
 			<span className={mainClasses.srOnly}>
-				<span data-skip-live-region>At {timestamp},</span> {sourceInfo}
+				<span data-skip-live-region>
+					{interpolateString(
+						config?.settings.customTranslations?.ariaLabels?.messageHeader?.timestamp ??
+							"At {time},",
+						{
+							time: timestamp,
+						},
+					)}
+				</span>
+				{sourceInfo}
 			</span>
 			<Typography
 				variant="title2-regular"

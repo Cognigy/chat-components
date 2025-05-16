@@ -16,7 +16,7 @@ import { getChannelPayload } from "./utils";
 import { IMessage, IWebchatTemplateAttachment } from "@cognigy/socket-client";
 import { IAdaptiveCardMessage } from "@cognigy/socket-client/lib/interfaces/messageData";
 import { XAppSubmitMessage } from "./messages/xApp";
-import { MessageProps } from "./messages/Message";
+import type { MessageProps } from "./messages/Message";
 import Webchat3Event from "./messages/Webchat3Event";
 
 export type MatchConfig = {
