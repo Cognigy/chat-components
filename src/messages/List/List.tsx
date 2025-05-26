@@ -79,7 +79,10 @@ const List: FC = () => {
 					}}
 				/>
 			)}
-			<ul aria-labelledby={headerElement ? `listHeader-header-${listTemplateId}` : undefined}>
+			<ul
+				aria-labelledby={headerElement ? `listHeader-header-${listTemplateId}` : undefined}
+				className={classes.list}
+			>
 				{regularElements &&
 					regularElements.map((element: IWebchatAttachmentElement, index: number) => (
 						<Fragment key={index}>

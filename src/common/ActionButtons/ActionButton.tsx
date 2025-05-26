@@ -78,7 +78,6 @@ const ActionButton: FC<ActionButtonProps> = props => {
 		const newTabURLButtonTitle = `${buttonTitle}. ${opensInNewTabLabel}`;
 		const buttonTitleWithTarget = isURLInNewTab ? newTabURLButtonTitle : button.title;
 
-		//TODO: Test if adding the position and total is necessary in ariaLabels, by testing with NVDA. ORCA does not announce it with just default ol and li tags
 		if (total > 1) {
 			return (
 				interpolateString(

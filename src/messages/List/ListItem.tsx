@@ -118,7 +118,6 @@ const ListItem: FC<IListItemProps> = props => {
 
 	return (
 		<Component
-			role={isHeaderElement ? undefined : "listitem"}
 			className={rootClasses}
 			style={{
 				backgroundImage:
