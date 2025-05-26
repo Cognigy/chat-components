@@ -7,6 +7,7 @@
 					"type": "adaptiveCard",
 					"adaptiveCard": {
 						"type": "AdaptiveCard",
+						"speak": "Information about a kitten visitor and some actions you can take.",
 						"body": [
 							{
 								"type": "TextBlock",
