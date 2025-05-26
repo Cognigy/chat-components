@@ -10,6 +10,15 @@ article .wrapper .listItemRoot {
 	border-top-left-radius: var(--cc-bubble-border-radius);
 }
 
+article .wrapper .list,
+article .wrapper .list .listItemRoot {
+	list-style: none;
+	padding-inline-start: 0;
+	margin-block: 0;
+	margin: 0;
+	padding: 0;
+}
+
 .headerRoot {
 	aspect-ratio: 16/9;
 	background-size: cover;
