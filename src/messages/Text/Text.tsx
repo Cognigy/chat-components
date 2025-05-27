@@ -90,7 +90,7 @@ const Text: FC<TextProps> = props => {
 					{displayedText}
 				</Markdown>
 			) : (
-				<div
+				<p
 					id={props.id}
 					className={classNames(classes.text, props?.className)}
 					dangerouslySetInnerHTML={{ __html }}

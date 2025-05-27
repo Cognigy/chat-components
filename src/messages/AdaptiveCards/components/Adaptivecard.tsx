@@ -1,7 +1,8 @@
-import { FC, useEffect, useRef } from "react";
+import { FC, useEffect, useRef, useState } from "react";
 import { Action, AdaptiveCard as MSAdaptiveCard, HostConfig } from "adaptivecards";
 import { Remarkable } from "remarkable";
 import { sanitizeHTML } from "../../../sanitize.ts";
+import { useLiveRegion } from "src/messages/hooks.ts";
 
 interface IAdaptiveCardProps {
 	hostConfig?: Partial<HostConfig>;
@@ -38,6 +39,7 @@ const AdaptiveCard: FC<IAdaptiveCardProps> = props => {
 
 	const targetRef = useRef<HTMLDivElement>(null);
 	const cardRef = useRef<MSAdaptiveCard>(new MSAdaptiveCard());
+	const [speakText, setSpeakText] = useState<string | undefined>(undefined);
 
 	const executeAction = (action: Action) => {
 		onExecuteAction?.(action);
@@ -70,11 +72,27 @@ const AdaptiveCard: FC<IAdaptiveCardProps> = props => {
 					if (heading.getAttribute("aria-level") === null)
 						heading.setAttribute("aria-level", "4");
 				});
+				// Find element with class names ac-container ac-adaptiveCard and has some aria-label
+				const container = targetRef.current.querySelector(
+					".ac-container.ac-adaptiveCard[aria-label][tabindex='0']",
+				);
+				if (container) {
+					const ariaLabel = container.getAttribute("aria-label");
+					if (ariaLabel) {
+						setSpeakText(ariaLabel);
+					}
+				}
 			}
 		} catch (error) {
 			console.error("Unable to render Adaptive Card: ", error);
 		}
 	}, [hostConfig, payload]);
+
+	useLiveRegion({
+		messageType: "adaptiveCard",
+		data: { speakText },
+		validation: () => !!speakText,
+	});
 
 	return <div ref={targetRef} />;
 };

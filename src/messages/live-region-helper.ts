@@ -13,6 +13,7 @@ export type MessageType =
 	| "audio"
 	| "file"
 	| "event"
+	| "adaptiveCard"
 	| "custom";
 
 type TTextData = { text: string };
@@ -24,6 +25,7 @@ type TVideoData = { hasTranscript: boolean; hasCaptions: boolean };
 type TAudioData = { hasTranscript: boolean };
 type TFileData = { text: string; attachments: IUploadFileAttachmentData[] };
 type TEventData = { dataMessageId: string };
+type TAdaptiveCardData = { speakText: string };
 
 type MessageData =
 	| TTextData
@@ -34,6 +36,7 @@ type MessageData =
 	| TVideoData
 	| TAudioData
 	| TFileData
+	| TAdaptiveCardData
 	| TEventData;
 
 /**
@@ -74,6 +77,9 @@ export const getLiveRegionContent = (
 
 		case "event":
 			return getEventContent(data as TEventData);
+
+		case "adaptiveCard":
+			return getAdaptiveCardContent(data as TAdaptiveCardData);
 
 		default:
 			return undefined;
@@ -259,6 +265,10 @@ const getEventContent = (data: TEventData) => {
 	// Event status pills are ignored from the live region announcement as they have their own aria-live="assertive" attribute.
 	// Webchat will check for the IGNORE- prefix in the liveContent and will skip announcement.
 	return data.dataMessageId ? `IGNORE-${data.dataMessageId}` : undefined;
+};
+
+const getAdaptiveCardContent = (data: TAdaptiveCardData) => {
+	return data.speakText || undefined;
 };
 
 /**
