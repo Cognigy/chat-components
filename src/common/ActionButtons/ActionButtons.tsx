@@ -25,6 +25,7 @@ export interface ActionButtonsProps {
 	size?: "small" | "large";
 	templateTextId?: string;
 	openXAppOverlay?: (url: string | undefined) => void;
+	isQuickReply?: boolean;
 }
 
 export const ActionButtons: FC<ActionButtonsProps> = props => {
@@ -42,6 +43,8 @@ export const ActionButtons: FC<ActionButtonsProps> = props => {
 		onEmitAnalytics,
 		size,
 		templateTextId,
+		openXAppOverlay,
+		isQuickReply = false,
 	} = props;
 
 	const webchatButtonTemplateButtonId = useRandomId("webchatButtonTemplateButton");
@@ -90,7 +93,8 @@ export const ActionButtons: FC<ActionButtonsProps> = props => {
 				size={size ? size : "small"}
 				id={`${webchatButtonTemplateButtonId}-${index}`}
 				key={`${webchatButtonTemplateButtonId}-${index}`}
-				openXAppOverlay={props.openXAppOverlay}
+				openXAppOverlay={openXAppOverlay}
+				isQuickReply={isQuickReply}
 			/>
 		);
 

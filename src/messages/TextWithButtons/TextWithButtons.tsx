@@ -132,6 +132,7 @@ const TextWithButtons: FC = (props: ITextWithButtonsProps) => {
 					onEmitAnalytics={onEmitAnalytics}
 					templateTextId={webchatButtonTemplateTextId}
 					openXAppOverlay={openXAppOverlay}
+					isQuickReply={isQuickReplies}
 				/>
 			)}
 		</div>

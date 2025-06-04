@@ -21,6 +21,7 @@ interface ActionButtonProps extends React.HTMLAttributes<HTMLButtonElement> {
 	onEmitAnalytics: MessageProps["onEmitAnalytics"];
 	size?: "small" | "large";
 	openXAppOverlay?: (url: string | undefined) => void;
+	isQuickReply?: boolean;
 }
 
 /**
@@ -38,6 +39,7 @@ const ActionButton: FC<ActionButtonProps> = props => {
 		onEmitAnalytics,
 		size,
 		openXAppOverlay,
+		isQuickReply = false,
 	} = props;
 	const buttonType =
 		"type" in button
@@ -50,7 +52,7 @@ const ActionButton: FC<ActionButtonProps> = props => {
 
 	const buttonImage =
 		"image_url" in button ? button.image_url : "imageUrl" in button ? button.imageUrl : null;
-	const butonImageAltText =
+	const buttonImageAltText =
 		"image_alt_text" in button
 			? button.image_alt_text
 			: "imageAltText" in button
@@ -72,6 +74,8 @@ const ActionButton: FC<ActionButtonProps> = props => {
 	const isWebURLButtonTargetBlank = isWebURL && button.target !== "_self";
 	const opensInNewTabLabel =
 		config?.settings?.customTranslations?.ariaLabels?.opensInNewTab || "Opens in new tab";
+
+	const textMessageInput = document.getElementById("webchatInputMessageInputInTextMode");
 
 	const getAriaLabel = () => {
 		const isURLInNewTab = isWebURL && isWebURLButtonTargetBlank;
@@ -101,7 +105,7 @@ const ActionButton: FC<ActionButtonProps> = props => {
 	const Anchor = (props: React.HTMLAttributes<HTMLAnchorElement>) =>
 		isWebURL ? <a {...props} href={button.url} target={button.target} /> : null;
 	const Button = (props: React.HTMLAttributes<HTMLButtonElement>) => (
-		<button {...props} disabled={disabled} aria-disabled={disabled} />
+		<button {...props} disabled={disabled} />
 	);
 
 	const isURLComponent = isWebURL || isPhoneNumber;
@@ -134,7 +138,7 @@ const ActionButton: FC<ActionButtonProps> = props => {
 
 		event.preventDefault();
 
-		const textMessageInput = document.getElementById("webchatInputMessageInputInTextMode");
+		// Focus the input after any postback button click if focusInputAfterPostback is true
 		if (textMessageInput && config?.settings?.behavior?.focusInputAfterPostback) {
 			textMessageInput.focus?.();
 		}
@@ -151,6 +155,17 @@ const ActionButton: FC<ActionButtonProps> = props => {
 		props.action?.(button.payload, null, { label: button.title });
 	};
 
+	const onKeyDown = (event: React.KeyboardEvent<HTMLButtonElement | HTMLAnchorElement>) => {
+		if (isURLComponent || disabled) return;
+
+		// Focus input after quick reply keydown event, to prevent focus loss when the quick reply button gets disabled after being triggered
+		if ((event.key === "Enter" || event.key === " ") && isQuickReply && textMessageInput) {
+			event.preventDefault();
+			textMessageInput.focus?.();
+			onClick(event as unknown as React.MouseEvent<HTMLButtonElement>);
+		}
+	};
+
 	const renderIcon = () => {
 		if (customIcon) return customIcon;
 		if (isWebURL && showUrlIcon) return <LinkIcon />;
@@ -160,6 +175,7 @@ const ActionButton: FC<ActionButtonProps> = props => {
 	return (
 		<Component
 			onClick={onClick}
+			onKeyDown={onKeyDown}
 			className={classnames(
 				classes.button,
 				isWebURL && classes.url,
@@ -171,12 +187,13 @@ const ActionButton: FC<ActionButtonProps> = props => {
 			)}
 			aria-label={getAriaLabel()}
 			aria-disabled={disabled}
+			tabIndex={disabled ? -1 : 0}
 		>
 			{!!buttonImage && (
 				<div className={classes.buttonImageContainer}>
 					<img
 						src={buttonImage as string}
-						alt={butonImageAltText as string}
+						alt={buttonImageAltText as string}
 						className={classnames(
 							"webchat-template-button-image",
 							classes.buttonImage,
