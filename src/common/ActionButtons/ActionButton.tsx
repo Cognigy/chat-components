@@ -21,7 +21,6 @@ interface ActionButtonProps extends React.HTMLAttributes<HTMLButtonElement> {
 	onEmitAnalytics: MessageProps["onEmitAnalytics"];
 	size?: "small" | "large";
 	openXAppOverlay?: (url: string | undefined) => void;
-	isQuickReply?: boolean;
 }
 
 /**
@@ -39,7 +38,6 @@ const ActionButton: FC<ActionButtonProps> = props => {
 		onEmitAnalytics,
 		size,
 		openXAppOverlay,
-		isQuickReply = false,
 	} = props;
 	const buttonType =
 		"type" in button
@@ -153,17 +151,15 @@ const ActionButton: FC<ActionButtonProps> = props => {
 		}
 
 		props.action?.(button.payload, null, { label: button.title });
-	};
 
-	const onKeyDown = (event: React.KeyboardEvent<HTMLButtonElement | HTMLAnchorElement>) => {
-		if (isURLComponent || disabled) return;
-
-		// Focus input after quick reply keydown event, to prevent focus loss when the quick reply button gets disabled after being triggered
-		if ((event.key === "Enter" || event.key === " ") && isQuickReply && textMessageInput) {
-			event.preventDefault();
-			textMessageInput.focus?.();
-			onClick(event as unknown as React.MouseEvent<HTMLButtonElement>);
-		}
+		// Focus the last user message after postback button is clicked
+		setTimeout(() => {
+			const userMessages = document.querySelectorAll(".webchat-message-row.user");
+			const lastUserMsg = userMessages[userMessages.length - 1] as HTMLElement | undefined;
+			if (lastUserMsg) {
+				lastUserMsg.focus({ preventScroll: false });
+			}
+		}, 0);
 	};
 
 	const renderIcon = () => {
@@ -175,7 +171,6 @@ const ActionButton: FC<ActionButtonProps> = props => {
 	return (
 		<Component
 			onClick={onClick}
-			onKeyDown={onKeyDown}
 			className={classnames(
 				classes.button,
 				isWebURL && classes.url,

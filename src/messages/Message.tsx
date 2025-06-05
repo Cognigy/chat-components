@@ -138,6 +138,7 @@ const Message: FC<MessageProps> = props => {
 				{...(message.id ? { id: message.id } : {})}
 				className={rootClassName}
 				data-message-id={dataMessageId}
+				tabIndex={-1}
 			>
 				{showHeader && <MessageHeader enableAvatar={message.source !== "user"} />}
 				{matchedPlugins.map((plugin, index) =>
