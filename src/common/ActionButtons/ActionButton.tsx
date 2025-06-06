@@ -1,7 +1,7 @@
 import { FC, ReactElement } from "react";
 import classnames from "classnames";
 import { ActionButtonsProps } from "./ActionButtons";
-import { getWebchatButtonLabel, interpolateString } from "src/utils";
+import { getWebchatButtonLabel, interpolateString, moveFocusToMessageFocusTarget } from "src/utils";
 import { sanitizeHTML } from "src/sanitize";
 import { sanitizeUrl } from "@braintree/sanitize-url";
 import classes from "./ActionButton.module.css";
@@ -139,11 +139,6 @@ const ActionButton: FC<ActionButtonProps> = props => {
 
 		event.preventDefault();
 
-		// Focus the input after any postback button click if focusInputAfterPostback is true
-		if (textMessageInput && config?.settings?.behavior?.focusInputAfterPostback) {
-			textMessageInput.focus?.();
-		}
-
 		if (isWebURL) {
 			return;
 		}
@@ -155,15 +150,19 @@ const ActionButton: FC<ActionButtonProps> = props => {
 
 		props.action?.(button.payload, null, { label: button.title });
 
-		// Move focus to the visually hidden focus target after postback.
-		// This prevents focus loss for keyboard users and avoids double screen reader announcements,
-		// since the focus target is aria-hidden and not announced.
-		setTimeout(() => {
-			const focusElement = document.getElementById(`webchat-focus-target-${dataMessageId}`);
-			if (focusElement) {
-				focusElement.focus({preventScroll: true});
-			}
-		}, 0);
+		focusHandling();
+	};
+
+	const focusHandling = () => {
+		// Focus the input after postback button click, if focusInputAfterPostback is true
+		if (config?.settings?.behavior?.focusInputAfterPostback) {
+			textMessageInput?.focus?.();
+			return;
+		}
+		// Focus the visually hidden focus target after postback, if focusInputAfterPostback is false
+		if (dataMessageId) {
+			moveFocusToMessageFocusTarget(dataMessageId);
+		}
 	};
 
 	const renderIcon = () => {

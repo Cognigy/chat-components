@@ -159,8 +159,7 @@ const Message: FC<MessageProps> = props => {
 						/>
 					) : null,
 				)}
-				{/* Hidden focus target for better keyboard navigation.
-				    Used after postback to prevent focus loss and avoid double screen reader announcements. */}
+				{/* Visually hidden focusable target for better keyboard navigation. */}
 				<div
 					id={`webchat-focus-target-${dataMessageId}`}
 					tabIndex={-1}
