@@ -230,3 +230,14 @@ export function interpolateString(template: string, replacements: Record<string,
 	});
 	return result;
 }
+
+// Move focus to the visually hidden focus target.
+// This prevents focus loss for keyboard users (for example, after a postback button press).
+export const moveFocusToMessageFocusTarget = (dataMessageId: string) => {
+	setTimeout(() => {
+		const focusElement = document.getElementById(`webchat-focus-target-${dataMessageId}`);
+		if (focusElement) {
+			focusElement.focus({ preventScroll: true });
+		}
+	}, 0);
+};
