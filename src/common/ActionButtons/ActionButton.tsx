@@ -7,6 +7,7 @@ import { sanitizeUrl } from "@braintree/sanitize-url";
 import classes from "./ActionButton.module.css";
 import { LinkIcon } from "src/assets/svg";
 import { MessageProps, Typography } from "src/index";
+import { useMessageContext } from "src/messages/hooks";
 
 interface ActionButtonProps extends React.HTMLAttributes<HTMLButtonElement> {
 	action?: ActionButtonsProps["action"];
@@ -39,6 +40,8 @@ const ActionButton: FC<ActionButtonProps> = props => {
 		size,
 		openXAppOverlay,
 	} = props;
+	const { "data-message-id": dataMessageId } = useMessageContext();
+
 	const buttonType =
 		"type" in button
 			? button.type
@@ -152,12 +155,13 @@ const ActionButton: FC<ActionButtonProps> = props => {
 
 		props.action?.(button.payload, null, { label: button.title });
 
-		// Focus the last user message after postback button is clicked
+		// Move focus to the visually hidden focus target after postback.
+		// This prevents focus loss for keyboard users and avoids double screen reader announcements,
+		// since the focus target is aria-hidden and not announced.
 		setTimeout(() => {
-			const userMessages = document.querySelectorAll(".webchat-message-row.user");
-			const lastUserMsg = userMessages[userMessages.length - 1] as HTMLElement | undefined;
-			if (lastUserMsg) {
-				lastUserMsg.focus({ preventScroll: false });
+			const focusElement = document.getElementById(`webchat-focus-target-${dataMessageId}`);
+			if (focusElement) {
+				focusElement.focus({preventScroll: true});
 			}
 		}, 0);
 	};
