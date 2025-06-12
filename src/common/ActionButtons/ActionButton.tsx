@@ -1,12 +1,13 @@
 import { FC, ReactElement } from "react";
 import classnames from "classnames";
 import { ActionButtonsProps } from "./ActionButtons";
-import { getWebchatButtonLabel, interpolateString } from "src/utils";
+import { getWebchatButtonLabel, interpolateString, moveFocusToMessageFocusTarget } from "src/utils";
 import { sanitizeHTML } from "src/sanitize";
 import { sanitizeUrl } from "@braintree/sanitize-url";
 import classes from "./ActionButton.module.css";
 import { LinkIcon } from "src/assets/svg";
 import { MessageProps, Typography } from "src/index";
+import { useMessageContext } from "src/messages/hooks";
 
 interface ActionButtonProps extends React.HTMLAttributes<HTMLButtonElement> {
 	action?: ActionButtonsProps["action"];
@@ -39,6 +40,8 @@ const ActionButton: FC<ActionButtonProps> = props => {
 		size,
 		openXAppOverlay,
 	} = props;
+	const { "data-message-id": dataMessageId } = useMessageContext();
+
 	const buttonType =
 		"type" in button
 			? button.type
@@ -50,7 +53,7 @@ const ActionButton: FC<ActionButtonProps> = props => {
 
 	const buttonImage =
 		"image_url" in button ? button.image_url : "imageUrl" in button ? button.imageUrl : null;
-	const butonImageAltText =
+	const buttonImageAltText =
 		"image_alt_text" in button
 			? button.image_alt_text
 			: "imageAltText" in button
@@ -101,7 +104,7 @@ const ActionButton: FC<ActionButtonProps> = props => {
 	const Anchor = (props: React.HTMLAttributes<HTMLAnchorElement>) =>
 		isWebURL ? <a {...props} href={button.url} target={button.target} /> : null;
 	const Button = (props: React.HTMLAttributes<HTMLButtonElement>) => (
-		<button {...props} disabled={disabled} aria-disabled={disabled} />
+		<button {...props} disabled={disabled} />
 	);
 
 	const isURLComponent = isWebURL || isPhoneNumber;
@@ -134,11 +137,6 @@ const ActionButton: FC<ActionButtonProps> = props => {
 
 		event.preventDefault();
 
-		const textMessageInput = document.getElementById("webchatInputMessageInputInTextMode");
-		if (textMessageInput && config?.settings?.behavior?.focusInputAfterPostback) {
-			textMessageInput.focus?.();
-		}
-
 		if (isWebURL) {
 			return;
 		}
@@ -149,6 +147,21 @@ const ActionButton: FC<ActionButtonProps> = props => {
 		}
 
 		props.action?.(button.payload, null, { label: button.title });
+
+		focusHandling();
+	};
+
+	const focusHandling = () => {
+		// Focus the input after postback button click, if focusInputAfterPostback is true
+		if (config?.settings?.behavior?.focusInputAfterPostback) {
+			const textMessageInput = document.getElementById("webchatInputMessageInputInTextMode");
+			textMessageInput?.focus?.();
+			return;
+		}
+		// Focus the visually hidden focus target after postback, if focusInputAfterPostback is false
+		if (dataMessageId) {
+			moveFocusToMessageFocusTarget(dataMessageId);
+		}
 	};
 
 	const renderIcon = () => {
@@ -171,12 +184,13 @@ const ActionButton: FC<ActionButtonProps> = props => {
 			)}
 			aria-label={getAriaLabel()}
 			aria-disabled={disabled}
+			tabIndex={disabled ? -1 : 0}
 		>
 			{!!buttonImage && (
 				<div className={classes.buttonImageContainer}>
 					<img
 						src={buttonImage as string}
-						alt={butonImageAltText as string}
+						alt={buttonImageAltText as string}
 						className={classnames(
 							"webchat-template-button-image",
 							classes.buttonImage,

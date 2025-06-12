@@ -8,6 +8,7 @@ import { IStreamingMessage, IWebchatConfig, IWebchatTheme, MessageSender } from 
 
 import "src/theme.css";
 import classes from "./Message.module.css";
+import mainClasses from "src/main.module.css";
 import { CollateMessage, isEventMessage } from "../utils";
 import { IMessage } from "@cognigy/socket-client";
 import { useCollation } from "./hooks";
@@ -157,6 +158,13 @@ const Message: FC<MessageProps> = props => {
 						/>
 					) : null,
 				)}
+				{/* Visually hidden focusable target for better keyboard navigation. */}
+				<div
+					id={`webchat-focus-target-${dataMessageId}`}
+					tabIndex={-1}
+					className={mainClasses.srOnly}
+					aria-hidden="true"
+				/>
 			</article>
 		</MessageProvider>
 	);
