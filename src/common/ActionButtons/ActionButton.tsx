@@ -76,8 +76,6 @@ const ActionButton: FC<ActionButtonProps> = props => {
 	const opensInNewTabLabel =
 		config?.settings?.customTranslations?.ariaLabels?.opensInNewTab || "Opens in new tab";
 
-	const textMessageInput = document.getElementById("webchatInputMessageInputInTextMode");
-
 	const getAriaLabel = () => {
 		const isURLInNewTab = isWebURL && isWebURLButtonTargetBlank;
 		const newTabURLButtonTitle = `${buttonTitle}. ${opensInNewTabLabel}`;
@@ -156,6 +154,7 @@ const ActionButton: FC<ActionButtonProps> = props => {
 	const focusHandling = () => {
 		// Focus the input after postback button click, if focusInputAfterPostback is true
 		if (config?.settings?.behavior?.focusInputAfterPostback) {
+			const textMessageInput = document.getElementById("webchatInputMessageInputInTextMode");
 			textMessageInput?.focus?.();
 			return;
 		}
