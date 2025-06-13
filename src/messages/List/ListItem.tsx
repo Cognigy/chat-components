@@ -18,7 +18,13 @@ interface IListItemProps {
 }
 
 const ListItem: FC<IListItemProps> = props => {
-	const { action, config, onEmitAnalytics, messageParams, "data-message-id": dataMessageId } = useMessageContext();
+	const {
+		action,
+		config,
+		onEmitAnalytics,
+		messageParams,
+		"data-message-id": dataMessageId,
+	} = useMessageContext();
 	const { element, isHeaderElement, headingLevel, id, onSetScreenReaderLabel } = props;
 	const { title, subtitle, image_url, image_alt_text, default_action, buttons } = element;
 	const button = buttons && buttons?.[0];
