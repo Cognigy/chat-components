@@ -18,7 +18,7 @@ interface IListItemProps {
 }
 
 const ListItem: FC<IListItemProps> = props => {
-	const { action, config, onEmitAnalytics, messageParams } = useMessageContext();
+	const { action, config, onEmitAnalytics, messageParams, "data-message-id": dataMessageId } = useMessageContext();
 	const { element, isHeaderElement, headingLevel, id, onSetScreenReaderLabel } = props;
 	const { title, subtitle, image_url, image_alt_text, default_action, buttons } = element;
 	const button = buttons && buttons?.[0];
@@ -163,6 +163,7 @@ const ListItem: FC<IListItemProps> = props => {
 			{isHeaderElement ? (
 				<PrimaryButton
 					isActionButton
+					dataMessageId={dataMessageId}
 					action={shouldBeDisabled ? undefined : action}
 					button={button}
 					buttonClassName="webchat-list-template-header-button"
@@ -173,6 +174,7 @@ const ListItem: FC<IListItemProps> = props => {
 			) : (
 				<SecondaryButton
 					isActionButton
+					dataMessageId={dataMessageId}
 					action={shouldBeDisabled ? undefined : action}
 					button={button}
 					buttonClassName="webchat-list-template-element-button"

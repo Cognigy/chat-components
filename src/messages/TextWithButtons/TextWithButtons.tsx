@@ -29,8 +29,15 @@ interface ITextWithButtonsProps {
 const TextWithButtons: FC = (props: ITextWithButtonsProps) => {
 	const { onSetMessageAnimated } = props;
 
-	const { action, message, config, onEmitAnalytics, messageParams, openXAppOverlay } =
-		useMessageContext();
+	const {
+		action,
+		message,
+		config,
+		onEmitAnalytics,
+		messageParams,
+		openXAppOverlay,
+		"data-message-id": dataMessageId,
+	} = useMessageContext();
 
 	const progressiveMessageRendering = !!config?.settings?.behavior?.progressiveMessageRendering;
 	const botOutputMaxWidthPercentage = config?.settings?.layout?.botOutputMaxWidthPercentage;
@@ -116,6 +123,7 @@ const TextWithButtons: FC = (props: ITextWithButtonsProps) => {
 
 			{(!progressiveMessageRendering || !stillAnimating) && (
 				<ActionButtons
+					dataMessageId={dataMessageId}
 					action={modifiedAction}
 					buttonClassName={classNames(
 						classes.button,

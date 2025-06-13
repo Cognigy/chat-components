@@ -21,6 +21,7 @@ export interface ActionButtonsProps {
 	customIcon?: ReactElement;
 	showUrlIcon?: boolean;
 	config: MessageProps["config"];
+	dataMessageId?: string;
 	onEmitAnalytics: MessageProps["onEmitAnalytics"];
 	size?: "small" | "large";
 	templateTextId?: string;
@@ -42,6 +43,7 @@ export const ActionButtons: FC<ActionButtonsProps> = props => {
 		onEmitAnalytics,
 		size,
 		templateTextId,
+		dataMessageId,
 		openXAppOverlay,
 	} = props;
 
@@ -79,6 +81,7 @@ export const ActionButtons: FC<ActionButtonsProps> = props => {
 		const actionButton = (
 			<ActionButton
 				className={buttonClassName}
+				dataMessageId={dataMessageId}
 				button={button}
 				action={action}
 				disabled={action === undefined}
