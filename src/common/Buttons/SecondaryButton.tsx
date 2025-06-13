@@ -13,6 +13,7 @@ interface SecondaryButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
 	containerClassName?: string;
 	customIcon?: ReactElement;
 	config?: ActionButtonsProps["config"];
+	dataMessageId?: string;
 	onEmitAnalytics?: ActionButtonsProps["onEmitAnalytics"];
 }
 
@@ -25,6 +26,7 @@ const SecondaryButton = forwardRef<HTMLButtonElement, SecondaryButtonProps>((pro
 		action,
 		isActionButton,
 		config,
+		dataMessageId,
 		onEmitAnalytics,
 		...restProps
 	} = props;
@@ -49,6 +51,7 @@ const SecondaryButton = forwardRef<HTMLButtonElement, SecondaryButtonProps>((pro
 				classes.actionButton,
 				buttonClassName,
 			)}
+			dataMessageId={dataMessageId}
 			payload={[button]}
 			action={action}
 			customIcon={customIcon}

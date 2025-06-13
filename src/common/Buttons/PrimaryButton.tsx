@@ -13,6 +13,7 @@ interface PrimaryButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
 	containerClassName?: string;
 	customIcon?: ReactElement;
 	config?: ActionButtonsProps["config"];
+	dataMessageId?: string;
 	onEmitAnalytics?: ActionButtonsProps["onEmitAnalytics"];
 }
 
@@ -25,6 +26,7 @@ const PrimaryButton = forwardRef<HTMLButtonElement, PrimaryButtonProps>((props, 
 		action,
 		isActionButton,
 		config,
+		dataMessageId,
 		onEmitAnalytics,
 		...restProps
 	} = props;
@@ -50,6 +52,7 @@ const PrimaryButton = forwardRef<HTMLButtonElement, PrimaryButtonProps>((props, 
 				classes.actionButton,
 				buttonClassName,
 			)}
+			dataMessageId={dataMessageId}
 			payload={[button]}
 			action={action}
 			customIcon={customIcon}

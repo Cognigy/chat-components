@@ -7,7 +7,6 @@ import { sanitizeUrl } from "@braintree/sanitize-url";
 import classes from "./ActionButton.module.css";
 import { LinkIcon } from "src/assets/svg";
 import { MessageProps, Typography } from "src/index";
-import { useMessageContext } from "src/messages/hooks";
 
 interface ActionButtonProps extends React.HTMLAttributes<HTMLButtonElement> {
 	action?: ActionButtonsProps["action"];
@@ -19,6 +18,7 @@ interface ActionButtonProps extends React.HTMLAttributes<HTMLButtonElement> {
 	customIcon?: ReactElement;
 	showUrlIcon?: boolean;
 	config: MessageProps["config"];
+	dataMessageId?: string;
 	onEmitAnalytics: MessageProps["onEmitAnalytics"];
 	size?: "small" | "large";
 	openXAppOverlay?: (url: string | undefined) => void;
@@ -39,8 +39,8 @@ const ActionButton: FC<ActionButtonProps> = props => {
 		onEmitAnalytics,
 		size,
 		openXAppOverlay,
+		dataMessageId,
 	} = props;
-	const { "data-message-id": dataMessageId } = useMessageContext();
 
 	const buttonType =
 		"type" in button

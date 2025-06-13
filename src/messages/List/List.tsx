@@ -9,7 +9,14 @@ import { getChannelPayload } from "src/utils";
 import { IWebchatAttachmentElement, IWebchatTemplateAttachment } from "@cognigy/socket-client";
 
 const List: FC = () => {
-	const { message, messageParams, config, action, onEmitAnalytics } = useMessageContext();
+	const {
+		message,
+		messageParams,
+		config,
+		"data-message-id": dataMessageId,
+		action,
+		onEmitAnalytics,
+	} = useMessageContext();
 	const payload = getChannelPayload(message, config);
 
 	const [listItemLiveRegionLabels, setListItemLiveRegionLabels] = useState<
@@ -104,6 +111,7 @@ const List: FC = () => {
 			{button && (
 				<PrimaryButton
 					isActionButton
+					dataMessageId={dataMessageId}
 					action={shouldBeDisabled ? undefined : action}
 					button={button}
 					buttonClassName="webchat-list-template-global-button"
