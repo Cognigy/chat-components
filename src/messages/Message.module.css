@@ -11,14 +11,14 @@
 
 	color: var(--webchat-message-color, #1c1c1c);
 	font-weight: 400;
-	font-size: var(--webchat-message-font-size, 14px);
+	font-size: var(--webchat-message-font-size, 0.875rem); /* 14px */
 	line-height: 1.4;
-	margin-block: var(--webchat-message-margin-block, 24px);
-	margin-inline: var(--webchat-message-margin-inline, 20px);
+	margin-block: var(--webchat-message-margin-block, 1.5rem); /* 24px */
+	margin-inline: var(--webchat-message-margin-inline, 1.25rem); /* 20px */
 }
 
 .collated {
-	margin-block-start: calc(var(--webchat-message-margin-block, 24px) * -0.5);
+	margin-block-start: calc(var(--webchat-message-margin-block, 1.5rem) * -0.5); /* 24px */
 }
 
 .fullscreen {
