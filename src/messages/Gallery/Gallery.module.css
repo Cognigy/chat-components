@@ -184,7 +184,7 @@ article :global(.swiper).wrapper :global(.swiper-pagination-bullet) {
 	opacity: 1;
 }
 article :global(.swiper).wrapper :global(.swiper-pagination-bullet):focus {
-	background-color: var(--cc-primary-color);
+	background-color: var(--cc-primary-color-focus);
 	box-shadow: 0 0 0 4px var(--cc-primary-color-opacity-10);
 	outline: none;
 }
