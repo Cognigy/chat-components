@@ -14,7 +14,7 @@ article .wrapper .flexImage {
 
 article .wrapper .fixedImage:focus-visible,
 article .wrapper .flexImage:focus-visible {
-	outline: 2px solid var(--cc-primary-color);
+	outline: 2px solid var(--cc-primary-color-focus);
 }
 
 article .wrapper img {

@@ -189,7 +189,7 @@ article :global(.swiper).wrapper :global(.swiper-pagination-bullet):focus {
 	outline: none;
 }
 article :global(.swiper).wrapper :global(.swiper-pagination-bullet):focus-visible {
-	outline: 2px solid var(--cc-primary-color);
+	outline: 2px solid var(--cc-primary-color-focus);
 	outline-offset: 2px;
 }
 article :global(.swiper).wrapper :global(button.swiper-pagination-bullet) {

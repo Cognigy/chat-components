@@ -5,7 +5,7 @@
 }
 
 .text a:focus-visible {
-	outline: 2px solid var(--cc-primary-color);
+	outline: 2px solid var(--cc-primary-color-focus);
 	outline-offset: 2px;
 }
 

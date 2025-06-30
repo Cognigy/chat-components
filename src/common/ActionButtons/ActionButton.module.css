@@ -38,7 +38,7 @@ a.button:focus {
 [data-cognigy-webchat-root] button.button:focus-visible,
 [data-cognigy-webchat-root] a.button:focus-visible,
 [data-cognigy-webchat-root] a.button:global(.phone-number-or-url-anchor):focus-visible {
-	outline: 2px solid var(--cc-primary-color);
+	outline: 2px solid var(--cc-primary-color-focus);
 	outline-offset: 2px;
 	box-shadow: 0 0 0 4px var(--cc-primary-contrast-color);
 }

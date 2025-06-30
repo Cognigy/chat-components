@@ -110,7 +110,7 @@ const Controls: FC<ControlsProps> = props => {
 						onMouseUp={handleSeekEnd}
 						onTouchEnd={handleSeekEnd}
 						style={{
-							background: `linear-gradient(to right, var(--cc-primary-color) ${
+							background: `linear-gradient(to right, var(--cc-primary-color-focus) ${
 								progress * 100
 							}%, var(--cc-black-80) ${progress * 100}%)`,
 						}}
