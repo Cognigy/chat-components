@@ -1,10 +1,10 @@
 :root {
 	--cc-primary-color: var(--webchat-primary-color, #2455e6);
-	--cc-primary-color-hover: color-mix(in srgb, var(--cc-primary-color), #000 20%);
+	--cc-primary-color-hover: var(--webchat-primary-color-hover, color-mix(in srgb, var(--cc-primary-color), #000 20%));
 	--cc-primary-color-focus: var(--webchat-primary-color-focus, var(--cc-primary-color));
 	--cc-primary-color-disabled: color-mix(in srgb, var(--cc-primary-color), #fff 80%);
-	--cc-primary-color-opacity-10: color-mix(in srgb, var(--cc-primary-color) 10%, transparent);
-	--cc-primary-color-opacity-20: color-mix(in srgb, var(--cc-primary-color) 20%, transparent);
+	--cc-primary-color-opacity-10: color-mix(in srgb, var(--cc-primary-color-focus) 10%, transparent);
+	--cc-primary-color-opacity-20: color-mix(in srgb, var(--cc-primary-color-focus) 20%, transparent);
 	--cc-primary-contrast-color: var(--webchat-primary-contrast-color, #fdfcfc);
 
 	--cc-secondary-color: var(--webchat-secondary-color, #1a1a1a);
