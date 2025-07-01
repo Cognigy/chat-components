@@ -356,6 +356,7 @@ export interface IWebchatTheme {
 	primaryColorHover: string;
 	primaryColorDisabled: string;
 	primaryContrastColor: string;
+	primaryColorFocus: string;
 
 	// Secondary Colors
 	secondaryColor: string;

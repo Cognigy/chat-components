@@ -49,7 +49,7 @@
 }
 
 .header .right:focus {
-	outline: 2px solid var(--cc-primary-color);
+	outline: 2px solid var(--cc-primary-color-focus);
 	outline-offset: 2px;
 }
 
@@ -123,7 +123,7 @@
 }
 
 .wrapper .content :global(.flatpickr-calendar .flatpickr-innerContainer:focus-visible) {
-	outline: 2px solid var(--cc-primary-color);
+	outline: 2px solid var(--cc-primary-color-focus);
 	outline-offset: 2px;
 }
 
@@ -165,7 +165,7 @@
 
 .wrapper .content :global(.flatpickr-months .flatpickr-prev-month):focus-visible,
 .wrapper .content :global(.flatpickr-months .flatpickr-next-month):focus-visible {
-	outline: 2px solid var(--cc-primary-color);
+	outline: 2px solid var(--cc-primary-color-focus);
 	outline-offset: 2px;
 }
 
@@ -258,7 +258,7 @@
 	border-color: var(--cc-black-60);
 }
 .wrapper .content :global(.flatpickr-current-month .flatpickr-monthDropdown-months:focus) {
-	outline: 2px solid var(--cc-primary-color);
+	outline: 2px solid var(--cc-primary-color-focus);
 }
 .wrapper .content :global(.flatpickr-current-month .flatpickr-monthDropdown-months option) {
 	font-weight: normal;
@@ -295,7 +295,7 @@
 }
 
 .wrapper .content :global(.flatpickr-current-month input.cur-year:focus) {
-	outline: 2px solid var(--cc-primary-color);
+	outline: 2px solid var(--cc-primary-color-focus);
 }
 
 .wrapper .content :global(.flatpickr-current-month input.cur-year[disabled]),
@@ -706,11 +706,11 @@
 .wrapper .content :global(.flatpickr-time input.flatpickr-hour:focus),
 .wrapper .content :global(.flatpickr-time input.flatpickr-minute:focus),
 .wrapper .content :global(.flatpickr-time input.flatpickr-second:focus) {
-	outline: 2px solid var(--cc-primary-color);
+	outline: 2px solid var(--cc-primary-color-focus);
 }
 
 .wrapper .content :global(.flatpickr-time span.flatpickr-am-pm:focus-visible) {
-	outline: 2px solid var(--cc-primary-color);
+	outline: 2px solid var(--cc-primary-color-focus);
 	outline-offset: -2px;
 }
 

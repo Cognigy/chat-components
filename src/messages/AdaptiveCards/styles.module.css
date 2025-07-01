@@ -37,8 +37,8 @@
 }
 
 .adaptivecard-wrapper > *:focus {
-	outline: 1px solid var(--cc-primary-color);
-	border-color: var(--cc-primary-color);
+	outline: 1px solid var(--cc-primary-color-focus);
+	border-color: var(--cc-primary-color-focus);
 }
 
 .adaptivecard-wrapper button {
@@ -61,7 +61,7 @@
 }
 
 .adaptivecard-wrapper button:focus-visible {
-	outline: 2px solid var(--cc-primary-color);
+	outline: 2px solid var(--cc-primary-color-focus);
 	outline-offset: 2px;
 }
 
@@ -137,15 +137,15 @@
 .adaptivecard-wrapper input:focus,
 .adaptivecard-wrapper textarea:focus,
 .adaptivecard-wrapper select:focus {
-	outline: 1px solid var(--cc-primary-color);
-	border-color: 1px solid var(--cc-primary-color);
+	outline: 1px solid var(--cc-primary-color-focus);
+	border-color: 1px solid var(--cc-primary-color-focus);
 }
 
 .adaptivecard-wrapper input:focus-visible,
 .adaptivecard-wrapper textarea:focus-visible,
 .adaptivecard-wrapper select:focus-visible {
-	outline: 2px solid var(--cc-primary-color);
-	border-color: 1px solid var(--cc-primary-color);
+	outline: 2px solid var(--cc-primary-color-focus);
+	border-color: 1px solid var(--cc-primary-color-focus);
 }
 
 .adaptivecard-wrapper :global(.ac-actionSet) {

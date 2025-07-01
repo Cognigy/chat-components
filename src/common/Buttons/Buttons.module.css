@@ -32,13 +32,7 @@ a.primaryButton.button:hover,
 a.primaryButton.button:focus {
 	background-color: var(--cc-secondary-color-hover);
 }
-button.primaryButton.actionButton:focus-visible,
-a.primaryButton.actionButton:focus-visible,
-button.primaryButton.button:focus-visible,
-a.primaryButton.button:focus-visible {
-	outline: 2px solid var(--cc-primary-color);
-	outline-offset: 2px;
-}
+
 button.primaryButton.actionButton:disabled,
 a.primaryButton.actionButton:global(.disabled),
 button.primaryButton.button:disabled,
@@ -92,6 +86,27 @@ button.secondaryButton.button:disabled:focus {
 	pointer-events: none;
 	border: 1px solid var(--cc-secondary-color-disabled);
 	background-color: var(--cc-white);
+}
+
+[data-cognigy-webchat-root] button.primaryButton.actionButton:focus-visible,
+[data-cognigy-webchat-root] a.primaryButton.actionButton:focus-visible,
+[data-cognigy-webchat-root]
+	a.primaryButton.actionButton:global(.phone-number-or-url-anchor):focus-visible,
+[data-cognigy-webchat-root] button.primaryButton.button:focus-visible,
+[data-cognigy-webchat-root] a.primaryButton.button:focus-visible,
+[data-cognigy-webchat-root]
+	a.primaryButton.button:global(.phone-number-or-url-anchor):focus-visible,
+[data-cognigy-webchat-root] button.secondaryButton.actionButton:focus-visible,
+[data-cognigy-webchat-root] a.secondaryButton.actionButton:focus-visible,
+[data-cognigy-webchat-root]
+	a.secondaryButton.actionButton:global(.phone-number-or-url-anchor):focus-visible,
+[data-cognigy-webchat-root] button.secondaryButton.button:focus-visible,
+[data-cognigy-webchat-root] a.secondaryButton.button:focus-visible,
+[data-cognigy-webchat-root]
+	a.secondaryButton.button:global(.phone-number-or-url-anchor):focus-visible {
+	outline: 2px solid var(--cc-primary-color-focus);
+	outline-offset: 2px;
+	box-shadow: 0 0 0 4px var(--cc-secondary-contrast-color);
 }
 
 .buttonListItem {

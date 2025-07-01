@@ -68,7 +68,7 @@ article .player > div:first-child:focus svg circle {
 
 article .playerWrapper:focus .player,
 article .player:focus-within {
-	outline: 2px solid var(--cc-primary-color);
+	outline: 2px solid var(--cc-primary-color-focus);
 }
 
 article .playerWrapper:focus,

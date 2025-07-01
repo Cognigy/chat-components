@@ -82,7 +82,7 @@
 }
 
 .icon:focus-visible {
-	border: 2px solid var(--cc-primary-color);
+	border: 2px solid var(--cc-primary-color-focus);
 }
 
 .icon svg {

@@ -41,7 +41,7 @@ article .audioWrapper .downloadButton:hover svg path {
 }
 
 article .audioWrapper .downloadButton:focus-visible {
-	outline: 2px solid var(--cc-primary-color);
+	outline: 2px solid var(--cc-primary-color-focus);
 	outline-offset: 2px;
 }
 
@@ -58,7 +58,7 @@ article button.playButton:focus {
 	outline: none;
 }
 article button.playButton:focus-visible {
-	outline: 2px solid var(--cc-primary-color);
+	outline: 2px solid var(--cc-primary-color-focus);
 	outline-offset: 2px;
 }
 
@@ -90,7 +90,7 @@ article .progressBar input[type="range"]::-webkit-slider-thumb {
 	appearance: none;
 	height: 13px;
 	width: 13px;
-	background-color: var(--cc-primary-color);
+	background-color: var(--cc-primary-color-focus);
 	border-radius: 50%;
 	border: none;
 	transition: 0.2s ease-in-out;
@@ -100,7 +100,7 @@ article .progressBar input[type="range"]::-webkit-slider-thumb {
 article .progressBar input[type="range"]::-moz-range-thumb {
 	height: 13px;
 	width: 13px;
-	background-color: var(--cc-primary-color);
+	background-color: var(--cc-primary-color-focus);
 	border-radius: 50%;
 	border: none;
 	transition: 0.2s ease-in-out;
