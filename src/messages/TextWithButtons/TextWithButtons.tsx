@@ -7,7 +7,7 @@ import { useLiveRegion, useMessageContext, useRandomId } from "../hooks";
 
 import { getChannelPayload } from "src/utils";
 import ActionButtons from "src/common/ActionButtons/ActionButtons";
-import { IWebchatTemplateAttachment } from "@cognigy/socket-client";
+import { IWebchatTemplateAttachment, IWebchatMessage } from "@cognigy/socket-client";
 import classNames from "classnames";
 import { IStreamingMessage } from "../types";
 import { getTextWithButtonsContent } from "./helper";
@@ -61,9 +61,9 @@ const TextWithButtons: FC = (props: ITextWithButtonsProps) => {
 			onSetMessageAnimated &&
 			message.id &&
 			message.animationState === "start" &&
-			!message.text
+			!(message.data?._cognigy?._webchat as IWebchatMessage)?.message?.text
 		) {
-			onSetMessageAnimated(message.id as string, "done");
+			// onSetMessageAnimated(message.id as string, "done");
 		}
 	}, [
 		progressiveMessageRendering,
@@ -72,7 +72,7 @@ const TextWithButtons: FC = (props: ITextWithButtonsProps) => {
 		onSetMessageAnimated,
 		message.id,
 		message.animationState,
-		message.text,
+		message.data?._cognigy?._webchat,
 	]);
 
 	const isSanitizeEnabled = !config?.settings?.layout?.disableHtmlContentSanitization;
