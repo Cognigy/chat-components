@@ -63,7 +63,7 @@ const TextWithButtons: FC = (props: ITextWithButtonsProps) => {
 			message.animationState === "start" &&
 			!(message.data?._cognigy?._webchat as IWebchatMessage)?.message?.text
 		) {
-			// onSetMessageAnimated(message.id as string, "done");
+			onSetMessageAnimated(message.id as string, "done");
 		}
 	}, [
 		progressiveMessageRendering,
