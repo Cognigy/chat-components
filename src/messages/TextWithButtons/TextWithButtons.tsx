@@ -55,13 +55,20 @@ const TextWithButtons: FC = (props: ITextWithButtonsProps) => {
 	);
 
 	useEffect(() => {
+		const messageConfig = message.data?._cognigy?._webchat as IWebchatMessage;
+		const textInQuickReplies = messageConfig?.message?.text;
+		const textInButtons = (messageConfig?.message?.attachment as IWebchatTemplateAttachment)
+			?.payload?.text;
+
+		// Check if neither text in quick-replies nor text in text-with-buttons is present
 		if (
 			progressiveMessageRendering &&
 			(isBotMessage || isEngagementMessage) &&
 			onSetMessageAnimated &&
 			message.id &&
 			message.animationState === "start" &&
-			!(message.data?._cognigy?._webchat as IWebchatMessage)?.message?.text
+			!textInQuickReplies &&
+			!textInButtons
 		) {
 			onSetMessageAnimated(message.id as string, "done");
 		}
