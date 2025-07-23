@@ -20,6 +20,7 @@ import file from "test/fixtures/file.json";
 import AdaptiveCardPayloads from "test/fixtures/adaptiveCards.json";
 
 import datePicker from "test/fixtures/datepicker/singleDate.json";
+import datePickerMinMax from "test/fixtures/datepicker/singleDateWithMinMax.json";
 import datePickerMultiple from "test/fixtures/datepicker/multiple.json";
 import datePickerRange from "test/fixtures/datepicker/range.json";
 import datePickerWeeks from "test/fixtures/datepicker/weekNumbers.json";
@@ -292,6 +293,7 @@ const screens: TScreen[] = [
 		anchor: "datepicker",
 		messages: [
 			{ message: datePicker as IMessage },
+			{ message: datePickerMinMax as IMessage },
 			{ message: datePickerMultiple as IMessage },
 			{ message: datePickerRange as IMessage },
 			{ message: datePickerWeeks as IMessage },
