@@ -66,11 +66,11 @@ const Text: FC<TextProps> = props => {
 		: replaceUrlsWithHTMLanchorElem(displayedText);
 
 	// HTML sanitization as needed
-	const __html = sanitizeHTML(enhancedURLsText);
+	const sanitizedContent = sanitizeHTML(enhancedURLsText);
 
 	useLiveRegion({
 		messageType: "text",
-		data: { text: __html },
+		data: { text: sanitizedContent },
 		validation: () => !props.ignoreLiveRegion,
 	});
 
@@ -86,13 +86,13 @@ const Text: FC<TextProps> = props => {
 						a: props => <a target="_blank" rel="noreferrer" {...props} />,
 					}}
 				>
-					{displayedText}
+					{sanitizedContent || displayedText}
 				</Markdown>
 			) : (
 				<p
 					id={props.id}
 					className={classNames(classes.text, props?.className)}
-					dangerouslySetInnerHTML={{ __html }}
+					dangerouslySetInnerHTML={{ __html: sanitizedContent }}
 				/>
 			)}
 			{/* If streaming + animate, show the typed effect */}
