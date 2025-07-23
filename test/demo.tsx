@@ -703,96 +703,6 @@ const screens: TScreen[] = [
 		],
 	},
 	{
-		title: "HTML Sanitization",
-		anchor: "html-sanitization",
-		messages: [
-			{
-				message: {
-					source: "bot",
-					text: "Default sanitization allows most HTML tags: <p>Paragraph</p> <strong>Bold</strong> <em>Italic</em> <a href='https://example.com'>Link</a> <img src='https://placewaifu.com/image/100/100' alt='Image'> <script>alert('XSS')</script>",
-					avatarName: "Cognigy",
-				},
-			},
-			{
-				message: {
-					source: "bot",
-					text: "Custom allowed tags (only p, strong): <p>Paragraph</p> <strong>Bold</strong> <em>Italic</em> <a href='https://example.com'>Link</a> <img src='https://placewaifu.com/image/100/100' alt='Image'> <script>alert('XSS')</script>",
-					avatarName: "Cognigy",
-				},
-				config: {
-					settings: {
-						widgetSettings: {
-							customAllowedHtmlTags: ["p", "strong"],
-						},
-					},
-				},
-			},
-			{
-				message: {
-					source: "bot",
-					text: "Custom allowed tags (only a, img): <p>Paragraph</p> <strong>Bold</strong> <em>Italic</em> <a href='https://example.com'>Link</a> <img src='https://placewaifu.com/image/100/100' alt='Image'> <script>alert('XSS')</script>",
-					avatarName: "Cognigy",
-				},
-				config: {
-					settings: {
-						widgetSettings: {
-							customAllowedHtmlTags: ["a", "img"],
-						},
-					},
-				},
-			},
-			{
-				message: {
-					source: "bot",
-					text: "Empty custom allowed tags (strips all HTML): <p>Paragraph</p> <strong>Bold</strong> <em>Italic</em> <a href='https://example.com'>Link</a> <img src='https://placewaifu.com/image/100/100' alt='Image'> <script>alert('XSS')</script>",
-					avatarName: "Cognigy",
-				},
-				config: {
-					settings: {
-						widgetSettings: {
-							customAllowedHtmlTags: [],
-						},
-					},
-				},
-			},
-			{
-				message: {
-					source: "bot",
-					text: "Sanitization disabled (renders all HTML): <p>Paragraph</p> <strong>Bold</strong> <em>Italic</em> <a href='https://example.com'>Link</a> <img src='https://placewaifu.com/image/100/100' alt='Image'> <script>alert('This would be dangerous in real use!')</script>",
-					avatarName: "Cognigy",
-				},
-				config: {
-					settings: {
-						layout: {
-							disableHtmlContentSanitization: true,
-						},
-					},
-				},
-			},
-			{
-				message: {
-					source: "bot",
-					text: "Complex HTML structure with tables: <table border='1'><thead><tr><th>Header 1</th><th>Header 2</th></tr></thead><tbody><tr><td><strong>Cell 1</strong></td><td><em>Cell 2</em></td></tr><tr><td><a href='#'>Link cell</td><td><img src='https://placewaifu.com/image/50/50' alt='Small image'></td></tr></tbody></table>",
-					avatarName: "Cognigy",
-				},
-			},
-			{
-				message: {
-					source: "bot",
-					text: "Same table with limited tags (table, tr, td only): <table border='1'><thead><tr><th>Header 1</th><th>Header 2</th></tr></thead><tbody><tr><td><strong>Cell 1</strong></td><td><em>Cell 2</em></td></tr><tr><td><a href='#'>Link cell</td><td><img src='https://placewaifu.com/image/50/50' alt='Small image'></td></tr></tbody></table>",
-					avatarName: "Cognigy",
-				},
-				config: {
-					settings: {
-						widgetSettings: {
-							customAllowedHtmlTags: ["table", "tr", "td"],
-						},
-					},
-				},
-			},
-		],
-	},
-	{
 		title: "xApp Buttons",
 		anchor: "xapp-buttons",
 		messages: [
@@ -863,6 +773,113 @@ const screens: TScreen[] = [
 						},
 					},
 					source: "bot",
+				},
+			},
+		],
+	},
+	{
+		title: "HTML Sanitization",
+		anchor: "html-sanitization",
+		messages: [
+			{
+				message: {
+					source: "bot",
+					text: "Default sanitization allows most HTML tags: <p>Paragraph</p> <strong>Bold</strong> <em>Italic</em> <a href='https://example.com'>Link</a> <img src='https://placewaifu.com/image/100/100' alt='Image'> <script>alert('XSS')</script>",
+					avatarName: "Cognigy",
+				},
+			},
+			{
+				message: {
+					source: "bot",
+					text: "Custom allowed tags (only p, strong): <p>Paragraph</p> <strong>Bold</strong> <em>Italic</em> <a href='https://example.com'>Link</a> <img src='https://placewaifu.com/image/100/100' alt='Image'> <script>alert('XSS')</script>",
+					avatarName: "Cognigy",
+				},
+				config: {
+					settings: {
+						widgetSettings: {
+							customAllowedHtmlTags: ["p", "strong"],
+						},
+					},
+				},
+			},
+			{
+				message: {
+					source: "bot",
+					text: "Custom allowed tags (only a, img): <p>Paragraph</p> <strong>Bold</strong> <em>Italic</em> <a href='https://example.com'>Link</a> <img src='https://placewaifu.com/image/100/100' alt='Image'> <script>alert('XSS')</script>",
+					avatarName: "Cognigy",
+				},
+				config: {
+					settings: {
+						widgetSettings: {
+							customAllowedHtmlTags: ["a", "img"],
+						},
+					},
+				},
+			},
+			{
+				message: {
+					source: "bot",
+					text: "Empty custom allowed tags (falls back to default): <p>Paragraph</p> <strong>Bold</strong> <em>Italic</em> <a href='https://example.com'>Link</a> <img src='https://placewaifu.com/image/100/100' alt='Image'> <script>alert('XSS')</script>",
+					avatarName: "Cognigy",
+				},
+				config: {
+					settings: {
+						widgetSettings: {
+							customAllowedHtmlTags: [],
+						},
+					},
+				},
+			},
+			{
+				message: {
+					source: "bot",
+					text: "Sanitization disabled (renders all HTML): <p>Paragraph</p> <strong>Bold</strong> <em>Italic</em> <a href='https://example.com'>Link</a> <img src='https://placewaifu.com/image/100/100' alt='Image'> <script>alert('This would be dangerous in real use!')</script>",
+					avatarName: "Cognigy",
+				},
+				config: {
+					settings: {
+						layout: {
+							disableHtmlContentSanitization: true,
+						},
+					},
+				},
+			},
+			{
+				message: {
+					source: "bot",
+					text: "Complex HTML structure with tables: <table border='1'><thead><tr><th>Header 1</th><th>Header 2</th></tr></thead><tbody><tr><td><strong>Cell 1</strong></td><td><em>Cell 2</em></td></tr><tr><td><a href='#'>Link cell</td><td><img src='https://placewaifu.com/image/50/50' alt='Small image'></td></tr></tbody></table>",
+					avatarName: "Cognigy",
+				},
+			},
+			{
+				message: {
+					source: "bot",
+					text: "Same table with limited tags (table, tr, td only): <table border='1'><thead><tr><th>Header 1</th><th>Header 2</th></tr></thead><tbody><tr><td><strong>Cell 1</strong></td><td><em>Cell 2</em></td></tr><tr><td><a href='#'>Link cell</td><td><img src='https://placewaifu.com/image/50/50' alt='Small image'></td></tr></tbody></table>",
+					avatarName: "Cognigy",
+				},
+				config: {
+					settings: {
+						widgetSettings: {
+							customAllowedHtmlTags: ["table", "tr", "td"],
+						},
+					},
+				},
+			},
+			{
+				message: {
+					source: "bot",
+					text: "## Markdown with Custom Sanitization\n\nThis message uses **markdown** and custom allowed HTML tags.\n\n<div class='custom'>Only div and span tags allowed</div>\n\n<span style='color: red;'>Red text in span</span>\n\n<h1>This heading will be stripped</h1>\n\n<script>alert('XSS attempt')</script>",
+					avatarName: "Cognigy",
+				},
+				config: {
+					settings: {
+						behavior: {
+							renderMarkdown: true,
+						},
+						widgetSettings: {
+							customAllowedHtmlTags: ["div", "span"],
+						},
+					},
 				},
 			},
 		],
