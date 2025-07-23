@@ -2,7 +2,7 @@ import { FC, ReactElement } from "react";
 import classnames from "classnames";
 import { ActionButtonsProps } from "./ActionButtons";
 import { getWebchatButtonLabel, interpolateString, moveFocusToMessageFocusTarget } from "src/utils";
-import { sanitizeHTML } from "src/sanitize";
+import { sanitizeHTMLWithConfig } from "src/sanitize";
 import { sanitizeUrl } from "@braintree/sanitize-url";
 import classes from "./ActionButton.module.css";
 import { LinkIcon } from "src/assets/svg";
@@ -66,7 +66,7 @@ const ActionButton: FC<ActionButtonProps> = props => {
 	const customAllowedHtmlTags = config?.settings?.widgetSettings?.customAllowedHtmlTags || [];
 	const __html = config?.settings?.layout?.disableHtmlContentSanitization
 		? buttonLabel
-		: sanitizeHTML(buttonLabel, customAllowedHtmlTags);
+		: sanitizeHTMLWithConfig(buttonLabel, customAllowedHtmlTags);
 
 	const isPhoneNumber =
 		button.payload && (buttonType === "phone_number" || buttonType === "user_phone_number");

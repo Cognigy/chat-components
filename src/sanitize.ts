@@ -266,7 +266,6 @@ export const sanitizeHTMLWithConfig = (text: string, customAllowedHtmlTags: stri
 	return result;
 };
 
-export const sanitizeHTML = sanitizeHTMLWithConfig;
 /**
  * Sanitizes content if sanitization is enabled.
  * @param content - The content to sanitize.
