@@ -5,7 +5,7 @@ import buttonClasses from "src/common/Buttons/Buttons.module.css";
 import { useMessageContext, useRandomId } from "../hooks";
 import classnames from "classnames";
 import ActionButtons from "src/common/ActionButtons/ActionButtons";
-import { sanitizeHTML } from "src/sanitize";
+import { useSanitize } from "src/sanitize";
 import { sanitizeUrl } from "@braintree/sanitize-url";
 import { Typography } from "src/index";
 
@@ -26,10 +26,10 @@ const GalleryItem: FC<GallerySlideProps> = props => {
 	} = useMessageContext();
 	const hasExtraInfo = subtitle || (buttons && buttons?.length > 0);
 	const [isImageBroken, setImageBroken] = useState(false);
+	const { sanitizeHTML } = useSanitize();
 
-	const isSanitizeEnabled = !config?.settings?.layout?.disableHtmlContentSanitization;
-	const titleHtml = isSanitizeEnabled ? sanitizeHTML(title) : title;
-	const subtitleHtml = isSanitizeEnabled ? sanitizeHTML(subtitle) : subtitle;
+	const titleHtml = sanitizeHTML(title);
+	const subtitleHtml = sanitizeHTML(subtitle);
 
 	const titleId = useRandomId("webchatCarouselTemplateTitle");
 	const subtitleId = useRandomId("webchatCarouselTemplateSubtitle");

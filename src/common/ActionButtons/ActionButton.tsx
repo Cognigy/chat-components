@@ -2,7 +2,7 @@ import { FC, ReactElement } from "react";
 import classnames from "classnames";
 import { ActionButtonsProps } from "./ActionButtons";
 import { getWebchatButtonLabel, interpolateString, moveFocusToMessageFocusTarget } from "src/utils";
-import { sanitizeHTML } from "src/sanitize";
+import { useSanitize } from "src/sanitize";
 import { sanitizeUrl } from "@braintree/sanitize-url";
 import classes from "./ActionButton.module.css";
 import { LinkIcon } from "src/assets/svg";
@@ -42,6 +42,8 @@ const ActionButton: FC<ActionButtonProps> = props => {
 		dataMessageId,
 	} = props;
 
+	const { sanitizeHTML } = useSanitize();
+
 	const buttonType =
 		"type" in button
 			? button.type
@@ -63,9 +65,7 @@ const ActionButton: FC<ActionButtonProps> = props => {
 	if (!buttonType) return null;
 
 	const buttonLabel = getWebchatButtonLabel(button) || "";
-	const __html = config?.settings?.layout?.disableHtmlContentSanitization
-		? buttonLabel
-		: sanitizeHTML(buttonLabel);
+	const __html = sanitizeHTML(buttonLabel);
 
 	const isPhoneNumber =
 		button.payload && (buttonType === "phone_number" || buttonType === "user_phone_number");

@@ -1,4 +1,5 @@
 import DOMPurify, { Config } from "dompurify";
+import { useMessageContext } from "src/messages/hooks";
 
 export const allowedHtmlTags = [
 	"a",
@@ -227,7 +228,21 @@ const config: Config = {
 	ALLOWED_ATTR: allowedHtmlAttributes,
 };
 
-export const sanitizeHTML = (text: string) => {
+export const useSanitize = () => {
+	const { config } = useMessageContext();
+	const isSanitizeEnabled = !config?.settings?.layout?.disableHtmlContentSanitization;
+	const customAllowedHtmlTags = config?.settings?.widgetSettings?.customAllowedHtmlTags;
+
+	return {
+		sanitizeHTML: (text: string) => {
+			if (!isSanitizeEnabled) return text;
+			return sanitizeHTMLWithConfig(text, customAllowedHtmlTags);
+		},
+		isSanitizeEnabled,
+	};
+};
+
+export const sanitizeHTMLWithConfig = (text: string, customAllowedHtmlTags: string[] = []) => {
 	DOMPurify.addHook("beforeSanitizeElements", (node: Element) => {
 		if (node instanceof HTMLUnknownElement) {
 			const unClosedTag = `<${node.tagName.toLowerCase()}>${node.innerHTML}`;
@@ -239,24 +254,31 @@ export const sanitizeHTML = (text: string) => {
 	// Some texts from Agentic AI starts with a </\w+ closing tag which doesn't go through the hooks. Dompurify will remove them.
 	// The following will avoid is a fallback
 	if (text?.startsWith("</")) return text.replace("<", "&lt;").replace(">", "&gt;");
+	const configToUse =
+		customAllowedHtmlTags && customAllowedHtmlTags.length > 0
+			? { ...config, ALLOWED_TAGS: customAllowedHtmlTags }
+			: config;
 
-	const result = DOMPurify.sanitize(text, config).toString();
+	const result = DOMPurify.sanitize(text, configToUse).toString();
 	DOMPurify.removeAllHooks();
 	return result;
 };
 
+export const sanitizeHTML = sanitizeHTMLWithConfig;
 /**
  * Sanitizes content if sanitization is enabled.
  * @param content - The content to sanitize.
  * @param isSanitizeEnabled - Whether to sanitize the content.
+ * @param customAllowedHtmlTags - Custom HTML tags allowed for sanitization.
  * @returns The sanitized or raw content.
  */
 export const sanitizeContent = (
 	content: string | undefined,
 	isSanitizeEnabled: boolean,
+	customAllowedHtmlTags: string[] = [],
 ): string => {
 	if (!content) {
 		return "";
 	}
-	return isSanitizeEnabled ? sanitizeHTML(content) : content;
+	return isSanitizeEnabled ? sanitizeHTMLWithConfig(content, customAllowedHtmlTags) : content;
 };

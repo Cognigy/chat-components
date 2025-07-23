@@ -1,7 +1,7 @@
 import { FC, useEffect, useRef, useState } from "react";
 import { Action, AdaptiveCard as MSAdaptiveCard, HostConfig } from "adaptivecards";
 import { Remarkable } from "remarkable";
-import { sanitizeHTML } from "../../../sanitize.ts";
+import { useSanitize } from "../../../sanitize.ts";
 import { useLiveRegion } from "src/messages/hooks.ts";
 
 interface IAdaptiveCardProps {
@@ -14,23 +14,6 @@ interface IAdaptiveCardProps {
 const md = new Remarkable();
 
 /**
- * Manually add Support for rending Markdown, as described here:
- * https://www.npmjs.com/package/adaptivecards#user-content-option-2-any-other-3rd-party-library
- *
- * We went for "remarkable" over the suggested "markdown-it", because
- * - it has a smaller footprint
- * - it supports all standard features
- * - we already do have our own "sanitizing" approach which we can reuse here
- */
-MSAdaptiveCard.onProcessMarkdown = (text, result) => {
-	const html = md.render(text);
-	const saneHtml = sanitizeHTML(html);
-
-	result.outputHtml = saneHtml;
-	result.didProcess = true;
-};
-
-/**
  * Inspired by Microsoft's (not publically released) adaptivecards-react package
  * https://github.com/microsoft/AdaptiveCards/blob/5b66a52e0e0cee5074a42dcbe688d608e0327ae4/source/nodejs/adaptivecards-react/src/adaptive-card.tsx
  */
@@ -40,6 +23,28 @@ const AdaptiveCard: FC<IAdaptiveCardProps> = props => {
 	const targetRef = useRef<HTMLDivElement>(null);
 	const cardRef = useRef<MSAdaptiveCard>(new MSAdaptiveCard());
 	const [speakText, setSpeakText] = useState<string | undefined>(undefined);
+
+	const { sanitizeHTML } = useSanitize();
+
+	// Set up the markdown processing with access to config
+	useEffect(() => {
+		/**
+		 * Manually add Support for rending Markdown, as described here:
+		 * https://www.npmjs.com/package/adaptivecards#user-content-option-2-any-other-3rd-party-library
+		 *
+		 * We went for "remarkable" over the suggested "markdown-it", because
+		 * - it has a smaller footprint
+		 * - it supports all standard features
+		 * - we already do have our own "sanitizing" approach which we can reuse here
+		 */
+		MSAdaptiveCard.onProcessMarkdown = (text, result) => {
+			const html = md.render(text);
+			const saneHtml = sanitizeHTML(html);
+
+			result.outputHtml = saneHtml;
+			result.didProcess = true;
+		};
+	}, [sanitizeHTML]);
 
 	const executeAction = (action: Action) => {
 		onExecuteAction?.(action);
