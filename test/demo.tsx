@@ -841,6 +841,9 @@ const screens: TScreen[] = [
 						layout: {
 							disableHtmlContentSanitization: true,
 						},
+						widgetSettings: {
+							customAllowedHtmlTags: ["p", "strong", "em", "a", "img", "script"],
+						},
 					},
 				},
 			},
