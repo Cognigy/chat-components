@@ -44,7 +44,7 @@ const AdaptiveCard: FC<IAdaptiveCardProps> = props => {
 			result.outputHtml = saneHtml;
 			result.didProcess = true;
 		};
-	}, []);
+	}, [sanitizeHTML]);
 
 	const executeAction = (action: Action) => {
 		onExecuteAction?.(action);

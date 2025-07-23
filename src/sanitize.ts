@@ -1,5 +1,6 @@
 import DOMPurify, { Config } from "dompurify";
 import { useMessageContext } from "src/messages/hooks";
+import { useCallback } from "react";
 
 export const allowedHtmlTags = [
 	"a",
@@ -233,10 +234,13 @@ export const useSanitize = () => {
 	const isSanitizeEnabled = !config?.settings?.layout?.disableHtmlContentSanitization;
 	const customAllowedHtmlTags = config?.settings?.widgetSettings?.customAllowedHtmlTags;
 
-	const sanitizeHTML = (text: string) => {
-		if (!isSanitizeEnabled) return text;
-		return sanitizeHTMLWithConfig(text, customAllowedHtmlTags);
-	};
+	const sanitizeHTML = useCallback(
+		(text: string) => {
+			if (!isSanitizeEnabled) return text;
+			return sanitizeHTMLWithConfig(text, customAllowedHtmlTags);
+		},
+		[isSanitizeEnabled, customAllowedHtmlTags],
+	);
 
 	return {
 		sanitizeHTML,
