@@ -16,6 +16,9 @@ function customElements(pluginConfig: Config): Plugin {
 	return function (fp: Instance) {
 		const { arrowIcon, customTranslations } = pluginConfig;
 
+		// Store event handlers for navigation buttons
+		const navKeydownHandlers = new WeakMap<HTMLElement, (event: KeyboardEvent) => void>();
+
 		function buildTimeArrows() {
 			if (!fp?.config?.enableTime) return;
 			const arrowUp = fp?.timeContainer?.getElementsByClassName("arrowUp");
@@ -82,33 +85,86 @@ function customElements(pluginConfig: Config): Plugin {
 			const nextButton = fp?.calendarContainer?.querySelector(
 				".flatpickr-next-month",
 			) as HTMLElement;
-			if (prevButton) {
-				const prevButtonAriaLabel = customTranslations?.ariaLabels?.datePickerPreviousMonth;
-				prevButton.setAttribute("aria-label", prevButtonAriaLabel || "Previous month");
-				prevButton.setAttribute("role", "button");
-				if (!prevButton.classList.contains("flatpickr-disabled")) {
-					prevButton.setAttribute("tabindex", "0");
-					prevButton.addEventListener("keydown", event => {
+
+			updateNavButtonAccessibility(prevButton, "prev");
+			updateNavButtonAccessibility(nextButton, "next");
+		}
+
+		// Update accessibility attributes for navigation buttons based on their enabled/disabled state
+		function updateNavButtonAccessibility(
+			button: HTMLElement | null,
+			direction: "prev" | "next",
+		) {
+			if (!button) return;
+
+			const isPrev = direction === "prev";
+			const ariaLabel = isPrev
+				? customTranslations?.ariaLabels?.datePickerPreviousMonth || "Previous month"
+				: customTranslations?.ariaLabels?.datePickerNextMonth || "Next month";
+
+			button.setAttribute("aria-label", ariaLabel);
+			button.setAttribute("role", "button");
+
+			if (button.classList.contains("flatpickr-disabled")) {
+				button.setAttribute("aria-disabled", "true");
+				button.removeAttribute("tabindex");
+				// Remove the handler if it exists
+				const handler = navKeydownHandlers.get(button);
+				if (handler) {
+					button.removeEventListener("keydown", handler);
+					navKeydownHandlers.delete(button);
+				}
+			} else {
+				button.setAttribute("tabindex", "0");
+				button.removeAttribute("aria-disabled");
+				// Only add listener if it doesn't exist
+				if (!navKeydownHandlers.has(button)) {
+					const handler = (event: KeyboardEvent) => {
 						if (event.key === "Enter" || event.key === " ") {
 							event.preventDefault();
-							fp.changeMonth(-1); // Move to the previous month
+							const targetButton = event.target as HTMLElement;
+							const isPrevButton =
+								targetButton.classList.contains("flatpickr-prev-month");
+							fp.changeMonth(isPrevButton ? -1 : 1);
 						}
-					});
+					};
+					navKeydownHandlers.set(button, handler);
+					button.addEventListener("keydown", handler);
 				}
 			}
-			if (nextButton) {
-				const nextButtonAriaLabel = customTranslations?.ariaLabels?.datePickerNextMonth;
-				nextButton.setAttribute("aria-label", nextButtonAriaLabel || "Next month");
-				nextButton.setAttribute("role", "button");
-				if (!nextButton.classList.contains("flatpickr-disabled")) {
-					nextButton.setAttribute("tabindex", "0");
-					nextButton.addEventListener("keydown", event => {
-						if (event.key === "Enter" || event.key === " ") {
-							event.preventDefault();
-							fp.changeMonth(1); // Move to the next month
-						}
-					});
-				}
+		}
+
+		// Observe navigation buttons for class changes
+		function observeNavButtons() {
+			const prevButton = fp?.calendarContainer?.querySelector(
+				".flatpickr-prev-month",
+			) as HTMLElement;
+			const nextButton = fp?.calendarContainer?.querySelector(
+				".flatpickr-next-month",
+			) as HTMLElement;
+
+			if (prevButton && !prevButton.dataset.observed) {
+				const observer = new MutationObserver(() => {
+					updateNavButtonAccessibility(prevButton, "prev");
+				});
+
+				observer.observe(prevButton, {
+					attributes: true,
+					attributeFilter: ["class"],
+				});
+				prevButton.dataset.observed = "true";
+			}
+
+			if (nextButton && !nextButton.dataset.observed) {
+				const observer = new MutationObserver(() => {
+					updateNavButtonAccessibility(nextButton, "next");
+				});
+
+				observer.observe(nextButton, {
+					attributes: true,
+					attributeFilter: ["class"],
+				});
+				nextButton.dataset.observed = "true";
 			}
 		}
 
@@ -256,6 +312,7 @@ function customElements(pluginConfig: Config): Plugin {
 				setMonthSelectAlly,
 				setYearSelectAlly,
 				setNavButtonsAlly,
+				observeNavButtons,
 				observeMonthSelector,
 
 				() => {
@@ -264,6 +321,14 @@ function customElements(pluginConfig: Config): Plugin {
 			],
 			onDayCreate: [
 				(_dObj, _dStr, _fp, dayElem) => {
+					// Set aria-disabled attribute based on flatpickr-disabled class
+					const isDisabled = dayElem.classList.contains("flatpickr-disabled");
+					if (isDisabled) {
+						dayElem.setAttribute("aria-disabled", "true");
+					} else {
+						dayElem.removeAttribute("aria-disabled");
+					}
+
 					dayElem.innerHTML = `<span class='dayInner'>${dayElem.innerHTML}</span>`;
 				},
 				handleWeekNumbers,
