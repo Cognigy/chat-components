@@ -116,7 +116,7 @@ function customElements(pluginConfig: Config): Plugin {
 				}
 			} else {
 				button.setAttribute("tabindex", "0");
-				button.setAttribute("aria-disabled", "false");
+				button.removeAttribute("aria-disabled");
 				// Only add listener if it doesn't exist
 				if (!navKeydownHandlers.has(button)) {
 					const handler = (event: KeyboardEvent) => {
@@ -321,8 +321,6 @@ function customElements(pluginConfig: Config): Plugin {
 			],
 			onDayCreate: [
 				(_dObj, _dStr, _fp, dayElem) => {
-					dayElem.innerHTML = `<span class='dayInner'>${dayElem.innerHTML}</span>`;
-
 					// Set aria-disabled attribute based on flatpickr-disabled class
 					const isDisabled = dayElem.classList.contains("flatpickr-disabled");
 					if (isDisabled) {
@@ -330,6 +328,8 @@ function customElements(pluginConfig: Config): Plugin {
 					} else {
 						dayElem.removeAttribute("aria-disabled");
 					}
+
+					dayElem.innerHTML = `<span class='dayInner'>${dayElem.innerHTML}</span>`;
 				},
 				handleWeekNumbers,
 			],
