@@ -1,7 +1,7 @@
 import { FC, useMemo, KeyboardEvent, useEffect } from "react";
 import classes from "./List.module.css";
 import { useMessageContext, useRandomId } from "src/messages/hooks";
-import { sanitizeHTML } from "src/sanitize";
+import { useSanitize } from "src/sanitize";
 import { getBackgroundImage } from "src/utils";
 import { PrimaryButton, SecondaryButton } from "src/common/Buttons";
 import classnames from "classnames";
@@ -31,6 +31,8 @@ const ListItem: FC<IListItemProps> = props => {
 
 	const shouldBeDisabled = messageParams?.isConversationEnded;
 
+	const { sanitizeHTML } = useSanitize();
+
 	const handleClick = () => {
 		if (shouldBeDisabled || !default_action?.url) return;
 
@@ -50,10 +52,8 @@ const ListItem: FC<IListItemProps> = props => {
 		}
 	};
 
-	const isSanitizeEnabled = !config?.settings?.layout?.disableHtmlContentSanitization;
-
-	const titleHtml = isSanitizeEnabled ? sanitizeHTML(title) : title;
-	const subtitleHtml = isSanitizeEnabled ? sanitizeHTML(subtitle) : subtitle;
+	const titleHtml = sanitizeHTML(title);
+	const subtitleHtml = sanitizeHTML(subtitle);
 	const subtitleId = useRandomId("webchatListTemplateHeaderSubtitle");
 
 	const rootClasses = classnames(classes.listItemRoot, isHeaderElement && classes.headerRoot);

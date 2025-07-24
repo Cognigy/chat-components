@@ -76,10 +76,15 @@ const TextWithButtons: FC = (props: ITextWithButtonsProps) => {
 	]);
 
 	const isSanitizeEnabled = !config?.settings?.layout?.disableHtmlContentSanitization;
+	const customAllowedHtmlTags = config?.settings?.widgetSettings?.customAllowedHtmlTags;
 
 	const textWithButtonsContent = useMemo(() => {
-		return getTextWithButtonsContent({ text, buttons }, isSanitizeEnabled);
-	}, [text, buttons, isSanitizeEnabled]);
+		return getTextWithButtonsContent(
+			{ text, buttons },
+			isSanitizeEnabled,
+			customAllowedHtmlTags,
+		);
+	}, [text, buttons, isSanitizeEnabled, customAllowedHtmlTags]);
 
 	const { textContent, buttonLabels } = textWithButtonsContent;
 

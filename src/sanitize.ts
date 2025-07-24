@@ -1,4 +1,6 @@
 import DOMPurify, { Config } from "dompurify";
+import { useMessageContext } from "src/messages/hooks";
+import { useCallback } from "react";
 
 export const allowedHtmlTags = [
 	"a",
@@ -227,7 +229,29 @@ const config: Config = {
 	ALLOWED_ATTR: allowedHtmlAttributes,
 };
 
-export const sanitizeHTML = (text: string) => {
+export const useSanitize = () => {
+	const { config } = useMessageContext();
+	const isSanitizeEnabled = !config?.settings?.layout?.disableHtmlContentSanitization;
+	const customAllowedHtmlTags = config?.settings?.widgetSettings?.customAllowedHtmlTags;
+
+	const sanitizeHTML = useCallback(
+		(text: string) => {
+			if (!isSanitizeEnabled) return text;
+			return sanitizeHTMLWithConfig(text, customAllowedHtmlTags);
+		},
+		[isSanitizeEnabled, customAllowedHtmlTags],
+	);
+
+	return {
+		sanitizeHTML,
+		isSanitizeEnabled,
+	};
+};
+
+export const sanitizeHTMLWithConfig = (
+	text: string,
+	customAllowedHtmlTags: string[] | undefined,
+) => {
 	DOMPurify.addHook("beforeSanitizeElements", (node: Element) => {
 		if (node instanceof HTMLUnknownElement) {
 			const unClosedTag = `<${node.tagName.toLowerCase()}>${node.innerHTML}`;
@@ -240,7 +264,11 @@ export const sanitizeHTML = (text: string) => {
 	// The following will avoid is a fallback
 	if (text?.startsWith("</")) return text.replace("<", "&lt;").replace(">", "&gt;");
 
-	const result = DOMPurify.sanitize(text, config).toString();
+	const configToUse = customAllowedHtmlTags
+		? { ...config, ALLOWED_TAGS: customAllowedHtmlTags }
+		: config;
+
+	const result = DOMPurify.sanitize(text, configToUse).toString();
 	DOMPurify.removeAllHooks();
 	return result;
 };
@@ -249,14 +277,16 @@ export const sanitizeHTML = (text: string) => {
  * Sanitizes content if sanitization is enabled.
  * @param content - The content to sanitize.
  * @param isSanitizeEnabled - Whether to sanitize the content.
+ * @param customAllowedHtmlTags - Custom HTML tags allowed for sanitization.
  * @returns The sanitized or raw content.
  */
 export const sanitizeContent = (
 	content: string | undefined,
 	isSanitizeEnabled: boolean,
+	customAllowedHtmlTags: string[] | undefined,
 ): string => {
 	if (!content) {
 		return "";
 	}
-	return isSanitizeEnabled ? sanitizeHTML(content) : content;
+	return isSanitizeEnabled ? sanitizeHTMLWithConfig(content, customAllowedHtmlTags) : content;
 };

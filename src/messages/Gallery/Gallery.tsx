@@ -13,6 +13,7 @@ import { IWebchatAttachmentElement, IWebchatTemplateAttachment } from "@cognigy/
 const Gallery: FC = () => {
 	const { message, config, "data-message-id": dataMessageId } = useMessageContext();
 	const isSanitizeEnabled = !config?.settings?.layout?.disableHtmlContentSanitization;
+	const customAllowedHtmlTags = config?.settings?.widgetSettings?.customAllowedHtmlTags;
 
 	const payload = getChannelPayload(message, config);
 	const { elements } =
@@ -53,8 +54,8 @@ const Gallery: FC = () => {
 
 	// Gather the gallery content for live region announcements
 	const slides = useMemo(
-		() => getGalleryContent(elements, isSanitizeEnabled),
-		[elements, isSanitizeEnabled],
+		() => getGalleryContent(elements, isSanitizeEnabled, customAllowedHtmlTags),
+		[elements, isSanitizeEnabled, customAllowedHtmlTags],
 	);
 
 	useLiveRegion({

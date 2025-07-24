@@ -3,7 +3,7 @@ import classNames from "classnames";
 import { useLiveRegion, useMessageContext } from "../hooks";
 import ChatBubble from "../../common/ChatBubble";
 import { replaceUrlsWithHTMLanchorElem } from "src/utils";
-import { sanitizeHTML } from "src/sanitize";
+import { useSanitize } from "src/sanitize";
 import { IStreamingMessage } from "../types";
 import classes from "./Text.module.css";
 import StreamingTextAnimation from "./StreamingTextAnimation";
@@ -25,6 +25,7 @@ interface TextProps {
 
 const Text: FC<TextProps> = props => {
 	const { message, config } = useMessageContext();
+	const { sanitizeHTML } = useSanitize();
 
 	const text = message?.text;
 	const source = message?.source;
@@ -65,13 +66,11 @@ const Text: FC<TextProps> = props => {
 		: replaceUrlsWithHTMLanchorElem(displayedText);
 
 	// HTML sanitization as needed
-	const __html = config?.settings?.layout?.disableHtmlContentSanitization
-		? enhancedURLsText
-		: sanitizeHTML(enhancedURLsText);
+	const sanitizedContent = sanitizeHTML(enhancedURLsText);
 
 	useLiveRegion({
 		messageType: "text",
-		data: { text: __html },
+		data: { text: sanitizedContent },
 		validation: () => !props.ignoreLiveRegion,
 	});
 
@@ -87,13 +86,13 @@ const Text: FC<TextProps> = props => {
 						a: props => <a target="_blank" rel="noreferrer" {...props} />,
 					}}
 				>
-					{displayedText}
+					{sanitizedContent || displayedText}
 				</Markdown>
 			) : (
 				<p
 					id={props.id}
 					className={classNames(classes.text, props?.className)}
-					dangerouslySetInnerHTML={{ __html }}
+					dangerouslySetInnerHTML={{ __html: sanitizedContent }}
 				/>
 			)}
 			{/* If streaming + animate, show the typed effect */}

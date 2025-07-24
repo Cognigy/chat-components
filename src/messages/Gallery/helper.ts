@@ -11,23 +11,33 @@ export interface GalleryLiveContent {
  * Get text and buttons in a gallery, to be used during live region announcement.
  * @param elements - The gallery elements to process.
  * @param isSanitizeEnabled - Whether to sanitize HTML content.
+ * @param customAllowedHtmlTags - Custom HTML tags allowed for sanitization.
  * @returns An array of objects containing slide text and button labels.
  */
 export const getGalleryContent = (
 	elements: IWebchatAttachmentElement[] | undefined,
 	isSanitizeEnabled: boolean,
+	customAllowedHtmlTags: string[] | undefined,
 ): GalleryLiveContent[] => {
 	if (!elements || elements.length === 0) {
 		return [];
 	}
 
 	return elements.map((element: IWebchatAttachmentElement) => {
-		const title = sanitizeContent(element.title, isSanitizeEnabled);
+		const title = sanitizeContent(element.title, isSanitizeEnabled, customAllowedHtmlTags);
 
-		const subtitle = sanitizeContent(element.subtitle, isSanitizeEnabled);
+		const subtitle = sanitizeContent(
+			element.subtitle,
+			isSanitizeEnabled,
+			customAllowedHtmlTags,
+		);
 
 		const buttonLabels = (element.buttons || []).map(button =>
-			sanitizeContent(getWebchatButtonLabel(button), isSanitizeEnabled),
+			sanitizeContent(
+				getWebchatButtonLabel(button),
+				isSanitizeEnabled,
+				customAllowedHtmlTags,
+			),
 		);
 
 		const slideText = `${title}. ${subtitle}`;

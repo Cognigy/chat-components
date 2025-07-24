@@ -291,6 +291,7 @@ export interface IWebchatSettings {
 		enableDefaultPreview: boolean;
 		ignoreLineBreaks: boolean;
 		STTLanguage: string;
+		customAllowedHtmlTags: string[];
 
 		sourceDirectionMapping: {
 			agent: TSourceDirection;
