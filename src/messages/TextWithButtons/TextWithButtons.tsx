@@ -7,7 +7,7 @@ import { useLiveRegion, useMessageContext, useRandomId } from "../hooks";
 
 import { getChannelPayload } from "src/utils";
 import ActionButtons from "src/common/ActionButtons/ActionButtons";
-import { IWebchatTemplateAttachment, IWebchatMessage } from "@cognigy/socket-client";
+import { IWebchatTemplateAttachment } from "@cognigy/socket-client";
 import classNames from "classnames";
 import { IStreamingMessage } from "../types";
 import { getTextWithButtonsContent } from "./helper";
@@ -55,20 +55,13 @@ const TextWithButtons: FC = (props: ITextWithButtonsProps) => {
 	);
 
 	useEffect(() => {
-		const messageConfig = message.data?._cognigy?._webchat as IWebchatMessage;
-		const textInQuickReplies = messageConfig?.message?.text;
-		const textInButtons = (messageConfig?.message?.attachment as IWebchatTemplateAttachment)
-			?.payload?.text;
-
-		// Check if neither text in quick-replies nor text in text-with-buttons is present
 		if (
 			progressiveMessageRendering &&
 			(isBotMessage || isEngagementMessage) &&
 			onSetMessageAnimated &&
 			message.id &&
 			message.animationState === "start" &&
-			!textInQuickReplies &&
-			!textInButtons
+			!text
 		) {
 			onSetMessageAnimated(message.id as string, "done");
 		}
@@ -79,7 +72,7 @@ const TextWithButtons: FC = (props: ITextWithButtonsProps) => {
 		onSetMessageAnimated,
 		message.id,
 		message.animationState,
-		message.data?._cognigy?._webchat,
+		text,
 	]);
 
 	const isSanitizeEnabled = !config?.settings?.layout?.disableHtmlContentSanitization;
