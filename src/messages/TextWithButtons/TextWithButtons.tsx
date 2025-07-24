@@ -61,7 +61,7 @@ const TextWithButtons: FC = (props: ITextWithButtonsProps) => {
 			onSetMessageAnimated &&
 			message.id &&
 			message.animationState === "start" &&
-			!message.text
+			!text
 		) {
 			onSetMessageAnimated(message.id as string, "done");
 		}
@@ -72,7 +72,7 @@ const TextWithButtons: FC = (props: ITextWithButtonsProps) => {
 		onSetMessageAnimated,
 		message.id,
 		message.animationState,
-		message.text,
+		text,
 	]);
 
 	const isSanitizeEnabled = !config?.settings?.layout?.disableHtmlContentSanitization;
