@@ -322,7 +322,7 @@ function customElements(pluginConfig: Config): Plugin {
 			onDayCreate: [
 				(_dObj, _dStr, _fp, dayElem) => {
 					dayElem.innerHTML = `<span class='dayInner'>${dayElem.innerHTML}</span>`;
-					
+
 					// Set aria-disabled attribute based on flatpickr-disabled class
 					const isDisabled = dayElem.classList.contains("flatpickr-disabled");
 					if (isDisabled) {
