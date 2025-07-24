@@ -819,13 +819,27 @@ const screens: TScreen[] = [
 			{
 				message: {
 					source: "bot",
-					text: "Empty custom allowed tags (falls back to default): <p>Paragraph</p> <strong>Bold</strong> <em>Italic</em> <a href='https://example.com'>Link</a> <img src='https://placewaifu.com/image/100/100' alt='Image'> <script>alert('XSS')</script>",
+					text: "Empty custom allowed tags (strips ALL HTML): <p>Paragraph</p> <strong>Bold</strong> <em>Italic</em> <a href='https://example.com'>Link</a> <img src='https://placewaifu.com/image/100/100' alt='Image'> <script>alert('XSS')</script>",
 					avatarName: "Cognigy",
 				},
 				config: {
 					settings: {
 						widgetSettings: {
 							customAllowedHtmlTags: [],
+						},
+					},
+				},
+			},
+			{
+				message: {
+					source: "bot",
+					text: "Undefined custom allowed tags (uses default): <p>Paragraph</p> <strong>Bold</strong> <em>Italic</em> <a href='https://example.com'>Link</a> <img src='https://placewaifu.com/image/100/100' alt='Image'> <script>alert('XSS')</script>",
+					avatarName: "Cognigy",
+				},
+				config: {
+					settings: {
+						widgetSettings: {
+							customAllowedHtmlTags: undefined,
 						},
 					},
 				},

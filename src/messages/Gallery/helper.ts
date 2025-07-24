@@ -17,7 +17,7 @@ export interface GalleryLiveContent {
 export const getGalleryContent = (
 	elements: IWebchatAttachmentElement[] | undefined,
 	isSanitizeEnabled: boolean,
-	customAllowedHtmlTags: string[] = [],
+	customAllowedHtmlTags: string[] | undefined,
 ): GalleryLiveContent[] => {
 	if (!elements || elements.length === 0) {
 		return [];

@@ -11,7 +11,7 @@ import { getWebchatButtonLabel } from "src/utils";
 export const getTextWithButtonsContent = (
 	content: { text: string; buttons: [] },
 	isSanitizeEnabled: boolean,
-	customAllowedHtmlTags: string[] = [],
+	customAllowedHtmlTags: string[] | undefined,
 ): any => {
 	const { text, buttons } = content;
 	const textContent = sanitizeContent(text, isSanitizeEnabled, customAllowedHtmlTags);

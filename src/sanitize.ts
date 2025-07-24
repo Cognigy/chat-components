@@ -248,7 +248,10 @@ export const useSanitize = () => {
 	};
 };
 
-export const sanitizeHTMLWithConfig = (text: string, customAllowedHtmlTags: string[] = []) => {
+export const sanitizeHTMLWithConfig = (
+	text: string,
+	customAllowedHtmlTags: string[] | undefined,
+) => {
 	DOMPurify.addHook("beforeSanitizeElements", (node: Element) => {
 		if (node instanceof HTMLUnknownElement) {
 			const unClosedTag = `<${node.tagName.toLowerCase()}>${node.innerHTML}`;
@@ -260,10 +263,10 @@ export const sanitizeHTMLWithConfig = (text: string, customAllowedHtmlTags: stri
 	// Some texts from Agentic AI starts with a </\w+ closing tag which doesn't go through the hooks. Dompurify will remove them.
 	// The following will avoid is a fallback
 	if (text?.startsWith("</")) return text.replace("<", "&lt;").replace(">", "&gt;");
-	const configToUse =
-		customAllowedHtmlTags && customAllowedHtmlTags.length > 0
-			? { ...config, ALLOWED_TAGS: customAllowedHtmlTags }
-			: config;
+
+	const configToUse = customAllowedHtmlTags
+		? { ...config, ALLOWED_TAGS: customAllowedHtmlTags }
+		: config;
 
 	const result = DOMPurify.sanitize(text, configToUse).toString();
 	DOMPurify.removeAllHooks();
@@ -280,7 +283,7 @@ export const sanitizeHTMLWithConfig = (text: string, customAllowedHtmlTags: stri
 export const sanitizeContent = (
 	content: string | undefined,
 	isSanitizeEnabled: boolean,
-	customAllowedHtmlTags: string[] = [],
+	customAllowedHtmlTags: string[] | undefined,
 ): string => {
 	if (!content) {
 		return "";

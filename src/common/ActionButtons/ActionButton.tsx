@@ -63,7 +63,7 @@ const ActionButton: FC<ActionButtonProps> = props => {
 	if (!buttonType) return null;
 
 	const buttonLabel = getWebchatButtonLabel(button) || "";
-	const customAllowedHtmlTags = config?.settings?.widgetSettings?.customAllowedHtmlTags || [];
+	const customAllowedHtmlTags = config?.settings?.widgetSettings?.customAllowedHtmlTags;
 	const __html = config?.settings?.layout?.disableHtmlContentSanitization
 		? buttonLabel
 		: sanitizeHTMLWithConfig(buttonLabel, customAllowedHtmlTags);
