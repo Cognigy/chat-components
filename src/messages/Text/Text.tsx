@@ -65,8 +65,11 @@ const Text: FC<TextProps> = props => {
 		? displayedText
 		: replaceUrlsWithHTMLanchorElem(displayedText);
 
+	const ignoreSanitization =
+		source === "user" && config?.settings?.widgetSettings?.disableTextInputSanitization;
+
 	// HTML sanitization as needed
-	const sanitizedContent = sanitizeHTML(enhancedURLsText);
+	const sanitizedContent = sanitizeHTML(enhancedURLsText, ignoreSanitization);
 
 	useLiveRegion({
 		messageType: "text",

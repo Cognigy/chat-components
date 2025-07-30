@@ -235,8 +235,8 @@ export const useSanitize = () => {
 	const customAllowedHtmlTags = config?.settings?.widgetSettings?.customAllowedHtmlTags;
 
 	const sanitizeHTML = useCallback(
-		(text: string) => {
-			if (!isSanitizeEnabled) return text;
+		(text: string, ignoreSanitization?: boolean) => {
+			if (!isSanitizeEnabled || ignoreSanitization) return text;
 			return sanitizeHTMLWithConfig(text, customAllowedHtmlTags);
 		},
 		[isSanitizeEnabled, customAllowedHtmlTags],
