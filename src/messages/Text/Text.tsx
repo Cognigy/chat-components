@@ -95,7 +95,7 @@ const Text: FC<TextProps> = props => {
 				<p
 					id={props.id}
 					className={classNames(classes.text, props?.className)}
-					dangerouslySetInnerHTML={{ __html: sanitizedContent }}
+					dangerouslySetInnerHTML={{ __html: processedContent }}
 				/>
 			)}
 			{/* If streaming + animate, show the typed effect */}
