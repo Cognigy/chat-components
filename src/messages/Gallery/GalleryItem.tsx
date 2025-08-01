@@ -26,10 +26,10 @@ const GalleryItem: FC<GallerySlideProps> = props => {
 	} = useMessageContext();
 	const hasExtraInfo = subtitle || (buttons && buttons?.length > 0);
 	const [isImageBroken, setImageBroken] = useState(false);
-	const { sanitizeHTML } = useSanitize();
+	const { processHTML } = useSanitize();
 
-	const titleHtml = sanitizeHTML(title);
-	const subtitleHtml = sanitizeHTML(subtitle);
+	const titleHtml = processHTML(title);
+	const subtitleHtml = processHTML(subtitle);
 
 	const titleId = useRandomId("webchatCarouselTemplateTitle");
 	const subtitleId = useRandomId("webchatCarouselTemplateSubtitle");

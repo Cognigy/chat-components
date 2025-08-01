@@ -901,6 +901,61 @@ const screens: TScreen[] = [
 					},
 				},
 			},
+			{
+				message: {
+					source: "user",
+					text: "User input sanitization with custom allowed tags (only strong): <strong>Bold text</strong> <a href='https://example.com'>Link</a> <img src='https://placewaifu.com/image/100/100' alt='Image'>",
+				},
+				config: {
+					settings: {
+						widgetSettings: {
+							disableTextInputSanitization: false,
+							customAllowedHtmlTags: ["strong"],
+						},
+					},
+				},
+			},
+			{
+				message: {
+					source: "user",
+					text: "User input with sanitization disabled: <strong>Bold text</strong> <a href='https://example.com'>Link</a> <img src='https://placewaifu.com/image/100/100' alt='Image'>",
+				},
+				config: {
+					settings: {
+						widgetSettings: {
+							disableTextInputSanitization: true,
+						},
+					},
+				},
+			},
+			{
+				message: {
+					source: "user",
+					text: "User input with sanitization disabled and custom tags (only strong): <strong>Bold text</strong> <a href='https://example.com'>Link</a> <img src='https://placewaifu.com/image/100/100' alt='Image'>",
+				},
+				config: {
+					settings: {
+						widgetSettings: {
+							disableTextInputSanitization: true,
+							customAllowedHtmlTags: ["strong"],
+						},
+					},
+				},
+			},
+			{
+				message: {
+					source: "bot",
+					text: "Bot text output with input sanitization disabled and custom tags (only strong): <strong>Bold text</strong> <a href='https://example.com'>Link</a> <img src='https://placewaifu.com/image/100/100' alt='Image'>",
+				},
+				config: {
+					settings: {
+						widgetSettings: {
+							disableTextInputSanitization: true,
+							customAllowedHtmlTags: ["strong"],
+						},
+					},
+				},
+			},
 		],
 	},
 ];

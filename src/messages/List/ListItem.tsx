@@ -31,7 +31,7 @@ const ListItem: FC<IListItemProps> = props => {
 
 	const shouldBeDisabled = messageParams?.isConversationEnded;
 
-	const { sanitizeHTML } = useSanitize();
+	const { processHTML } = useSanitize();
 
 	const handleClick = () => {
 		if (shouldBeDisabled || !default_action?.url) return;
@@ -52,8 +52,8 @@ const ListItem: FC<IListItemProps> = props => {
 		}
 	};
 
-	const titleHtml = sanitizeHTML(title);
-	const subtitleHtml = sanitizeHTML(subtitle);
+	const titleHtml = processHTML(title);
+	const subtitleHtml = processHTML(subtitle);
 	const subtitleId = useRandomId("webchatListTemplateHeaderSubtitle");
 
 	const rootClasses = classnames(classes.listItemRoot, isHeaderElement && classes.headerRoot);

@@ -24,7 +24,7 @@ const AdaptiveCard: FC<IAdaptiveCardProps> = props => {
 	const cardRef = useRef<MSAdaptiveCard>(new MSAdaptiveCard());
 	const [speakText, setSpeakText] = useState<string | undefined>(undefined);
 
-	const { sanitizeHTML } = useSanitize();
+	const { processHTML } = useSanitize();
 
 	// Set up the markdown processing with access to config
 	useEffect(() => {
@@ -39,12 +39,12 @@ const AdaptiveCard: FC<IAdaptiveCardProps> = props => {
 		 */
 		MSAdaptiveCard.onProcessMarkdown = (text, result) => {
 			const html = md.render(text);
-			const saneHtml = sanitizeHTML(html);
+			const processedContent = processHTML(html);
 
-			result.outputHtml = saneHtml;
+			result.outputHtml = processedContent;
 			result.didProcess = true;
 		};
-	}, [sanitizeHTML]);
+	}, [processHTML]);
 
 	const executeAction = (action: Action) => {
 		onExecuteAction?.(action);
