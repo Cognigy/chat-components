@@ -25,7 +25,7 @@ interface TextProps {
 
 const Text: FC<TextProps> = props => {
 	const { message, config } = useMessageContext();
-	const { sanitizeHTML } = useSanitize();
+	const { processHTML } = useSanitize();
 
 	const text = message?.text;
 	const source = message?.source;
@@ -69,11 +69,11 @@ const Text: FC<TextProps> = props => {
 		source === "user" && config?.settings?.widgetSettings?.disableTextInputSanitization;
 
 	// HTML sanitization as needed
-	const sanitizedContent = sanitizeHTML(enhancedURLsText, ignoreSanitization);
+	const processedContent = ignoreSanitization ? enhancedURLsText : processHTML(enhancedURLsText);
 
 	useLiveRegion({
 		messageType: "text",
-		data: { text: sanitizedContent },
+		data: { text: processedContent },
 		validation: () => !props.ignoreLiveRegion,
 	});
 
@@ -89,7 +89,7 @@ const Text: FC<TextProps> = props => {
 						a: props => <a target="_blank" rel="noreferrer" {...props} />,
 					}}
 				>
-					{sanitizedContent || displayedText}
+					{processedContent || displayedText}
 				</Markdown>
 			) : (
 				<p

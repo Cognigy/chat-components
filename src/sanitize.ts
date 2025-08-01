@@ -234,16 +234,16 @@ export const useSanitize = () => {
 	const isSanitizeEnabled = !config?.settings?.layout?.disableHtmlContentSanitization;
 	const customAllowedHtmlTags = config?.settings?.widgetSettings?.customAllowedHtmlTags;
 
-	const sanitizeHTML = useCallback(
-		(text: string, ignoreSanitization?: boolean) => {
-			if (!isSanitizeEnabled || ignoreSanitization) return text;
+	const processHTML = useCallback(
+		(text: string) => {
+			if (!isSanitizeEnabled) return text;
 			return sanitizeHTMLWithConfig(text, customAllowedHtmlTags);
 		},
 		[isSanitizeEnabled, customAllowedHtmlTags],
 	);
 
 	return {
-		sanitizeHTML,
+		processHTML,
 		isSanitizeEnabled,
 	};
 };
