@@ -234,7 +234,7 @@ export const useSanitize = () => {
 	const isSanitizeEnabled = !config?.settings?.layout?.disableHtmlContentSanitization;
 	const customAllowedHtmlTags = config?.settings?.widgetSettings?.customAllowedHtmlTags;
 
-	const sanitizeHTML = useCallback(
+	const processHTML = useCallback(
 		(text: string) => {
 			if (!isSanitizeEnabled) return text;
 			return sanitizeHTMLWithConfig(text, customAllowedHtmlTags);
@@ -243,7 +243,7 @@ export const useSanitize = () => {
 	);
 
 	return {
-		sanitizeHTML,
+		processHTML,
 		isSanitizeEnabled,
 	};
 };
