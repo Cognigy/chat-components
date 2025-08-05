@@ -35,7 +35,7 @@ const Video: FC = () => {
 			if (!chatHistory?.contains(document.activeElement)) return;
 
 			setTimeout(() => {
-				player.getInternalPlayer()?.focus();
+				(player.getInternalPlayer() as HTMLVideoElement)?.focus();
 			}, 100);
 		},
 		[config?.settings?.widgetSettings?.enableAutoFocus],
@@ -43,7 +43,7 @@ const Video: FC = () => {
 
 	// Prevent focus loss from video preview button when the video starts playing by focusing the internal player
 	const handleOnStart = () => {
-		const internalPlayer = videoPlayerRef.current?.getInternalPlayer();
+		const internalPlayer = videoPlayerRef.current?.getInternalPlayer() as HTMLVideoElement;
 		internalPlayer?.focus();
 	};
 

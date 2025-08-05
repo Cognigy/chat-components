@@ -3,7 +3,6 @@ import ReactPlayer from "react-player";
 import classes from "./Audio.module.css";
 import classnames from "classnames";
 import Controls from "./Controls";
-import { OnProgressProps } from "react-player/base";
 import { useLiveRegion, useMessageContext } from "src/messages/hooks";
 import { getChannelPayload } from "src/utils";
 import { IWebchatAudioAttachment } from "@cognigy/socket-client";
@@ -28,7 +27,7 @@ const Audio: FC = () => {
 			if (!chatHistory?.contains(document.activeElement)) return;
 
 			setTimeout(() => {
-				player.getInternalPlayer()?.focus();
+				(player.getInternalPlayer() as HTMLVideoElement)?.focus();
 			}, 100);
 		},
 		[config?.settings?.widgetSettings?.enableAutoFocus],
@@ -42,7 +41,7 @@ const Audio: FC = () => {
 		setPlaying(false);
 	}, []);
 
-	const handleProgress = useCallback((state: OnProgressProps) => {
+	const handleProgress = useCallback((state: any) => {
 		setProgress(state.played);
 	}, []);
 
