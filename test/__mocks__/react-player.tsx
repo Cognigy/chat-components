@@ -114,10 +114,7 @@ const ReactPlayer = forwardRef<MockReactPlayerHandle, MockReactPlayerProps>((pro
 	// Helper to emit progress callback.
 	const emitProgress = () => {
 		if (onProgress) {
-			const playedFraction = Math.min(
-				1,
-				currentTimeRef.current / DEFAULT_DURATION_SECONDS,
-			);
+			const playedFraction = Math.min(1, currentTimeRef.current / DEFAULT_DURATION_SECONDS);
 			onProgress({ played: playedFraction });
 		}
 	};
@@ -181,15 +178,9 @@ const ReactPlayer = forwardRef<MockReactPlayerHandle, MockReactPlayerProps>((pro
 	 */
 	const isVideo = props.url?.match(/\.(mp4|webm|ogg|mov)$/i);
 	const mediaElement = isVideo ? (
-		<video
-			data-testid="mock-video-element"
-			style={{ display: playing ? "block" : "none" }}
-		/>
+		<video data-testid="mock-video-element" style={{ display: playing ? "block" : "none" }} />
 	) : (
-		<audio
-			data-testid="mock-audio-element"
-			style={style || { display: "none" }}
-		/>
+		<audio data-testid="mock-audio-element" style={style || { display: "none" }} />
 	);
 
 	return (
