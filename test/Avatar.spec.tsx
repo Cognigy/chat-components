@@ -1,9 +1,10 @@
 import { render, waitFor, screen } from "@testing-library/react";
 import { it, describe, expect } from "vitest";
 import Message from "src/messages/Message";
+import placeholderAvatar from "src/assets/svg/avatar_placeholder.svg";
 
 describe("Avatars", () => {
-	const defaultAgentAvatarUrl = "/src/assets/svg/avatar_placeholder.svg";
+	const defaultAgentAvatarUrl = placeholderAvatar;
 	const customAvatarUrl = "https://placewaifu/image/100/100";
 	const agentAvatarOverrideUrlOnce = "https://placewaifu/image/300/300";
 
