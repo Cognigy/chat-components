@@ -95,7 +95,7 @@ const AdaptiveCard: FC<IAdaptiveCardProps> = props => {
 
 	useLiveRegion({
 		messageType: "adaptiveCard",
-		data: { speakText },
+		data: { speakText: speakText as string },
 		validation: () => !!speakText,
 	});
 

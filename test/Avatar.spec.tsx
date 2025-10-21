@@ -2,6 +2,7 @@ import { render, waitFor, screen } from "@testing-library/react";
 import { it, describe, expect } from "vitest";
 import Message from "src/messages/Message";
 import placeholderAvatar from "src/assets/svg/avatar_placeholder.svg";
+import type { IMessage } from "@cognigy/socket-client";
 
 describe("Avatars", () => {
 	const defaultAgentAvatarUrl = placeholderAvatar;
@@ -19,19 +20,7 @@ describe("Avatars", () => {
 		text: "avatarUrl",
 	};
 
-	interface TestMessage {
-		source: "agent";
-		text: string;
-		avatarUrl?: string;
-		data?: {
-			_webchat?: {
-				agentAvatarOverrideUrlOnce?: string;
-				agentAvatarOverrideNameOnce?: string;
-			};
-		};
-	}
-
-	const messageAvatarOverride: TestMessage = {
+	const messageAvatarOverride = {
 		avatarUrl: customAvatarUrl,
 		source: "agent" as const,
 		text: "_webchat",
@@ -40,8 +29,8 @@ describe("Avatars", () => {
 				agentAvatarOverrideUrlOnce,
 				agentAvatarOverrideNameOnce: "Agent Smith",
 			},
-		},
-	};
+		} as any,
+	} as unknown as IMessage;
 
 	it("shows placeholder avatar for agent by default", async () => {
 		await waitFor(() => {

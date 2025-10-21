@@ -14,7 +14,7 @@ const File: FC = props => {
 
 	useLiveRegion({
 		messageType: "file",
-		data: { text, attachments },
+		data: { text: text ?? "", attachments: attachments ?? [] },
 		validation: () => !!attachments && attachments.length > 0,
 	});
 

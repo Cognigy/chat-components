@@ -6,6 +6,8 @@ interface TextWithButtonsContent {
 	buttonLabels: string[];
 }
 
+type ActionButtonLike = Parameters<typeof getWebchatButtonLabel>[0];
+
 /**
  * Get text and buttons in the message, to be used during live region announcement.
  * @param content - The data containing text and buttons.
@@ -14,7 +16,7 @@ interface TextWithButtonsContent {
  * @returns An array of objects containing slide text and button labels.
  */
 export const getTextWithButtonsContent = (
-	content: { text: string; buttons: unknown[] },
+	content: { text: string; buttons: ActionButtonLike[] },
 	isSanitizeEnabled: boolean,
 	customAllowedHtmlTags: string[] | undefined,
 ): TextWithButtonsContent => {

@@ -18,7 +18,7 @@ const XAppSubmitMessage = () => {
 
 	useLiveRegion({
 		messageType: "event",
-		data: { dataMessageId },
+		data: { dataMessageId: dataMessageId ?? "" },
 		validation: () => !!dataMessageId,
 	});
 

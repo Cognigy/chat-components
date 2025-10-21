@@ -43,8 +43,8 @@ const Video: FC = () => {
 
 	// Prevent focus loss from video preview button when the video starts playing by focusing the internal player
 	const handleOnStart = () => {
-		const internalPlayer = videoPlayerRef.current?.getInternalPlayer();
-		internalPlayer?.focus();
+		const internalPlayer = videoPlayerRef.current?.getInternalPlayer?.();
+		internalPlayer?.focus?.();
 	};
 
 	// Play/Pause video on Enter/Space key press

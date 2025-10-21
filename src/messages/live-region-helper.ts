@@ -16,16 +16,16 @@ export type MessageType =
 	| "adaptiveCard"
 	| "custom";
 
-type TTextData = { text: string };
-type TTextWithButtonsData = { text: string; buttons: string[] };
-type TGalleryData = { slides: { slideText?: string; buttonLabels?: string[] }[] };
+type TTextData = { text?: string };
+type TTextWithButtonsData = { text?: string; buttons?: string[] };
+type TGalleryData = { slides?: { slideText?: string; buttonLabels?: string[] }[] };
 type TListData = { [key: string]: string };
-type TImageData = { altText: string; isDownloadable: boolean };
-type TVideoData = { hasTranscript: boolean; hasCaptions: boolean };
-type TAudioData = { hasTranscript: boolean };
-type TFileData = { text: string; attachments: IUploadFileAttachmentData[] };
-type TEventData = { dataMessageId: string };
-type TAdaptiveCardData = { speakText: string };
+type TImageData = { altText?: string; isDownloadable?: boolean };
+type TVideoData = { hasTranscript?: boolean; hasCaptions?: boolean };
+type TAudioData = { hasTranscript?: boolean };
+type TFileData = { text?: string; attachments?: IUploadFileAttachmentData[] };
+type TEventData = { dataMessageId?: string };
+type TAdaptiveCardData = { speakText?: string };
 
 type MessageData =
 	| TTextData
@@ -91,7 +91,7 @@ const getTextContent = (data: TTextData) => {
 };
 
 const getTextWithButtonsContent = (data: TTextWithButtonsData, config?: IWebchatConfig) => {
-	const { text, buttons } = data;
+	const { text, buttons = [] } = data;
 	const textWithButtonsAriaLabel =
 		config?.settings.customTranslations?.ariaLabels?.buttonGroupLabel ?? "Available actions:";
 	if (text && buttons.length > 0) {
@@ -230,18 +230,22 @@ const getAudioContent = (data: TAudioData, config?: IWebchatConfig) => {
 
 const getFileContent = (data: TFileData, config?: IWebchatConfig) => {
 	const { text, attachments } = data;
+	const safeAttachments = attachments ?? [];
+	if (!safeAttachments.length) {
+		return text || undefined;
+	}
 	const singleFileContentAriaLabel =
 		config?.settings.customTranslations?.ariaLabels?.fileContent?.singleFile ??
 		"A {type} named '{fileName}' with size {sizeLabel}.";
 	const multipleFilesContentAriaLabel =
 		config?.settings.customTranslations?.ariaLabels?.fileContent?.multipleFiles ??
 		"File {index}: '{fileName}', size {sizeLabel}.";
-	if (attachments.length === 1) {
-		const { fileName, size, mimeType } = attachments[0];
+	if (safeAttachments.length === 1) {
+		const { fileName, size, mimeType } = safeAttachments[0];
 		const sizeLabel = getSizeLabel(size);
 		const type = isImageAttachment(mimeType) ? "image" : "file";
 		return (
-			`${text}.` +
+			`${text ? text + "." : ""}` +
 			interpolateString(singleFileContentAriaLabel, {
 				type,
 				fileName,
@@ -250,7 +254,7 @@ const getFileContent = (data: TFileData, config?: IWebchatConfig) => {
 		);
 	}
 
-	return `${text}. ${attachments.length} files. ${attachments
+	return `${text ? text + ". " : ""}${safeAttachments.length} files. ${safeAttachments
 		.map((attachment, index) =>
 			interpolateString(multipleFilesContentAriaLabel, {
 				index: `${index + 1}`,

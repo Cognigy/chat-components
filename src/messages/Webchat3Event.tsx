@@ -7,7 +7,7 @@ const Webchat3Event: FC = () => {
 
 	useLiveRegion({
 		messageType: "event",
-		data: { dataMessageId },
+		data: { dataMessageId: dataMessageId ?? "" },
 		validation: () => !!dataMessageId,
 	});
 
