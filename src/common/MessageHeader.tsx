@@ -13,6 +13,11 @@ interface MessageHeaderProps {
 	className?: string;
 }
 
+interface WebchatOverrides {
+	agentAvatarOverrideNameOnce?: string;
+	botAvatarOverrideNameOnce?: string;
+}
+
 /**
  * Message Header consists of:
  * - Avatar (optional)
@@ -42,7 +47,8 @@ const MessageHeader: FC<MessageHeaderProps> = props => {
 
 	const recievedAt = message?.timestamp ? Number(message.timestamp) : Date.now();
 
-	const overrides = (message?.data as any)?._webchat || {};
+	const overrides: WebchatOverrides =
+		(message?.data as { _webchat?: WebchatOverrides })?._webchat || {};
 
 	let name = message?.avatarName || (isAgentMessage ? "Agent" : "Bot");
 

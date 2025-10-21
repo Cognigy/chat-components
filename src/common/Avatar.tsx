@@ -4,6 +4,11 @@ import classnames from "classnames";
 import { useMessageContext } from "src/messages/hooks";
 import botAvatar from "src/assets/svg/avatar_bot.svg";
 import placeholderAvatar from "src/assets/svg/avatar_placeholder.svg";
+interface WebchatAvatarOverrides {
+	agentAvatarOverrideUrlOnce?: string;
+	botAvatarOverrideUrlOnce?: string;
+}
+
 interface AvatarProps {
 	className?: string;
 }
@@ -12,7 +17,8 @@ const Avatar: FC<AvatarProps> = props => {
 	const { message } = useMessageContext();
 	const [avatarUrl, setAvatarUrl] = useState(placeholderAvatar);
 
-	const overrides = (message?.data as any)?._webchat || {};
+	const overrides: WebchatAvatarOverrides =
+		(message?.data as { _webchat?: WebchatAvatarOverrides })?._webchat || {};
 
 	useEffect(() => {
 		if (overrides.agentAvatarOverrideUrlOnce) {

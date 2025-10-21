@@ -8,10 +8,24 @@ import classes from "./ActionButton.module.css";
 import { LinkIcon } from "src/assets/svg";
 import { MessageProps, Typography } from "src/index";
 
+type NormalizedActionButton = {
+	type?: string;
+	content_type?: string;
+	contentType?: string;
+	title?: string;
+	payload?: string;
+	url?: string;
+	target?: string;
+	image_url?: string;
+	imageUrl?: string;
+	image_alt_text?: string;
+	imageAltText?: string;
+};
+
 interface ActionButtonProps extends React.HTMLAttributes<HTMLButtonElement> {
 	action?: ActionButtonsProps["action"];
 	className?: string;
-	button: ActionButtonsProps["payload"][number];
+	button: ActionButtonsProps["payload"][number] & NormalizedActionButton;
 	total: number;
 	position: number;
 	disabled?: boolean;
@@ -42,14 +56,7 @@ const ActionButton: FC<ActionButtonProps> = props => {
 		dataMessageId,
 	} = props;
 
-	const buttonType =
-		"type" in button
-			? button.type
-			: "content_type" in button
-				? button.content_type
-				: "contentType" in button
-					? (button as any).contentType
-					: null;
+	const buttonType = button.type ?? button.content_type ?? button.contentType ?? null;
 
 	const buttonImage =
 		"image_url" in button ? button.image_url : "imageUrl" in button ? button.imageUrl : null;

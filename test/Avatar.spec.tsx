@@ -19,7 +19,19 @@ describe("Avatars", () => {
 		text: "avatarUrl",
 	};
 
-	const messageAvatarOverride = {
+	interface TestMessage {
+		source: "agent";
+		text: string;
+		avatarUrl?: string;
+		data?: {
+			_webchat?: {
+				agentAvatarOverrideUrlOnce?: string;
+				agentAvatarOverrideNameOnce?: string;
+			};
+		};
+	}
+
+	const messageAvatarOverride: TestMessage = {
 		avatarUrl: customAvatarUrl,
 		source: "agent" as const,
 		text: "_webchat",
@@ -29,7 +41,7 @@ describe("Avatars", () => {
 				agentAvatarOverrideNameOnce: "Agent Smith",
 			},
 		},
-	} as any;
+	};
 
 	it("shows placeholder avatar for agent by default", async () => {
 		await waitFor(() => {

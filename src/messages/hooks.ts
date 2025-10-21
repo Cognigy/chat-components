@@ -29,7 +29,7 @@ function useCollation(): CollateMessage | undefined {
 // Custom hook for setting the live region text for the screen reader when new messages arrive
 interface IUseLiveRegionProps {
 	messageType: MessageType;
-	data: any;
+	data: unknown;
 	validation?: () => boolean;
 }
 

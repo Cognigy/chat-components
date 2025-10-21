@@ -1,5 +1,6 @@
 import React, {
 	useEffect,
+	useCallback,
 	useImperativeHandle,
 	useRef,
 	forwardRef,
@@ -40,7 +41,7 @@ interface MockReactPlayerProps {
 	height?: string | number;
 	style?: CSSProperties;
 	playIcon?: ReactNode;
-	onReady?: (player: any) => void;
+	onReady?: (player: { getInternalPlayer: () => { focus: () => void } }) => void;
 	onStart?: () => void;
 	onPlay?: () => void;
 	onPause?: () => void;
@@ -49,7 +50,7 @@ interface MockReactPlayerProps {
 	onClickPreview?: () => void;
 	progressInterval?: number; // seconds (original library uses ms granularity)
 	previewTabIndex?: number;
-	config?: any;
+	config?: Record<string, unknown>;
 }
 
 export interface MockReactPlayerHandle {
@@ -108,16 +109,16 @@ const ReactPlayer = forwardRef<MockReactPlayerHandle, MockReactPlayerProps>((pro
 				return currentTimeRef.current;
 			},
 		}),
-		[],
+		[emitProgress],
 	);
 
-	// Helper to emit progress callback.
-	const emitProgress = () => {
+	// Helper to emit progress callback (stable across renders).
+	const emitProgress = useCallback(() => {
 		if (onProgress) {
 			const playedFraction = Math.min(1, currentTimeRef.current / DEFAULT_DURATION_SECONDS);
 			onProgress({ played: playedFraction });
 		}
-	};
+	}, [onProgress, currentTimeRef]);
 
 	// Simulate duration event once on mount.
 	useEffect(() => {
@@ -128,7 +129,7 @@ const ReactPlayer = forwardRef<MockReactPlayerHandle, MockReactPlayerProps>((pro
 				focus: () => {},
 			}),
 		});
-	}, []);
+	}, [onDuration, onReady]);
 
 	// Start / stop progress timer based on playing state.
 	useEffect(() => {
@@ -144,7 +145,7 @@ const ReactPlayer = forwardRef<MockReactPlayerHandle, MockReactPlayerProps>((pro
 					currentTimeRef.current += progressInterval;
 					if (currentTimeRef.current > DEFAULT_DURATION_SECONDS) {
 						currentTimeRef.current = DEFAULT_DURATION_SECONDS;
-						clearInterval(progressTimerRef.current as NodeJS.Timeout);
+						clearInterval(progressTimerRef.current);
 						progressTimerRef.current = null;
 					}
 					emitProgress();
@@ -163,7 +164,7 @@ const ReactPlayer = forwardRef<MockReactPlayerHandle, MockReactPlayerProps>((pro
 				progressTimerRef.current = null;
 			}
 		};
-	}, [playing]);
+	}, [playing, onPlay, onPause, onStart, progressInterval, emitProgress]);
 
 	// Clicking preview should trigger provided onClickPreview.
 	const handlePreviewClick = () => {
