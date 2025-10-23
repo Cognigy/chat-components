@@ -20,7 +20,7 @@ import globals from "globals";
 export default [
 	// Ignore patterns
 	{
-		ignores: ["dist", ".eslintrc.cjs"],
+		ignores: ["dist"],
 	},
 
 	// Base JS recommended rules (apply to all files)
