@@ -83,7 +83,17 @@ const ReactPlayer = forwardRef<MockReactPlayerHandle, MockReactPlayerProps>((pro
 
 	const startedRef = useRef(false);
 	const currentTimeRef = useRef(0);
-	const progressTimerRef = useRef<ReturnType<typeof setInterval> | null>(null);
+
+	// Use number for broad compatibility (jsdom & browser). Node's Timeout also works with clearInterval via narrowing.
+	const progressTimerRef = useRef<number | ReturnType<typeof setInterval> | null>(null);
+
+	// Helper to emit progress callback (declared before useImperativeHandle to avoid "used before declared" diagnostics).
+	const emitProgress = useCallback(() => {
+		if (onProgress) {
+			const playedFraction = Math.min(1, currentTimeRef.current / DEFAULT_DURATION_SECONDS);
+			onProgress({ played: playedFraction });
+		}
+	}, [onProgress]);
 
 	// Imperative handle mimicking react-player API used by code.
 	useImperativeHandle(
@@ -112,18 +122,9 @@ const ReactPlayer = forwardRef<MockReactPlayerHandle, MockReactPlayerProps>((pro
 		[emitProgress],
 	);
 
-	// Helper to emit progress callback (stable across renders).
-	const emitProgress = useCallback(() => {
-		if (onProgress) {
-			const playedFraction = Math.min(1, currentTimeRef.current / DEFAULT_DURATION_SECONDS);
-			onProgress({ played: playedFraction });
-		}
-	}, [onProgress, currentTimeRef]);
-
-	// Simulate duration event once on mount.
+	// Simulate duration event once on mount + onReady.
 	useEffect(() => {
 		onDuration?.(DEFAULT_DURATION_SECONDS);
-		// Call onReady once mounted with ref handle
 		onReady?.({
 			getInternalPlayer: () => ({
 				focus: () => {},
@@ -145,8 +146,10 @@ const ReactPlayer = forwardRef<MockReactPlayerHandle, MockReactPlayerProps>((pro
 					currentTimeRef.current += progressInterval;
 					if (currentTimeRef.current > DEFAULT_DURATION_SECONDS) {
 						currentTimeRef.current = DEFAULT_DURATION_SECONDS;
-						clearInterval(progressTimerRef.current);
-						progressTimerRef.current = null;
+						if (progressTimerRef.current) {
+							clearInterval(progressTimerRef.current);
+							progressTimerRef.current = null;
+						}
 					}
 					emitProgress();
 				}, progressInterval * 1000);
