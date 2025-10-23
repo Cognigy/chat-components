@@ -27,7 +27,7 @@ type TFileData = { text?: string; attachments?: IUploadFileAttachmentData[] };
 type TEventData = { dataMessageId?: string };
 type TAdaptiveCardData = { speakText?: string };
 
-type MessageData =
+export type MessageData =
 	| TTextData
 	| TTextWithButtonsData
 	| TGalleryData

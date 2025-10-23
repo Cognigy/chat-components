@@ -2,8 +2,7 @@ import { useContext, useState, useEffect, useRef } from "react";
 import { MessageContext } from "./context.tsx";
 import { CollateMessage, getRandomId } from "src/utils.ts";
 import { CollationContext } from "./collation.tsx";
-import { getLiveRegionContent, MessageType } from "./live-region-helper.ts";
-import type { IUploadFileAttachmentData } from "@cognigy/socket-client";
+import { getLiveRegionContent, MessageType, MessageData } from "./live-region-helper.ts";
 
 function useMessageContext() {
 	const state = useContext(MessageContext);
@@ -28,22 +27,11 @@ function useCollation(): CollateMessage | undefined {
 }
 
 // Custom hook for setting the live region text for the screen reader when new messages arrive
-interface LiveRegionMessageData {
-	text?: string;
-	buttons?: string[];
-	slides?: { slideText?: string; buttonLabels?: string[] }[];
-	altText?: string;
-	isDownloadable?: boolean;
-	hasTranscript?: boolean;
-	hasCaptions?: boolean;
-	attachments?: IUploadFileAttachmentData[];
-	speakText?: string;
-	dataMessageId?: string;
-}
+// Using MessageData imported from live-region-helper.ts
 
 interface IUseLiveRegionProps {
 	messageType: MessageType;
-	data: LiveRegionMessageData;
+	data: MessageData;
 	validation?: () => boolean;
 }
 
@@ -59,7 +47,7 @@ const useLiveRegion = ({ messageType, data, validation }: IUseLiveRegionProps) =
 	useEffect(() => {
 		if (validation && !validation()) return;
 
-		const messageContent = getLiveRegionContent(messageType, data as any, config);
+		const messageContent = getLiveRegionContent(messageType, data, config);
 
 		const liveRegionContent =
 			headerInfo !== null ? `${headerInfo} ${messageContent}` : messageContent;

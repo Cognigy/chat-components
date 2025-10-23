@@ -29,7 +29,7 @@ describe("Avatars", () => {
 				agentAvatarOverrideUrlOnce,
 				agentAvatarOverrideNameOnce: "Agent Smith",
 			},
-		} as any,
+		} as Record<string, unknown>,
 	} as unknown as IMessage;
 
 	it("shows placeholder avatar for agent by default", async () => {
