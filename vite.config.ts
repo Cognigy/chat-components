@@ -18,11 +18,7 @@ export default defineConfig({
 	test: {
 		environment: "jsdom",
 		globals: true,
-		browser: {
-			name: "chrome",
-			enabled: true,
-			headless: true,
-		},
+		// Removed browser configuration due to unsupported headless preview provider error
 		setupFiles: ["./test/preSetup.js", "./test/setup.js"],
 		css: {
 			modules: {
@@ -34,8 +30,8 @@ export default defineConfig({
 			: "default",
 	},
 	build: {
-		target: "modules", // = es2020 edge88 firefox78 chrome87 safari14 (vite 4.4.5)
-		sourcemap: true,
+		target: "es2020",
+		sourcemap: "hidden",
 		minify: false,
 		lib: {
 			entry: "src/index.ts",
@@ -46,6 +42,7 @@ export default defineConfig({
 			external: ["react", "react-dom"],
 			output: {
 				format: "es",
+				inlineDynamicImports: true,
 				globals: {
 					react: "React",
 					"react-dom": "ReactDOM",
@@ -57,6 +54,10 @@ export default defineConfig({
 		alias: {
 			src: "/src",
 			test: "/test",
+			// Use local mock for react-player during Vitest runs
+			"react-player": process.env.VITEST
+				? "/test/__mocks__/react-player.tsx"
+				: "react-player",
 		},
 	},
 });

@@ -36,7 +36,7 @@ const ImageThumb = forwardRef((_props, ref) => {
 		config?.settings.customTranslations?.ariaLabels?.viewImageInFullsize ||
 		"View full-size image";
 
-	useLiveRegion({ messageType: "image", data: { isDownloadable, altText } });
+	useLiveRegion({ messageType: "image", data: { isDownloadable, altText: altText ?? "" } });
 
 	return (
 		<div className={wrapperClasses}>

@@ -252,7 +252,7 @@ export const sanitizeHTMLWithConfig = (
 	text: string,
 	customAllowedHtmlTags: string[] | undefined,
 ) => {
-	DOMPurify.addHook("beforeSanitizeElements", (node: Element) => {
+	DOMPurify.addHook("beforeSanitizeElements", (node: unknown) => {
 		if (node instanceof HTMLUnknownElement) {
 			const unClosedTag = `<${node.tagName.toLowerCase()}>${node.innerHTML}`;
 			const closedTag = `<${node.tagName.toLowerCase()}>${node.innerHTML}</${node.tagName.toLowerCase()}>`;

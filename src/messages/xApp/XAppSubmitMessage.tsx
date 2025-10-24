@@ -3,15 +3,22 @@ import { useLiveRegion, useMessageContext } from "../hooks";
 
 import type { IPluginXAppSubmit } from "@cognigy/socket-client/lib/interfaces/messageData";
 
+interface XAppSubmitPluginData {
+	success?: boolean;
+	text?: string;
+}
+
 const XAppSubmitMessage = () => {
 	const { message, "data-message-id": dataMessageId } = useMessageContext();
 
-	// TODO remove any after socket-client update
-	const { success, text } = (message?.data?._plugin as IPluginXAppSubmit as any)?.data || {};
+	const plugin = message?.data?._plugin as IPluginXAppSubmit | undefined;
+	const pluginData =
+		(plugin?.data ? (plugin.data as unknown as XAppSubmitPluginData) : undefined) || {};
+	const { success, text } = pluginData;
 
 	useLiveRegion({
 		messageType: "event",
-		data: { dataMessageId },
+		data: { dataMessageId: dataMessageId ?? "" },
 		validation: () => !!dataMessageId,
 	});
 

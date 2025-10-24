@@ -1,4 +1,4 @@
-import { CSSProperties, FC, ReactNode } from "react";
+import { CSSProperties, FC, JSX, ReactNode } from "react";
 import classes from "./Typography.module.css";
 import classnames from "classnames";
 

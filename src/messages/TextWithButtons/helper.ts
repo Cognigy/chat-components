@@ -1,6 +1,13 @@
 import { sanitizeContent } from "src/sanitize";
 import { getWebchatButtonLabel } from "src/utils";
 
+interface TextWithButtonsContent {
+	textContent: string;
+	buttonLabels: string[];
+}
+
+type ActionButtonLike = Parameters<typeof getWebchatButtonLabel>[0];
+
 /**
  * Get text and buttons in the message, to be used during live region announcement.
  * @param content - The data containing text and buttons.
@@ -9,10 +16,10 @@ import { getWebchatButtonLabel } from "src/utils";
  * @returns An array of objects containing slide text and button labels.
  */
 export const getTextWithButtonsContent = (
-	content: { text: string; buttons: [] },
+	content: { text: string; buttons: ActionButtonLike[] },
 	isSanitizeEnabled: boolean,
 	customAllowedHtmlTags: string[] | undefined,
-): any => {
+): TextWithButtonsContent => {
 	const { text, buttons } = content;
 	const textContent = sanitizeContent(text, isSanitizeEnabled, customAllowedHtmlTags);
 
@@ -25,7 +32,7 @@ export const getTextWithButtonsContent = (
 				customAllowedHtmlTags,
 			);
 
-			return sanitizedButtonLabel;
+			return sanitizedButtonLabel || "";
 		}) || [];
 
 	return { textContent, buttonLabels };
