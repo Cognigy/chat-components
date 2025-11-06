@@ -2,7 +2,7 @@ import { FC, useEffect, useMemo } from "react";
 import { useLiveRegion, useMessageContext, useRandomId } from "src/messages/hooks";
 import classes from "./Gallery.module.css";
 import classnames from "classnames";
-import { getChannelPayload } from "src/utils";
+import { getChannelPayload, interpolateString } from "src/utils";
 import { getGalleryContent } from "./helper";
 import { ArrowBack as ArrowNavIcon } from "src/assets/svg";
 import { Navigation, Pagination, A11y } from "swiper/modules";
@@ -14,6 +14,7 @@ const Gallery: FC = () => {
 	const { message, config, "data-message-id": dataMessageId } = useMessageContext();
 	const isSanitizeEnabled = !config?.settings?.layout?.disableHtmlContentSanitization;
 	const customAllowedHtmlTags = config?.settings?.widgetSettings?.customAllowedHtmlTags;
+	const { slide, actionButtonPositionText } = config?.settings.customTranslations?.ariaLabels || {};
 
 	const payload = getChannelPayload(message, config);
 	const { elements } =
@@ -58,6 +59,24 @@ const Gallery: FC = () => {
 		[elements, isSanitizeEnabled, customAllowedHtmlTags],
 	);
 
+	// Aria label for each slide in the gallery
+	const slideLabelMessage = useMemo(() => {
+		if (!slide || !actionButtonPositionText) {
+			return "Slide {{index}} of {{slidesLength}}";
+		}
+
+		const customSlidePosition = interpolateString(
+			`${slide}: ${actionButtonPositionText}`,
+			{
+				position: "{{index}}",
+				total: "{{slidesLength}}",
+			}
+		);
+
+		return customSlidePosition;
+
+	}, [slide, actionButtonPositionText]);
+
 	useLiveRegion({
 		messageType: "gallery",
 		data: { slides },
@@ -85,7 +104,7 @@ const Gallery: FC = () => {
 			pagination={{ clickable: true }}
 			className={classnames("webchat-carousel-template-root", classes.wrapper)}
 			data-testid="gallery-message"
-			a11y={{ slideLabelMessage: `Slide {{index}} of {{slidesLength}}` }}
+			a11y={{ slideLabelMessage }}
 		>
 			{elements.map((element: IWebchatAttachmentElement, i: number) => (
 				<SwiperSlide key={i} style={{ width: "206px" }}>
