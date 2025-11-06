@@ -14,7 +14,8 @@ const Gallery: FC = () => {
 	const { message, config, "data-message-id": dataMessageId } = useMessageContext();
 	const isSanitizeEnabled = !config?.settings?.layout?.disableHtmlContentSanitization;
 	const customAllowedHtmlTags = config?.settings?.widgetSettings?.customAllowedHtmlTags;
-	const { slide, actionButtonPositionText } = config?.settings.customTranslations?.ariaLabels || {};
+	const { slide, actionButtonPositionText } =
+		config?.settings.customTranslations?.ariaLabels || {};
 
 	const payload = getChannelPayload(message, config);
 	const { elements } =
@@ -65,16 +66,12 @@ const Gallery: FC = () => {
 			return "Slide {{index}} of {{slidesLength}}";
 		}
 
-		const customSlidePosition = interpolateString(
-			`${slide}: ${actionButtonPositionText}`,
-			{
-				position: "{{index}}",
-				total: "{{slidesLength}}",
-			}
-		);
+		const customSlidePosition = interpolateString(`${slide}: ${actionButtonPositionText}`, {
+			position: "{{index}}",
+			total: "{{slidesLength}}",
+		});
 
 		return customSlidePosition;
-
 	}, [slide, actionButtonPositionText]);
 
 	useLiveRegion({
