@@ -567,6 +567,58 @@ const screens: TScreen[] = [
 					source: "bot",
 				},
 			},
+			{
+				config: {
+					settings: {
+						behavior: {
+							renderMarkdown: true,
+						},
+					},
+				},
+				message: {
+					source: "bot",
+					text: ["[Markdown Link](https://google.com)\n"],
+				},
+			},
+			{
+				config: {
+					settings: {
+						behavior: {
+							renderMarkdown: true,
+						},
+					},
+				},
+				message: {
+					source: "bot",
+					text: "<a style='color: green' href='https://google.com'>HTML Link with green color</a>\n",
+				},
+			},
+			{
+				config: {
+					settings: {
+						behavior: {
+							renderMarkdown: true,
+						},
+					},
+				},
+				message: {
+					source: "bot",
+					text: "## Heading \n <a href='tel:+491771112233'>Tel: link</a>\n",
+				},
+			},
+			{
+				config: {
+					settings: {
+						behavior: {
+							renderMarkdown: true,
+						},
+					},
+				},
+				message: {
+					source: "bot",
+					text: "## [Tel: Link in Markdown Header](tel:000000)\n",
+				},
+			},
 		],
 	},
 	{

@@ -227,6 +227,7 @@ export const allowedHtmlAttributes = [
 const config: Config = {
 	ALLOWED_TAGS: allowedHtmlTags,
 	ALLOWED_ATTR: allowedHtmlAttributes,
+	ALLOWED_URI_REGEXP: /^(?:(?:https?|mailto|tel):|[^a-z]|[a-z+.-]+(?:[^a-z+.-]|$))/i,
 };
 
 export const useSanitize = () => {
