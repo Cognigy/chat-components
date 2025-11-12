@@ -15,7 +15,7 @@ const Gallery: FC = () => {
 	const isSanitizeEnabled = !config?.settings?.layout?.disableHtmlContentSanitization;
 	const customAllowedHtmlTags = config?.settings?.widgetSettings?.customAllowedHtmlTags;
 	const { slide, actionButtonPositionText } =
-		config?.settings.customTranslations?.ariaLabels || {};
+		config?.settings?.customTranslations?.ariaLabels || {};
 
 	const payload = getChannelPayload(message, config);
 	const { elements } =
