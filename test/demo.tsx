@@ -754,6 +754,30 @@ const screens: TScreen[] = [
 					animationState: "start",
 				},
 			},
+			{
+				config: {
+					settings: {
+						behavior: {
+							collateStreamedOutputs: true,
+							renderMarkdown: true,
+						},
+					},
+				},
+				message: {
+					text: [
+						"### Did you like our service? <ul><li><input type='checkbox'/> Yes</li><li><input type='checkbox'/> No</li></ul>",
+					],
+					data: {
+						_cognigy: {
+							_messageId: "71e92048-c930-415d-82e1-1bbc21105e5e",
+						},
+					},
+					source: "bot",
+					timestamp: "1701163314138",
+					id: "71e92048-c930-415d-82e1-1bbc21105e5e",
+					animationState: "start",
+				},
+			},
 		],
 	},
 	{
