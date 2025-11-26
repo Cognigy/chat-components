@@ -7,7 +7,9 @@ import { useSanitize } from "src/sanitize";
 import { IStreamingMessage } from "../types";
 import classes from "./Text.module.css";
 import StreamingTextAnimation from "./StreamingTextAnimation";
-import Markdown from "../Text/Markdown";
+import Markdown from "react-markdown";
+import rehypeRaw from "rehype-raw";
+import remarkGfm from "remark-gfm";
 
 interface TextProps {
 	content?: string | string[];
@@ -80,10 +82,13 @@ const Text: FC<TextProps> = props => {
 			{/* Accumulated text */}
 			{renderMarkdown ? (
 				<Markdown
-					processedContent={processedContent}
-					displayedText={displayedText}
 					className={classNames(classes.markdown, props?.markdownClassName)}
-				/>
+					rehypePlugins={[rehypeRaw]}
+					remarkPlugins={[remarkGfm]}
+					urlTransform={url => url}
+				>
+					{processedContent || displayedText}
+				</Markdown>
 			) : (
 				<p
 					id={props.id}
