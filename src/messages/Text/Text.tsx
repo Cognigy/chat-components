@@ -86,6 +86,9 @@ const Text: FC<TextProps> = props => {
 					rehypePlugins={[rehypeRaw]}
 					remarkPlugins={[remarkGfm]}
 					urlTransform={url => url}
+					components={{
+						a: props => <a target="_blank" rel="noreferrer" {...props} />,
+					}}
 				>
 					{processedContent || displayedText}
 				</Markdown>
