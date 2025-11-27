@@ -1,6 +1,7 @@
 import { render, screen } from "@testing-library/react";
 import { describe, test, expect } from "vitest";
 import { Message } from "src/index";
+import { IWebchatConfig } from "src/messages/types";
 
 describe("Text Component", () => {
 	describe("Links", () => {
@@ -77,13 +78,15 @@ describe("Text Component", () => {
 						text: markdownText,
 						source: "bot",
 					}}
-					config={{
-						settings: {
-							behavior: {
-								renderMarkdown: true,
+					config={
+						{
+							settings: {
+								behavior: {
+									renderMarkdown: true,
+								},
 							},
-						},
-					}}
+						} as IWebchatConfig
+					}
 				/>,
 			);
 
@@ -102,13 +105,15 @@ describe("Text Component", () => {
 						text: markdownText,
 						source: "bot",
 					}}
-					config={{
-						settings: {
-							behavior: {
-								renderMarkdown: true,
+					config={
+						{
+							settings: {
+								behavior: {
+									renderMarkdown: true,
+								},
 							},
-						},
-					}}
+						} as IWebchatConfig
+					}
 				/>,
 			);
 
@@ -128,13 +133,15 @@ describe("Text Component", () => {
 						text: markdownText,
 						source: "bot",
 					}}
-					config={{
-						settings: {
-							behavior: {
-								renderMarkdown: true,
+					config={
+						{
+							settings: {
+								behavior: {
+									renderMarkdown: true,
+								},
 							},
-						},
-					}}
+						} as IWebchatConfig
+					}
 				/>,
 			);
 
@@ -156,13 +163,15 @@ describe("Text Component", () => {
 						text: markdownText,
 						source: "bot",
 					}}
-					config={{
-						settings: {
-							behavior: {
-								renderMarkdown: true,
+					config={
+						{
+							settings: {
+								behavior: {
+									renderMarkdown: true,
+								},
 							},
-						},
-					}}
+						} as IWebchatConfig
+					}
 				/>,
 			);
 
