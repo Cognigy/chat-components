@@ -65,4 +65,111 @@ describe("Text Component", () => {
 			expect(textElement).toBeInTheDocument();
 		});
 	});
+
+	describe("Markdown Rendering", () => {
+		test("preserves checkbox input elements when renderMarkdown is true", () => {
+			const markdownText =
+				"### Did you like our service? \n <ul><li><input type='checkbox'/> Yes</li><li><input type='checkbox'/> No</li></ul>";
+
+			const { container } = render(
+				<Message
+					message={{
+						text: markdownText,
+						source: "bot",
+					}}
+					config={{
+						settings: {
+							behavior: {
+								renderMarkdown: true,
+							},
+						},
+					}}
+				/>,
+			);
+
+			// Verify that checkbox input elements are present in the rendered output
+			const checkboxes = container.querySelectorAll("input[type='checkbox']");
+			expect(checkboxes.length).toBe(2);
+		});
+
+		test("preserves text input elements when renderMarkdown is true", () => {
+			const markdownText =
+				"### Feedback Form \n <input type='text' placeholder='Enter your feedback' />";
+
+			const { container } = render(
+				<Message
+					message={{
+						text: markdownText,
+						source: "bot",
+					}}
+					config={{
+						settings: {
+							behavior: {
+								renderMarkdown: true,
+							},
+						},
+					}}
+				/>,
+			);
+
+			// Verify that text input element is present in the rendered output
+			const textInputs = container.querySelectorAll("input[type='text']");
+			expect(textInputs.length).toBe(1);
+			expect(textInputs[0]).toHaveAttribute("placeholder", "Enter your feedback");
+		});
+
+		test("preserves multiple input types in markdown when renderMarkdown is true", () => {
+			const markdownText =
+				"### Did you like our service? \n <ul><li><input type='checkbox'/> Yes</li><li><input type='checkbox'/> No</li></ul> <input type='text' placeholder='Enter a short feedback' label='Additional feedback'/>";
+
+			const { container } = render(
+				<Message
+					message={{
+						text: markdownText,
+						source: "bot",
+					}}
+					config={{
+						settings: {
+							behavior: {
+								renderMarkdown: true,
+							},
+						},
+					}}
+				/>,
+			);
+
+			// Verify that both checkbox and text input elements are present
+			const checkboxes = container.querySelectorAll("input[type='checkbox']");
+			const textInputs = container.querySelectorAll("input[type='text']");
+
+			expect(checkboxes.length).toBe(2);
+			expect(textInputs.length).toBe(1);
+			expect(textInputs[0]).toHaveAttribute("placeholder", "Enter a short feedback");
+		});
+
+		test("renders markdown heading correctly when renderMarkdown is true", () => {
+			const markdownText = "### Test Heading";
+
+			const { container } = render(
+				<Message
+					message={{
+						text: markdownText,
+						source: "bot",
+					}}
+					config={{
+						settings: {
+							behavior: {
+								renderMarkdown: true,
+							},
+						},
+					}}
+				/>,
+			);
+
+			// Verify that markdown heading is rendered as h3 element
+			const heading = container.querySelector("h3");
+			expect(heading).toBeInTheDocument();
+			expect(heading?.textContent).toBe("Test Heading");
+		});
+	});
 });
