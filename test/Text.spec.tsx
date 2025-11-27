@@ -125,7 +125,7 @@ describe("Text Component", () => {
 
 		test("preserves multiple input types in markdown when renderMarkdown is true", () => {
 			const markdownText =
-				"### Did you like our service? \n <ul><li><input type='checkbox'/> Yes</li><li><input type='checkbox'/> No</li></ul> <input type='text' placeholder='Enter a short feedback' label='Additional feedback'/>";
+				"### Did you like our service? \n <ul><li><input type='checkbox'/> Yes</li><li><input type='checkbox'/> No</li></ul> <input type='text' placeholder='Enter a short feedback' aria-label='Additional feedback'/>";
 
 			const { container } = render(
 				<Message
@@ -152,6 +152,7 @@ describe("Text Component", () => {
 			expect(checkboxes.length).toBe(2);
 			expect(textInputs.length).toBe(1);
 			expect(textInputs[0]).toHaveAttribute("placeholder", "Enter a short feedback");
+			expect(textInputs[0]).toHaveAttribute("aria-label", "Additional feedback");
 		});
 
 		test("renders markdown heading correctly when renderMarkdown is true", () => {
