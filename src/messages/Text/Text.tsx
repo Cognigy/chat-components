@@ -87,7 +87,10 @@ const Text: FC<TextProps> = props => {
 					remarkPlugins={[remarkGfm]}
 					urlTransform={url => url}
 					components={{
-						a: props => <a target="_blank" rel="noreferrer" {...props} />,
+						// eslint-disable-next-line @typescript-eslint/no-unused-vars
+						a: ({ node, ...props }) => (
+							<a target="_blank" rel="noreferrer" {...props} />
+						),
 					}}
 				>
 					{processedContent || displayedText}
