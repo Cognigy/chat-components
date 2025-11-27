@@ -31,8 +31,8 @@ describe("Text Component", () => {
 			["https://example.com/search?q=Überlingen"],
 			["https://example.com/search?q=Äpfel"],
 			["https://example.com/Düsseldorf?q=Österreich&lang=de"],
-			["https://example.com/auth?token=123e45$7-e89b-12d3-a456-426614174000"],
-			["https://example.com?token=123e4567-e89b-12d3-a456-426614174000"],
+			["https://example.com/auth?testParam=123e45$7-e89b-12d3-a456-426614174000"],
+			["https://example.com?testParam=123e4567-e89b-12d3-a456-426614174000"],
 		])("renders %s with query parameters in single tag", testString => {
 			render(<Message message={{ text: testString }} />);
 			const textElement = screen.getByText(testString);
@@ -55,7 +55,7 @@ describe("Text Component", () => {
 			"https://müller.com",
 			"http://localhost:8000",
 			"https://user:passw$ord@example.com/müller",
-			"https://user:müller@example.com?token=1838-389484",
+			"https://user:müller@example.com?testParam=1838-389484",
 			"https://www.muller.müler.de/mü$ler",
 			"https://www.muller.mü@ler.de/mü$ler",
 			"https://www.Düsseldorf.gov.de?lang=Düsseldorf",
