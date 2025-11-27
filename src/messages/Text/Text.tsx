@@ -9,24 +9,7 @@ import classes from "./Text.module.css";
 import StreamingTextAnimation from "./StreamingTextAnimation";
 import Markdown from "react-markdown";
 import rehypeRaw from "rehype-raw";
-import rehypeSanitize, { defaultSchema } from "rehype-sanitize";
 import remarkGfm from "remark-gfm";
-
-const schema = {
-	...defaultSchema,
-	attributes: {
-		...defaultSchema.attributes,
-		a: [
-			...(defaultSchema.attributes?.a || []),
-			["href", /.*/], // allow any href
-			["style", /.*/],
-		],
-	},
-	protocols: {
-		...defaultSchema.protocols,
-		href: [...(defaultSchema.protocols?.href || []), "tel"],
-	},
-};
 
 interface TextProps {
 	content?: string | string[];
@@ -100,7 +83,7 @@ const Text: FC<TextProps> = props => {
 			{renderMarkdown ? (
 				<Markdown
 					className={classNames(classes.markdown, props?.markdownClassName)}
-					rehypePlugins={[rehypeRaw, [rehypeSanitize, schema]]}
+					rehypePlugins={[rehypeRaw]}
 					remarkPlugins={[remarkGfm]}
 					urlTransform={url => url}
 					components={{

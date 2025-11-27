@@ -460,7 +460,7 @@ const screens: TScreen[] = [
 			{
 				message: {
 					source: "bot",
-					text: "This message should not overflow and should get hard breaks: https://static.test?token=d4567f11cffa23a49b2190355b956da8de46fcbc7817d3ce3708d6bddabc0bfd",
+					text: "This message should not overflow and should get hard breaks: https://static.test?testParam=123456789123456789&anotherParam=9876543219876543210123456789",
 				},
 			},
 			{
@@ -578,58 +578,6 @@ const screens: TScreen[] = [
 				message: {
 					text: "</loading>\n",
 					source: "bot",
-				},
-			},
-			{
-				config: {
-					settings: {
-						behavior: {
-							renderMarkdown: true,
-						},
-					},
-				},
-				message: {
-					source: "bot",
-					text: ["[Markdown Link](https://google.com)\n"],
-				},
-			},
-			{
-				config: {
-					settings: {
-						behavior: {
-							renderMarkdown: true,
-						},
-					},
-				},
-				message: {
-					source: "bot",
-					text: "<a style='color: green' href='https://google.com'>HTML Link with green color</a>\n",
-				},
-			},
-			{
-				config: {
-					settings: {
-						behavior: {
-							renderMarkdown: true,
-						},
-					},
-				},
-				message: {
-					source: "bot",
-					text: "## Heading \n <a href='tel:+491771112233'>Tel: link</a>\n",
-				},
-			},
-			{
-				config: {
-					settings: {
-						behavior: {
-							renderMarkdown: true,
-						},
-					},
-				},
-				message: {
-					source: "bot",
-					text: "## [Tel: Link in Markdown Header](tel:000000)\n",
 				},
 			},
 		],
@@ -767,6 +715,82 @@ const screens: TScreen[] = [
 					animationState: "start",
 				},
 			},
+			{
+				config: {
+					settings: {
+						behavior: {
+							collateStreamedOutputs: true,
+							renderMarkdown: true,
+						},
+					},
+				},
+				message: {
+					text: [
+						"### Did you like our service? \n <ul><li><input type='checkbox'/> Yes</li><li><input type='checkbox'/> No</li></ul> <input type='text' placeholder='Enter a short feedback' label='Additional feedback'/>",
+					],
+					data: {
+						_cognigy: {
+							_messageId: "71e92048-c930-415d-82e1-1bbc21105e5e",
+						},
+					},
+					source: "bot",
+					timestamp: "1701163314138",
+					id: "71e92048-c930-415d-82e1-1bbc21105e5e",
+					animationState: "start",
+				},
+			},
+			{
+				config: {
+					settings: {
+						behavior: {
+							renderMarkdown: true,
+						},
+					},
+				},
+				message: {
+					source: "bot",
+					text: ["[Markdown Link](https://google.com)\n"],
+				},
+			},
+			{
+				config: {
+					settings: {
+						behavior: {
+							renderMarkdown: true,
+						},
+					},
+				},
+				message: {
+					source: "bot",
+					text: "<a style='color: green' href='https://google.com'>HTML Link with green color</a>\n",
+				},
+			},
+			{
+				config: {
+					settings: {
+						behavior: {
+							renderMarkdown: true,
+						},
+					},
+				},
+				message: {
+					source: "bot",
+					text: "## Heading \n <a href='tel:+491771112233'>Tel: link</a>\n",
+				},
+			},
+			{
+				config: {
+					settings: {
+						behavior: {
+							renderMarkdown: true,
+						},
+					},
+				},
+				message: {
+					source: "bot",
+					text: "## [Tel: Link in Markdown Header](tel:000000)\n",
+				},
+			},
 		],
 	},
 	{
@@ -788,7 +812,7 @@ const screens: TScreen[] = [
 											imageUrl: "",
 											contentType: "openXApp",
 											payload:
-												"https://static.test?token=002f31acb7588108fc605ccc001763733ef4ce34c9f87360c1cab889467d69ab",
+												"https://static.test?testParam=TEST_PARAM_VALUE",
 										},
 									],
 									text: "Now, please open the SUPER secret form manually",
@@ -803,7 +827,7 @@ const screens: TScreen[] = [
 											image_url: "",
 											image_alt_text: "",
 											payload:
-												"https://static.test?token=002f31acb7588108fc605ccc001763733ef4ce34c9f87360c1cab889467d69ab",
+												"https://static.test?testParam=TEST_PARAM_VALUE",
 											title: "Enter my SUPER secret",
 										},
 									],
@@ -830,7 +854,7 @@ const screens: TScreen[] = [
 													// eslint-disable-next-line @typescript-eslint/no-explicit-any
 													type: "openXApp" as any,
 													payload:
-														"https://static.test?token=3c7feaf07c76d49699eaa0073d0afcdafd48dba2aa7a4dfc7acb18d0057c29c0",
+														"https://static.test?testParam=TEST_PARAM_VALUE",
 												},
 											],
 										},
