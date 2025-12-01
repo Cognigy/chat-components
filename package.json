@@ -15,13 +15,16 @@
 	],
 	"scripts": {
 		"dev": "vite --host",
-		"build": "tsc && vite build",
+		"build": "tsc && vite build && node scripts/postbuild-secure-patch.mjs",
 		"lint": "eslint . --ext ts,tsx --report-unused-disable-directives",
 		"preview": "vite preview",
 		"prepack": "npm run build",
 		"test": "vitest run",
 		"test:web-ui": "vitest --ui",
-		"test:watch": "vitest"
+		"test:watch": "vitest",
+		"codeql:scan": "rm -rf node_modules && npm ci --omit=dev && codeql database create --overwrite codeql-db --language=typescript-javascript --source-root=. --codescanning-config=codeql-config.yml && codeql database analyze codeql-db codeql/javascript-queries --format=sarifv2.1.0 --output=codeql-results.sarif --threads=0",
+		"codeql:scan:dist": "npm ci && npm run build && rm -rf node_modules && codeql database create --overwrite codeql-db --language=javascript --source-root=dist && codeql database analyze codeql-db codeql/javascript-queries --format=sarifv2.1.0 --output=codeql-results-dist.sarif --threads=0",
+		"postbuild:secure": "node scripts/postbuild-secure-patch.mjs"
 	},
 	"devDependencies": {
 		"@cognigy/socket-client": "5.0.0-beta.20",
