@@ -22,8 +22,8 @@
 		"test": "vitest run",
 		"test:web-ui": "vitest --ui",
 		"test:watch": "vitest",
-		"codeql:scan": "rm -rf node_modules && npm ci --omit=dev && codeql database create --overwrite codeql-db --language=typescript-javascript --source-root=. --codescanning-config=codeql-config.yml && codeql database analyze codeql-db codeql/javascript-queries --format=sarifv2.1.0 --output=codeql-results.sarif --threads=0",
-		"codeql:scan:dist": "npm ci && npm run build && rm -rf node_modules && codeql database create --overwrite codeql-db --language=javascript --source-root=dist && codeql database analyze codeql-db codeql/javascript-queries --format=sarifv2.1.0 --output=codeql-results-dist.sarif --threads=0"
+		"codeql:scan": "node scripts/clean.mjs node_modules && npm ci --omit=dev && codeql database create --overwrite codeql-db --language=typescript-javascript --source-root=. --codescanning-config=codeql-config.yml && codeql database analyze codeql-db codeql/javascript-queries --format=sarifv2.1.0 --output=codeql-results.sarif --threads=0",
+		"codeql:scan:dist": "npm ci && npm run build && node scripts/clean.mjs node_modules && codeql database create --overwrite codeql-db --language=javascript --source-root=dist && codeql database analyze codeql-db codeql/javascript-queries --format=sarifv2.1.0 --output=codeql-results-dist.sarif --threads=0"
 	},
 	"devDependencies": {
 		"@cognigy/socket-client": "5.0.0-beta.20",
