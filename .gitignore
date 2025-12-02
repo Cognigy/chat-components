@@ -32,3 +32,4 @@ dist-ssr
 
 codeql-results.sarif
 codeql-db
+codeql-results-dist.sarif
