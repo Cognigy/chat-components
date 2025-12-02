@@ -136,17 +136,18 @@ export const getBackgroundImage = (url: string) => {
 	let sanitized = url.replace(/[\r\n\f]/g, "");
 
 	// If the string looks like an absolute URL (has a scheme), validate allowed protocols (http/https).
-	try {
-		const parsed = new URL(sanitized, window.location.href);
-		if (parsed.protocol) {
+	if (/^[a-zA-Z][a-zA-Z0-9+.-]*:/.test(sanitized)) {
+		try {
+			const parsed = new URL(sanitized);
 			if (!/^https?:$/i.test(parsed.protocol)) {
 				return undefined;
 			}
 			// Normalize absolute URLs
 			sanitized = parsed.href;
+		} catch {
+			// URL constructor failed (invalid absolute URL). Reject.
+			return undefined;
 		}
-	} catch {
-		// URL constructor failed (possibly an invalid or relative path). Keep original unless you want to reject.
 	}
 
 	// Escape characters that could terminate or escape the quoted url("...") context.
