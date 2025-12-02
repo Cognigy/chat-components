@@ -138,7 +138,7 @@ export const getBackgroundImage = (url: string) => {
 	// If the string looks like an absolute URL (has a scheme), validate allowed protocols (http/https).
 	try {
 		const parsed = new URL(sanitized, window.location.href);
-		if (/^[a-zA-Z][a-zA-Z0-9+.-]*:/.test(sanitized)) {
+		if (parsed.protocol) {
 			if (!/^https?:$/i.test(parsed.protocol)) {
 				return undefined;
 			}
