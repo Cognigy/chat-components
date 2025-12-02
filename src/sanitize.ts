@@ -262,7 +262,10 @@ export const sanitizeHTMLWithConfig = (
 
 	// Some texts from Agentic AI starts with a </\w+ closing tag which doesn't go through the hooks. Dompurify will remove them.
 	// The following will avoid is a fallback
-	if (text?.startsWith("</")) return text.replace("<", "&lt;").replace(">", "&gt;");
+	if (text?.startsWith("</")) {
+		// Fallback for orphan leading closing tag sequences; escape all angle brackets globally
+		return text.replace(/</g, "&lt;").replace(/>/g, "&gt;");
+	}
 
 	const configToUse = customAllowedHtmlTags
 		? { ...config, ALLOWED_TAGS: customAllowedHtmlTags }

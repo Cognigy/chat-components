@@ -29,3 +29,7 @@ dist-ssr
 
 # Packed files
 *.tgz
+
+codeql-results.sarif
+codeql-db
+codeql-results-dist.sarif
