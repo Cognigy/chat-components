@@ -132,12 +132,30 @@ export const isEventMessage = (message: IMessage) => {
 export const getBackgroundImage = (url: string) => {
 	if (!url) return undefined;
 
-	const escapedUrl = url
-		.replace(/\n/g, "")
-		.replace(/\r/g, "")
-		.replace(/"\\/g, char => `\`${char}`);
+	// Remove control characters that could break CSS parsing
+	let sanitized = url.replace(/[\r\n\f]/g, "");
 
-	return `url("${escapedUrl}")`;
+	// If the string looks like an absolute URL (has a scheme), validate allowed protocols (http/https).
+	try {
+		const parsed = new URL(sanitized, window.location.href);
+		if (/^[a-zA-Z][a-zA-Z0-9+.-]*:/.test(sanitized)) {
+			if (!/^https?:$/i.test(parsed.protocol)) {
+				return undefined;
+			}
+			// Normalize absolute URLs
+			sanitized = parsed.href;
+		}
+	} catch {
+		// URL constructor failed (possibly an invalid or relative path). Keep original unless you want to reject.
+	}
+
+	// Escape characters that could terminate or escape the quoted url("...") context.
+	sanitized = sanitized
+		.replace(/\\/g, "\\\\") // Escape backslashes first
+		.replace(/"/g, '\\"') // Escape double quotes
+		.replace(/\)/g, "\\)"); // Escape closing parenthesis
+
+	return `url("${sanitized}")`;
 };
 
 export const getRandomId = (prefix = "") => {
