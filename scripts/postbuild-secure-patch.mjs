@@ -1,3 +1,4 @@
+/* eslint-env node */
 /**
  * Post-build secure patch script.
  *
@@ -27,9 +28,10 @@
  * NOTE: If future CodeQL results add more patterns, extend PATCH_RULES below.
  */
 
-import { promises as fs } from "fs";
-import path from "path";
-import process from "process";
+import { promises as fs } from "node:fs";
+import path from "node:path";
+import process from "node:process";
+import console from "node:console";
 
 const DIST_DIR = path.resolve(process.cwd(), "dist");
 
@@ -93,7 +95,10 @@ const PATCH_RULES = [
 		id: "micromark-overly-large-range",
 		description: "Replace overly large character class range with explicit enumeration",
 		apply: content => ({
-			updated: content.replace(/\[!#\$&-;=\?-Z_a-z~\]/g, () => "[!#$&'()*+,\\-./0-9:;=?@A-Z_a-z~]"),
+			updated: content.replace(
+				/\[!#\$&-;=\?-Z_a-z~\]/g,
+				() => "[!#$&'()*+,\\-./0-9:;=?@A-Z_a-z~]",
+			),
 		}),
 	},
 	{
