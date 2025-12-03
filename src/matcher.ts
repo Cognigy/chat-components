@@ -12,7 +12,7 @@ import {
 	AdaptiveCard,
 } from "./messages";
 import { IWebchatConfig } from "./messages/types";
-import { getChannelPayload, areAllTextsWhitespace, isTextWhitespace } from "./utils";
+import { getChannelPayload, isOnlyEscapeSequence } from "./utils";
 import { IMessage, IWebchatTemplateAttachment } from "@cognigy/socket-client";
 import { IAdaptiveCardMessage } from "@cognigy/socket-client/lib/interfaces/messageData";
 import { XAppSubmitMessage } from "./messages/xApp";
@@ -181,19 +181,12 @@ const defaultConfig: MatchConfig[] = [
 
 			// handle message arrays (from streaming mode)
 			if (Array.isArray(message?.text)) {
-				if (message?.text.length === 0) return false;
-				if (
-					areAllTextsWhitespace(message.text) &&
-					!config?.settings?.behavior?.collateStreamedOutputs
-				) {
-					console.log(message?.text, "all whitespace");
-					return false;
-				}
-				return true;
+				return message?.text.length > 0;
 			}
+
 			// Handle messages from LLMs if it only contains any escape sequences and markdown is disabled
 			if (
-				isTextWhitespace(message.text) &&
+				isOnlyEscapeSequence(message.text) &&
 				!config?.settings?.behavior?.collateStreamedOutputs
 			) {
 				return false;

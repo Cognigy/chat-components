@@ -496,18 +496,6 @@ const screens: TScreen[] = [
 				},
 			},
 			{
-				message: {
-					text: [" ", "\n", "\n"],
-					source: "bot",
-				},
-			},
-			{
-				message: {
-					text: [" ", "Text surrounded by empty space and new line. Only this should be rendered", "\n\n", "This is a text that has new line before"],
-					source: "bot",
-				},
-			},
-			{
 				// Data-only message should not render anything
 				message: {
 					source: "bot",
