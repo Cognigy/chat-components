@@ -184,7 +184,7 @@ const defaultConfig: MatchConfig[] = [
 				return message?.text.length > 0;
 			}
 
-			// Handle messages from LLMs if it only contains any escape sequences and markdown is disabled
+			// Handle messages from LLMs if it only contains any escape sequences and collation is disabled
 			if (
 				isOnlyEscapeSequence(message.text) &&
 				!config?.settings?.behavior?.collateStreamedOutputs
