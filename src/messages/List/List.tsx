@@ -93,7 +93,13 @@ const List: FC = () => {
 				{regularElements &&
 					regularElements.map((element: IWebchatAttachmentElement, index: number) => (
 						<Fragment key={index}>
-							{index > 0 && <div className={mainclasses.divider} />}
+							{index > 0 && (
+								<li
+									className={mainclasses.divider}
+									aria-hidden="true"
+									role="presentation"
+								/>
+							)}
 							<ListItem
 								element={element}
 								headingLevel={headerElement ? "h5" : "h4"}
@@ -103,7 +109,11 @@ const List: FC = () => {
 								}}
 							/>
 							{button && index === regularElements.length - 1 && (
-								<div className={mainclasses.divider} />
+								<li
+									className={mainclasses.divider}
+									aria-hidden="true"
+									role="presentation"
+								/>
 							)}
 						</Fragment>
 					))}
