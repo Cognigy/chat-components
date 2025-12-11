@@ -1,0 +1,93 @@
+# CodeQL configuration for local scanning of a TypeScript + Vite library.
+# Includes application sources in src plus third-party code in node_modules
+# while aggressively excluding low-value / very large subtrees to keep the
+# database size and analysis time manageable.
+#
+# Usage with CodeQL CLI:
+#   codeql database create codeql-db \
+#     --language=javascript \
+#     --source-root=. \
+#     --codescanning-config=codeql-config.yml \
+#     --command="npm run build"
+#
+# (If you only need type info and no emitted JS, you can use --command="true"
+# because Vite + TS compilation output will already exist in dist if built.)
+#
+# If analysis becomes too slow, first remove node_modules entirely and only
+# re-enable a curated subset (e.g. crypto libs) by copying them to a vendor/ dir.
+
+name: "Chat Components local scan (src + prod node_modules)"
+
+paths:
+    - src
+    - node_modules
+
+# Exclusions are deliberately verbose; prune or uncomment as needed.
+paths-ignore:
+    # Build outputs / bundles
+    - dist/**
+    - node_modules/**/dist/**
+    - node_modules/**/build/**
+    - node_modules/**/lib/** # Many packages ship transpiled output here
+    - node_modules/**/coverage/**
+    - node_modules/**/.cache/**
+
+    # Tests, fixtures, examples
+    - node_modules/**/test/**
+    - node_modules/**/tests/**
+    - node_modules/**/__tests__/**
+    - node_modules/**/testing/**
+    - node_modules/**/benchmark/**
+    - node_modules/**/bench/**
+    - node_modules/**/example/**
+    - node_modules/**/examples/**
+    - node_modules/**/fixtures/**
+    - node_modules/**/mocks/**
+    - node_modules/**/spec/**
+    - node_modules/**/__mocks__/**
+
+    # Documentation & metadata
+    - node_modules/**/docs/**
+    - node_modules/**/doc/**
+    - node_modules/**/documentation/**
+    - node_modules/**/.github/**
+    - node_modules/**/scripts/** # Build / maintenance scripts seldom security-relevant
+
+    # Front-end demo tooling in dependencies
+    - node_modules/**/cypress/**
+    - node_modules/**/storybook/**
+    - node_modules/**/playwright/**
+    - node_modules/**/wdio/**
+    - node_modules/**/selenium/**
+
+    # IDE/project artifacts
+    - node_modules/**/.vscode/**
+    - node_modules/**/.idea/**
+
+    # Declaration files (optional exclusion — they are not executable code)
+    - node_modules/**/*.d.ts
+
+    # Large, frequently safe-to-ignore frameworks (uncomment if size is too big):
+    - node_modules/react/**
+    - node_modules/react-dom/**
+    - node_modules/typescript/** # Compiler sources rarely help app vuln discovery
+    - node_modules/@types/** # Pure type declarations
+    - node_modules/babel-*/** # Tooling
+    - node_modules/eslint/** # Tooling
+    - node_modules/@eslint/** # Tooling
+# No queries specified; choose suites explicitly at analyze time
+# e.g. javascript-code-scanning.qls, javascript-security-extended.qls, javascript-security-and-quality.qls
+# Advanced options (leave commented unless needed):
+# packs:
+#   - codeql/javascript-experimental@@latest
+# query-filters:
+#   - exclude:
+#       id: js/useless-equality-check
+#
+# For very large dependency trees consider a two-tier approach:
+# 1. Daily / PR scans with only `src`
+# 2. Weekly deep scan enabling node_modules (this config)
+#
+# To trim size further, run a pre-step to remove redundant folders:
+#   find node_modules -type d -name dist -prune -exec rm -rf {} +
+#   find node_modules -type d -name coverage -prune -exec rm -rf {} +
