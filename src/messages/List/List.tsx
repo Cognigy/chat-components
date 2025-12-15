@@ -100,7 +100,9 @@ const List: FC = () => {
 									handleListItemLiveRegionLabel(index + 1, text);
 								}}
 								dividerBefore={index > 0}
-								dividerAfter={Boolean(button && index === regularElements.length - 1)}
+								dividerAfter={Boolean(
+									button && index === regularElements.length - 1,
+								)}
 							/>
 						</Fragment>
 					))}
