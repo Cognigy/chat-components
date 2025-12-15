@@ -260,3 +260,14 @@ export const moveFocusToMessageFocusTarget = (dataMessageId: string) => {
 		}
 	}, 0);
 };
+
+const ESCAPE_SEQUENCE_REGEX = /^(?:[\n\t\r\f\b\v\s])+$/u;
+
+/**
+ * Checks if a string consists only of whitespace or escape sequences.
+ * @param text The string to check.
+ * @returns True if the string contains only whitespace or escape sequences; otherwise, false.
+ */
+export function isOnlyEscapeSequence(text: unknown): boolean {
+	return typeof text === "string" && ESCAPE_SEQUENCE_REGEX.test(text);
+}

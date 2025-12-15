@@ -483,6 +483,19 @@ const screens: TScreen[] = [
 				},
 			},
 			{
+				message: {
+					text: " \n\n",
+					source: "bot",
+				},
+				config: {
+					settings: {
+						behavior: {
+							renderMarkdown: true,
+						},
+					},
+				},
+			},
+			{
 				// Data-only message should not render anything
 				message: {
 					source: "bot",
