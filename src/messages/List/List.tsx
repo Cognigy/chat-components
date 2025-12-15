@@ -1,7 +1,6 @@
 import { FC, Fragment, useCallback, useEffect, useState } from "react";
 import ListItem from "./ListItem";
 import { useLiveRegion, useMessageContext, useRandomId } from "src/messages/hooks";
-import mainclasses from "src/main.module.css";
 import classes from "./List.module.css";
 import classnames from "classnames";
 import { PrimaryButton } from "src/common/Buttons";
@@ -93,13 +92,6 @@ const List: FC = () => {
 				{regularElements &&
 					regularElements.map((element: IWebchatAttachmentElement, index: number) => (
 						<Fragment key={index}>
-							{index > 0 && (
-								<li
-									className={mainclasses.divider}
-									aria-hidden="true"
-									role="presentation"
-								/>
-							)}
 							<ListItem
 								element={element}
 								headingLevel={headerElement ? "h5" : "h4"}
@@ -107,14 +99,9 @@ const List: FC = () => {
 								onSetScreenReaderLabel={(text: string) => {
 									handleListItemLiveRegionLabel(index + 1, text);
 								}}
+								dividerBefore={index > 0}
+								dividerAfter={Boolean(button && index === regularElements.length - 1)}
 							/>
-							{button && index === regularElements.length - 1 && (
-								<li
-									className={mainclasses.divider}
-									aria-hidden="true"
-									role="presentation"
-								/>
-							)}
 						</Fragment>
 					))}
 			</ul>
