@@ -144,7 +144,7 @@ const ListItem: FC<IListItemProps> = props => {
 			id={id}
 		>
 			{!isHeaderElement && dividerBefore && (
-				<div className={mainclasses.divider} aria-hidden="true" role="presentation" />
+				<div className={mainclasses.divider} />
 			)}
 			<div
 				className={contentClasses}
@@ -204,7 +204,7 @@ const ListItem: FC<IListItemProps> = props => {
 				/>
 			)}
 			{!isHeaderElement && dividerAfter && (
-				<div className={mainclasses.divider} aria-hidden="true" role="presentation" />
+				<div className={mainclasses.divider} />
 			)}
 		</Component>
 	);
