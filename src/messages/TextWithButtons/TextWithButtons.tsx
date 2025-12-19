@@ -136,7 +136,7 @@ const TextWithButtons: FC = (props: ITextWithButtonsProps) => {
 					)}
 					containerClassName={classNames(
 						classes.buttons,
-						isQuickReplies && "webchat-quick-reply-template-replies-container",
+						`webchat-${classType}-template-replies-container`,
 					)}
 					containerStyle={containerStyle}
 					payload={buttons}
