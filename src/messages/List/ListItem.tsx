@@ -1,5 +1,6 @@
 import { FC, useMemo, KeyboardEvent, useEffect } from "react";
 import classes from "./List.module.css";
+import mainclasses from "src/main.module.css";
 import { useMessageContext, useRandomId } from "src/messages/hooks";
 import { useSanitize } from "src/sanitize";
 import { getBackgroundImage } from "src/utils";
@@ -15,6 +16,8 @@ interface IListItemProps {
 	headingLevel?: "h4" | "h5";
 	id: string;
 	onSetScreenReaderLabel?: (text: string) => void;
+	dividerBefore?: boolean;
+	dividerAfter?: boolean;
 }
 
 const ListItem: FC<IListItemProps> = props => {
@@ -25,7 +28,15 @@ const ListItem: FC<IListItemProps> = props => {
 		messageParams,
 		"data-message-id": dataMessageId,
 	} = useMessageContext();
-	const { element, isHeaderElement, headingLevel, id, onSetScreenReaderLabel } = props;
+	const {
+		element,
+		isHeaderElement,
+		headingLevel,
+		id,
+		onSetScreenReaderLabel,
+		dividerBefore,
+		dividerAfter,
+	} = props;
 	const { title, subtitle, image_url, image_alt_text, default_action, buttons } = element;
 	const button = buttons && buttons?.[0];
 
@@ -132,6 +143,7 @@ const ListItem: FC<IListItemProps> = props => {
 			data-testid={isHeaderElement ? "header-image" : "list-item"}
 			id={id}
 		>
+			{!isHeaderElement && dividerBefore && <div className={mainclasses.divider} />}
 			<div
 				className={contentClasses}
 				onClick={handleClick}
@@ -189,6 +201,7 @@ const ListItem: FC<IListItemProps> = props => {
 					onEmitAnalytics={onEmitAnalytics}
 				/>
 			)}
+			{!isHeaderElement && dividerAfter && <div className={mainclasses.divider} />}
 		</Component>
 	);
 };
