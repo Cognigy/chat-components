@@ -143,9 +143,7 @@ const ListItem: FC<IListItemProps> = props => {
 			data-testid={isHeaderElement ? "header-image" : "list-item"}
 			id={id}
 		>
-			{!isHeaderElement && dividerBefore && (
-				<div className={mainclasses.divider} />
-			)}
+			{!isHeaderElement && dividerBefore && <div className={mainclasses.divider} />}
 			<div
 				className={contentClasses}
 				onClick={handleClick}
@@ -203,9 +201,7 @@ const ListItem: FC<IListItemProps> = props => {
 					onEmitAnalytics={onEmitAnalytics}
 				/>
 			)}
-			{!isHeaderElement && dividerAfter && (
-				<div className={mainclasses.divider} />
-			)}
+			{!isHeaderElement && dividerAfter && <div className={mainclasses.divider} />}
 		</Component>
 	);
 };
