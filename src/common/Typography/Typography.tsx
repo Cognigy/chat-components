@@ -1,4 +1,4 @@
-import { CSSProperties, FC, JSX, ReactNode } from "react";
+import { CSSProperties, forwardRef, JSX, ReactNode, ComponentPropsWithRef, ElementType } from "react";
 import classes from "./Typography.module.css";
 import classnames from "classnames";
 
@@ -49,7 +49,7 @@ const colorsMapping: Record<ColorVariants, string> = {
 	secondary: "var(--cc-secondary-color)",
 };
 
-const Typography: FC<TypographyProps> = props => {
+const Typography = forwardRef<HTMLElement, TypographyProps>((props, ref) => {
 	const {
 		variant = "body-regular",
 		children,
@@ -63,21 +63,21 @@ const Typography: FC<TypographyProps> = props => {
 		tabIndex,
 		...restProps
 	} = props;
+
 	const Component = component ?? variantsMapping[variant];
 	const typographyColor = colorsMapping[color as ColorVariants] ?? color;
 
-	return (
-		<Component
-			className={classnames(classes[variant], className, color)}
-			style={{ color: typographyColor, ...style, ...restProps }}
-			dangerouslySetInnerHTML={dangerouslySetInnerHTML}
-			id={id}
-			aria-hidden={ariaHidden}
-			tabIndex={tabIndex}
-		>
-			{children}
-		</Component>
-	);
-};
+	const componentProps = {
+		ref,
+		className: classnames(classes[variant], className, color),
+		style: { color: typographyColor, ...style, ...restProps },
+		dangerouslySetInnerHTML,
+		id,
+		"aria-hidden": ariaHidden,
+		tabIndex,
+	} as ComponentPropsWithRef<ElementType>;
+
+	return <Component {...componentProps}>{children}</Component>;
+});
 
 export default Typography;
