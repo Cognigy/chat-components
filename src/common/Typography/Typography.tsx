@@ -1,4 +1,11 @@
-import { CSSProperties, forwardRef, JSX, ReactNode, ComponentPropsWithRef, ElementType } from "react";
+import {
+	CSSProperties,
+	forwardRef,
+	JSX,
+	ReactNode,
+	ComponentPropsWithRef,
+	ElementType,
+} from "react";
 import classes from "./Typography.module.css";
 import classnames from "classnames";
 
