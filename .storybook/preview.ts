@@ -1,7 +1,15 @@
 import type { Preview } from "@storybook/react";
-import { createElement } from "react";
+import React from "react";
+import "./setup"; // Pre-import modules in correct order
 import "../src/theme.css";
 import "../src/main.module.css";
+
+// Import CollationProvider to wrap all stories
+const CollationProvider = React.lazy(() => 
+	import("../src/messages/collation").then(module => ({
+		default: module.CollationProvider
+	}))
+);
 
 const preview: Preview = {
 	parameters: {
@@ -30,14 +38,25 @@ const preview: Preview = {
 		},
 	},
 	decorators: [
-		(Story) => {
-			return createElement("div", {
-				style: {
-					padding: "20px",
-					maxWidth: "600px",
-				}
-			}, createElement(Story));
-		}
+		(Story) => 
+			React.createElement(
+				React.Suspense,
+				{ fallback: React.createElement("div", null, "Loading...") },
+				React.createElement(
+					CollationProvider,
+					null,
+					React.createElement(
+						"div",
+						{
+							style: {
+								padding: "20px",
+								maxWidth: "600px",
+							},
+						},
+						React.createElement(Story)
+					)
+				)
+			),
 	],
 };
 
