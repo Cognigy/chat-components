@@ -22,13 +22,24 @@
 		"test": "vitest run",
 		"test:web-ui": "vitest --ui",
 		"test:watch": "vitest",
+		"storybook": "storybook dev -p 6006",
+		"build-storybook": "storybook build",
 		"codeql:scan": "rimraf node_modules && npm ci --omit=dev && codeql database create --overwrite codeql-db --language=typescript-javascript --source-root=. --codescanning-config=codeql-config.yml && codeql database analyze codeql-db codeql/javascript-queries --format=sarifv2.1.0 --output=codeql-results.sarif --threads=0",
 		"codeql:scan:dist": "npm ci && npm run build && rimraf node_modules && codeql database create --overwrite codeql-db --language=javascript --source-root=dist && codeql database analyze codeql-db codeql/javascript-queries --format=sarifv2.1.0 --output=codeql-results-dist.sarif --threads=0"
 	},
 	"devDependencies": {
 		"@cognigy/socket-client": "5.0.0-beta.20",
+		"@storybook/addon-essentials": "^8.6.14",
+		"@storybook/addon-interactions": "^8.6.14",
+		"@storybook/addon-links": "^8.6.15",
+		"@storybook/blocks": "^8.6.14",
+		"@storybook/react": "^8.6.15",
+		"@storybook/react-vite": "^8.6.15",
+		"@storybook/test": "^8.6.15",
 		"@testing-library/jest-dom": "^6.9.1",
 		"@testing-library/react": "^16.3.0",
+		"@types/react": "^19.2.8",
+		"@types/react-dom": "^19.2.3",
 		"@types/react-transition-group": "^4.4.12",
 		"@types/remarkable": "^2.0.8",
 		"@typescript-eslint/eslint-plugin": "^8.46.2",
@@ -45,6 +56,7 @@
 		"react": "^18.3.1",
 		"react-dom": "^18.3.1",
 		"rimraf": "^6.1.2",
+		"storybook": "^8.6.15",
 		"typescript": "^5.9.3",
 		"vite": "^7.1.11",
 		"vite-plugin-css-injected-by-js": "^3.3.0",
@@ -74,6 +86,9 @@
 	"peerDependencies": {
 		"react": "^19.x || ^18.3.0",
 		"react-dom": "^19.x || ^18.3.0"
+	},
+	"overrides": {
+		"ajv": "^8.12.0"
 	},
 	"engines": {
 		"node": ">=22.1.0"
