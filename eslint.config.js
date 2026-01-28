@@ -67,6 +67,13 @@ export default [
 			"@typescript-eslint/ban-ts-comment": "off",
 			"@typescript-eslint/no-unused-expressions": "off",
 			"no-redeclare": "off",
+			"@typescript-eslint/no-unused-vars": [
+				"error",
+				{
+					argsIgnorePattern: "^_",
+					varsIgnorePattern: "^_",
+				},
+			],
 		},
 	},
 ];
