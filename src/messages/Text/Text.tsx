@@ -95,7 +95,7 @@ const Text: FC<TextProps> = props => {
 						p: ({ node, children, ...props }) => (
 							<p {...props}>
 								{/* The extra span is a workaround for the crash caused by google translate issue in React applications.
-							      See https://github.com/facebook/react/issues/11538 for more details.
+								    See https://github.com/facebook/react/issues/11538 for more details.
 								*/}
 								<span>{children}</span>
 							</p>
