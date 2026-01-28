@@ -87,12 +87,10 @@ const Text: FC<TextProps> = props => {
 					remarkPlugins={[remarkGfm]}
 					urlTransform={url => url}
 					components={{
-						// eslint-disable-next-line @typescript-eslint/no-unused-vars
-						a: ({ node, ...props }) => (
+						a: ({ node: _node, ...props }) => (
 							<a target="_blank" rel="noreferrer" {...props} />
 						),
-						// eslint-disable-next-line @typescript-eslint/no-unused-vars
-						p: ({ node, children, ...props }) => (
+						p: ({ node: _node, children, ...props }) => (
 							<p {...props}>
 								{/* The extra span is a workaround for the crash caused by google translate issue in React applications.
 								    See https://github.com/facebook/react/issues/11538 for more details.
