@@ -3,6 +3,9 @@
 	"version": "0.67.0",
 	"type": "module",
 	"main": "./dist/chat-components.js",
+	"repository": {
+		"url": "https://github.com/Cognigy/chat-components"
+	},
 	"exports": {
 		"import": "./dist/chat-components.js",
 		"require": "./dist/chat-components.js"
