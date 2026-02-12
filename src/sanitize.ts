@@ -248,6 +248,8 @@ export const useSanitize = () => {
 	};
 };
 
+const MAX_SANITIZATION_ITERATIONS = 10;
+
 export const sanitizeHTMLWithConfig = (
 	text: string,
 	customAllowedHtmlTags: string[] | undefined,
@@ -271,7 +273,18 @@ export const sanitizeHTMLWithConfig = (
 		? { ...config, ALLOWED_TAGS: customAllowedHtmlTags }
 		: config;
 
-	const result = DOMPurify.sanitize(text, configToUse).toString();
+	// Iteratively sanitize until output stabilizes to prevent bypass attacks
+	// where nested/obfuscated tags like "<<b>i>" become valid HTML after one pass
+	let result = text;
+	let previousResult = "";
+	let iterations = 0;
+
+	while (result !== previousResult && iterations < MAX_SANITIZATION_ITERATIONS) {
+		previousResult = result;
+		result = DOMPurify.sanitize(result, configToUse).toString();
+		iterations++;
+	}
+
 	DOMPurify.removeAllHooks();
 	return result;
 };
