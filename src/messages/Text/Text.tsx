@@ -33,7 +33,7 @@ const Text: FC<TextProps> = props => {
 
 	const collateStreamedOutputs = config?.settings?.behavior?.collateStreamedOutputs;
 	const shouldTrimLeadingSpaces =
-		collateStreamedOutputs === false && (source === "bot" || source === "engagement");
+		!collateStreamedOutputs && (source === "bot" || source === "engagement");
 
 	content = shouldTrimLeadingSpaces
 		? Array.isArray(content)
