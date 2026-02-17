@@ -122,7 +122,7 @@ describe("Text Component", () => {
 			const { container } = render(
 				<Message
 					message={{
-						text: ["  First chunk", "   Second chunk", " Third chunk"],
+						text: "  First chunk   Second chunk Third chunk",
 						source: "bot",
 					}}
 					config={
@@ -194,7 +194,7 @@ describe("Text Component", () => {
 			const { container } = render(
 				<Message
 					message={{
-						text: ["  Hello ", "world ", "from ", "chunks"],
+						text: "  Hello world from chunks",
 						source: "bot",
 					}}
 					config={
