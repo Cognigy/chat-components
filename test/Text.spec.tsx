@@ -137,9 +137,9 @@ describe("Text Component", () => {
 				/>,
 			);
 
-			// The content should be joined and each chunk should have leading spaces trimmed
+			// The content should have leading spaces trimmed (but spaces between words are preserved)
 			const paragraph = container.querySelector("p");
-			expect(paragraph?.textContent).toBe("First chunkSecond chunkThird chunk");
+			expect(paragraph?.textContent).toBe("First chunk   Second chunk Third chunk");
 		});
 
 		test("does NOT trim leading spaces when collateStreamedOutputs is true", () => {
@@ -215,7 +215,7 @@ describe("Text Component", () => {
 			expect(paragraph?.textContent).toBe("Hello world from chunks");
 		});
 
-		test("does NOT trim leading spaces when collateStreamedOutputs is undefined (default)", () => {
+		test("trims leading spaces when collateStreamedOutputs is undefined (default)", () => {
 			const { container } = render(
 				<Message
 					message={{
@@ -230,9 +230,10 @@ describe("Text Component", () => {
 				/>,
 			);
 
-			// Should preserve the leading spaces when collateStreamedOutputs is not set
+			// Should trim the leading spaces when collateStreamedOutputs is not set (undefined is falsy)
 			const element = container.querySelector("p");
-			expect(element?.innerHTML).toContain("   Default behavior with spaces");
+			expect(element?.innerHTML).toContain("Default behavior with spaces");
+			expect(element?.innerHTML).not.toContain("   Default behavior with spaces");
 		});
 	});
 
