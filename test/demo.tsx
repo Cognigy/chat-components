@@ -791,6 +791,22 @@ const screens: TScreen[] = [
 					text: "## [Tel: Link in Markdown Header](tel:000000)\n",
 				},
 			},
+			{
+				config: {
+					settings: {
+						behavior: {
+							collateStreamedOutputs: false,
+						},
+					},
+				},
+				message: {
+					source: "bot",
+					text: [
+						" A leading space should be trimmed",
+						"This is a message with the bot output border disabled and max width set to 95%",
+					],
+				},
+			},
 		],
 	},
 	{
