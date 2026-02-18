@@ -37,7 +37,7 @@ const Text: FC<TextProps> = props => {
 
 	content = shouldTrimLeadingSpaces
 		? Array.isArray(content)
-			? content.map(c => c.trimStart())
+			? content.map((c, index) => (index === 0 ? c.trimStart() : c))
 			: content.trimStart()
 		: content;
 
