@@ -400,5 +400,28 @@ describe("sanitizeHTMLWithConfig", () => {
 				expect(firstPass).toBe(secondPass);
 			}
 		});
+
+		test("handles iterative bypass attacks within srcdoc attributes", () => {
+			const input = '<iframe srcdoc="<<script>script>alert(1)<</script>/script>"></iframe>';
+			const result = sanitizeHTMLWithConfig(input, undefined);
+			// Obfuscated/nested tags inside srcdoc must not produce valid script tags
+			expect(result).not.toMatch(/<script[^>]*>/i);
+			expect(result).not.toContain("alert(1)");
+			// Result must be stable across passes
+			const secondPass = sanitizeHTMLWithConfig(result, undefined);
+			expect(result).toBe(secondPass);
+		});
+
+		test("removes executable code from nested srcdoc attributes", () => {
+			const input = `<iframe srcdoc="<iframe srcdoc='<script>alert(1)</script>'></iframe>"></iframe>`;
+			const result = sanitizeHTMLWithConfig(input, undefined);
+			// No script tags should remain anywhere in the output
+			expect(result).not.toMatch(/<script/i);
+			expect(result).not.toContain("alert(1)");
+			if (result.includes("srcdoc")) {
+				// If any srcdoc attributes remain, their content must not contain scripts
+				expect(result).not.toMatch(/srcdoc\s*=\s*["'][^"']*<script[^>]*>/i);
+			}
+		});
 	});
 });
