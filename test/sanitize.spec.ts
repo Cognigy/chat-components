@@ -267,4 +267,71 @@ describe("sanitizeHTMLWithConfig", () => {
 			}
 		});
 	});
+
+	describe("iframe srcdoc XSS Prevention (Zendesk Infosec Report)", () => {
+		test("removes script tags from iframe srcdoc attribute", () => {
+			const input =
+				'<iframe srcdoc="<script>alert(parent.document.domain)</script>"></iframe>';
+			const result = sanitizeHTMLWithConfig(input, undefined);
+			// The srcdoc content must not contain executable script tags
+			expect(result).not.toMatch(/srcdoc\s*=\s*["'][^"']*<script[^>]*>/i);
+			// If srcdoc is kept, its content must be sanitized; or srcdoc should be removed entirely
+			if (result.includes("srcdoc")) {
+				expect(result).not.toContain("alert(");
+				expect(result).not.toMatch(/<script/i);
+			}
+		});
+
+		test("removes script tags from iframe srcdoc with HTML-encoded payload", () => {
+			// This is the exact payload from the security report (HTML-encoded angle brackets in srcdoc)
+			const input =
+				'341 TestTest <iframe srcdoc="&lt;script&gt;alert(parent.document.domain)&lt;/script&gt;"></iframe> TestTest';
+			const result = sanitizeHTMLWithConfig(input, undefined);
+			expect(result).not.toMatch(/srcdoc\s*=\s*["'][^"']*<script[^>]*>/i);
+			if (result.includes("srcdoc")) {
+				expect(result).not.toContain("alert(");
+				expect(result).not.toMatch(/<script/i);
+			}
+			expect(result).toContain("341 TestTest");
+			expect(result).toContain("TestTest");
+		});
+
+		test("prevents phishing content in iframe srcdoc", () => {
+			// Phishing payload from the security report
+			const input = `<iframe srcdoc="⚠️</div><div style='font-size:22px;font-weight:bold;margin-bottom:10px;'>Ihre Sitzung ist abgelaufen</div><div style='font-size:16px;color:#666;'>Klicken Sie hier um sich erneut anzumelden</div></div></a>"></iframe>`;
+			const result = sanitizeHTMLWithConfig(input, undefined);
+			// The srcdoc should not allow arbitrary HTML that enables phishing
+			if (result.includes("srcdoc")) {
+				// If srcdoc is retained, it must not contain the phishing styled HTML
+				expect(result).not.toMatch(/srcdoc\s*=\s*["'][^"']*<div[^>]*style/i);
+			}
+		});
+
+		test("removes event handlers from iframe srcdoc content", () => {
+			const input = '<iframe srcdoc="<img src=x onerror=alert(1)>"></iframe>';
+			const result = sanitizeHTMLWithConfig(input, undefined);
+			expect(result).not.toMatch(/onerror/i);
+		});
+
+		test("removes iframe srcdoc with nested iframe payload", () => {
+			const input = '<iframe srcdoc="<iframe src=javascript:alert(1)></iframe>"></iframe>';
+			const result = sanitizeHTMLWithConfig(input, undefined);
+			expect(result).not.toMatch(/javascript:/i);
+		});
+
+		test("srcdoc sanitization result is stable (idempotent)", () => {
+			const payloads = [
+				'<iframe srcdoc="<script>alert(1)</script>"></iframe>',
+				'<iframe srcdoc="&lt;script&gt;alert(1)&lt;/script&gt;"></iframe>',
+				'<iframe srcdoc="<img src=x onerror=alert(1)>"></iframe>',
+				'<iframe srcdoc="<body onload=alert(1)>"></iframe>',
+			];
+
+			for (const input of payloads) {
+				const firstPass = sanitizeHTMLWithConfig(input, undefined);
+				const secondPass = sanitizeHTMLWithConfig(firstPass, undefined);
+				expect(firstPass).toBe(secondPass);
+			}
+		});
+	});
 });
