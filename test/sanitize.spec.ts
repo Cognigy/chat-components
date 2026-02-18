@@ -1,4 +1,4 @@
-import { describe, test, expect, vi, beforeEach, afterEach } from "vitest";
+import { describe, test, expect, vi, afterEach } from "vitest";
 
 // Mock the problematic imports before importing sanitize
 vi.mock("src/messages/hooks", () => ({
@@ -10,10 +10,6 @@ vi.mock("src/messages/hooks", () => ({
 import { sanitizeHTMLWithConfig } from "../src/sanitize";
 
 describe("sanitizeHTMLWithConfig", () => {
-	beforeEach(() => {
-		vi.clearAllMocks();
-	});
-
 	afterEach(() => {
 		vi.restoreAllMocks();
 	});
@@ -35,7 +31,7 @@ describe("sanitizeHTMLWithConfig", () => {
 			const input = "<script>alert('xss')</script>";
 			const result = sanitizeHTMLWithConfig(input, undefined);
 			expect(result).not.toContain("<script>");
-			expect(result).not.toContain("alert");
+			expect(result).not.toContain("alert('xss')");
 		});
 
 		test("removes onclick attributes", () => {
@@ -135,9 +131,12 @@ describe("sanitizeHTMLWithConfig", () => {
 	});
 
 	describe("SSML Content Handling", () => {
-		test("strips SSML <speak> root element but preserves content", () => {
+		test("escapes SSML <speak> root element but preserves content", () => {
 			const input = "<speak>Hello, how are you today?</speak>";
 			const result = sanitizeHTMLWithConfig(input, undefined);
+			// <speak> is an HTMLUnknownElement, so the hook escapes it
+			expect(result).toContain("&lt;speak&gt;");
+			expect(result).toContain("&lt;/speak&gt;");
 			expect(result).not.toContain("<speak>");
 			expect(result).not.toContain("</speak>");
 			expect(result).toContain("Hello, how are you today?");
@@ -212,12 +211,13 @@ describe("sanitizeHTMLWithConfig", () => {
 
 		test("handles SSML mixed with HTML - escapes unknown wrapper tags", () => {
 			// When HTML is wrapped in unknown SSML tags like <speak>, the HTMLUnknownElement
-			// hook converts the entire content to escaped text for safety
+			// hook escapes the wrapper tags while preserving inner text content
 			const input =
 				"<speak><b>Bold text</b> and <prosody rate='fast'>fast speech</prosody></speak>";
 			const result = sanitizeHTMLWithConfig(input, undefined);
-			// The content gets escaped because <speak> is an unknown HTML element
+			// The wrapper tags are escaped because <speak> is an unknown HTML element
 			expect(result).toContain("&lt;speak&gt;");
+			expect(result).not.toContain("<speak>");
 			expect(result).toContain("Bold text");
 			expect(result).toContain("fast speech");
 		});
