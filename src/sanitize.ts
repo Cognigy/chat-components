@@ -250,6 +250,37 @@ export const useSanitize = () => {
 
 const MAX_SANITIZATION_ITERATIONS = 10;
 
+/**
+ * Post-processes sanitized HTML to recursively sanitize the content of `srcdoc`
+ * attributes. DOMPurify treats `srcdoc` as a plain string attribute and does not
+ * sanitize its inner HTML, which allows XSS payloads such as
+ * `<iframe srcdoc="<script>alert(1)</script>">` to pass through.
+ *
+ * This function parses the already-sanitized HTML, finds any elements with a
+ * `srcdoc` attribute, and runs `DOMPurify.sanitize()` on the attribute value.
+ * It must be called **after** `DOMPurify.removeAllHooks()` so the inner
+ * `sanitize()` call does not interfere with hook-based state.
+ */
+const sanitizeSrcdocContent = (html: string, purifyConfig: Config): string => {
+	if (!html.includes("srcdoc")) return html;
+
+	const container = document.createElement("div");
+	container.innerHTML = html;
+	const elements = container.querySelectorAll("[srcdoc]");
+
+	if (elements.length === 0) return html;
+
+	for (const el of elements) {
+		const srcdocValue = el.getAttribute("srcdoc");
+		if (srcdocValue) {
+			const sanitized = DOMPurify.sanitize(srcdocValue, purifyConfig).toString();
+			el.setAttribute("srcdoc", sanitized);
+		}
+	}
+
+	return container.innerHTML;
+};
+
 export const sanitizeHTMLWithConfig = (
 	text: string,
 	customAllowedHtmlTags: string[] | undefined,
@@ -286,6 +317,11 @@ export const sanitizeHTMLWithConfig = (
 	}
 
 	DOMPurify.removeAllHooks();
+
+	// Post-process: recursively sanitize srcdoc attribute content to prevent
+	// XSS via unsanitized HTML inside srcdoc (e.g., <iframe srcdoc="<script>...">)
+	result = sanitizeSrcdocContent(result, configToUse);
+
 	return result;
 };
 
