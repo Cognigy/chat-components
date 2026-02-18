@@ -802,7 +802,7 @@ const screens: TScreen[] = [
 				message: {
 					source: "bot",
 					text: [
-						" A leading space should be trimmed",
+						" A leading space should be trimmed\n",
 						"This is a message with the bot output border disabled and max width set to 95%",
 					],
 				},
