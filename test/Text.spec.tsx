@@ -67,6 +67,176 @@ describe("Text Component", () => {
 		});
 	});
 
+	describe("Leading Space Trimming", () => {
+		test("trims leading spaces for bot source with string content when collateStreamedOutputs is false", () => {
+			render(
+				<Message
+					message={{
+						text: "   Hello, this has leading spaces",
+						source: "bot",
+					}}
+					config={
+						{
+							settings: {
+								behavior: {
+									collateStreamedOutputs: false,
+								},
+							},
+						} as IWebchatConfig
+					}
+				/>,
+			);
+
+			const textElement = screen.getByText("Hello, this has leading spaces");
+			expect(textElement).toBeInTheDocument();
+		});
+
+		test("trims leading spaces for engagement source with string content when collateStreamedOutputs is false", () => {
+			render(
+				<Message
+					message={{
+						text: "  Engagement message with spaces",
+						source: "engagement",
+					}}
+					config={
+						{
+							settings: {
+								behavior: {
+									collateStreamedOutputs: false,
+								},
+								teaserMessage: {
+									showInChat: true,
+								},
+							},
+						} as IWebchatConfig
+					}
+				/>,
+			);
+
+			// Check if text is rendered - engagement messages should be treated like bot messages
+			const textElement = screen.getByText("Engagement message with spaces");
+			expect(textElement).toBeInTheDocument();
+		});
+
+		test("trims leading spaces for bot source with array content when collateStreamedOutputs is false", () => {
+			const { container } = render(
+				<Message
+					message={{
+						text: "  First chunk   Second chunk Third chunk",
+						source: "bot",
+					}}
+					config={
+						{
+							settings: {
+								behavior: {
+									collateStreamedOutputs: false,
+								},
+							},
+						} as IWebchatConfig
+					}
+				/>,
+			);
+
+			// The content should have leading spaces trimmed (but spaces between words are preserved)
+			const paragraph = container.querySelector("p");
+			expect(paragraph?.textContent).toBe("First chunk   Second chunk Third chunk");
+		});
+
+		test("does NOT trim leading spaces when collateStreamedOutputs is true", () => {
+			const { container } = render(
+				<Message
+					message={{
+						text: "   Hello with spaces",
+						source: "bot",
+					}}
+					config={
+						{
+							settings: {
+								behavior: {
+									collateStreamedOutputs: true,
+								},
+							},
+						} as IWebchatConfig
+					}
+				/>,
+			);
+
+			// Should preserve the leading spaces
+			const element = container.querySelector("p");
+			expect(element?.innerHTML).toContain("   Hello with spaces");
+		});
+
+		test("does NOT trim leading spaces for user source", () => {
+			const { container } = render(
+				<Message
+					message={{
+						text: "   User message with spaces",
+						source: "user",
+					}}
+					config={
+						{
+							settings: {
+								behavior: {
+									collateStreamedOutputs: false,
+								},
+							},
+						} as IWebchatConfig
+					}
+				/>,
+			);
+
+			// Should preserve the leading spaces for user messages
+			const element = container.querySelector("p");
+			expect(element?.innerHTML).toContain("   User message with spaces");
+		});
+
+		test("preserves spacing between words and chunks when trimming", () => {
+			const { container } = render(
+				<Message
+					message={{
+						text: "  Hello world from chunks",
+						source: "bot",
+					}}
+					config={
+						{
+							settings: {
+								behavior: {
+									collateStreamedOutputs: false,
+								},
+							},
+						} as IWebchatConfig
+					}
+					disableHeader={true}
+				/>,
+			);
+
+			// Spacing between words should be preserved (only the leading spaces are trimmed from each chunk)
+			const paragraph = container.querySelector("p");
+			expect(paragraph?.textContent).toBe("Hello world from chunks");
+		});
+
+		test("trims leading spaces when collateStreamedOutputs is undefined (default)", () => {
+			const { container } = render(
+				<Message
+					message={{
+						text: "   Default behavior with spaces",
+						source: "bot",
+					}}
+					config={
+						{
+							settings: {},
+						} as IWebchatConfig
+					}
+				/>,
+			);
+
+			// Should trim the leading spaces when collateStreamedOutputs is not set (undefined is falsy)
+			const element = container.querySelector("p");
+			expect(element?.innerHTML).toContain("Default behavior with spaces");
+			expect(element?.innerHTML).not.toContain("   Default behavior with spaces");
+		});
+	});
+
 	describe("Markdown Rendering", () => {
 		test("preserves checkbox input elements when renderMarkdown is true", () => {
 			const markdownText =

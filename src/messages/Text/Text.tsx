@@ -29,7 +29,18 @@ const Text: FC<TextProps> = props => {
 
 	const text = message?.text;
 	const source = message?.source;
-	const content = props.content || text || "";
+	let content = props.content || text || "";
+
+	const collateStreamedOutputs = config?.settings?.behavior?.collateStreamedOutputs;
+	const shouldTrimLeadingSpaces =
+		!collateStreamedOutputs && (source === "bot" || source === "engagement");
+
+	content = shouldTrimLeadingSpaces
+		? Array.isArray(content)
+			? content.map((c, index) => (index === 0 ? c.trimStart() : c))
+			: content.trimStart()
+		: content;
+
 	const shouldAnimate =
 		(message as IStreamingMessage)?.animationState === "start" ||
 		(message as IStreamingMessage)?.animationState === "animating" ||
