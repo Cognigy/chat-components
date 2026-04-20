@@ -2,21 +2,14 @@ import { FC, ReactNode, useMemo, useState, useEffect } from "react";
 
 import { match, MessagePlugin } from "../matcher";
 import { MessageProvider } from "./context";
-import {
-	C26Label,
-	IStreamingMessage,
-	IWebchatConfig,
-	IWebchatTheme,
-	MessageLayout,
-	MessageSender,
-} from "./types";
+import { C26Label, IStreamingMessage, IWebchatConfig, IWebchatTheme, MessageSender } from "./types";
 
 import "src/theme.css";
 import { CollateMessage, isEventMessage } from "../utils";
 import { IMessage } from "@cognigy/socket-client";
 import { useCollation } from "./hooks";
-import WebchatLayout from "./layouts/WebchatLayout";
-import C26Layout from "./layouts/C26Layout";
+import WebchatLayout from "../layouts/WebchatLayout";
+import C26Layout from "../layouts/C26Layout";
 
 export interface BaseMessageProps {
 	action?: MessageSender;
@@ -121,43 +114,26 @@ const Message: FC<MessageProps> = props => {
 		}
 	}
 
-	const layout: MessageLayout = props.layout ?? "webchat";
+	const common = {
+		action,
+		className,
+		matchedPlugins,
+		message,
+		prevMessage,
+		isFullscreen,
+		onDismissFullscreen,
+		onEmitAnalytics,
+		onSetFullscreen,
+		onSetMessageAnimated,
+		theme: props.theme,
+		"data-message-id": dataMessageId,
+	};
 
 	const inner =
-		layout === "webchat" ? (
-			<WebchatLayout
-				action={action}
-				className={className}
-				matchedPlugins={matchedPlugins}
-				message={message}
-				prevMessage={prevMessage}
-				shouldCollate={shouldCollate}
-				showHeader={showHeader}
-				isFullscreen={isFullscreen}
-				onDismissFullscreen={onDismissFullscreen}
-				onEmitAnalytics={onEmitAnalytics}
-				onSetFullscreen={onSetFullscreen}
-				onSetMessageAnimated={onSetMessageAnimated}
-				theme={props.theme}
-				data-message-id={dataMessageId}
-			/>
+		props.layout === "c26" ? (
+			<C26Layout {...common} label={props.label} avatar={props.avatar} />
 		) : (
-			<C26Layout
-				action={action}
-				className={className}
-				matchedPlugins={matchedPlugins}
-				message={message}
-				prevMessage={prevMessage}
-				isFullscreen={isFullscreen}
-				label={props.layout === "c26" ? props.label : undefined}
-				avatar={props.layout === "c26" ? props.avatar : undefined}
-				onDismissFullscreen={onDismissFullscreen}
-				onEmitAnalytics={onEmitAnalytics}
-				onSetFullscreen={onSetFullscreen}
-				onSetMessageAnimated={onSetMessageAnimated}
-				theme={props.theme}
-				data-message-id={dataMessageId}
-			/>
+			<WebchatLayout {...common} shouldCollate={shouldCollate} showHeader={showHeader} />
 		);
 
 	return (

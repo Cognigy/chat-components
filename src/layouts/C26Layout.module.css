@@ -12,11 +12,7 @@
 	color: var(--cc-bot-message-contrast-color);
 }
 
-/* `message.source` is added as a bare class by rootClassName (unscoped via
-   classnames), so the "user" class lands on .article alongside it.
-   Selecting via :global(.user) keeps the alignment hook consistent with the
-   codebase's class-based CSS convention. Final values arrive in next phase. */
-.article:global(.user) {
+.article[data-source="user"] {
 	justify-items: end;
 }
 

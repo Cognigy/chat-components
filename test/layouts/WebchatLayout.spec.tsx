@@ -19,10 +19,6 @@ describe("WebchatLayout (baseline)", () => {
 	});
 
 	it("renders an <article> with source class for each rendered source", () => {
-		// Note: engagement messages are intentionally NOT rendered by the matcher
-		// unless config.settings.teaserMessage.showInChat is true — see src/matcher.ts.
-		// Baseline asserts the three sources that do render by default, plus that
-		// engagement without teaser config renders no <article>.
 		for (const msg of [botTextMessage, userTextMessage, agentTextMessage]) {
 			const { container, unmount } = render(<Message message={msg} />);
 			const article = container.querySelector("article");
@@ -42,9 +38,6 @@ describe("WebchatLayout (baseline)", () => {
 	});
 
 	it("omits MessageHeader when disableHeader is true", () => {
-		// disableHeader prop exists but does not gate MessageHeader directly in current
-		// implementation — instead, MessageHeader render is gated on shouldCollate/fullscreen/eventMessage.
-		// Baseline: confirm header is present for a non-event, non-collated, non-fullscreen bot.
 		render(<Message message={botTextMessage} />);
 		expect(screen.getByTestId("message-header")).toBeInTheDocument();
 	});
@@ -62,8 +55,6 @@ describe("WebchatLayout (baseline)", () => {
 
 	it("renders gallery plugin output for a bot gallery message (webchat default)", () => {
 		const { container } = render(<Message message={richBotMessage} />);
-		// Only the Gallery matcher rule accepts this shape (template_type: "generic"),
-		// so "Item A" in textContent proves the Gallery plugin rendered.
 		const article = container.querySelector("article");
 		expect(article).not.toBeNull();
 		expect(article).toHaveClass("webchat-message-row");

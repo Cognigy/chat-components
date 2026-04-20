@@ -19,8 +19,6 @@ describe("layout prop — equivalence", () => {
 	});
 
 	it('<Message layout="c26"> renders without throwing', () => {
-		expect(() =>
-			render(<Message message={botTextMessage} layout="c26" />),
-		).not.toThrow();
+		expect(() => render(<Message message={botTextMessage} layout="c26" />)).not.toThrow();
 	});
 });

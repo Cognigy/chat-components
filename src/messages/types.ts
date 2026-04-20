@@ -1,5 +1,6 @@
 // import type { IOutput } from "@cognigy/socket-client";
 
+import { ReactNode } from "react";
 import { MessageProps } from "src/messages/Message";
 
 export type MessagePasstroughProps = Pick<MessageProps, "message" | "action">;
@@ -418,6 +419,6 @@ export interface IWebchatTheme {
 export type MessageLayout = "webchat" | "c26";
 
 export interface C26Label {
-	icon?: import("react").ReactNode;
+	icon?: ReactNode;
 	text: string;
 }

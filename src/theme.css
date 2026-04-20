@@ -61,25 +61,9 @@
 	--cc-agent-message-contrast-color: var(--webchat-agent-message-contrast-color, #1c1c1c);
 }
 
-/*
- * c26 layout token layer.
- * Activated when a descendant of [data-layout="c26"] reads a --cc-* variable.
- * Specificity: (0,1,0) via :is([data-layout="c26"]) — beats :root (0,0,1),
- * loses to any consumer class/attr selector (as intended).
- *
- * Fallback values marked PLACEHOLDER below mirror webchat for visual parity
- * on day one. Figma-derived c26 values land in a follow-up phase — grep
- * "PLACEHOLDER" to find everything that needs to move.
- *
- * Derived tokens (--cc-*-opacity-*, --cc-secondary-color-hover/disabled,
- * and color-mix derivations below) are intentionally NOT re-declared for
- * c26 unless they need c26-specific percentages. color-mix() resolves its
- * var() arguments lazily at use-site — the rebound --cc-primary-color /
- * --cc-secondary-color / --cc-text-link values cascade in and drive the
- * derivation correctly, so :root declarations keep working under c26 scope.
- */
+/* c26 token overrides; activated via [data-layout="c26"] selector.
+ * PLACEHOLDER fallbacks mirror webchat pending Figma-derived values. */
 :is([data-layout="c26"]) {
-	/* c26 public -> internal mappings (mirror of :root webchat public -> internal) */
 	--cc-primary-color: var(--c26-primary-color, #2455e6); /* PLACEHOLDER */
 	--cc-primary-color-hover: var(
 		--c26-primary-color-hover,
@@ -109,9 +93,18 @@
 	--cc-border-user-message: var(--c26-border-user-message, transparent);
 	--cc-border-agent-message: var(--c26-border-agent-message, var(--cc-border-bot-message));
 
-	--cc-bot-message-contrast-color: var(--c26-bot-message-contrast-color, #1c1c1c); /* PLACEHOLDER */
-	--cc-user-message-contrast-color: var(--c26-user-message-contrast-color, #1c1c1c); /* PLACEHOLDER */
-	--cc-agent-message-contrast-color: var(--c26-agent-message-contrast-color, #1c1c1c); /* PLACEHOLDER */
+	--cc-bot-message-contrast-color: var(
+		--c26-bot-message-contrast-color,
+		#1c1c1c
+	); /* PLACEHOLDER */
+	--cc-user-message-contrast-color: var(
+		--c26-user-message-contrast-color,
+		#1c1c1c
+	); /* PLACEHOLDER */
+	--cc-agent-message-contrast-color: var(
+		--c26-agent-message-contrast-color,
+		#1c1c1c
+	); /* PLACEHOLDER */
 
 	/* c26-only new tokens (no webchat equivalent) */
 	--cc-avatar-size: var(--c26-avatar-size, 32px); /* PLACEHOLDER */

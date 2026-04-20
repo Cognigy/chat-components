@@ -19,8 +19,6 @@ describe("C26Layout — structural", () => {
 	});
 
 	it("renders each source type without error", () => {
-		// Note: engagement is suppressed by the matcher unless teaserMessage.showInChat
-		// is set in config — same as webchat path (see src/matcher.ts).
 		for (const msg of [botTextMessage, userTextMessage, agentTextMessage]) {
 			const { container, unmount } = render(<Message message={msg} layout="c26" />);
 			expect(container.querySelector("article")).toHaveAttribute("data-layout", "c26");
@@ -35,13 +33,7 @@ describe("C26Layout — structural", () => {
 	});
 
 	it("renders label slot when `label` prop provided", () => {
-		render(
-			<Message
-				message={botTextMessage}
-				layout="c26"
-				label={{ text: "AI Agent" }}
-			/>,
-		);
+		render(<Message message={botTextMessage} layout="c26" label={{ text: "AI Agent" }} />);
 		expect(screen.getByTestId("c26-label")).toBeInTheDocument();
 		expect(screen.getByText("AI Agent")).toBeInTheDocument();
 	});
@@ -101,10 +93,7 @@ describe("C26Layout — structural", () => {
 	});
 
 	it("fullscreen escape hatch bypasses c26 layout (no article rendered)", () => {
-		// When isFullscreen=true and the matched plugin has a component, Message.tsx
-		// renders the plugin directly — no article, no layout chrome.
-		// We supply a context-free plugin that matches before the default Text plugin
-		// so the fullscreen path can render without requiring MessageProvider.
+		// Context-free plugin so the fullscreen path renders without MessageProvider.
 		const fullscreenPlugin = {
 			match: () => true,
 			component: () => <div data-testid="fullscreen-plugin">Fullscreen content</div>,
