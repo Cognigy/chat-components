@@ -414,3 +414,10 @@ export interface IWebchatTheme {
 
 	fontFamily: string;
 }
+
+export type MessageLayout = "webchat" | "c26";
+
+export interface C26Label {
+	icon?: import("react").ReactNode;
+	text: string;
+}

@@ -1,11 +1,21 @@
 import { createContext, FC, useMemo, ReactNode } from "react";
-import { MessageProps } from "./Message";
+import { BaseMessageProps } from "./Message";
 
-interface MessageProviderProps extends MessageProps {
+interface MessageProviderProps
+	extends Pick<
+		BaseMessageProps,
+		| "action"
+		| "config"
+		| "message"
+		| "onEmitAnalytics"
+		| "openXAppOverlay"
+		| "onSetLiveRegionText"
+		| "data-message-id"
+	> {
 	children: ReactNode;
 	messageParams?: {
-		hasReply: MessageProps["hasReply"];
-		isConversationEnded: MessageProps["isConversationEnded"];
+		hasReply: BaseMessageProps["hasReply"];
+		isConversationEnded: BaseMessageProps["isConversationEnded"];
 	};
 	headerInfo?: string | null;
 	onSetHeaderInfo?: (headerInfo: string) => void;

@@ -30,3 +30,4 @@ export {
 };
 
 export type { MessageProps, TypographyProps, ChatEventProps };
+export type { MessageLayout, C26Label } from "./messages/types";
