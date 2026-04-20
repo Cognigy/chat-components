@@ -6,6 +6,8 @@ import {
 	userTextMessage,
 	agentTextMessage,
 	engagementTextMessage,
+	richBotMessage,
+	quickRepliesBotMessage,
 } from "../fixtures/layout-messages";
 
 describe("C26Layout — structural", () => {
@@ -80,5 +82,43 @@ describe("C26Layout — structural", () => {
 	it("renders text content for a bot text message", () => {
 		render(<Message message={botTextMessage} layout="c26" />);
 		expect(screen.getByText("Hello from bot")).toBeInTheDocument();
+	});
+
+	it("renders gallery plugin output when layout=c26", () => {
+		const { container } = render(<Message message={richBotMessage} layout="c26" />);
+		const article = container.querySelector("article");
+		expect(article).toHaveAttribute("data-layout", "c26");
+		expect(article!.textContent).toContain("Item A");
+	});
+
+	it("renders quick-replies plugin output when layout=c26", () => {
+		const { container } = render(<Message message={quickRepliesBotMessage} layout="c26" />);
+		const article = container.querySelector("article");
+		expect(article).toHaveAttribute("data-layout", "c26");
+		expect(article!.textContent).toContain("Pick one");
+		expect(article!.textContent).toContain("Yes");
+		expect(article!.textContent).toContain("No");
+	});
+
+	it("fullscreen escape hatch bypasses c26 layout (no article rendered)", () => {
+		// When isFullscreen=true and the matched plugin has a component, Message.tsx
+		// renders the plugin directly — no article, no layout chrome.
+		// We supply a context-free plugin that matches before the default Text plugin
+		// so the fullscreen path can render without requiring MessageProvider.
+		const fullscreenPlugin = {
+			match: () => true,
+			component: () => <div data-testid="fullscreen-plugin">Fullscreen content</div>,
+		};
+		const { container } = render(
+			<Message
+				message={botTextMessage}
+				layout="c26"
+				isFullscreen={true}
+				plugins={[fullscreenPlugin]}
+			/>,
+		);
+		const article = container.querySelector("article");
+		expect(article).toBeNull();
+		expect(screen.getByTestId("fullscreen-plugin")).toBeInTheDocument();
 	});
 });
