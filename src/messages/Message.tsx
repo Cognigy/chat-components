@@ -1,17 +1,14 @@
 import { FC, useMemo, useState, useEffect } from "react";
-import classnames from "classnames";
 
-import MessageHeader from "../common/MessageHeader";
 import { match, MessagePlugin } from "../matcher";
 import { MessageProvider } from "./context";
 import { IStreamingMessage, IWebchatConfig, IWebchatTheme, MessageSender } from "./types";
 
 import "src/theme.css";
-import classes from "./Message.module.css";
-import mainClasses from "src/main.module.css";
 import { CollateMessage, isEventMessage } from "../utils";
 import { IMessage } from "@cognigy/socket-client";
 import { useCollation } from "./hooks";
+import WebchatLayout from "./layouts/WebchatLayout";
 
 export interface MessageProps {
 	action?: MessageSender;
@@ -24,7 +21,7 @@ export interface MessageProps {
 	message: IMessage & { id?: string; animationState?: "start" | "animating" | "done" | "exited" };
 	onDismissFullscreen?: () => void;
 	onEmitAnalytics?: (event: string, payload?: unknown) => void;
-	onSendMessage?: MessageSender; // = "prop.action", for legacy plugins
+	onSendMessage?: MessageSender;
 	onSetFullscreen?: () => void;
 	openXAppOverlay?: (url: string | undefined) => void;
 	plugins?: MessagePlugin[];
@@ -61,10 +58,8 @@ const Message: FC<MessageProps> = props => {
 		"data-message-id": dataMessageId,
 	} = props;
 
-	// Get the collation instance from the context
 	const collate = useCollation();
 
-	// If it is not in the context, use the default collation instance
 	const shouldCollate = collate
 		? collate.isMessageCollatable(message, config, plugins, prevMessage)
 		: defaultCollate.isMessageCollatable(message, config, plugins, prevMessage);
@@ -79,15 +74,6 @@ const Message: FC<MessageProps> = props => {
 		}
 	}, [showHeader]);
 
-	const rootClassName = classnames(
-		"webchat-message-row",
-		message.source,
-		className,
-		classes.message,
-		shouldCollate && classes.collated,
-		isFullscreen && classes.fullscreen,
-	);
-
 	const matchedPlugins = match(message, config, plugins);
 
 	const messageParams = useMemo(
@@ -95,9 +81,6 @@ const Message: FC<MessageProps> = props => {
 		[hasReply, isConversationEnded],
 	);
 
-	/**
-	 * No rule matched the message, so we don't render anything.
-	 */
 	if (!Array.isArray(matchedPlugins) || matchedPlugins.length < 1) {
 		return null;
 	}
@@ -135,37 +118,22 @@ const Message: FC<MessageProps> = props => {
 			headerInfo={headerInfo}
 			onSetHeaderInfo={setHeaderInfo}
 		>
-			<article
-				{...(message.id ? { id: message.id } : {})}
-				className={rootClassName}
+			<WebchatLayout
+				action={action}
+				className={className}
+				matchedPlugins={matchedPlugins}
+				message={message}
+				prevMessage={prevMessage}
+				shouldCollate={shouldCollate}
+				showHeader={showHeader}
+				isFullscreen={isFullscreen}
+				onDismissFullscreen={onDismissFullscreen}
+				onEmitAnalytics={onEmitAnalytics}
+				onSetFullscreen={onSetFullscreen}
+				onSetMessageAnimated={onSetMessageAnimated}
+				theme={props.theme}
 				data-message-id={dataMessageId}
-			>
-				{showHeader && <MessageHeader enableAvatar={message.source !== "user"} />}
-				{matchedPlugins.map((plugin, index) =>
-					plugin.component ? (
-						<plugin.component
-							attributes={{ styles: {} }}
-							isFullscreen={isFullscreen}
-							key={index}
-							message={message}
-							onDismissFullscreen={onDismissFullscreen}
-							onEmitAnalytics={onEmitAnalytics}
-							onSendMessage={action}
-							onSetFullscreen={onSetFullscreen}
-							prevMessage={prevMessage}
-							theme={props.theme}
-							onSetMessageAnimated={onSetMessageAnimated}
-						/>
-					) : null,
-				)}
-				{/* Visually hidden focusable target for better keyboard navigation. */}
-				<div
-					id={`webchat-focus-target-${dataMessageId}`}
-					tabIndex={-1}
-					className={mainClasses.srOnly}
-					aria-hidden="true"
-				/>
-			</article>
+			/>
 		</MessageProvider>
 	);
 };
