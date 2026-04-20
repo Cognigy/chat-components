@@ -60,3 +60,62 @@
 	--cc-user-message-contrast-color: var(--webchat-user-message-contrast-color, #1c1c1c);
 	--cc-agent-message-contrast-color: var(--webchat-agent-message-contrast-color, #1c1c1c);
 }
+
+/*
+ * c26 layout token layer.
+ * Activated when a descendant of [data-layout="c26"] reads a --cc-* variable.
+ * Specificity: (0,1,0) via :is([data-layout="c26"]) — beats :root (0,0,1),
+ * loses to any consumer class/attr selector (as intended).
+ *
+ * Fallback values marked PLACEHOLDER below mirror webchat for visual parity
+ * on day one. Figma-derived c26 values land in a follow-up phase — grep
+ * "PLACEHOLDER" to find everything that needs to move.
+ *
+ * Derived tokens (--cc-*-opacity-*, --cc-secondary-color-hover/disabled,
+ * and color-mix derivations below) are intentionally NOT re-declared for
+ * c26 unless they need c26-specific percentages. color-mix() resolves its
+ * var() arguments lazily at use-site — the rebound --cc-primary-color /
+ * --cc-secondary-color / --cc-text-link values cascade in and drive the
+ * derivation correctly, so :root declarations keep working under c26 scope.
+ */
+:is([data-layout="c26"]) {
+	/* c26 public -> internal mappings (mirror of :root webchat public -> internal) */
+	--cc-primary-color: var(--c26-primary-color, #2455e6); /* PLACEHOLDER */
+	--cc-primary-color-hover: var(
+		--c26-primary-color-hover,
+		color-mix(in srgb, var(--cc-primary-color), #000 20%)
+	);
+	--cc-primary-color-focus: var(--c26-primary-color-focus, var(--cc-primary-color));
+	--cc-primary-color-disabled: color-mix(in srgb, var(--cc-primary-color), #fff 80%);
+	--cc-primary-contrast-color: var(--c26-primary-contrast-color, #fdfcfc); /* PLACEHOLDER */
+
+	--cc-secondary-color: var(--c26-secondary-color, #1a1a1a); /* PLACEHOLDER */
+	--cc-secondary-contrast-color: var(--c26-secondary-contrast-color, #fff); /* PLACEHOLDER */
+
+	--cc-background-bot-message: var(--c26-background-bot-message, #fff); /* PLACEHOLDER */
+	--cc-background-user-message: var(--c26-background-user-message, #e8ebff); /* PLACEHOLDER */
+	--cc-background-agent-message: var(
+		--c26-background-agent-message,
+		var(--cc-background-bot-message)
+	);
+
+	--cc-text-link: var(--c26-text-link, #335fdf); /* PLACEHOLDER */
+	--cc-text-link-hover: color-mix(in srgb, var(--cc-text-link), #000 20%);
+	--cc-text-link-disabled: color-mix(in srgb, var(--cc-text-link), #fff 90%);
+
+	--cc-bubble-border-radius: var(--c26-bubble-border-radius, 15px); /* PLACEHOLDER */
+
+	--cc-border-bot-message: var(--c26-border-bot-message, var(--cc-black-80));
+	--cc-border-user-message: var(--c26-border-user-message, transparent);
+	--cc-border-agent-message: var(--c26-border-agent-message, var(--cc-border-bot-message));
+
+	--cc-bot-message-contrast-color: var(--c26-bot-message-contrast-color, #1c1c1c); /* PLACEHOLDER */
+	--cc-user-message-contrast-color: var(--c26-user-message-contrast-color, #1c1c1c); /* PLACEHOLDER */
+	--cc-agent-message-contrast-color: var(--c26-agent-message-contrast-color, #1c1c1c); /* PLACEHOLDER */
+
+	/* c26-only new tokens (no webchat equivalent) */
+	--cc-avatar-size: var(--c26-avatar-size, 32px); /* PLACEHOLDER */
+	--cc-label-color: var(--c26-label-color, var(--cc-black-40));
+	--cc-label-icon-size: var(--c26-label-icon-size, 16px); /* PLACEHOLDER */
+	--cc-font-family: var(--c26-font-family, "Geist", system-ui, sans-serif); /* PLACEHOLDER */
+}
