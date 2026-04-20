@@ -8,8 +8,7 @@ import "src/theme.css";
 import { CollateMessage, isEventMessage } from "../utils";
 import { IMessage } from "@cognigy/socket-client";
 import { useCollation } from "./hooks";
-import WebchatLayout from "../layouts/WebchatLayout";
-import C26Layout from "../layouts/C26Layout";
+import { C26Layout, WebchatLayout } from "../layouts";
 
 export interface BaseMessageProps {
 	action?: MessageSender;

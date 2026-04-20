@@ -16,6 +16,7 @@ const C26Layout: FC<C26LayoutProps> = props => {
 
 	const rootClassName = classnames(
 		"c26-message-row",
+		message.source,
 		className,
 		classes.article,
 		!avatar && classes.noAvatar,
