@@ -1,19 +1,63 @@
+/* c26 layout grid.
+ * Default (bot/agent, align-left):
+ *   [ avatar | label     ]
+ *   [ avatar | content   ]
+ *   [ .      | timestamp ]
+ *
+ * User (align-right) mirrors the columns so avatar sits on the right:
+ *   [ label     | avatar ]
+ *   [ content   | avatar ]
+ *   [ timestamp | .      ]
+ *
+ * `.noAvatar` collapses to a single column when avatar prop is absent.
+ */
+
 .article {
 	display: grid;
-	grid-template-columns: auto 1fr;
+	grid-template-columns: auto minmax(0, 1fr);
 	grid-template-areas:
 		"avatar label"
-		"avatar content";
-	column-gap: 8px;
-	row-gap: 4px;
-	margin-block: 1rem;
-	margin-inline: 1rem;
-	font-family: var(--cc-font-family, system-ui, sans-serif);
+		"avatar content"
+		".      timestamp";
+	column-gap: var(--space-2, 0.5rem); /* UCL space-2 (8px) */
+	row-gap: var(--space-1, 0.25rem); /* UCL space-1 (4px) */
+	margin-block: var(--space-3, 0.75rem); /* UCL space-3 (12px) */
+	margin-inline: var(--space-3, 0.75rem);
+	font-family: var(--cc-font-family);
+	font-size: var(--cc-message-font-size, 0.75rem);
+	line-height: var(--cc-message-line-height, 1rem);
 	color: var(--cc-bot-message-contrast-color);
 }
 
-.article[data-source="user"] {
+.article:global(.user) {
+	grid-template-columns: minmax(0, 1fr) auto;
+	grid-template-areas:
+		"label     avatar"
+		"content   avatar"
+		"timestamp .";
 	justify-items: end;
+}
+
+.article:global(.user) .content,
+.article:global(.user) .label,
+.article:global(.user) .timestamp {
+	justify-self: end;
+}
+
+.noAvatar {
+	grid-template-columns: minmax(0, 1fr);
+	grid-template-areas:
+		"label"
+		"content"
+		"timestamp";
+}
+
+.article.noAvatar:global(.user) {
+	grid-template-columns: minmax(0, 1fr);
+	grid-template-areas:
+		"label"
+		"content"
+		"timestamp";
 }
 
 .avatar {
@@ -23,23 +67,28 @@
 	display: flex;
 	align-items: flex-start;
 	justify-content: center;
+	align-self: start;
 }
 
-.noAvatar {
-	grid-template-columns: 1fr;
-	grid-template-areas:
-		"label"
-		"content";
+.avatar > * {
+	width: 100%;
+	height: 100%;
+	border-radius: 50%;
+	overflow: hidden;
+	display: block;
+	object-fit: cover;
 }
 
 .label {
 	grid-area: label;
 	display: inline-flex;
 	align-items: center;
-	gap: 4px;
+	gap: var(--space-1, 0.25rem); /* UCL space-1 (4px) */
 	color: var(--cc-label-color);
-	font-size: 0.75rem;
-	line-height: 1;
+	font-size: var(--text-xs, 0.75rem); /* UCL text-xs (12px) */
+	line-height: var(--leading-2, 1rem); /* UCL lh-2 (16px) */
+	font-weight: 500;
+	align-self: end;
 }
 
 .labelIcon {
@@ -48,7 +97,21 @@
 	height: var(--cc-label-icon-size);
 }
 
+.labelIcon > * {
+	width: 100%;
+	height: 100%;
+}
+
 .content {
 	grid-area: content;
 	min-width: 0;
+	display: flex;
+	flex-direction: column;
+}
+
+.timestamp {
+	grid-area: timestamp;
+	color: var(--cc-timestamp-color);
+	font-size: var(--cc-timestamp-font-size);
+	line-height: var(--cc-timestamp-line-height, 1);
 }

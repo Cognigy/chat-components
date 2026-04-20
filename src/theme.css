@@ -61,54 +61,90 @@
 	--cc-agent-message-contrast-color: var(--webchat-agent-message-contrast-color, #1c1c1c);
 }
 
-/* c26 token overrides; activated via [data-layout="c26"] selector.
- * PLACEHOLDER fallbacks mirror webchat pending Figma-derived values. */
+/* c26 token layer; activated via [data-layout="c26"] selector.
+ *
+ * Fallback chain for each token is: consumer override -> UCL token -> hardcoded default.
+ * The lib has NO hard dependency on @cognigy-internal/ui-component-library.
+ * When UCL is loaded on the page, the middle link resolves automatically and
+ * c26 visuals align to UCL. When UCL is absent, hardcoded defaults apply.
+ * Consumers can still force any specific value via --c26-* at their app root.
+ */
 :is([data-layout="c26"]) {
-	--cc-primary-color: var(--c26-primary-color, #2455e6); /* PLACEHOLDER */
+	/* Primary (purple accent + bot bubble fill) — UCL --primary-500 */
+	--cc-primary-color: var(--c26-primary-color, var(--primary-500, #6e56cf));
 	--cc-primary-color-hover: var(
 		--c26-primary-color-hover,
 		color-mix(in srgb, var(--cc-primary-color), #000 20%)
 	);
 	--cc-primary-color-focus: var(--c26-primary-color-focus, var(--cc-primary-color));
 	--cc-primary-color-disabled: color-mix(in srgb, var(--cc-primary-color), #fff 80%);
-	--cc-primary-contrast-color: var(--c26-primary-contrast-color, #fdfcfc); /* PLACEHOLDER */
+	--cc-primary-contrast-color: var(
+		--c26-primary-contrast-color,
+		var(--primary-foreground, #ffffff)
+	);
 
-	--cc-secondary-color: var(--c26-secondary-color, #1a1a1a); /* PLACEHOLDER */
-	--cc-secondary-contrast-color: var(--c26-secondary-contrast-color, #fff); /* PLACEHOLDER */
+	/* Secondary (near-black text / neutrals) — UCL --neutral-700 */
+	--cc-secondary-color: var(--c26-secondary-color, var(--neutral-700, #1f2937));
+	--cc-secondary-contrast-color: var(--c26-secondary-contrast-color, var(--neutral-0, #ffffff));
 
-	--cc-background-bot-message: var(--c26-background-bot-message, #fff); /* PLACEHOLDER */
-	--cc-background-user-message: var(--c26-background-user-message, #e8ebff); /* PLACEHOLDER */
+	/* Bubble backgrounds — bot/agent purple, user light gray */
+	--cc-background-bot-message: var(--c26-background-bot-message, var(--primary-500, #6e56cf));
+	--cc-background-user-message: var(--c26-background-user-message, var(--neutral-50, #f3f4f6));
 	--cc-background-agent-message: var(
 		--c26-background-agent-message,
 		var(--cc-background-bot-message)
 	);
 
-	--cc-text-link: var(--c26-text-link, #335fdf); /* PLACEHOLDER */
+	/* Links */
+	--cc-text-link: var(--c26-text-link, var(--primary-500, #6e56cf));
 	--cc-text-link-hover: color-mix(in srgb, var(--cc-text-link), #000 20%);
 	--cc-text-link-disabled: color-mix(in srgb, var(--cc-text-link), #fff 90%);
 
-	--cc-bubble-border-radius: var(--c26-bubble-border-radius, 15px); /* PLACEHOLDER */
+	/* Bubble sizing — softly rounded corners, horizontal-heavy padding,
+	   tight bottom margin so timestamp sits directly under the bubble */
+	--cc-bubble-border-radius: var(--c26-bubble-border-radius, var(--rounded-lg, 0.75rem));
+	--cc-bubble-padding: var(--c26-bubble-padding, var(--space-2, 0.5rem) 0.875rem);
+	--cc-bubble-max-width: var(--c26-bubble-max-width, 280px);
+	--cc-bubble-margin-block-end: var(--c26-bubble-margin-block-end, 0);
 
-	--cc-border-bot-message: var(--c26-border-bot-message, var(--cc-black-80));
+	/* Bubble borders — c26 bubbles are solid-fill, no border */
+	--cc-border-bot-message: var(--c26-border-bot-message, transparent);
 	--cc-border-user-message: var(--c26-border-user-message, transparent);
-	--cc-border-agent-message: var(--c26-border-agent-message, var(--cc-border-bot-message));
+	--cc-border-agent-message: var(--c26-border-agent-message, transparent);
 
+	/* Bubble text contrast */
 	--cc-bot-message-contrast-color: var(
 		--c26-bot-message-contrast-color,
-		#1c1c1c
-	); /* PLACEHOLDER */
+		var(--primary-foreground, #ffffff)
+	);
 	--cc-user-message-contrast-color: var(
 		--c26-user-message-contrast-color,
-		#1c1c1c
-	); /* PLACEHOLDER */
+		var(--neutral-700, #1f2937)
+	);
 	--cc-agent-message-contrast-color: var(
 		--c26-agent-message-contrast-color,
-		#1c1c1c
-	); /* PLACEHOLDER */
+		var(--primary-foreground, #ffffff)
+	);
 
-	/* c26-only new tokens (no webchat equivalent) */
-	--cc-avatar-size: var(--c26-avatar-size, 32px); /* PLACEHOLDER */
-	--cc-label-color: var(--c26-label-color, var(--cc-black-40));
-	--cc-label-icon-size: var(--c26-label-icon-size, 16px); /* PLACEHOLDER */
-	--cc-font-family: var(--c26-font-family, "Geist", system-ui, sans-serif); /* PLACEHOLDER */
+	/* c26-only chrome tokens (no webchat equivalent) */
+	--cc-avatar-size: var(--c26-avatar-size, 36px);
+	--cc-label-color: var(--c26-label-color, var(--neutral-700, #1f2937));
+	--cc-label-icon-size: var(--c26-label-icon-size, 16px);
+	--cc-timestamp-color: var(--c26-timestamp-color, var(--neutral-400, #6b7280));
+	--cc-timestamp-font-size: var(--c26-timestamp-font-size, var(--text-micro, 0.625rem));
+	--cc-timestamp-line-height: var(--c26-timestamp-line-height, var(--leading-1, 0.875rem));
+	--cc-font-family: var(--c26-font-family, var(--font-sans, "Geist", system-ui, sans-serif));
+	--cc-message-font-size: var(--c26-message-font-size, var(--text-sm, 0.875rem));
+	--cc-message-line-height: var(--c26-message-line-height, var(--leading-3, 1.25rem));
+}
+
+/* c26 asymmetric bubble corner — the bottom corner facing the avatar is
+   straight, mirroring a chat-tail visual cue anchored at the avatar.
+   Bot/agent: bottom-left. User: bottom-right. */
+[data-layout="c26"]:not([data-source="user"]) .chat-bubble {
+	border-bottom-left-radius: 0;
+}
+
+[data-layout="c26"][data-source="user"] .chat-bubble {
+	border-bottom-right-radius: 0;
 }

@@ -1,11 +1,11 @@
 .bubble {
-	border-radius: 15px;
+	border-radius: var(--cc-bubble-border-radius, 15px);
 	border: 1px solid var(--cc-border-bot-message);
-	padding: 12px;
-	max-width: 295px;
+	padding: var(--cc-bubble-padding, 12px);
+	max-width: var(--cc-bubble-max-width, 295px);
 	width: max-content;
 	box-sizing: border-box;
-	margin-block-end: 12px;
+	margin-block-end: var(--cc-bubble-margin-block-end, 12px);
 	word-break: break-word;
 	white-space: pre-wrap;
 }

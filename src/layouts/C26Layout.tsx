@@ -11,8 +11,14 @@ export interface C26LayoutProps extends BaseLayoutProps {
 	avatar?: ReactNode;
 }
 
+const formatTimestamp = (value?: string | number): string => {
+	const ms = value ? Number(value) : Date.now();
+	return new Date(ms).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
+};
+
 const C26Layout: FC<C26LayoutProps> = props => {
 	const { className, message, label, avatar, "data-message-id": dataMessageId } = props;
+	const timestamp = formatTimestamp(message?.timestamp);
 
 	const rootClassName = classnames(
 		"c26-message-row",
@@ -44,6 +50,9 @@ const C26Layout: FC<C26LayoutProps> = props => {
 			<div className={classes.content}>
 				<MatchedPlugins {...props} />
 			</div>
+			<time className={classes.timestamp} data-testid="c26-timestamp">
+				{timestamp}
+			</time>
 			<MessageFocusTarget dataMessageId={dataMessageId} />
 		</article>
 	);
