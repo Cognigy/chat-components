@@ -1,5 +1,5 @@
 import { render } from "@testing-library/react";
-import { describe, it, expect, vi } from "vitest";
+import { describe, it, expect } from "vitest";
 import Message from "../../src/messages/Message";
 import { botTextMessage } from "../fixtures/layout-messages";
 
@@ -18,12 +18,9 @@ describe("layout prop — equivalence", () => {
 		expect(article).not.toHaveAttribute("data-layout");
 	});
 
-	it('<Message layout="c26"> throws pending c26 implementation', () => {
-		// Silence expected error log during throw assertion
-		const spy = vi.spyOn(console, "error").mockImplementation(() => {});
+	it('<Message layout="c26"> renders without throwing', () => {
 		expect(() =>
 			render(<Message message={botTextMessage} layout="c26" />),
-		).toThrowError(/c26 layout not yet implemented/);
-		spy.mockRestore();
+		).not.toThrow();
 	});
 });

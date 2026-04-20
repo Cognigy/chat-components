@@ -16,6 +16,7 @@ import { CollateMessage, isEventMessage } from "../utils";
 import { IMessage } from "@cognigy/socket-client";
 import { useCollation } from "./hooks";
 import WebchatLayout from "./layouts/WebchatLayout";
+import C26Layout from "./layouts/C26Layout";
 
 export interface BaseMessageProps {
 	action?: MessageSender;
@@ -122,28 +123,42 @@ const Message: FC<MessageProps> = props => {
 
 	const layout: MessageLayout = props.layout ?? "webchat";
 
-	if (layout === "c26") {
-		throw new Error("c26 layout not yet implemented");
-	}
-
-	const inner = (
-		<WebchatLayout
-			action={action}
-			className={className}
-			matchedPlugins={matchedPlugins}
-			message={message}
-			prevMessage={prevMessage}
-			shouldCollate={shouldCollate}
-			showHeader={showHeader}
-			isFullscreen={isFullscreen}
-			onDismissFullscreen={onDismissFullscreen}
-			onEmitAnalytics={onEmitAnalytics}
-			onSetFullscreen={onSetFullscreen}
-			onSetMessageAnimated={onSetMessageAnimated}
-			theme={props.theme}
-			data-message-id={dataMessageId}
-		/>
-	);
+	const inner =
+		layout === "webchat" ? (
+			<WebchatLayout
+				action={action}
+				className={className}
+				matchedPlugins={matchedPlugins}
+				message={message}
+				prevMessage={prevMessage}
+				shouldCollate={shouldCollate}
+				showHeader={showHeader}
+				isFullscreen={isFullscreen}
+				onDismissFullscreen={onDismissFullscreen}
+				onEmitAnalytics={onEmitAnalytics}
+				onSetFullscreen={onSetFullscreen}
+				onSetMessageAnimated={onSetMessageAnimated}
+				theme={props.theme}
+				data-message-id={dataMessageId}
+			/>
+		) : (
+			<C26Layout
+				action={action}
+				className={className}
+				matchedPlugins={matchedPlugins}
+				message={message}
+				prevMessage={prevMessage}
+				isFullscreen={isFullscreen}
+				label={props.layout === "c26" ? props.label : undefined}
+				avatar={props.layout === "c26" ? props.avatar : undefined}
+				onDismissFullscreen={onDismissFullscreen}
+				onEmitAnalytics={onEmitAnalytics}
+				onSetFullscreen={onSetFullscreen}
+				onSetMessageAnimated={onSetMessageAnimated}
+				theme={props.theme}
+				data-message-id={dataMessageId}
+			/>
+		);
 
 	return (
 		<MessageProvider

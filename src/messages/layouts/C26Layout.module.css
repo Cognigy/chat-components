@@ -1,0 +1,58 @@
+.article {
+	display: grid;
+	grid-template-columns: auto 1fr;
+	grid-template-areas:
+		"avatar label"
+		"avatar content";
+	column-gap: 8px;
+	row-gap: 4px;
+	margin-block: 1rem;
+	margin-inline: 1rem;
+	font-family: var(--cc-font-family, system-ui, sans-serif);
+	color: var(--cc-bot-message-contrast-color);
+}
+
+/* `message.source` is added as a bare class by rootClassName (unscoped via
+   classnames), so the "user" class lands on .article alongside it.
+   Selecting via :global(.user) keeps the alignment hook consistent with the
+   codebase's class-based CSS convention. Final values arrive in next phase. */
+.article:global(.user) {
+	justify-items: end;
+}
+
+.avatar {
+	grid-area: avatar;
+	width: var(--cc-avatar-size);
+	height: var(--cc-avatar-size);
+	display: flex;
+	align-items: flex-start;
+	justify-content: center;
+}
+
+.noAvatar {
+	grid-template-columns: 1fr;
+	grid-template-areas:
+		"label"
+		"content";
+}
+
+.label {
+	grid-area: label;
+	display: inline-flex;
+	align-items: center;
+	gap: 4px;
+	color: var(--cc-label-color);
+	font-size: 0.75rem;
+	line-height: 1;
+}
+
+.labelIcon {
+	display: inline-flex;
+	width: var(--cc-label-icon-size);
+	height: var(--cc-label-icon-size);
+}
+
+.content {
+	grid-area: content;
+	min-width: 0;
+}
