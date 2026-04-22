@@ -1,4 +1,3 @@
-/* eslint-env node */
 /**
  * Installs the latest published `@cognigy/chat-components` as the aliased
  * dev-dependency `chat-components-baseline`. Consumed by
