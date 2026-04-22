@@ -18,15 +18,16 @@ jobs:
         name: DOM compatibility vs latest release
         runs-on: ubuntu-latest
 
-        strategy:
-            matrix:
-                node-version: [22.x]
-
+        # No matrix — a single Node version is enough (this only validates
+        # that the rendered DOM hasn't regressed, which is independent of
+        # runtime version). Keeping it flat also avoids GitHub appending the
+        # matrix value (e.g. "(22.x)") to the PR-check title, which reads
+        # like the library release being compared against.
         steps:
             - uses: actions/checkout@v4
             - uses: actions/setup-node@v3
               with:
-                  node-version: ${{ matrix.node-version }}
+                  node-version: 22.x
                   cache: "npm"
             - run: npm ci
             # Dynamically installs the dist-tag `latest` of
