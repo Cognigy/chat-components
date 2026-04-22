@@ -89,7 +89,7 @@
 
 	/* Bubble backgrounds — bot/agent purple, user light gray */
 	--cc-background-bot-message: var(--c26-background-bot-message, var(--primary-500, #6e56cf));
-	--cc-background-user-message: var(--c26-background-user-message, var(--neutral-50, #f3f4f6));
+	--cc-background-user-message: var(--c26-background-user-message, var(--primary-25, #f2f0fa));
 	--cc-background-agent-message: var(
 		--c26-background-agent-message,
 		var(--cc-background-bot-message)
@@ -104,7 +104,13 @@
 	   tight bottom margin so timestamp sits directly under the bubble */
 	--cc-bubble-border-radius: var(--c26-bubble-border-radius, var(--rounded-lg, 0.75rem));
 	--cc-bubble-padding: var(--c26-bubble-padding, var(--space-2, 0.5rem) 0.875rem);
-	--cc-bubble-max-width: var(--c26-bubble-max-width, 280px);
+	--cc-bubble-max-width-bot: var(--c26-bubble-max-width-bot, min(80%, 480px));
+	--cc-bubble-max-width-user: var(--c26-bubble-max-width-user, min(70%, 320px));
+	--cc-bubble-box-shadow: var(--c26-bubble-box-shadow, var(--shadow-sm, 0 1px 3px rgba(31, 41, 55, 0.10))); /* mirrors UCL --shadow-sm */
+	/* Temporary alias — C26Layout.module.css:115 still reads the old name.
+	   Task 2 rewrites that file to use the role-differentiated tokens
+	   directly; remove this alias in that commit. */
+	--cc-bubble-max-width: var(--cc-bubble-max-width-bot);
 	--cc-bubble-margin-block-end: var(--c26-bubble-margin-block-end, 0);
 
 	/* Bubble borders — c26 bubbles are solid-fill, no border */
@@ -126,11 +132,9 @@
 		var(--primary-foreground, #ffffff)
 	);
 
-	/* Action buttons (quick replies, TextWithButtons, etc.) — matches UCL
-	   `secondary` + `sm` Button variant: h-8 rounded-md gap-1.5 px-3
-	   bg-primary-50 text-primary-900.
-	   Buttons on the same row share width equally for symmetry.
-	   Consumer overrides via --c26-button-*. */
+	/* Action-button tokens — glass variant on purple bot bubble.
+	   Translucent white overlay reads as a lifted surface within the bubble;
+	   UCL Button variant="secondary" (primary-50 bg) would be invisible here. */
 	--cc-button-border-radius: var(--c26-button-border-radius, var(--rounded-md, 0.5rem));
 	--cc-button-padding: var(--c26-button-padding, 0 var(--space-3, 0.75rem));
 	--cc-button-min-height: var(--c26-button-min-height, 2rem); /* UCL h-8 (32px) */
@@ -140,18 +144,18 @@
 	--cc-button-font-weight: var(--c26-button-font-weight, 500);
 	--cc-button-line-height: var(--c26-button-line-height, var(--leading-3, 1.25rem));
 	--cc-button-gap: var(--c26-button-gap, 0.375rem); /* UCL gap-1.5 (6px) */
-	--cc-button-background: var(--c26-button-background, var(--primary-50, #e0dbf5));
-	--cc-button-color: var(--c26-button-color, var(--primary-900, #2a1b66));
-	--cc-button-hover-background: var(
-		--c26-button-hover-background,
-		var(--primary-100, #c8bff0)
-	);
+	--cc-button-background: var(--c26-button-background, rgba(255, 255, 255, 0.18));
+	--cc-button-color: var(--c26-button-color, #ffffff);
+	--cc-button-hover-background: var(--c26-button-hover-background, rgba(255, 255, 255, 0.28));
+	--cc-button-border: var(--c26-button-border, 1px solid rgba(255, 255, 255, 0.25));
+	--cc-button-hover-border: var(--c26-button-hover-border, 1px solid rgba(255, 255, 255, 0.40));
+	--cc-button-backdrop-filter: var(--c26-button-backdrop-filter, blur(4px));
 	--cc-buttons-gap: var(--c26-buttons-gap, var(--space-2, 0.5rem));
 	--cc-buttons-max-width: var(--c26-buttons-max-width, 100%);
 	--cc-buttons-margin-top: var(--c26-buttons-margin-top, var(--space-2, 0.5rem));
 
 	/* c26-only chrome tokens (no webchat equivalent) */
-	--cc-avatar-size: var(--c26-avatar-size, 36px);
+	--cc-avatar-size: var(--c26-avatar-size, 40px);
 	--cc-label-color: var(--c26-label-color, var(--neutral-700, #1f2937));
 	--cc-label-icon-size: var(--c26-label-icon-size, 16px);
 	--cc-timestamp-color: var(--c26-timestamp-color, var(--neutral-400, #6b7280));
