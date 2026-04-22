@@ -111,8 +111,7 @@ import datepickerDisableWeekends from "../fixtures/datepicker/disableWeekends.js
 // omit `source` because the existing per-component specs accept whatever
 // shape the matcher needs; for Message-level rendering we must have a source
 // so the non-user / non-engagement branches flow as expected.
-const asBot = (raw: unknown): IMessage =>
-	({ source: "bot", ...(raw as object) }) as IMessage;
+const asBot = (raw: unknown): IMessage => ({ source: "bot", ...(raw as object) }) as IMessage;
 
 // Normalize HTML so that non-structural differences don't cause false
 // positives. We strip:
@@ -144,10 +143,7 @@ function normalize(html: string): string {
 			// mask react-tooltip / random uuid-ish ids seen in attribute values
 			.replace(/tooltip-[A-Za-z0-9_-]+/g, "tooltip-__id__")
 			// mask UUID v4-style ids (used by gallery subtitle/title/content ids)
-			.replace(
-				/[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/g,
-				"__uuid__",
-			)
+			.replace(/[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/g, "__uuid__")
 			// mask swiper auto-generated wrapper/container ids: `swiper-wrapper-<hex>`
 			.replace(/swiper-wrapper-[0-9a-f]+/g, "swiper-wrapper-__id__")
 			// canonicalize hashed CSS-module class names:
@@ -242,9 +238,8 @@ describe(`DOM compatibility: branch vs @cognigy/chat-components@${baselineVersio
 	});
 
 	describe("demo-page message tabs", () => {
-		it.each(demoCases)(
-			"$name — matches published release DOM",
-			({ message }) => assertSameDom(message),
+		it.each(demoCases)("$name — matches published release DOM", ({ message }) =>
+			assertSameDom(message),
 		);
 	});
 });
