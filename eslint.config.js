@@ -26,6 +26,19 @@ export default [
 	// Base JS recommended rules (apply to all files)
 	js.configs.recommended,
 
+	// Node scripts (.mjs). The base recommended config enables `no-undef`,
+	// which flags `console` / `process` / etc. unless Node globals are
+	// declared. Legacy `/* eslint-env node */` directives are ignored under
+	// flat config, so we declare the environment here instead.
+	{
+		files: ["**/*.mjs"],
+		languageOptions: {
+			globals: {
+				...globals.node,
+			},
+		},
+	},
+
 	// TypeScript + React Hooks + Accessibility + React Refresh rules
 	{
 		files: ["**/*.ts", "**/*.tsx"],

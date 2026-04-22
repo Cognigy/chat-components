@@ -1,0 +1,44 @@
+name: DOM Compatibility
+
+# Separate workflow (distinct check on the PR) so a DOM-compatibility
+# failure stands out next to regular unit-test failures. The spec renders
+# every supported message type on this branch and compares the DOM against
+# the same type rendered by the latest published @cognigy/chat-components
+# release. A failure means the branch would break backward compatibility
+# for consumers of the default webchat layout.
+
+on:
+    push:
+        branches: [main]
+    pull_request:
+        branches: [main]
+
+jobs:
+    dom-compat:
+        name: DOM compatibility vs latest release
+        runs-on: ubuntu-latest
+
+        # No matrix — a single Node version is enough (this only validates
+        # that the rendered DOM hasn't regressed, which is independent of
+        # runtime version). Keeping it flat also avoids GitHub appending the
+        # matrix value (e.g. "(22.x)") to the PR-check title, which reads
+        # like the library release being compared against.
+        steps:
+            - uses: actions/checkout@v4
+            - uses: actions/setup-node@v3
+              with:
+                  node-version: 22.x
+                  cache: "npm"
+            - run: npm ci
+            # Dynamically installs the dist-tag `latest` of
+            # @cognigy/chat-components as the aliased dev-dep
+            # `chat-components-baseline` used by the dom-compat spec. Must
+            # run AFTER npm ci (which clears node_modules) and BEFORE the
+            # build / dom-compat test. See scripts/install-dom-compat-baseline.mjs.
+            - run: npm run test:dom-compat:install-baseline
+            # The dom-compat spec imports Message from `dist/chat-components.js`,
+            # so a production build must exist before the spec runs. Using
+            # the same build pipeline for both sides of the comparison avoids
+            # Vitest-only CSS-module class-name artifacts.
+            - run: npm run build
+            - run: npm run test:dom-compat
