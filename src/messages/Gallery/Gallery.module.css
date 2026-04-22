@@ -5,6 +5,201 @@
 	overflow: hidden;
 }
 
+/* c26 theme: tile becomes a white card sitting on the purple bot/agent/
+   engagement bubble. Outer tile owns radius + border + bg; inner .bottom
+   section loses its own border so the tile reads as a single surface. */
+[data-layout="c26"][data-source="bot"] .slideItem,
+[data-layout="c26"][data-source="agent"] .slideItem,
+[data-layout="c26"][data-source="engagement"] .slideItem {
+	background: var(--cc-gallery-tile-background);
+	border-radius: var(--cc-gallery-tile-border-radius);
+	border: var(--cc-gallery-tile-border);
+	box-shadow: var(--cc-gallery-tile-box-shadow);
+	color: var(--neutral-700, #1f2937);
+	/* Uniform tile heights — slides stretch to tallest in the row (see
+	   .swiper-slide override below). Tile fills slide via flex column,
+	   image area stays fixed aspect, body grows to fill remaining height. */
+	height: 100%;
+	display: flex;
+	flex-direction: column;
+}
+
+[data-layout="c26"][data-source="bot"] .slideItem .top,
+[data-layout="c26"][data-source="agent"] .slideItem .top,
+[data-layout="c26"][data-source="engagement"] .slideItem .top {
+	flex: 0 0 auto;
+}
+
+[data-layout="c26"][data-source="bot"] .slideItem .bottom,
+[data-layout="c26"][data-source="agent"] .slideItem .bottom,
+[data-layout="c26"][data-source="engagement"] .slideItem .bottom {
+	flex: 1 1 auto;
+	/* Center content vertically so buttons in short tiles sit mid-body
+	   instead of pinned to the top when other tiles stretch the row. */
+	justify-content: center;
+}
+
+/* Swiper wrapper in c26 bubble — align horizontal edges with the bubble's
+   inner borders. The bubble applies `--cc-bubble-padding` (0.875rem inline);
+   we negate that with negative margin, and inherit the bubble's border radius
+   so `overflow: hidden` on the wrapper clips through the same rounded corners. */
+[data-layout="c26"][data-source="bot"] :global(.swiper).wrapper,
+[data-layout="c26"][data-source="agent"] :global(.swiper).wrapper,
+[data-layout="c26"][data-source="engagement"] :global(.swiper).wrapper {
+	margin-left: calc(var(--cc-gallery-wrapper-inline-bleed, 0.875rem) * -1);
+	margin-right: calc(var(--cc-gallery-wrapper-inline-bleed, 0.875rem) * -1);
+	padding-left: var(--cc-gallery-wrapper-inline-bleed, 0.875rem);
+	padding-right: var(--cc-gallery-wrapper-inline-bleed, 0.875rem);
+	padding-top: var(--cc-gallery-wrapper-padding-top, 0.5rem);
+	border-radius: inherit;
+}
+
+/* Re-anchor nav arrows since we removed the 20px horizontal padding they
+   were hugging. */
+[data-layout="c26"][data-source="bot"] :global(.swiper).wrapper :global(.gallery-button-prev),
+[data-layout="c26"][data-source="agent"] :global(.swiper).wrapper :global(.gallery-button-prev),
+[data-layout="c26"][data-source="engagement"] :global(.swiper).wrapper :global(.gallery-button-prev) {
+	left: 4px;
+}
+
+[data-layout="c26"][data-source="bot"] :global(.swiper).wrapper :global(.gallery-button-next),
+[data-layout="c26"][data-source="agent"] :global(.swiper).wrapper :global(.gallery-button-next),
+[data-layout="c26"][data-source="engagement"] :global(.swiper).wrapper :global(.gallery-button-next) {
+	right: 4px;
+}
+
+/* Let swiper slides stretch to the tallest — legacy `.swiper-slide { height: 100% }`
+   resolves to auto against an undefined wrapper height and blocks flex stretch.
+   Switching to `height: auto` lets the default `align-items: stretch` on the
+   flex wrapper equalize slides. Slide becomes a flex container so the tile's
+   `height: 100%` has a defined target. */
+[data-layout="c26"][data-source="bot"] :global(.swiper).wrapper :global(.swiper-slide),
+[data-layout="c26"][data-source="agent"] :global(.swiper).wrapper :global(.swiper-slide),
+[data-layout="c26"][data-source="engagement"] :global(.swiper).wrapper :global(.swiper-slide) {
+	height: auto;
+	display: flex;
+}
+
+/* Gradient scrim under overlaid title — guarantees WCAG AA contrast
+   against arbitrary imagery. Disabled in broken-image context (T6). */
+[data-layout="c26"][data-source="bot"] .slideItem .top::after,
+[data-layout="c26"][data-source="agent"] .slideItem .top::after,
+[data-layout="c26"][data-source="engagement"] .slideItem .top::after {
+	content: "";
+	position: absolute;
+	inset: auto 0 0 0;
+	height: 50%;
+	background: var(--cc-gallery-tile-scrim);
+	pointer-events: none;
+}
+
+/* Tile without .bottom — .top owns all four corners. */
+[data-layout="c26"][data-source="bot"] .slideItem .top:only-child,
+[data-layout="c26"][data-source="agent"] .slideItem .top:only-child,
+[data-layout="c26"][data-source="engagement"] .slideItem .top:only-child {
+	border-radius: var(--cc-gallery-tile-border-radius);
+}
+
+[data-layout="c26"][data-source="bot"] .slideItem .top:only-child img,
+[data-layout="c26"][data-source="agent"] .slideItem .top:only-child img,
+[data-layout="c26"][data-source="engagement"] .slideItem .top:only-child img {
+	border-radius: var(--cc-gallery-tile-border-radius);
+}
+
+[data-layout="c26"][data-source="bot"] .slideItem .bottom,
+[data-layout="c26"][data-source="agent"] .slideItem .bottom,
+[data-layout="c26"][data-source="engagement"] .slideItem .bottom {
+	background: transparent;
+	border: none;
+	border-bottom-left-radius: var(--cc-gallery-tile-border-radius);
+	border-bottom-right-radius: var(--cc-gallery-tile-border-radius);
+	padding: var(--cc-gallery-tile-body-padding);
+	color: var(--neutral-700, #1f2937);
+}
+
+[data-layout="c26"][data-source="bot"] .slideItem .top h4,
+[data-layout="c26"][data-source="agent"] .slideItem .top h4,
+[data-layout="c26"][data-source="engagement"] .slideItem .top h4 {
+	font-size: var(--cc-gallery-tile-title-font-size);
+	/* Pin title to left edge of image. Legacy rule only sets margin-inline-start
+	   + bottom, leaving `left` auto → computed position drifts with static flow.
+	   Override: explicit left, zero margin, right bound for wrap. */
+	left: 8px;
+	right: 8px;
+	margin-inline-start: 0;
+	text-align: left;
+	display: -webkit-box;
+	-webkit-line-clamp: 2;
+	-webkit-box-orient: vertical;
+	overflow: hidden;
+	text-shadow: 0 1px 2px rgba(0, 0, 0, 0.45);
+}
+
+[data-layout="c26"][data-source="bot"] .slideItem .bottom p,
+[data-layout="c26"][data-source="agent"] .slideItem .bottom p,
+[data-layout="c26"][data-source="engagement"] .slideItem .bottom p {
+	font-size: var(--cc-gallery-tile-subtitle-font-size);
+	line-height: var(--cc-gallery-tile-subtitle-line-height);
+	color: var(--cc-gallery-tile-subtitle-color);
+}
+
+/* Image top corners align to tile radius (tile overflow: hidden clips anyway,
+   but this keeps computed styles consistent and avoids sub-pixel bleed). */
+[data-layout="c26"][data-source="bot"] .slideItem .top img,
+[data-layout="c26"][data-source="agent"] .slideItem .top img,
+[data-layout="c26"][data-source="engagement"] .slideItem .top img {
+	border-top-left-radius: var(--cc-gallery-tile-border-radius);
+	border-top-right-radius: var(--cc-gallery-tile-border-radius);
+}
+
+/* c26 tile buttons — reuse bubble-button geometry tokens for consistency with
+   the glass action buttons on purple bubbles. Colors inverted to solid primary
+   so text reads on the white tile. Gallery buttons come from Buttons.module.css
+   (legacy .primaryButton.actionButton), so we target that class specifically. */
+[data-layout="c26"][data-source="bot"] .slideItem :global(.webchat-carousel-template-button),
+[data-layout="c26"][data-source="agent"] .slideItem :global(.webchat-carousel-template-button),
+[data-layout="c26"][data-source="engagement"] .slideItem :global(.webchat-carousel-template-button) {
+	background-color: var(--cc-gallery-tile-button-background);
+	color: var(--cc-gallery-tile-button-color);
+	border: var(--cc-gallery-tile-button-border);
+	border-radius: var(--cc-button-border-radius);
+	height: auto;
+	min-height: var(--cc-button-min-height);
+	padding: var(--cc-button-padding);
+	font-size: var(--cc-button-font-size);
+	font-weight: var(--cc-button-font-weight);
+	line-height: var(--cc-button-line-height);
+	width: 100%;
+}
+
+[data-layout="c26"][data-source="bot"] .slideItem :global(.webchat-carousel-template-button):hover,
+[data-layout="c26"][data-source="bot"] .slideItem :global(.webchat-carousel-template-button):focus,
+[data-layout="c26"][data-source="agent"] .slideItem :global(.webchat-carousel-template-button):hover,
+[data-layout="c26"][data-source="agent"] .slideItem :global(.webchat-carousel-template-button):focus,
+[data-layout="c26"][data-source="engagement"] .slideItem :global(.webchat-carousel-template-button):hover,
+[data-layout="c26"][data-source="engagement"] .slideItem :global(.webchat-carousel-template-button):focus {
+	background-color: var(--cc-gallery-tile-button-hover-background);
+}
+
+/* Focus-visible — 2px primary outline, no white halo (the legacy
+   Buttons.module.css halo is white and would be invisible on the white tile). */
+[data-layout="c26"][data-source="bot"] .slideItem :global(.webchat-carousel-template-button):focus-visible,
+[data-layout="c26"][data-source="agent"] .slideItem :global(.webchat-carousel-template-button):focus-visible,
+[data-layout="c26"][data-source="engagement"] .slideItem :global(.webchat-carousel-template-button):focus-visible {
+	outline: 2px solid var(--cc-primary-color-focus);
+	outline-offset: 2px;
+	box-shadow: none;
+}
+
+/* Tile buttons stack vertically (narrow 206px tile). Targets the shared
+   ActionButtons list class applied in GalleryItem.tsx. */
+[data-layout="c26"][data-source="bot"] .slideItem :global(.webchat-carousel-template-content) ul[class*="buttons" i],
+[data-layout="c26"][data-source="agent"] .slideItem :global(.webchat-carousel-template-content) ul[class*="buttons" i],
+[data-layout="c26"][data-source="engagement"] .slideItem :global(.webchat-carousel-template-content) ul[class*="buttons" i] {
+	flex-direction: column;
+	align-items: stretch;
+}
+
 .slideItem .top {
 	position: relative;
 	border-radius: var(--cc-bubble-border-radius);
@@ -152,6 +347,56 @@ article :global(.swiper).wrapper :global(.swiper-button-disabled) {
 	opacity: 0;
 }
 
+/* c26 nav arrows — glass, matches bubble-button language.
+   NOTE: the `article` in the legacy selector IS the c26 root, so we can't repeat
+   `article` as a descendant; we scope directly on the c26 attributes. */
+[data-layout="c26"][data-source="bot"] :global(.swiper).wrapper :global(.gallery-button-prev),
+[data-layout="c26"][data-source="bot"] :global(.swiper).wrapper :global(.gallery-button-next),
+[data-layout="c26"][data-source="agent"] :global(.swiper).wrapper :global(.gallery-button-prev),
+[data-layout="c26"][data-source="agent"] :global(.swiper).wrapper :global(.gallery-button-next),
+[data-layout="c26"][data-source="engagement"] :global(.swiper).wrapper :global(.gallery-button-prev),
+[data-layout="c26"][data-source="engagement"] :global(.swiper).wrapper :global(.gallery-button-next) {
+	width: var(--cc-gallery-nav-size);
+	height: var(--cc-gallery-nav-size);
+	background-color: var(--cc-gallery-nav-background);
+	border: var(--cc-gallery-nav-border);
+	color: var(--cc-gallery-nav-color);
+	backdrop-filter: var(--cc-gallery-nav-backdrop-filter);
+	transition: background-color 120ms ease, border-color 120ms ease;
+	top: calc(150px / 2 - (var(--cc-gallery-nav-size) / 2));
+	justify-content: center;
+}
+
+[data-layout="c26"][data-source="bot"] :global(.swiper).wrapper :global(.gallery-button-prev):hover,
+[data-layout="c26"][data-source="bot"] :global(.swiper).wrapper :global(.gallery-button-next):hover,
+[data-layout="c26"][data-source="agent"] :global(.swiper).wrapper :global(.gallery-button-prev):hover,
+[data-layout="c26"][data-source="agent"] :global(.swiper).wrapper :global(.gallery-button-next):hover,
+[data-layout="c26"][data-source="engagement"] :global(.swiper).wrapper :global(.gallery-button-prev):hover,
+[data-layout="c26"][data-source="engagement"] :global(.swiper).wrapper :global(.gallery-button-next):hover {
+	background-color: var(--cc-gallery-nav-hover-background);
+	border: var(--cc-gallery-nav-hover-border);
+}
+
+[data-layout="c26"][data-source="bot"] :global(.swiper).wrapper :global(.gallery-button-prev):focus-visible,
+[data-layout="c26"][data-source="bot"] :global(.swiper).wrapper :global(.gallery-button-next):focus-visible,
+[data-layout="c26"][data-source="agent"] :global(.swiper).wrapper :global(.gallery-button-prev):focus-visible,
+[data-layout="c26"][data-source="agent"] :global(.swiper).wrapper :global(.gallery-button-next):focus-visible,
+[data-layout="c26"][data-source="engagement"] :global(.swiper).wrapper :global(.gallery-button-prev):focus-visible,
+[data-layout="c26"][data-source="engagement"] :global(.swiper).wrapper :global(.gallery-button-next):focus-visible {
+	outline: 2px solid var(--cc-primary-color-focus);
+	outline-offset: 2px;
+}
+
+/* SVG arrow glyph inherits nav color token */
+[data-layout="c26"][data-source="bot"] :global(.swiper).wrapper :global(.gallery-button-prev) svg path,
+[data-layout="c26"][data-source="bot"] :global(.swiper).wrapper :global(.gallery-button-next) svg path,
+[data-layout="c26"][data-source="agent"] :global(.swiper).wrapper :global(.gallery-button-prev) svg path,
+[data-layout="c26"][data-source="agent"] :global(.swiper).wrapper :global(.gallery-button-next) svg path,
+[data-layout="c26"][data-source="engagement"] :global(.swiper).wrapper :global(.gallery-button-prev) svg path,
+[data-layout="c26"][data-source="engagement"] :global(.swiper).wrapper :global(.gallery-button-next) svg path {
+	fill: var(--cc-gallery-nav-color);
+}
+
 /*
 ** SWIPER NAVIGATION
 */
@@ -217,4 +462,122 @@ article
 	:global(.swiper).wrapper
 	:global(.swiper-pagination-horizontal.swiper-pagination-bullets .swiper-pagination-bullet) {
 	margin: 0 4px;
+}
+
+/* c26 pagination bullets — color-only reskin. Size stays at the legacy 6px
+   default (per design feedback: same geometry as base swiper, just recolored). */
+[data-layout="c26"][data-source="bot"] :global(.swiper).wrapper :global(.swiper-pagination-bullet),
+[data-layout="c26"][data-source="agent"] :global(.swiper).wrapper :global(.swiper-pagination-bullet),
+[data-layout="c26"][data-source="engagement"] :global(.swiper).wrapper :global(.swiper-pagination-bullet) {
+	background-color: var(--cc-gallery-bullet-background);
+	opacity: 1;
+	transition: background-color 120ms ease;
+}
+
+[data-layout="c26"][data-source="bot"] :global(.swiper).wrapper :global(.swiper-pagination-bullet):hover,
+[data-layout="c26"][data-source="agent"] :global(.swiper).wrapper :global(.swiper-pagination-bullet):hover,
+[data-layout="c26"][data-source="engagement"] :global(.swiper).wrapper :global(.swiper-pagination-bullet):hover {
+	background-color: var(--cc-gallery-bullet-background-hover);
+}
+
+[data-layout="c26"][data-source="bot"] :global(.swiper).wrapper :global(.swiper-pagination-bullet-active),
+[data-layout="c26"][data-source="agent"] :global(.swiper).wrapper :global(.swiper-pagination-bullet-active),
+[data-layout="c26"][data-source="engagement"] :global(.swiper).wrapper :global(.swiper-pagination-bullet-active) {
+	background-color: var(--cc-gallery-bullet-background-active);
+}
+
+[data-layout="c26"][data-source="bot"] :global(.swiper).wrapper :global(.swiper-pagination-bullet):focus-visible,
+[data-layout="c26"][data-source="agent"] :global(.swiper).wrapper :global(.swiper-pagination-bullet):focus-visible,
+[data-layout="c26"][data-source="engagement"] :global(.swiper).wrapper :global(.swiper-pagination-bullet):focus-visible {
+	outline: 2px solid var(--cc-primary-color-focus);
+	outline-offset: 2px;
+	border-radius: 50%;
+}
+
+/* "No image" states covered:
+   (a) .brokenImage span — React path when onError fires on a loaded-then-failed img.
+   (b) img[src=""] / img:not([src]) — src is missing/empty, onError does NOT fire,
+       JSX leaves the raw <img> in the DOM. CSS :has() lets us treat both cases
+       uniformly via a single visual treatment on .top. */
+
+/* Paint the neutral-100 placeholder on .top itself. */
+[data-layout="c26"][data-source="bot"] .slideItem .top:has(.brokenImage),
+[data-layout="c26"][data-source="bot"] .slideItem .top:has(img[src=""]),
+[data-layout="c26"][data-source="bot"] .slideItem .top:has(img:not([src])),
+[data-layout="c26"][data-source="agent"] .slideItem .top:has(.brokenImage),
+[data-layout="c26"][data-source="agent"] .slideItem .top:has(img[src=""]),
+[data-layout="c26"][data-source="agent"] .slideItem .top:has(img:not([src])),
+[data-layout="c26"][data-source="engagement"] .slideItem .top:has(.brokenImage),
+[data-layout="c26"][data-source="engagement"] .slideItem .top:has(img[src=""]),
+[data-layout="c26"][data-source="engagement"] .slideItem .top:has(img:not([src])) {
+	background-color: var(--cc-gallery-broken-image-background);
+	color: var(--cc-gallery-broken-image-color);
+}
+
+/* Hide the underlying img element when its src is empty/missing so the
+   browser's default broken-image glyph doesn't compete with our placeholder. */
+[data-layout="c26"][data-source="bot"] .slideItem .top img[src=""],
+[data-layout="c26"][data-source="bot"] .slideItem .top img:not([src]),
+[data-layout="c26"][data-source="agent"] .slideItem .top img[src=""],
+[data-layout="c26"][data-source="agent"] .slideItem .top img:not([src]),
+[data-layout="c26"][data-source="engagement"] .slideItem .top img[src=""],
+[data-layout="c26"][data-source="engagement"] .slideItem .top img:not([src]) {
+	visibility: hidden;
+}
+
+/* The .brokenImage span is its own box; give it the same placeholder look. */
+[data-layout="c26"][data-source="bot"] .slideItem .brokenImage,
+[data-layout="c26"][data-source="agent"] .slideItem .brokenImage,
+[data-layout="c26"][data-source="engagement"] .slideItem .brokenImage {
+	background-color: var(--cc-gallery-broken-image-background);
+}
+
+/* Frame glyph centered on .top via ::before (pseudo content can't render on
+   void <img>; parent-level is the correct anchor). */
+[data-layout="c26"][data-source="bot"] .slideItem .top:has(.brokenImage)::before,
+[data-layout="c26"][data-source="bot"] .slideItem .top:has(img[src=""])::before,
+[data-layout="c26"][data-source="bot"] .slideItem .top:has(img:not([src]))::before,
+[data-layout="c26"][data-source="agent"] .slideItem .top:has(.brokenImage)::before,
+[data-layout="c26"][data-source="agent"] .slideItem .top:has(img[src=""])::before,
+[data-layout="c26"][data-source="agent"] .slideItem .top:has(img:not([src]))::before,
+[data-layout="c26"][data-source="engagement"] .slideItem .top:has(.brokenImage)::before,
+[data-layout="c26"][data-source="engagement"] .slideItem .top:has(img[src=""])::before,
+[data-layout="c26"][data-source="engagement"] .slideItem .top:has(img:not([src]))::before {
+	content: var(--cc-gallery-broken-image-glyph);
+	position: absolute;
+	inset: 0;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	font-size: var(--cc-gallery-broken-image-glyph-size);
+	color: var(--cc-gallery-broken-image-color);
+	pointer-events: none;
+	line-height: 1;
+}
+
+/* Flip overlay title to dark when image is missing/broken */
+[data-layout="c26"][data-source="bot"] .slideItem .top:has(.brokenImage) h4,
+[data-layout="c26"][data-source="bot"] .slideItem .top:has(img[src=""]) h4,
+[data-layout="c26"][data-source="bot"] .slideItem .top:has(img:not([src])) h4,
+[data-layout="c26"][data-source="agent"] .slideItem .top:has(.brokenImage) h4,
+[data-layout="c26"][data-source="agent"] .slideItem .top:has(img[src=""]) h4,
+[data-layout="c26"][data-source="agent"] .slideItem .top:has(img:not([src])) h4,
+[data-layout="c26"][data-source="engagement"] .slideItem .top:has(.brokenImage) h4,
+[data-layout="c26"][data-source="engagement"] .slideItem .top:has(img[src=""]) h4,
+[data-layout="c26"][data-source="engagement"] .slideItem .top:has(img:not([src])) h4 {
+	color: var(--neutral-700, #1f2937);
+	text-shadow: none;
+}
+
+/* Kill scrim on missing/broken tiles */
+[data-layout="c26"][data-source="bot"] .slideItem .top:has(.brokenImage)::after,
+[data-layout="c26"][data-source="bot"] .slideItem .top:has(img[src=""])::after,
+[data-layout="c26"][data-source="bot"] .slideItem .top:has(img:not([src]))::after,
+[data-layout="c26"][data-source="agent"] .slideItem .top:has(.brokenImage)::after,
+[data-layout="c26"][data-source="agent"] .slideItem .top:has(img[src=""])::after,
+[data-layout="c26"][data-source="agent"] .slideItem .top:has(img:not([src]))::after,
+[data-layout="c26"][data-source="engagement"] .slideItem .top:has(.brokenImage)::after,
+[data-layout="c26"][data-source="engagement"] .slideItem .top:has(img[src=""])::after,
+[data-layout="c26"][data-source="engagement"] .slideItem .top:has(img:not([src]))::after {
+	display: none;
 }

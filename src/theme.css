@@ -167,6 +167,61 @@
 	--cc-font-family: var(--c26-font-family, var(--font-sans, "Geist", system-ui, sans-serif));
 	--cc-message-font-size: var(--c26-message-font-size, var(--text-sm, 0.875rem));
 	--cc-message-line-height: var(--c26-message-line-height, var(--leading-3, 1.25rem));
+
+	/* Gallery tile chrome — white cards on the purple bot bubble. Tile owns
+	   radius + border; the inner .bottom section becomes transparent so the
+	   tile reads as one white surface. */
+	--cc-gallery-tile-background: var(--c26-gallery-tile-background, #ffffff);
+	--cc-gallery-tile-border-radius: var(--c26-gallery-tile-border-radius, var(--rounded-md, 0.5rem));
+	--cc-gallery-tile-border: var(--c26-gallery-tile-border, 1px solid rgba(255, 255, 255, 0.35));
+	--cc-gallery-tile-title-font-size: var(--c26-gallery-tile-title-font-size, 0.8125rem); /* 13px */
+	/* UCL scale: --neutral-400 = #6b7280, --neutral-500 = #4b5563. Subtitle reads as
+	   secondary body text, so we pick the lighter of the two (UCL's 400). */
+	--cc-gallery-tile-subtitle-color: var(--c26-gallery-tile-subtitle-color, var(--neutral-400, #6b7280));
+	--cc-gallery-tile-subtitle-font-size: var(--c26-gallery-tile-subtitle-font-size, var(--text-xs, 0.75rem));
+	--cc-gallery-tile-subtitle-line-height: var(--c26-gallery-tile-subtitle-line-height, var(--leading-2, 1rem));
+	--cc-gallery-tile-body-padding: var(--c26-gallery-tile-body-padding, 0.5rem 0.625rem); /* 8px 10px */
+
+	/* Gallery tile button — UCL secondary (white + primary border + primary
+	   text). Geometry reuses --cc-button-* (28px tall, 8px radius, 14px/500);
+	   colors invert because translucent-white (glass) is invisible on white. */
+	--cc-gallery-tile-button-background: var(--c26-gallery-tile-button-background, #ffffff);
+	--cc-gallery-tile-button-color: var(--c26-gallery-tile-button-color, var(--cc-primary-color));
+	--cc-gallery-tile-button-border: var(--c26-gallery-tile-button-border, 1px solid var(--cc-primary-color));
+	--cc-gallery-tile-button-hover-background: var(--c26-gallery-tile-button-hover-background, var(--primary-25, #f2f0fa));
+
+	/* Tile elevation — soft shadow, tile sits on purple bubble not on white */
+	--cc-gallery-tile-box-shadow: var(--c26-gallery-tile-box-shadow, 0 1px 2px rgba(31, 41, 55, 0.06));
+
+	/* Image scrim — guarantees overlay-title contrast against arbitrary imagery */
+	--cc-gallery-tile-scrim: var(--c26-gallery-tile-scrim, linear-gradient(180deg, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.45) 100%));
+
+	/* Swiper nav arrows — glass variant, matches the bubble-button language
+	   and the close-up in the brainstorm mockup (gallery-chrome-edge-cases.html). */
+	--cc-gallery-nav-size: var(--c26-gallery-nav-size, 32px);
+	--cc-gallery-nav-background: var(--c26-gallery-nav-background, var(--cc-primary-color));
+	--cc-gallery-nav-border: var(--c26-gallery-nav-border, none);
+	--cc-gallery-nav-color: var(--c26-gallery-nav-color, #ffffff);
+	--cc-gallery-nav-hover-background: var(--c26-gallery-nav-hover-background, var(--cc-primary-color-hover));
+	--cc-gallery-nav-hover-border: var(--c26-gallery-nav-hover-border, none);
+	--cc-gallery-nav-backdrop-filter: var(--c26-gallery-nav-backdrop-filter, none);
+
+	/* Pagination bullets — color-only reskin, sizes inherit from the legacy
+	   6px swiper default. */
+	--cc-gallery-bullet-background: var(--c26-gallery-bullet-background, rgba(255, 255, 255, 0.40));
+	--cc-gallery-bullet-background-active: var(--c26-gallery-bullet-background-active, #ffffff);
+	--cc-gallery-bullet-background-hover: var(--c26-gallery-bullet-background-hover, rgba(255, 255, 255, 0.70));
+
+	/* Broken image placeholder */
+	--cc-gallery-broken-image-background: var(--c26-gallery-broken-image-background, var(--neutral-100, #f3f4f6));
+	--cc-gallery-broken-image-color: var(--c26-gallery-broken-image-color, var(--neutral-500, #6b7280));
+	--cc-gallery-broken-image-glyph: var(--c26-gallery-broken-image-glyph, "\1F5BC"); /* 🖼 U+1F5BC */
+	--cc-gallery-broken-image-glyph-size: var(--c26-gallery-broken-image-glyph-size, 28px);
+
+	/* Horizontal bleed for swiper wrapper so its left/right align with the
+	   bubble's inner border, negating the bubble's inline padding. Mirrors the
+	   inline value inside --cc-bubble-padding (0.875rem in c26 default). */
+	--cc-gallery-wrapper-inline-bleed: var(--c26-gallery-wrapper-inline-bleed, 0.875rem);
 }
 
 /* c26 nested-bubble dedup — the outer C26Layout .bubble owns chrome (bg,
