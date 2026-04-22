@@ -38,7 +38,7 @@
 	justify-items: end;
 }
 
-.article:global(.user) .content,
+.article:global(.user) .bubble,
 .article:global(.user) .label,
 .article:global(.user) .timestamp {
 	justify-self: end;
@@ -102,11 +102,30 @@
 	height: 100%;
 }
 
-.content {
+.bubble {
 	grid-area: content;
 	min-width: 0;
 	display: flex;
 	flex-direction: column;
+	background: var(--cc-background-bot-message);
+	color: var(--cc-bot-message-contrast-color);
+	border: 1px solid var(--cc-border-bot-message);
+	border-radius: var(--cc-bubble-border-radius);
+	padding: var(--cc-bubble-padding);
+	max-width: var(--cc-bubble-max-width);
+	margin-block-end: var(--cc-bubble-margin-block-end);
+}
+
+.article[data-source="user"] .bubble {
+	background: var(--cc-background-user-message);
+	color: var(--cc-user-message-contrast-color);
+	border-color: var(--cc-border-user-message);
+}
+
+.article[data-source="agent"] .bubble {
+	background: var(--cc-background-agent-message);
+	color: var(--cc-agent-message-contrast-color);
+	border-color: var(--cc-border-agent-message);
 }
 
 .timestamp {

@@ -1,10 +1,11 @@
 .buttons {
-	align-items: flex-start;
+	align-items: stretch;
 	display: flex;
 	flex-direction: row;
 	flex-wrap: wrap;
-	gap: 8px;
-	max-width: 295px;
+	gap: var(--cc-buttons-gap, 8px);
+	max-width: var(--cc-buttons-max-width, 295px);
+	margin-top: var(--cc-buttons-margin-top, 0);
 }
 
 ul.buttons {

@@ -47,7 +47,7 @@ const C26Layout: FC<C26LayoutProps> = props => {
 					{label.text}
 				</span>
 			)}
-			<div className={classes.content}>
+			<div className={classes.bubble} data-testid="c26-bubble">
 				<MatchedPlugins {...props} />
 			</div>
 			<time className={classes.timestamp} data-testid="c26-timestamp">
