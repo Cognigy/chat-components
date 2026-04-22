@@ -62,10 +62,19 @@ describe("theme.css — c26 layer", () => {
 		expect(c26Block).toMatch(/--cc-button-backdrop-filter:\s*var\(--c26-button-backdrop-filter,\s*blur\(4px\)\)/);
 	});
 
-	it("defines --cc-bubble-max-width as a temporary alias to bot cap (removed in Task 2)", () => {
-		// C26Layout.module.css:115 still reads --cc-bubble-max-width. Until Task 2
-		// rewrites that file to use the role-differentiated tokens directly, we
-		// expose an alias so the intermediate state does not regress bubble sizing.
-		expect(c26Block).toMatch(/--cc-bubble-max-width:\s*var\(--cc-bubble-max-width-bot\)/);
+	it("does NOT define --cc-bubble-max-width (replaced by role-differentiated tokens)", () => {
+		expect(c26Block).not.toMatch(/--cc-bubble-max-width:\s/);
+	});
+
+	it("applies --cc-bubble-max-width-bot on .chat-bubble in c26 non-user scope", () => {
+		expect(themeCss).toMatch(
+			/\[data-layout="c26"\]:not\(\[data-source="user"\]\)\s+\.chat-bubble\s*\{[^}]*?max-width:\s*var\(--cc-bubble-max-width-bot\)/,
+		);
+	});
+
+	it("applies --cc-bubble-max-width-user on .chat-bubble in c26 user scope", () => {
+		expect(themeCss).toMatch(
+			/\[data-layout="c26"\]\[data-source="user"\]\s+\.chat-bubble\s*\{[^}]*?max-width:\s*var\(--cc-bubble-max-width-user\)/,
+		);
 	});
 });

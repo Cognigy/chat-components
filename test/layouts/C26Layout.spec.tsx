@@ -1,5 +1,7 @@
 import { render, screen } from "@testing-library/react";
 import { describe, it, expect } from "vitest";
+import { readFileSync } from "node:fs";
+import { resolve } from "node:path";
 import Message from "../../src/messages/Message";
 import {
 	botTextMessage,
@@ -109,5 +111,22 @@ describe("C26Layout — structural", () => {
 		const article = container.querySelector("article");
 		expect(article).toBeNull();
 		expect(screen.getByTestId("fullscreen-plugin")).toBeInTheDocument();
+	});
+
+	it("C26Layout .bubble has box-shadow applied via --cc-bubble-box-shadow", () => {
+		const css = readFileSync(
+			resolve(__dirname, "../../src/layouts/C26Layout.module.css"),
+			"utf8",
+		);
+		expect(css).toMatch(/\.bubble\s*\{[^}]*?box-shadow:\s*var\(--cc-bubble-box-shadow\)/);
+	});
+
+	it("C26Layout .bubble has role-differentiated max-width selectors", () => {
+		const css = readFileSync(
+			resolve(__dirname, "../../src/layouts/C26Layout.module.css"),
+			"utf8",
+		);
+		expect(css).toMatch(/\.article:not\(\[data-source="user"\]\)\s+\.bubble\s*\{[^}]*?max-width:\s*var\(--cc-bubble-max-width-bot\)/);
+		expect(css).toMatch(/\.article\[data-source="user"\]\s+\.bubble\s*\{[^}]*?max-width:\s*var\(--cc-bubble-max-width-user\)/);
 	});
 });

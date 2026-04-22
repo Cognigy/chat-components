@@ -112,8 +112,8 @@
 	border: 1px solid var(--cc-border-bot-message);
 	border-radius: var(--cc-bubble-border-radius);
 	padding: var(--cc-bubble-padding);
-	max-width: var(--cc-bubble-max-width);
 	margin-block-end: var(--cc-bubble-margin-block-end);
+	box-shadow: var(--cc-bubble-box-shadow);
 }
 
 .article[data-source="user"] .bubble {
@@ -126,6 +126,14 @@
 	background: var(--cc-background-agent-message);
 	color: var(--cc-agent-message-contrast-color);
 	border-color: var(--cc-border-agent-message);
+}
+
+.article:not([data-source="user"]) .bubble {
+	max-width: var(--cc-bubble-max-width-bot);
+}
+
+.article[data-source="user"] .bubble {
+	max-width: var(--cc-bubble-max-width-user);
 }
 
 .timestamp {

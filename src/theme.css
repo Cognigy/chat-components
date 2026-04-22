@@ -107,10 +107,6 @@
 	--cc-bubble-max-width-bot: var(--c26-bubble-max-width-bot, min(80%, 480px));
 	--cc-bubble-max-width-user: var(--c26-bubble-max-width-user, min(70%, 320px));
 	--cc-bubble-box-shadow: var(--c26-bubble-box-shadow, var(--shadow-sm, 0 1px 3px rgba(31, 41, 55, 0.10))); /* mirrors UCL --shadow-sm */
-	/* Temporary alias — C26Layout.module.css:115 still reads the old name.
-	   Task 2 rewrites that file to use the role-differentiated tokens
-	   directly; remove this alias in that commit. */
-	--cc-bubble-max-width: var(--cc-bubble-max-width-bot);
 	--cc-bubble-margin-block-end: var(--c26-bubble-margin-block-end, 0);
 
 	/* Bubble borders — c26 bubbles are solid-fill, no border */
@@ -175,4 +171,15 @@
 
 [data-layout="c26"][data-source="user"] .chat-bubble {
 	border-bottom-right-radius: 0;
+}
+
+/* Inner ChatBubble (rendered by plugins like Text inside C26Layout's .bubble)
+   also needs role-differentiated max-width. Keeping inner + outer bubble caps
+   in sync until the outer/inner bubble-nesting dedup lands in a follow-up. */
+[data-layout="c26"]:not([data-source="user"]) .chat-bubble {
+	max-width: var(--cc-bubble-max-width-bot);
+}
+
+[data-layout="c26"][data-source="user"] .chat-bubble {
+	max-width: var(--cc-bubble-max-width-user);
 }
