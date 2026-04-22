@@ -4,7 +4,7 @@ a.button {
 	padding: var(--cc-button-padding, 8px 10px);
 	min-height: var(--cc-button-min-height, auto);
 	min-width: var(--cc-button-min-width, auto);
-	flex: var(--cc-button-flex-grow, 0) 1 auto;
+	flex: var(--cc-button-flex, 0 1 auto);
 	font-size: var(--cc-button-font-size, inherit);
 	font-weight: var(--cc-button-font-weight, inherit);
 	line-height: var(--cc-button-line-height, inherit);
@@ -20,6 +20,7 @@ a.button {
 	outline: none;
 	position: relative;
 	backdrop-filter: var(--cc-button-backdrop-filter, none);
+	width: var(--cc-button-width, auto);
 }
 
 a.button:global(.phone-number-or-url-anchor) {

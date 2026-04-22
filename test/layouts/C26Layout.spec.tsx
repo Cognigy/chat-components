@@ -137,4 +137,13 @@ describe("C26Layout — structural", () => {
 		);
 		expect(css).toMatch(/\.avatar\s*\{[^}]*?align-self:\s*end/);
 	});
+
+	it("C26Layout .bubble has asymmetric-corner tail (bot: bottom-left, user: bottom-right)", () => {
+		const css = readFileSync(
+			resolve(__dirname, "../../src/layouts/C26Layout.module.css"),
+			"utf8",
+		);
+		expect(css).toMatch(/\.article:not\(\[data-source="user"\]\)\s+\.bubble\s*\{[^}]*?border-bottom-left-radius:\s*0/);
+		expect(css).toMatch(/\.article\[data-source="user"\]\s+\.bubble\s*\{[^}]*?border-bottom-right-radius:\s*0/);
+	});
 });

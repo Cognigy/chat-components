@@ -66,15 +66,20 @@ describe("theme.css — c26 layer", () => {
 		expect(c26Block).not.toMatch(/--cc-bubble-max-width:\s/);
 	});
 
-	it("applies --cc-bubble-max-width-bot on .chat-bubble in c26 non-user scope", () => {
-		expect(themeCss).toMatch(
-			/\[data-layout="c26"\]:not\(\[data-source="user"\]\)\s+\.chat-bubble\s*\{[^}]*?max-width:\s*var\(--cc-bubble-max-width-bot\)/,
-		);
+	it("defines --cc-buttons-align-items (stretch) and --cc-button-width (100%) for equal-width rows", () => {
+		expect(c26Block).toMatch(/--cc-buttons-align-items:\s*var\(--c26-buttons-align-items,\s*stretch\)/);
+		expect(c26Block).toMatch(/--cc-button-width:\s*var\(--c26-button-width,\s*100%\)/);
 	});
 
-	it("applies --cc-bubble-max-width-user on .chat-bubble in c26 user scope", () => {
-		expect(themeCss).toMatch(
-			/\[data-layout="c26"\]\[data-source="user"\]\s+\.chat-bubble\s*\{[^}]*?max-width:\s*var\(--cc-bubble-max-width-user\)/,
-		);
+	it("neutralizes inner .chat-bubble in c26 scope (dedup)", () => {
+		const m = themeCss.match(/\[data-layout="c26"\]\[data-source\]\s+\.chat-bubble\s*\{([^}]*)\}/);
+		expect(m).not.toBeNull();
+		const block = m![1];
+		expect(block).toMatch(/background:\s*transparent/);
+		expect(block).toMatch(/border:\s*none/);
+		expect(block).toMatch(/padding:\s*0/);
+		expect(block).toMatch(/max-width:\s*none/);
+		expect(block).toMatch(/border-radius:\s*0/);
+		expect(block).toMatch(/box-shadow:\s*none/);
 	});
 });

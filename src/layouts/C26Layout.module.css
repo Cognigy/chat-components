@@ -128,12 +128,16 @@
 	border-color: var(--cc-border-agent-message);
 }
 
+/* Asymmetric-corner tail — bottom corner on the avatar side is straight.
+   Bot/agent: bottom-left. User: bottom-right. */
 .article:not([data-source="user"]) .bubble {
 	max-width: var(--cc-bubble-max-width-bot);
+	border-bottom-left-radius: 0;
 }
 
 .article[data-source="user"] .bubble {
 	max-width: var(--cc-bubble-max-width-user);
+	border-bottom-right-radius: 0;
 }
 
 .timestamp {
