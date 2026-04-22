@@ -105,6 +105,10 @@
 .bubble {
 	grid-area: content;
 	min-width: 0;
+	/* Shrink-to-fit inside the 1fr content track; max-width caps long content.
+	   Without this, grid default justify-self: stretch makes the bubble fill
+	   the whole track regardless of text length. */
+	justify-self: start;
 	display: flex;
 	flex-direction: column;
 	background: var(--cc-background-bot-message);

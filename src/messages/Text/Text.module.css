@@ -4,9 +4,51 @@
 	display: inline;
 }
 
-.text a:focus-visible {
+.text a,
+.markdown a {
+	color: var(--cc-text-link);
+	/* !important beats legacy host resets like `a { text-decoration: none !important }`
+	   in service-ui/src/styles.css. chat-components must render correctly regardless of host. */
+	text-decoration: underline !important;
+	text-decoration-thickness: var(--cc-text-link-thickness, 1px) !important;
+	text-underline-offset: var(--cc-text-link-underline-offset, 2px);
+	transition:
+		color 120ms ease,
+		text-decoration-color 120ms ease,
+		text-decoration-thickness 120ms ease;
+}
+
+.text a:hover,
+.markdown a:hover {
+	color: var(--cc-text-link-hover);
+	text-decoration-thickness: var(--cc-text-link-thickness-hover, 2px) !important;
+}
+
+.text a:focus-visible,
+.markdown a:focus-visible {
 	outline: 2px solid var(--cc-primary-color-focus);
 	outline-offset: 2px;
+}
+
+/* Bot / agent / engagement bubbles = solid purple bg, link must flip to white */
+[data-layout="c26"][data-source="bot"] .text a,
+[data-layout="c26"][data-source="bot"] .markdown a,
+[data-layout="c26"][data-source="agent"] .text a,
+[data-layout="c26"][data-source="agent"] .markdown a,
+[data-layout="c26"][data-source="engagement"] .text a,
+[data-layout="c26"][data-source="engagement"] .markdown a {
+	color: var(--cc-text-link-on-dark, #ffffff);
+	text-decoration-color: var(--cc-text-link-on-dark-underline, rgba(255, 255, 255, 0.7)) !important;
+}
+
+[data-layout="c26"][data-source="bot"] .text a:hover,
+[data-layout="c26"][data-source="bot"] .markdown a:hover,
+[data-layout="c26"][data-source="agent"] .text a:hover,
+[data-layout="c26"][data-source="agent"] .markdown a:hover,
+[data-layout="c26"][data-source="engagement"] .text a:hover,
+[data-layout="c26"][data-source="engagement"] .markdown a:hover {
+	color: var(--cc-text-link-on-dark, #ffffff);
+	text-decoration-color: var(--cc-text-link-on-dark, #ffffff) !important;
 }
 
 .text img {
