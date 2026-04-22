@@ -31,6 +31,8 @@ import datePickerDisableWeekends from "test/fixtures/datepicker/disableWeekends.
 import { IMessage } from "@cognigy/socket-client";
 import { ChatEvent, TypingIndicator, Typography } from "../src/index.ts";
 import { MessageProviderProps } from "src/messages/context.tsx";
+import botAvatar from "src/assets/svg/avatar_bot.svg";
+import placeholderAvatar from "src/assets/svg/avatar_placeholder.svg";
 
 const action: MessageSender = (text, data) =>
 	alert("Text: " + JSON.stringify(text, null, 2) + " Data: " + JSON.stringify(data, null, 2));
@@ -1097,9 +1099,11 @@ export const Menu = (props: MenuProps) => {
 interface MessageParamsProps {
 	messageParams: MessageProviderProps["messageParams"];
 	setMessageParams: Dispatch<SetStateAction<{ hasReply: boolean; isConversationEnded: boolean }>>;
+	layout: "webchat" | "c26";
+	setLayout: Dispatch<SetStateAction<"webchat" | "c26">>;
 }
 const MessageParams = (props: MessageParamsProps) => {
-	const { setMessageParams, messageParams } = props;
+	const { setMessageParams, messageParams, layout, setLayout } = props;
 
 	const toggleConversationEnded = () => {
 		setMessageParams(prev => ({ ...prev, isConversationEnded: !prev.isConversationEnded }));
@@ -1107,6 +1111,10 @@ const MessageParams = (props: MessageParamsProps) => {
 
 	const toggleHasReply = () => {
 		setMessageParams(prev => ({ ...prev, hasReply: !prev.hasReply }));
+	};
+
+	const toggleLayout = () => {
+		setLayout(prev => (prev === "c26" ? "webchat" : "c26"));
 	};
 
 	return (
@@ -1129,6 +1137,11 @@ const MessageParams = (props: MessageParamsProps) => {
 				/>
 				<span className="slider" />
 			</label>
+			<label className="switch">
+				<p>c26 layout</p>
+				<input type="checkbox" checked={layout === "c26"} onChange={toggleLayout} />
+				<span className="slider" />
+			</label>
 		</div>
 	);
 };
@@ -1138,6 +1151,8 @@ interface ScreenProps {
 	content?: TScreen["content"];
 }
 
+const LAYOUT_STORAGE_KEY = "chat-components-demo-layout";
+
 const Screen: FC<ScreenProps> = props => {
 	const { messages = [] } = props;
 
@@ -1146,22 +1161,49 @@ const Screen: FC<ScreenProps> = props => {
 		isConversationEnded: false,
 	});
 
+	const [layout, setLayout] = useState<"webchat" | "c26">(() => {
+		const stored = localStorage.getItem(LAYOUT_STORAGE_KEY);
+		return stored === "c26" ? "c26" : "webchat";
+	});
+
+	React.useEffect(() => {
+		localStorage.setItem(LAYOUT_STORAGE_KEY, layout);
+	}, [layout]);
+
 	return (
-		<div id="content">
+		<div id="content" data-layout={layout}>
 			<div className={"chatRoot"}>
-				{messages.map((message, index) => (
-					<Message
-						key={index}
-						{...message}
-						action={action}
-						hasReply={messageParams?.hasReply}
-						isConversationEnded={messageParams?.isConversationEnded}
-						openXAppOverlay={url => alert(`Open XApp Overlay, url is: ${url}`)}
-					/>
-				))}
+				{messages.map((message, index) => {
+					const source = message?.message?.source;
+					const isUser = source === "user";
+					const c26Label =
+						layout === "c26" ? { text: isUser ? "You" : "Bot" } : undefined;
+					const c26Avatar =
+						layout === "c26" ? (
+							<img src={isUser ? placeholderAvatar : botAvatar} alt="" />
+						) : undefined;
+					return (
+						<Message
+							key={index}
+							{...message}
+							layout={layout}
+							label={c26Label}
+							avatar={c26Avatar}
+							action={action}
+							hasReply={messageParams?.hasReply}
+							isConversationEnded={messageParams?.isConversationEnded}
+							openXAppOverlay={url => alert(`Open XApp Overlay, url is: ${url}`)}
+						/>
+					);
+				})}
 				{props.content}
 			</div>
-			<MessageParams messageParams={messageParams} setMessageParams={setMessageParams} />
+			<MessageParams
+				messageParams={messageParams}
+				setMessageParams={setMessageParams}
+				layout={layout}
+				setLayout={setLayout}
+			/>
 		</div>
 	);
 };

@@ -1,8 +1,4 @@
 .message {
-	line-height: 1.5;
-	font-weight: 400;
-	color: black;
-
 	font-synthesis: none;
 	text-rendering: optimizeLegibility;
 	-webkit-font-smoothing: antialiased;
@@ -18,7 +14,7 @@
 }
 
 .collated {
-	margin-block-start: calc(var(--webchat-message-margin-block, 1.5rem) * -0.5); /* 24px */
+	margin-block-start: calc(var(--webchat-message-margin-block, 1.5rem) * -0.5); /* -12px */
 }
 
 .fullscreen {

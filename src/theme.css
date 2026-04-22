@@ -191,7 +191,7 @@
 	--cc-gallery-tile-button-hover-background: var(--c26-gallery-tile-button-hover-background, var(--primary-25, #f2f0fa));
 
 	/* Tile elevation — soft shadow, tile sits on purple bubble not on white */
-	--cc-gallery-tile-box-shadow: var(--c26-gallery-tile-box-shadow, 0 1px 2px rgba(31, 41, 55, 0.06));
+	--cc-gallery-tile-box-shadow: var(--c26-gallery-tile-box-shadow, var(--shadow-xs, 0 1px 2px rgba(31, 41, 55, 0.06))); /* mirrors UCL --shadow-xs */
 
 	/* Image scrim — guarantees overlay-title contrast against arbitrary imagery */
 	--cc-gallery-tile-scrim: var(--c26-gallery-tile-scrim, linear-gradient(180deg, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.45) 100%));
@@ -214,7 +214,8 @@
 
 	/* Broken image placeholder */
 	--cc-gallery-broken-image-background: var(--c26-gallery-broken-image-background, var(--neutral-100, #f3f4f6));
-	--cc-gallery-broken-image-color: var(--c26-gallery-broken-image-color, var(--neutral-500, #6b7280));
+	/* UCL scale: --neutral-400 = #6b7280 (same hex as the hardcoded fallback). */
+	--cc-gallery-broken-image-color: var(--c26-gallery-broken-image-color, var(--neutral-400, #6b7280));
 	--cc-gallery-broken-image-glyph: var(--c26-gallery-broken-image-glyph, "\1F5BC"); /* 🖼 U+1F5BC */
 	--cc-gallery-broken-image-glyph-size: var(--c26-gallery-broken-image-glyph-size, 28px);
 
@@ -222,6 +223,7 @@
 	   bubble's inner border, negating the bubble's inline padding. Mirrors the
 	   inline value inside --cc-bubble-padding (0.875rem in c26 default). */
 	--cc-gallery-wrapper-inline-bleed: var(--c26-gallery-wrapper-inline-bleed, 0.875rem);
+	--cc-gallery-wrapper-padding-top: var(--c26-gallery-wrapper-padding-top, var(--space-2, 0.5rem));
 }
 
 /* c26 nested-bubble dedup — the outer C26Layout .bubble owns chrome (bg,

@@ -44,14 +44,7 @@
 	justify-self: end;
 }
 
-.noAvatar {
-	grid-template-columns: minmax(0, 1fr);
-	grid-template-areas:
-		"label"
-		"content"
-		"timestamp";
-}
-
+.noAvatar,
 .article.noAvatar:global(.user) {
 	grid-template-columns: minmax(0, 1fr);
 	grid-template-areas:
