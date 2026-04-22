@@ -129,4 +129,12 @@ describe("C26Layout — structural", () => {
 		expect(css).toMatch(/\.article:not\(\[data-source="user"\]\)\s+\.bubble\s*\{[^}]*?max-width:\s*var\(--cc-bubble-max-width-bot\)/);
 		expect(css).toMatch(/\.article\[data-source="user"\]\s+\.bubble\s*\{[^}]*?max-width:\s*var\(--cc-bubble-max-width-user\)/);
 	});
+
+	it("has align-self: end on .avatar in the CSS module (bottom-anchored)", () => {
+		const css = readFileSync(
+			resolve(__dirname, "../../src/layouts/C26Layout.module.css"),
+			"utf8",
+		);
+		expect(css).toMatch(/\.avatar\s*\{[^}]*?align-self:\s*end/);
+	});
 });

@@ -65,9 +65,9 @@
 	width: var(--cc-avatar-size);
 	height: var(--cc-avatar-size);
 	display: flex;
-	align-items: flex-start;
+	align-items: flex-end;
 	justify-content: center;
-	align-self: start;
+	align-self: end;
 }
 
 .avatar > * {
