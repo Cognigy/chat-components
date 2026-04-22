@@ -16,9 +16,10 @@ a.button {
 	text-decoration: none;
 	background: var(--cc-button-background, var(--cc-primary-color));
 	color: var(--cc-button-color, var(--cc-primary-contrast-color));
-	border: none;
+	border: var(--cc-button-border, none);
 	outline: none;
 	position: relative;
+	backdrop-filter: var(--cc-button-backdrop-filter, none);
 }
 
 a.button:global(.phone-number-or-url-anchor) {
@@ -38,6 +39,7 @@ a.button:hover,
 button.button:focus,
 a.button:focus {
 	background: var(--cc-button-hover-background, var(--cc-primary-color-hover));
+	border: var(--cc-button-hover-border, var(--cc-button-border, none));
 }
 
 /* Explicitly increase the specificity of the :focus-visible selector by including the parent [data-cognigy-webchat-root] selector. This ensures custom focus styles override Firefox's default dotted outline. */
