@@ -31,11 +31,7 @@ export interface MessageProps {
 	prevMessage?: IMessage;
 	theme?: IWebchatTheme;
 	uiTheme?: "c26";
-	avatarVisibility?: {
-		user?: boolean;
-		bot?: boolean;
-		agent?: boolean;
-	};
+	avatarVisibility?: Partial<Record<NonNullable<IMessage["source"]>, boolean>>;
 	attributes?: React.HTMLProps<HTMLDivElement> & { styles?: React.CSSProperties };
 	onSetMessageAnimated?: (
 		messageId: string,
@@ -153,7 +149,9 @@ const Message: FC<MessageProps> = props => {
 					<MessageHeader
 						enableAvatar={
 							uiTheme === "c26"
-								? (avatarVisibility?.[message.source as keyof NonNullable<MessageProps["avatarVisibility"]>] ?? true)
+								? (message.source
+									? (avatarVisibility?.[message.source] ?? true)
+									: true)
 								: message.source !== "user"
 						}
 					/>
