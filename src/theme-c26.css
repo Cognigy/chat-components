@@ -64,6 +64,10 @@ article.c26 {
 	/* Primary palette — affects buttons, links, focus rings via --cc-primary-color consumers */
 	--cc-primary-color: var(--c26-primary-color, #6e56cf);
 	--cc-primary-color-hover: var(--c26-primary-color-hover, #5c46b8);
+	--cc-primary-color-focus: var(--c26-primary-color-focus, var(--cc-primary-color));
+	--cc-primary-color-disabled: var(--c26-primary-color-disabled, color-mix(in srgb, var(--cc-primary-color), #fff 80%));
+	--cc-primary-color-opacity-10: var(--c26-primary-color-opacity-10, color-mix(in srgb, var(--cc-primary-color-focus) 10%, transparent));
+	--cc-primary-color-opacity-20: var(--c26-primary-color-opacity-20, color-mix(in srgb, var(--cc-primary-color-focus) 20%, transparent));
 	--cc-primary-contrast-color: var(--c26-primary-contrast-color, #ffffff);
 
 	/* Bubble backgrounds */

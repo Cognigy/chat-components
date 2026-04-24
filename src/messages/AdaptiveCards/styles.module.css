@@ -228,3 +228,69 @@
 	color: var(--cc-black-40);
 	border-bottom: 1px solid var(--cc-black-10);
 }
+
+/* c26 — UCL input styling (neutral-200 border, 6px radius, 36px, neutral-800 text, primary-300 hover, primary-500 focus + primary-50 ring) */
+:global(article.c26) .adaptivecard-wrapper input:not([type="checkbox"]):not([type="radio"]),
+:global(article.c26) .adaptivecard-wrapper textarea,
+:global(article.c26) .adaptivecard-wrapper select {
+	border: 1px solid #d1d5db;
+	border-radius: 6px;
+	color: #111827 !important;
+	font-weight: 500;
+	padding: 4px 12px;
+}
+
+:global(article.c26) .adaptivecard-wrapper input:not([type="checkbox"]):not([type="radio"]),
+:global(article.c26) .adaptivecard-wrapper select {
+	height: 36px;
+}
+
+:global(article.c26) .adaptivecard-wrapper input:not([type="checkbox"]):not([type="radio"]):hover:not(:focus),
+:global(article.c26) .adaptivecard-wrapper textarea:hover:not(:focus),
+:global(article.c26) .adaptivecard-wrapper select:hover:not(:focus) {
+	border-color: #8f73e3;
+}
+
+:global(article.c26) .adaptivecard-wrapper input:not([type="checkbox"]):not([type="radio"]):focus,
+:global(article.c26) .adaptivecard-wrapper textarea:focus,
+:global(article.c26) .adaptivecard-wrapper select:focus,
+:global(article.c26) .adaptivecard-wrapper input:not([type="checkbox"]):not([type="radio"]):focus-visible,
+:global(article.c26) .adaptivecard-wrapper textarea:focus-visible,
+:global(article.c26) .adaptivecard-wrapper select:focus-visible {
+	outline: none;
+	border-color: #6e56cf;
+	box-shadow: 0 0 0 4px #e0dbf5;
+}
+
+/* c26 — UCL primary purple for input icons (date, time, select chevron) */
+:global(article.c26) .adaptivecard-wrapper [type="date"] {
+	background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 16 16' fill='none'%3E%3Cpath fill-rule='evenodd' clip-rule='evenodd' d='M3 0.75C3 0.335786 3.33579 0 3.75 0C4.16421 0 4.5 0.335786 4.5 0.75V3H11V0.75C11 0.335786 11.3358 0 11.75 0C12.1642 0 12.5 0.335786 12.5 0.75V3H14C15.1046 3 16 3.89543 16 5V14C16 15.1046 15.1046 16 14 16H2C0.895431 16 0 15.1046 0 14V5C0 3.89543 0.895431 3 2 3H3V0.75ZM1.5 6H14.5V14C14.5 14.2761 14.2761 14.5 14 14.5H2C1.72386 14.5 1.5 14.2761 1.5 14V6Z' fill='%236e56cf'/%3E%3C/svg%3E");
+}
+
+:global(article.c26) .adaptivecard-wrapper [type="time"] {
+	background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 16 16' fill='none'%3E%3Cpath fill-rule='evenodd' clip-rule='evenodd' d='M8 14.5C11.5899 14.5 14.5 11.5899 14.5 8C14.5 4.41015 11.5899 1.5 8 1.5C4.41015 1.5 1.5 4.41015 1.5 8C1.5 11.5899 4.41015 14.5 8 14.5ZM8 16C12.4183 16 16 12.4183 16 8C16 3.58172 12.4183 0 8 0C3.58172 0 0 3.58172 0 8C0 12.4183 3.58172 16 8 16Z' fill='%236e56cf'/%3E%3Cpath fill-rule='evenodd' clip-rule='evenodd' d='M11.0303 12.0303C10.7374 12.3232 10.2626 12.3232 9.96967 12.0303L7.25 9.31066L7.25 4C7.25 3.58579 7.58578 3.25 8 3.25C8.41421 3.25 8.75 3.58579 8.75 4L8.75 8.68934L11.0303 10.9697C11.3232 11.2626 11.3232 11.7374 11.0303 12.0303Z' fill='%236e56cf'/%3E%3C/svg%3E");
+}
+
+:global(article.c26) .adaptivecard-wrapper select {
+	background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 16 16' fill='none'%3E%3Cpath fill-rule='evenodd' clip-rule='evenodd' d='M1.34923 4.24022C1.76855 3.8808 2.39985 3.92936 2.75927 4.34869L8.00002 10.4629L13.2408 4.34869C13.6002 3.92936 14.2315 3.8808 14.6508 4.24022C15.0701 4.59965 15.1187 5.23095 14.7593 5.65027L9.51853 11.7645C8.72034 12.6957 7.2797 12.6957 6.4815 11.7645L1.24076 5.65027C0.881339 5.23095 0.929901 4.59965 1.34923 4.24022Z' fill='%236e56cf'/%3E%3C/svg%3E");
+}
+
+/* c26 — checkbox uses UCL primary purple for checked/active/hover */
+:global(article.c26) .adaptivecard-wrapper [type="checkbox"]:hover {
+	border-color: #6e56cf;
+}
+
+:global(article.c26) .adaptivecard-wrapper [type="checkbox"]:checked {
+	background-color: #6e56cf;
+	border-color: #6e56cf;
+}
+
+:global(article.c26) .adaptivecard-wrapper [type="checkbox"]:checked:hover {
+	background-color: #5c46b8;
+	border-color: #5c46b8;
+}
+
+:global(article.c26) .adaptivecard-wrapper [type="checkbox"]:active {
+	background-color: #4a369f;
+	border-color: #4a369f;
+}
