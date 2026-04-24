@@ -1,5 +1,5 @@
 .h1-semibold {
-	font-family: Figtree;
+	font-family: var(--cc-font-family, Figtree);
 	font-size: 2.125rem; /* 34px */
 	font-style: normal;
 	font-weight: 600;
@@ -7,7 +7,7 @@
 }
 
 .h2-regular {
-	font-family: Figtree;
+	font-family: var(--cc-font-family, Figtree);
 	font-size: 1.125rem; /* 18px */
 	font-style: normal;
 	font-weight: 400;
@@ -15,7 +15,7 @@
 }
 
 .h2-semibold {
-	font-family: Figtree;
+	font-family: var(--cc-font-family, Figtree);
 	font-size: 1.125rem; /* 18px */
 	font-style: normal;
 	font-weight: 600;
@@ -23,7 +23,7 @@
 }
 
 .title1-regular {
-	font-family: Figtree;
+	font-family: var(--cc-font-family, Figtree);
 	font-size: 1rem; /* 16px */
 	font-style: normal;
 	font-weight: 400;
@@ -31,7 +31,7 @@
 }
 
 .title1-semibold {
-	font-family: Figtree;
+	font-family: var(--cc-font-family, Figtree);
 	font-size: 1rem; /* 16px */
 	font-style: normal;
 	font-weight: 600;
@@ -39,7 +39,7 @@
 }
 
 .title2-regular {
-	font-family: Figtree;
+	font-family: var(--cc-font-family, Figtree);
 	font-size: 0.75rem; /* 12px */
 	font-style: normal;
 	font-weight: 400;
@@ -47,7 +47,7 @@
 }
 
 .title2-semibold {
-	font-family: Figtree;
+	font-family: var(--cc-font-family, Figtree);
 	font-size: 0.75rem; /* 12px */
 	font-style: normal;
 	font-weight: 600;
@@ -55,7 +55,7 @@
 }
 
 .body-regular {
-	font-family: Figtree;
+	font-family: var(--cc-font-family, Figtree);
 	font-size: 0.875rem; /* 14px */
 	font-style: normal;
 	font-weight: 400;
@@ -63,7 +63,7 @@
 }
 
 .body-semibold {
-	font-family: Figtree;
+	font-family: var(--cc-font-family, Figtree);
 	font-size: 0.875rem; /* 14px */
 	font-style: normal;
 	font-weight: 600;
@@ -71,7 +71,7 @@
 }
 
 .copy-medium {
-	font-family: Figtree;
+	font-family: var(--cc-font-family, Figtree);
 	font-size: 0.75rem; /* 12px */
 	font-style: normal;
 	font-weight: 500;
@@ -79,7 +79,7 @@
 }
 
 .cta-semibold {
-	font-family: Figtree;
+	font-family: var(--cc-font-family, Figtree);
 	font-size: 0.875rem; /* 14px */
 	font-style: normal;
 	font-weight: 600;

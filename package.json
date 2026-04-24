@@ -31,6 +31,7 @@
 	},
 	"devDependencies": {
 		"@cognigy/socket-client": "5.0.0-beta.20",
+		"@fontsource/geist": "^5.2.8",
 		"@testing-library/jest-dom": "^6.9.1",
 		"@testing-library/react": "^16.3.0",
 		"@types/react-transition-group": "^4.4.12",

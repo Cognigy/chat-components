@@ -1,0 +1,33 @@
+/* C26 visual theme — all rules scoped under article.c26
+ *
+ * Overrides existing --cc-* CSS custom properties that cascade to child
+ * components automatically. Does NOT reference CSS module class names
+ * (those are hashed in production builds).
+ */
+
+article.c26 {
+	/* Typography */
+	--cc-font-family: 'Geist', sans-serif;
+	font-family: var(--cc-font-family);
+	font-size: 16px;
+	line-height: 24px;
+
+	/* Primary palette — affects buttons, links, focus rings via --cc-primary-color consumers */
+	--cc-primary-color: #6e56cf;
+	--cc-primary-color-hover: #5c46b8;
+	--cc-primary-contrast-color: #ffffff;
+
+	/* Bubble backgrounds */
+	--cc-background-user-message: #f2f0fa;
+	--cc-background-bot-message: #6e56cf;
+	--cc-background-agent-message: #6e56cf;
+
+	/* Bubble text colors */
+	--cc-user-message-contrast-color: #1f2937;
+	--cc-bot-message-contrast-color: #ffffff;
+	--cc-agent-message-contrast-color: #ffffff;
+
+	/* Links */
+	--cc-text-link: #6e56cf;
+	--cc-text-link-hover: #5c46b8;
+}

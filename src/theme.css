@@ -1,4 +1,6 @@
 :root {
+	--cc-font-family: var(--webchat-font-family, Figtree);
+
 	--cc-primary-color: var(--webchat-primary-color, #2455e6);
 	--cc-primary-color-hover: var(
 		--webchat-primary-color-hover,

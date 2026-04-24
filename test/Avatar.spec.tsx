@@ -67,3 +67,51 @@ describe("Avatars", () => {
 		expect(screen.getByTestId("sender-name")).toHaveTextContent("Agent Smith");
 	});
 });
+
+describe("Avatars — c26 mode", () => {
+	it("shows user avatar by default when uiTheme=c26", async () => {
+		await waitFor(() => {
+			render(
+				<Message
+					message={{ text: "Hi", source: "user" } as IMessage}
+					uiTheme="c26"
+				/>,
+			);
+		});
+		expect(screen.getByTestId("user-avatar")).toBeInTheDocument();
+	});
+
+	it("hides user avatar when uiTheme=c26 and avatarVisibility.user=false", async () => {
+		await waitFor(() => {
+			render(
+				<Message
+					message={{ text: "Hi", source: "user" } as IMessage}
+					uiTheme="c26"
+					avatarVisibility={{ user: false }}
+				/>,
+			);
+		});
+		expect(screen.queryByTestId("user-avatar")).not.toBeInTheDocument();
+	});
+
+	it("shows bot avatar by default when uiTheme=c26", async () => {
+		await waitFor(() => {
+			render(
+				<Message
+					message={{ text: "Hi", source: "bot" } as IMessage}
+					uiTheme="c26"
+				/>,
+			);
+		});
+		expect(screen.getByTestId("bot-avatar")).toBeInTheDocument();
+	});
+
+	it("does not show user avatar in default theme", async () => {
+		await waitFor(() => {
+			render(
+				<Message message={{ text: "Hi", source: "user" } as IMessage} />,
+			);
+		});
+		expect(screen.queryByTestId("user-avatar")).not.toBeInTheDocument();
+	});
+});

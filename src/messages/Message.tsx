@@ -30,6 +30,12 @@ export interface MessageProps {
 	plugins?: MessagePlugin[];
 	prevMessage?: IMessage;
 	theme?: IWebchatTheme;
+	uiTheme?: "c26";
+	avatarVisibility?: {
+		user?: boolean;
+		bot?: boolean;
+		agent?: boolean;
+	};
 	attributes?: React.HTMLProps<HTMLDivElement> & { styles?: React.CSSProperties };
 	onSetMessageAnimated?: (
 		messageId: string,
@@ -44,6 +50,7 @@ const defaultCollate = new CollateMessage();
 const Message: FC<MessageProps> = props => {
 	const {
 		action,
+		avatarVisibility,
 		className,
 		config,
 		hasReply,
@@ -58,6 +65,7 @@ const Message: FC<MessageProps> = props => {
 		onSetLiveRegionText,
 		plugins,
 		prevMessage,
+		uiTheme,
 		"data-message-id": dataMessageId,
 	} = props;
 
@@ -86,6 +94,7 @@ const Message: FC<MessageProps> = props => {
 		classes.message,
 		shouldCollate && classes.collated,
 		isFullscreen && classes.fullscreen,
+		uiTheme === "c26" && "c26",
 	);
 
 	const matchedPlugins = match(message, config, plugins);
@@ -140,7 +149,15 @@ const Message: FC<MessageProps> = props => {
 				className={rootClassName}
 				data-message-id={dataMessageId}
 			>
-				{showHeader && <MessageHeader enableAvatar={message.source !== "user"} />}
+				{showHeader && (
+					<MessageHeader
+						enableAvatar={
+							uiTheme === "c26"
+								? (avatarVisibility?.[message.source as keyof NonNullable<MessageProps["avatarVisibility"]>] ?? true)
+								: message.source !== "user"
+						}
+					/>
+				)}
 				{matchedPlugins.map((plugin, index) =>
 					plugin.component ? (
 						<plugin.component
