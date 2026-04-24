@@ -1,5 +1,6 @@
 :root {
 	--cc-font-family: var(--webchat-font-family, Figtree);
+	--cc-action-button-border-radius: var(--webchat-action-button-border-radius, 19px);
 
 	--cc-primary-color: var(--webchat-primary-color, #2455e6);
 	--cc-primary-color-hover: var(

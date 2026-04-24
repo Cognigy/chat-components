@@ -12,6 +12,9 @@ article.c26 {
 	font-size: 16px;
 	line-height: 24px;
 
+	/* Action button shape */
+	--cc-action-button-border-radius: 6px;
+
 	/* Primary palette — affects buttons, links, focus rings via --cc-primary-color consumers */
 	--cc-primary-color: #6e56cf;
 	--cc-primary-color-hover: #5c46b8;
@@ -30,4 +33,9 @@ article.c26 {
 	/* Links */
 	--cc-text-link: #6e56cf;
 	--cc-text-link-hover: #5c46b8;
+}
+
+/* Override any universal * { font-family } rule from host pages */
+article.c26 * {
+	font-family: var(--cc-font-family);
 }
