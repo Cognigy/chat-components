@@ -43,13 +43,13 @@
 
 .adaptivecard-wrapper button {
 	appearance: none;
-	background: var(--cc-black-10);
-	border-radius: 10px;
+	background: var(--cc-primary-button-background, var(--cc-black-10));
+	border-radius: var(--cc-primary-button-border-radius, 10px);
 	border: none;
-	color: white;
+	color: var(--cc-primary-button-color, white);
 	cursor: pointer;
 	font-size: 14px !important;
-	font-weight: 600;
+	font-weight: var(--cc-primary-button-font-weight, 600);
 	line-height: 160% !important;
 	min-width: 100%;
 	padding-block: 11px;
@@ -57,7 +57,7 @@
 }
 
 .adaptivecard-wrapper button:hover {
-	background: var(--cc-black-30);
+	background: var(--cc-primary-button-background-hover, var(--cc-black-30));
 }
 
 .adaptivecard-wrapper button:focus-visible {
@@ -67,13 +67,16 @@
 
 .adaptivecard-wrapper.chatDisabled button,
 .adaptivecard-wrapper.chatDisabled button:hover {
-	background: var(--cc-black-90);
-	cursor: default;
+	background: var(--cc-primary-button-disabled-background, var(--cc-black-90));
+	opacity: var(--cc-primary-button-disabled-opacity, 1);
+	cursor: var(--cc-primary-button-disabled-cursor, default);
 	pointer-events: none;
 }
 
 .adaptivecard-wrapper button:disabled {
-	background: var(--cc-black-90);
+	background: var(--cc-primary-button-disabled-background, var(--cc-black-90));
+	opacity: var(--cc-primary-button-disabled-opacity, 1);
+	cursor: var(--cc-primary-button-disabled-cursor, default);
 }
 
 .adaptivecard-wrapper :global(.ac-textRun) {
