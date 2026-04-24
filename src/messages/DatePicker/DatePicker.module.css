@@ -147,6 +147,7 @@
 	justify-content: space-between;
 	padding: 0px 10px;
 	height: 44px;
+	margin-top: 16px;
 	margin-bottom: 24px;
 }
 
@@ -225,6 +226,7 @@
 .wrapper .content :global(.flatpickr-current-month) {
 	display: flex;
 	gap: 10px;
+	position: relative;
 }
 
 .wrapper .content :global(.flatpickr-current-month .flatpickr-monthDropdown-months) {
@@ -243,10 +245,20 @@
 	font-size: 14px;
 }
 
-.wrapper .content :global(.flatpickr-current-month) label {
+.wrapper .content :global(.flatpickr-current-month) > label {
 	color: var(--cc-black-40);
 	position: absolute;
-	top: -15px;
+	top: -24px;
+	left: 0;
+	padding-left: 6px;
+	font-size: 12px;
+}
+
+.wrapper .content :global(.flatpickr-current-month .numInputWrapper) > label {
+	color: var(--cc-black-40);
+	position: absolute;
+	top: -24px;
+	left: 0;
 	padding-left: 6px;
 	font-size: 12px;
 }
@@ -429,7 +441,8 @@
 }
 
 .wrapper .content :global(.flatpickr-day.today .dayInner) {
-	background-color: var(--cc-primary-color-opacity-20);
+	background-color: var(--cc-datepicker-today-background, var(--cc-primary-color-opacity-20));
+	color: var(--cc-datepicker-today-color, inherit);
 }
 
 .wrapper .content :global(.flatpickr-day.selected .dayInner) {

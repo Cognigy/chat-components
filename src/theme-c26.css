@@ -3,36 +3,82 @@
  * Overrides existing --cc-* CSS custom properties that cascade to child
  * components automatically. Does NOT reference CSS module class names
  * (those are hashed in production builds).
+ *
+ * Defaults are wrapped in `var(--c26-*, default)` so consumers
+ * can override any c26 value via --c26-* tokens without patching CSS.
  */
 
 article.c26 {
 	/* Typography */
-	--cc-font-family: 'Geist', sans-serif;
+	--cc-font-family: var(--c26-font-family, "Geist", sans-serif);
+	--cc-font-size: var(--c26-font-size, 0.875rem);
 	font-family: var(--cc-font-family);
-	font-size: 16px;
-	line-height: 24px;
+	font-size: var(--cc-font-size);
+	line-height: var(--c26-line-height, 1.5rem);
 
-	/* Action button shape */
-	--cc-action-button-border-radius: 6px;
+	/* Action button shape + UCL secondary variant colors (primary-50 bg, primary-900 text, primary-100 hover) */
+	--cc-action-button-border-radius: var(--c26-action-button-border-radius, 6px);
+	--cc-action-button-background: var(--c26-action-button-background, #e0dbf5);
+	--cc-action-button-background-hover: var(--c26-action-button-background-hover, #c8bff0);
+	--cc-action-button-color: var(--c26-action-button-color, #2a1b66);
+	--cc-action-button-font-weight: var(--c26-action-button-font-weight, 500);
+	--cc-action-button-padding: var(--c26-action-button-padding, 8px 16px);
+	--cc-action-button-gap: var(--c26-action-button-gap, 8px);
+	--cc-action-button-min-height: var(--c26-action-button-min-height, 36px);
+	--cc-action-button-disabled-background: var(--c26-action-button-disabled-background, #e0dbf5);
+	--cc-action-button-disabled-color: var(--c26-action-button-disabled-color, #2a1b66);
+	--cc-action-button-disabled-opacity: var(--c26-action-button-disabled-opacity, 0.5);
+	--cc-action-button-disabled-cursor: var(--c26-action-button-disabled-cursor, not-allowed);
+
+	/* Primary button (List/Gallery) — UCL `default` variant: primary-500 bg, white text, primary-600 hover */
+	--cc-primary-button-background: var(--c26-primary-button-background, #6e56cf);
+	--cc-primary-button-color: var(--c26-primary-button-color, #ffffff);
+	--cc-primary-button-background-hover: var(--c26-primary-button-background-hover, #5c46b8);
+	--cc-primary-button-border-radius: var(--c26-primary-button-border-radius, 6px);
+	--cc-primary-button-height: var(--c26-primary-button-height, 36px);
+	--cc-primary-button-font-weight: var(--c26-primary-button-font-weight, 500);
+	--cc-primary-button-disabled-background: var(--c26-primary-button-disabled-background, #6e56cf);
+	--cc-primary-button-disabled-opacity: var(--c26-primary-button-disabled-opacity, 0.5);
+	--cc-primary-button-disabled-cursor: var(--c26-primary-button-disabled-cursor, not-allowed);
+
+	/* Secondary button (List/Gallery) — UCL `outline` variant: neutral-200 border, white bg, neutral-50 hover bg */
+	--cc-secondary-button-background: var(--c26-secondary-button-background, #ffffff);
+	--cc-secondary-button-color: var(--c26-secondary-button-color, #111827);
+	--cc-secondary-button-border-color: var(--c26-secondary-button-border-color, #d1d5db);
+	--cc-secondary-button-background-hover: var(--c26-secondary-button-background-hover, #f3f4f6);
+	--cc-secondary-button-color-hover: var(--c26-secondary-button-color-hover, #111827);
+	--cc-secondary-button-border-color-hover: var(--c26-secondary-button-border-color-hover, #d1d5db);
+	--cc-secondary-button-border-radius: var(--c26-secondary-button-border-radius, 6px);
+	--cc-secondary-button-height: var(--c26-secondary-button-height, 36px);
+	--cc-secondary-button-font-weight: var(--c26-secondary-button-font-weight, 500);
+	--cc-secondary-button-disabled-color: var(--c26-secondary-button-disabled-color, #111827);
+	--cc-secondary-button-disabled-border-color: var(--c26-secondary-button-disabled-border-color, #d1d5db);
+	--cc-secondary-button-disabled-background: var(--c26-secondary-button-disabled-background, #ffffff);
+	--cc-secondary-button-disabled-opacity: var(--c26-secondary-button-disabled-opacity, 0.5);
+	--cc-secondary-button-disabled-cursor: var(--c26-secondary-button-disabled-cursor, not-allowed);
+
+	/* DatePicker — UCL primary-50 shade for today highlight */
+	--cc-datepicker-today-background: var(--c26-datepicker-today-background, #e0dbf5);
+	--cc-datepicker-today-color: var(--c26-datepicker-today-color, #2a1b66);
 
 	/* Primary palette — affects buttons, links, focus rings via --cc-primary-color consumers */
-	--cc-primary-color: #6e56cf;
-	--cc-primary-color-hover: #5c46b8;
-	--cc-primary-contrast-color: #ffffff;
+	--cc-primary-color: var(--c26-primary-color, #6e56cf);
+	--cc-primary-color-hover: var(--c26-primary-color-hover, #5c46b8);
+	--cc-primary-contrast-color: var(--c26-primary-contrast-color, #ffffff);
 
 	/* Bubble backgrounds */
-	--cc-background-user-message: #f2f0fa;
-	--cc-background-bot-message: #6e56cf;
-	--cc-background-agent-message: #6e56cf;
+	--cc-background-user-message: var(--c26-background-user-message, #f2f0fa);
+	--cc-background-bot-message: var(--c26-background-bot-message, #6e56cf);
+	--cc-background-agent-message: var(--c26-background-agent-message, #6e56cf);
 
 	/* Bubble text colors */
-	--cc-user-message-contrast-color: #1f2937;
-	--cc-bot-message-contrast-color: #ffffff;
-	--cc-agent-message-contrast-color: #ffffff;
+	--cc-user-message-contrast-color: var(--c26-user-message-contrast-color, #1f2937);
+	--cc-bot-message-contrast-color: var(--c26-bot-message-contrast-color, #ffffff);
+	--cc-agent-message-contrast-color: var(--c26-agent-message-contrast-color, #ffffff);
 
 	/* Links */
-	--cc-text-link: #6e56cf;
-	--cc-text-link-hover: #5c46b8;
+	--cc-text-link: var(--c26-text-link, #6e56cf);
+	--cc-text-link-hover: var(--c26-text-link-hover, #5c46b8);
 }
 
 /* Override any universal * { font-family } rule from host pages */

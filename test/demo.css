@@ -17,6 +17,10 @@ body {
 	overflow: hidden;
 }
 
+.chatRoot.c26 {
+	background-color: #fff;
+}
+
 .chat-bubble {
 	animation: pop 0.25s ease-out;
 	transform-origin: top;

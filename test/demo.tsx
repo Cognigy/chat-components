@@ -1165,7 +1165,7 @@ const Screen: FC<ScreenProps> = props => {
 
 	return (
 		<div id="content">
-			<div className={"chatRoot"}>
+			<div className={messageParams.c26 ? "chatRoot c26" : "chatRoot"}>
 				{messages.map((message, index) => (
 					<Message
 						key={index}
