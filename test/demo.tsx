@@ -1165,7 +1165,10 @@ const Screen: FC<ScreenProps> = props => {
 
 	return (
 		<div id="content">
-			<div className={messageParams.c26 ? "chatRoot c26" : "chatRoot"}>
+			<div
+				className="chatRoot"
+				style={messageParams.c26 ? { backgroundColor: "#fff" } : undefined}
+			>
 				{messages.map((message, index) => (
 					<Message
 						key={index}
