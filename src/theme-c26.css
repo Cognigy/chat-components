@@ -19,25 +19,40 @@ article.c26 {
 	/* Action button shape + UCL secondary variant colors (primary-50 bg, primary-900 text, primary-100 hover) */
 	--cc-action-button-border-radius: var(--c26-action-button-border-radius, 6px);
 	--cc-action-button-background: var(--c26-action-button-background, var(--cc-primary-color-50));
-	--cc-action-button-background-hover: var(--c26-action-button-background-hover, var(--cc-primary-color-100));
+	--cc-action-button-background-hover: var(
+		--c26-action-button-background-hover,
+		var(--cc-primary-color-100)
+	);
 	--cc-action-button-color: var(--c26-action-button-color, var(--cc-primary-color-900));
 	--cc-action-button-font-weight: var(--c26-action-button-font-weight, 500);
 	--cc-action-button-padding: var(--c26-action-button-padding, 8px 16px);
 	--cc-action-button-gap: var(--c26-action-button-gap, 8px);
 	--cc-action-button-min-height: var(--c26-action-button-min-height, 36px);
-	--cc-action-button-disabled-background: var(--c26-action-button-disabled-background, var(--cc-primary-color-50));
-	--cc-action-button-disabled-color: var(--c26-action-button-disabled-color, var(--cc-primary-color-900));
+	--cc-action-button-disabled-background: var(
+		--c26-action-button-disabled-background,
+		var(--cc-primary-color-50)
+	);
+	--cc-action-button-disabled-color: var(
+		--c26-action-button-disabled-color,
+		var(--cc-primary-color-900)
+	);
 	--cc-action-button-disabled-opacity: var(--c26-action-button-disabled-opacity, 0.5);
 	--cc-action-button-disabled-cursor: var(--c26-action-button-disabled-cursor, not-allowed);
 
 	/* Primary button (List/Gallery) — UCL `default` variant: primary-500 bg, white text, primary-600 hover */
 	--cc-primary-button-background: var(--c26-primary-button-background, var(--cc-primary-color));
 	--cc-primary-button-color: var(--c26-primary-button-color, var(--cc-primary-contrast-color));
-	--cc-primary-button-background-hover: var(--c26-primary-button-background-hover, var(--cc-primary-color-hover));
+	--cc-primary-button-background-hover: var(
+		--c26-primary-button-background-hover,
+		var(--cc-primary-color-hover)
+	);
 	--cc-primary-button-border-radius: var(--c26-primary-button-border-radius, 6px);
 	--cc-primary-button-height: var(--c26-primary-button-height, 36px);
 	--cc-primary-button-font-weight: var(--c26-primary-button-font-weight, 500);
-	--cc-primary-button-disabled-background: var(--c26-primary-button-disabled-background, var(--cc-primary-color));
+	--cc-primary-button-disabled-background: var(
+		--c26-primary-button-disabled-background,
+		var(--cc-primary-color)
+	);
 	--cc-primary-button-disabled-opacity: var(--c26-primary-button-disabled-opacity, 0.5);
 	--cc-primary-button-disabled-cursor: var(--c26-primary-button-disabled-cursor, not-allowed);
 
@@ -49,24 +64,45 @@ article.c26 {
 	--cc-secondary-button-border-color: var(--c26-secondary-button-border-color, #d1d5db);
 	--cc-secondary-button-background-hover: var(--c26-secondary-button-background-hover, #ffffff);
 	--cc-secondary-button-color-hover: var(--c26-secondary-button-color-hover, #111827);
-	--cc-secondary-button-border-color-hover: var(--c26-secondary-button-border-color-hover, var(--cc-primary-color));
+	--cc-secondary-button-border-color-hover: var(
+		--c26-secondary-button-border-color-hover,
+		var(--cc-primary-color)
+	);
 	--cc-secondary-button-border-radius: var(--c26-secondary-button-border-radius, 6px);
 	--cc-secondary-button-height: var(--c26-secondary-button-height, 36px);
 	--cc-secondary-button-font-weight: var(--c26-secondary-button-font-weight, 500);
 	--cc-secondary-button-padding: var(--c26-secondary-button-padding, 8px 16px);
-	--cc-secondary-button-shadow: var(--c26-secondary-button-shadow, 0 1px 2px rgba(31, 41, 55, 0.06));
-	--cc-secondary-button-active-shadow: var(--c26-secondary-button-active-shadow, 0 0 0 4px var(--cc-primary-color-100));
+	--cc-secondary-button-shadow: var(
+		--c26-secondary-button-shadow,
+		0 1px 2px rgba(31, 41, 55, 0.06)
+	);
+	--cc-secondary-button-active-shadow: var(
+		--c26-secondary-button-active-shadow,
+		0 0 0 4px var(--cc-primary-color-100)
+	);
 	--cc-secondary-button-focus-outline: var(--c26-secondary-button-focus-outline, none);
 	--cc-secondary-button-focus-outline-offset: var(--c26-secondary-button-focus-outline-offset, 0);
-	--cc-secondary-button-focus-shadow: var(--c26-secondary-button-focus-shadow, var(--cc-secondary-button-shadow, none));
+	--cc-secondary-button-focus-shadow: var(
+		--c26-secondary-button-focus-shadow,
+		var(--cc-secondary-button-shadow, none)
+	);
 	--cc-secondary-button-disabled-color: var(--c26-secondary-button-disabled-color, #111827);
-	--cc-secondary-button-disabled-border-color: var(--c26-secondary-button-disabled-border-color, #d1d5db);
-	--cc-secondary-button-disabled-background: var(--c26-secondary-button-disabled-background, #ffffff);
+	--cc-secondary-button-disabled-border-color: var(
+		--c26-secondary-button-disabled-border-color,
+		#d1d5db
+	);
+	--cc-secondary-button-disabled-background: var(
+		--c26-secondary-button-disabled-background,
+		#ffffff
+	);
 	--cc-secondary-button-disabled-opacity: var(--c26-secondary-button-disabled-opacity, 0.5);
 	--cc-secondary-button-disabled-cursor: var(--c26-secondary-button-disabled-cursor, not-allowed);
 
 	/* DatePicker — UCL primary-50 today highlight + month/year label layout */
-	--cc-datepicker-today-background: var(--c26-datepicker-today-background, var(--cc-primary-color-50));
+	--cc-datepicker-today-background: var(
+		--c26-datepicker-today-background,
+		var(--cc-primary-color-50)
+	);
 	--cc-datepicker-today-color: var(--c26-datepicker-today-color, var(--cc-primary-color-900));
 	--cc-datepicker-months-margin-top: var(--c26-datepicker-months-margin-top, 16px);
 	--cc-datepicker-current-month-position: var(--c26-datepicker-current-month-position, relative);
@@ -77,9 +113,18 @@ article.c26 {
 	--cc-primary-color: var(--c26-primary-color, #6e56cf);
 	--cc-primary-color-hover: var(--c26-primary-color-hover, #5c46b8);
 	--cc-primary-color-focus: var(--c26-primary-color-focus, var(--cc-primary-color));
-	--cc-primary-color-disabled: var(--c26-primary-color-disabled, color-mix(in srgb, var(--cc-primary-color), #fff 80%));
-	--cc-primary-color-opacity-10: var(--c26-primary-color-opacity-10, color-mix(in srgb, var(--cc-primary-color-focus) 10%, transparent));
-	--cc-primary-color-opacity-20: var(--c26-primary-color-opacity-20, color-mix(in srgb, var(--cc-primary-color-focus) 20%, transparent));
+	--cc-primary-color-disabled: var(
+		--c26-primary-color-disabled,
+		color-mix(in srgb, var(--cc-primary-color), #fff 80%)
+	);
+	--cc-primary-color-opacity-10: var(
+		--c26-primary-color-opacity-10,
+		color-mix(in srgb, var(--cc-primary-color-focus) 10%, transparent)
+	);
+	--cc-primary-color-opacity-20: var(
+		--c26-primary-color-opacity-20,
+		color-mix(in srgb, var(--cc-primary-color-focus) 20%, transparent)
+	);
 	--cc-primary-contrast-color: var(--c26-primary-contrast-color, #ffffff);
 
 	/* Primary shade variants — used by buttons, inputs, checkboxes, focus rings */
@@ -102,8 +147,14 @@ article.c26 {
 
 	/* Bubble text colors */
 	--cc-user-message-contrast-color: var(--c26-user-message-contrast-color, #1f2937);
-	--cc-bot-message-contrast-color: var(--c26-bot-message-contrast-color, var(--cc-primary-contrast-color));
-	--cc-agent-message-contrast-color: var(--c26-agent-message-contrast-color, var(--cc-primary-contrast-color));
+	--cc-bot-message-contrast-color: var(
+		--c26-bot-message-contrast-color,
+		var(--cc-primary-contrast-color)
+	);
+	--cc-agent-message-contrast-color: var(
+		--c26-agent-message-contrast-color,
+		var(--cc-primary-contrast-color)
+	);
 	/* When bubble border + bg disabled, text shows on chat root surface — needs dark color in c26 (idle bubble bg is purple, so contrast is white; without bubble bg, switch to neutral-800) */
 	--cc-bot-message-no-bubble-color: var(--c26-bot-message-no-bubble-color, #111827);
 
@@ -112,7 +163,10 @@ article.c26 {
 	--cc-text-link-hover: var(--c26-text-link-hover, var(--cc-primary-color-hover));
 	/* Bot/agent bubble bg is primary purple — links inside need contrast color so they remain visible */
 	--cc-bot-bubble-link-color: var(--c26-bot-bubble-link-color, var(--cc-primary-contrast-color));
-	--cc-bot-bubble-link-hover-color: var(--c26-bot-bubble-link-hover-color, var(--cc-primary-color-100));
+	--cc-bot-bubble-link-hover-color: var(
+		--c26-bot-bubble-link-hover-color,
+		var(--cc-primary-color-100)
+	);
 }
 
 /* Override any universal * { font-family } rule from host pages.
@@ -139,7 +193,9 @@ article.c26 .adaptivecard-wrapper select {
 	height: 36px;
 }
 
-article.c26 .adaptivecard-wrapper input:not([type="checkbox"]):not([type="radio"]):hover:not(:focus),
+article.c26
+	.adaptivecard-wrapper
+	input:not([type="checkbox"]):not([type="radio"]):hover:not(:focus),
 article.c26 .adaptivecard-wrapper textarea:hover:not(:focus),
 article.c26 .adaptivecard-wrapper select:hover:not(:focus) {
 	border-color: var(--cc-input-border-color-hover);

@@ -151,9 +151,9 @@ const Message: FC<MessageProps> = props => {
 					<MessageHeader
 						enableAvatar={
 							defaultThemeName === C26_THEME
-								? (message.source
+								? message.source
 									? (avatarVisibility?.[message.source] ?? true)
-									: true)
+									: true
 								: message.source !== "user"
 						}
 					/>

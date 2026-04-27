@@ -1099,7 +1099,9 @@ export const Menu = (props: MenuProps) => {
 
 interface MessageParamsProps {
 	messageParams: { hasReply: boolean; isConversationEnded: boolean; c26: boolean };
-	setMessageParams: Dispatch<SetStateAction<{ hasReply: boolean; isConversationEnded: boolean; c26: boolean }>>;
+	setMessageParams: Dispatch<
+		SetStateAction<{ hasReply: boolean; isConversationEnded: boolean; c26: boolean }>
+	>;
 }
 const MessageParams = (props: MessageParamsProps) => {
 	const { setMessageParams, messageParams } = props;
@@ -1138,11 +1140,7 @@ const MessageParams = (props: MessageParamsProps) => {
 			</label>
 			<label className="switch">
 				<p>C26 Theme</p>
-				<input
-					type="checkbox"
-					checked={!!messageParams?.c26}
-					onChange={toggleC26}
-				/>
+				<input type="checkbox" checked={!!messageParams?.c26} onChange={toggleC26} />
 				<span className="slider" />
 			</label>
 		</div>
@@ -1177,7 +1175,9 @@ const Screen: FC<ScreenProps> = props => {
 						hasReply={messageParams?.hasReply}
 						isConversationEnded={messageParams?.isConversationEnded}
 						defaultThemeName={messageParams.c26 ? "c26" : undefined}
-						avatarVisibility={messageParams.c26 ? { user: true, bot: true, agent: true } : undefined}
+						avatarVisibility={
+							messageParams.c26 ? { user: true, bot: true, agent: true } : undefined
+						}
 						openXAppOverlay={url => alert(`Open XApp Overlay, url is: ${url}`)}
 					/>
 				))}

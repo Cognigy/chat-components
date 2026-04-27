@@ -108,9 +108,7 @@ describe("Avatars — c26 mode", () => {
 
 	it("does not show user avatar in default theme", async () => {
 		await waitFor(() => {
-			render(
-				<Message message={{ text: "Hi", source: "user" } as IMessage} />,
-			);
+			render(<Message message={{ text: "Hi", source: "user" } as IMessage} />);
 		});
 		expect(screen.queryByTestId("user-avatar")).not.toBeInTheDocument();
 	});

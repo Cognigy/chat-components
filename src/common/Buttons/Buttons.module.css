@@ -47,7 +47,10 @@ button.primaryButton.button:disabled:focus {
 	cursor: var(--cc-primary-button-disabled-cursor, default);
 	opacity: var(--cc-primary-button-disabled-opacity, 1);
 	pointer-events: none;
-	background-color: var(--cc-primary-button-disabled-background, var(--cc-secondary-color-disabled));
+	background-color: var(
+		--cc-primary-button-disabled-background,
+		var(--cc-secondary-color-disabled)
+	);
 }
 
 /* Secondary Button */
@@ -92,7 +95,8 @@ button.secondaryButton.button:disabled:focus {
 	opacity: var(--cc-secondary-button-disabled-opacity, 1);
 	color: var(--cc-secondary-button-disabled-color, var(--cc-secondary-color-disabled));
 	pointer-events: none;
-	border: 1px solid var(--cc-secondary-button-disabled-border-color, var(--cc-secondary-color-disabled));
+	border: 1px solid
+		var(--cc-secondary-button-disabled-border-color, var(--cc-secondary-color-disabled));
 	background-color: var(--cc-secondary-button-disabled-background, var(--cc-white));
 }
 
@@ -119,7 +123,10 @@ button.secondaryButton.button:disabled:focus {
 	a.secondaryButton.button:global(.phone-number-or-url-anchor):focus-visible {
 	outline: var(--cc-secondary-button-focus-outline, 2px solid var(--cc-primary-color-focus));
 	outline-offset: var(--cc-secondary-button-focus-outline-offset, 2px);
-	box-shadow: var(--cc-secondary-button-focus-shadow, 0 0 0 4px var(--cc-secondary-contrast-color));
+	box-shadow: var(
+		--cc-secondary-button-focus-shadow,
+		0 0 0 4px var(--cc-secondary-contrast-color)
+	);
 }
 
 button.secondaryButton.actionButton:active,
