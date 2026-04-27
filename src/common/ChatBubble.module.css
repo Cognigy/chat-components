@@ -1,5 +1,5 @@
 .bubble {
-	border-radius: 15px;
+	border-radius: var(--cc-bubble-border-radius, 15px);
 	border: 1px solid var(--cc-border-bot-message);
 	padding: 12px;
 	max-width: 295px;

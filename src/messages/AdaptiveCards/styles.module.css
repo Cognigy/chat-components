@@ -158,7 +158,7 @@
 
 .adaptivecard-wrapper > * {
 	background-color: white;
-	border-radius: 15px;
+	border-radius: var(--cc-adaptivecard-inner-border-radius, var(--cc-bubble-border-radius, 15px));
 	box-shadow: none;
 	padding: 0;
 	border: 1px solid var(--cc-black-80);
@@ -203,6 +203,8 @@
 .adaptivecard-wrapper [type="time"] {
 	background-repeat: no-repeat;
 	background-position: right 12px center;
+	/* Firefox native calendar/clock indicator can't be hidden — recolor via accent-color. */
+	accent-color: var(--cc-primary-color);
 }
 
 .adaptivecard-wrapper [type="date"] {
