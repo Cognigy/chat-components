@@ -215,6 +215,13 @@
 	background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 16 16' fill='none'%3E%3Cpath fill-rule='evenodd' clip-rule='evenodd' d='M8 14.5C11.5899 14.5 14.5 11.5899 14.5 8C14.5 4.41015 11.5899 1.5 8 1.5C4.41015 1.5 1.5 4.41015 1.5 8C1.5 11.5899 4.41015 14.5 8 14.5ZM8 16C12.4183 16 16 12.4183 16 8C16 3.58172 12.4183 0 8 0C3.58172 0 0 3.58172 0 8C0 12.4183 3.58172 16 8 16Z' fill='%232455E6'/%3E%3Cpath fill-rule='evenodd' clip-rule='evenodd' d='M11.0303 12.0303C10.7374 12.3232 10.2626 12.3232 9.96967 12.0303L7.25 9.31066L7.25 4C7.25 3.58579 7.58578 3.25 8 3.25C8.41421 3.25 8.75 3.58579 8.75 4L8.75 8.68934L11.0303 10.9697C11.3232 11.2626 11.3232 11.7374 11.0303 12.0303Z' fill='%232455E6'/%3E%3C/svg%3E");
 }
 
+/* Firefox renders native date indicator on top of background-image — drop SVG, accent-color recolors native. */
+@supports (-moz-appearance: none) {
+	.adaptivecard-wrapper [type="date"] {
+		background-image: none !important;
+	}
+}
+
 .adaptivecard-wrapper select {
 	appearance: none;
 	background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 16 16' fill='none'%3E%3Cpath fill-rule='evenodd' clip-rule='evenodd' d='M1.34923 4.24022C1.76855 3.8808 2.39985 3.92936 2.75927 4.34869L8.00002 10.4629L13.2408 4.34869C13.6002 3.92936 14.2315 3.8808 14.6508 4.24022C15.0701 4.59965 15.1187 5.23095 14.7593 5.65027L9.51853 11.7645C8.72034 12.6957 7.2797 12.6957 6.4815 11.7645L1.24076 5.65027C0.881339 5.23095 0.929901 4.59965 1.34923 4.24022Z' fill='%232455E6'/%3E%3C/svg%3E");
