@@ -64,6 +64,8 @@ a.secondaryButton.button:global(.phone-number-or-url-anchor) {
 	border: 1px solid var(--cc-secondary-button-border-color, var(--cc-secondary-color));
 	outline: none;
 	height: var(--cc-secondary-button-height, 44px);
+	padding: var(--cc-secondary-button-padding, 0);
+	box-shadow: var(--cc-secondary-button-shadow, none);
 }
 button.secondaryButton.actionButton:hover,
 button.secondaryButton.actionButton:focus,
@@ -101,7 +103,12 @@ button.secondaryButton.button:disabled:focus {
 [data-cognigy-webchat-root] button.primaryButton.button:focus-visible,
 [data-cognigy-webchat-root] a.primaryButton.button:focus-visible,
 [data-cognigy-webchat-root]
-	a.primaryButton.button:global(.phone-number-or-url-anchor):focus-visible,
+	a.primaryButton.button:global(.phone-number-or-url-anchor):focus-visible {
+	outline: var(--cc-primary-button-focus-outline, 2px solid var(--cc-primary-color-focus));
+	outline-offset: var(--cc-primary-button-focus-outline-offset, 2px);
+	box-shadow: var(--cc-primary-button-focus-shadow, 0 0 0 4px var(--cc-secondary-contrast-color));
+}
+
 [data-cognigy-webchat-root] button.secondaryButton.actionButton:focus-visible,
 [data-cognigy-webchat-root] a.secondaryButton.actionButton:focus-visible,
 [data-cognigy-webchat-root]
@@ -110,9 +117,18 @@ button.secondaryButton.button:disabled:focus {
 [data-cognigy-webchat-root] a.secondaryButton.button:focus-visible,
 [data-cognigy-webchat-root]
 	a.secondaryButton.button:global(.phone-number-or-url-anchor):focus-visible {
-	outline: 2px solid var(--cc-primary-color-focus);
-	outline-offset: 2px;
-	box-shadow: 0 0 0 4px var(--cc-secondary-contrast-color);
+	outline: var(--cc-secondary-button-focus-outline, 2px solid var(--cc-primary-color-focus));
+	outline-offset: var(--cc-secondary-button-focus-outline-offset, 2px);
+	box-shadow: var(--cc-secondary-button-focus-shadow, 0 0 0 4px var(--cc-secondary-contrast-color));
+}
+
+button.secondaryButton.actionButton:active,
+a.secondaryButton.actionButton:active,
+a.secondaryButton.actionButton:global(.phone-number-or-url-anchor):active,
+button.secondaryButton.button:active,
+a.secondaryButton.button:active,
+a.secondaryButton.button:global(.phone-number-or-url-anchor):active {
+	box-shadow: var(--cc-secondary-button-active-shadow, var(--cc-secondary-button-shadow, none));
 }
 
 .buttonListItem {

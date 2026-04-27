@@ -18,15 +18,15 @@ article.c26 {
 
 	/* Action button shape + UCL secondary variant colors (primary-50 bg, primary-900 text, primary-100 hover) */
 	--cc-action-button-border-radius: var(--c26-action-button-border-radius, 6px);
-	--cc-action-button-background: var(--c26-action-button-background, var(--c26-primary-color-50));
-	--cc-action-button-background-hover: var(--c26-action-button-background-hover, var(--c26-primary-color-100));
-	--cc-action-button-color: var(--c26-action-button-color, var(--c26-primary-color-900));
+	--cc-action-button-background: var(--c26-action-button-background, var(--cc-primary-color-50));
+	--cc-action-button-background-hover: var(--c26-action-button-background-hover, var(--cc-primary-color-100));
+	--cc-action-button-color: var(--c26-action-button-color, var(--cc-primary-color-900));
 	--cc-action-button-font-weight: var(--c26-action-button-font-weight, 500);
 	--cc-action-button-padding: var(--c26-action-button-padding, 8px 16px);
 	--cc-action-button-gap: var(--c26-action-button-gap, 8px);
 	--cc-action-button-min-height: var(--c26-action-button-min-height, 36px);
-	--cc-action-button-disabled-background: var(--c26-action-button-disabled-background, var(--c26-primary-color-50));
-	--cc-action-button-disabled-color: var(--c26-action-button-disabled-color, var(--c26-primary-color-900));
+	--cc-action-button-disabled-background: var(--c26-action-button-disabled-background, var(--cc-primary-color-50));
+	--cc-action-button-disabled-color: var(--c26-action-button-disabled-color, var(--cc-primary-color-900));
 	--cc-action-button-disabled-opacity: var(--c26-action-button-disabled-opacity, 0.5);
 	--cc-action-button-disabled-cursor: var(--c26-action-button-disabled-cursor, not-allowed);
 
@@ -41,16 +41,24 @@ article.c26 {
 	--cc-primary-button-disabled-opacity: var(--c26-primary-button-disabled-opacity, 0.5);
 	--cc-primary-button-disabled-cursor: var(--c26-primary-button-disabled-cursor, not-allowed);
 
-	/* Secondary button (List/Gallery) — UCL `outline` variant: neutral-200 border, white bg, neutral-50 hover bg */
+	/* Secondary button (List/Gallery) — UCL `outline` variant:
+	 * neutral-200 border, neutral-800 text, white bg, shadow-xs,
+	 * neutral-50 hover bg, primary-100 ring on active/focus-visible */
 	--cc-secondary-button-background: var(--c26-secondary-button-background, #ffffff);
 	--cc-secondary-button-color: var(--c26-secondary-button-color, #111827);
 	--cc-secondary-button-border-color: var(--c26-secondary-button-border-color, #d1d5db);
-	--cc-secondary-button-background-hover: var(--c26-secondary-button-background-hover, #f3f4f6);
+	--cc-secondary-button-background-hover: var(--c26-secondary-button-background-hover, #ffffff);
 	--cc-secondary-button-color-hover: var(--c26-secondary-button-color-hover, #111827);
-	--cc-secondary-button-border-color-hover: var(--c26-secondary-button-border-color-hover, #d1d5db);
+	--cc-secondary-button-border-color-hover: var(--c26-secondary-button-border-color-hover, var(--cc-primary-color));
 	--cc-secondary-button-border-radius: var(--c26-secondary-button-border-radius, 6px);
 	--cc-secondary-button-height: var(--c26-secondary-button-height, 36px);
 	--cc-secondary-button-font-weight: var(--c26-secondary-button-font-weight, 500);
+	--cc-secondary-button-padding: var(--c26-secondary-button-padding, 8px 16px);
+	--cc-secondary-button-shadow: var(--c26-secondary-button-shadow, 0 1px 2px rgba(31, 41, 55, 0.06));
+	--cc-secondary-button-active-shadow: var(--c26-secondary-button-active-shadow, 0 0 0 4px var(--cc-primary-color-100));
+	--cc-secondary-button-focus-outline: var(--c26-secondary-button-focus-outline, none);
+	--cc-secondary-button-focus-outline-offset: var(--c26-secondary-button-focus-outline-offset, 0);
+	--cc-secondary-button-focus-shadow: var(--c26-secondary-button-focus-shadow, var(--cc-secondary-button-shadow, none));
 	--cc-secondary-button-disabled-color: var(--c26-secondary-button-disabled-color, #111827);
 	--cc-secondary-button-disabled-border-color: var(--c26-secondary-button-disabled-border-color, #d1d5db);
 	--cc-secondary-button-disabled-background: var(--c26-secondary-button-disabled-background, #ffffff);
@@ -58,8 +66,8 @@ article.c26 {
 	--cc-secondary-button-disabled-cursor: var(--c26-secondary-button-disabled-cursor, not-allowed);
 
 	/* DatePicker — UCL primary-50 today highlight + month/year label layout */
-	--cc-datepicker-today-background: var(--c26-datepicker-today-background, var(--c26-primary-color-50));
-	--cc-datepicker-today-color: var(--c26-datepicker-today-color, var(--c26-primary-color-900));
+	--cc-datepicker-today-background: var(--c26-datepicker-today-background, var(--cc-primary-color-50));
+	--cc-datepicker-today-color: var(--c26-datepicker-today-color, var(--cc-primary-color-900));
 	--cc-datepicker-months-margin-top: var(--c26-datepicker-months-margin-top, 16px);
 	--cc-datepicker-current-month-position: var(--c26-datepicker-current-month-position, relative);
 	--cc-datepicker-label-top: var(--c26-datepicker-label-top, -24px);
@@ -75,17 +83,17 @@ article.c26 {
 	--cc-primary-contrast-color: var(--c26-primary-contrast-color, #ffffff);
 
 	/* Primary shade variants — used by buttons, inputs, checkboxes, focus rings */
-	--c26-primary-color-50: var(--c26-primary-color-50, #e0dbf5);
-	--c26-primary-color-100: var(--c26-primary-color-100, #c8bff0);
-	--c26-primary-color-300: var(--c26-primary-color-300, #8f73e3);
-	--c26-primary-color-700: var(--c26-primary-color-700, #4a369f);
-	--c26-primary-color-900: var(--c26-primary-color-900, #2a1b66);
+	--cc-primary-color-50: var(--c26-primary-color-50, #e0dbf5);
+	--cc-primary-color-100: var(--c26-primary-color-100, #c8bff0);
+	--cc-primary-color-300: var(--c26-primary-color-300, #8f73e3);
+	--cc-primary-color-700: var(--c26-primary-color-700, #4a369f);
+	--cc-primary-color-900: var(--c26-primary-color-900, #2a1b66);
 
 	/* Input surfaces — AdaptiveCards text/date/time/select/textarea */
 	--cc-input-border-color: var(--c26-input-border-color, #d1d5db);
-	--cc-input-border-color-hover: var(--c26-input-border-color-hover, var(--c26-primary-color-300));
+	--cc-input-border-color-hover: var(--c26-input-border-color-hover, var(--cc-primary-color-300));
 	--cc-input-text-color: var(--c26-input-text-color, #111827);
-	--cc-input-focus-ring: var(--c26-input-focus-ring, var(--c26-primary-color-50));
+	--cc-input-focus-ring: var(--c26-input-focus-ring, var(--cc-primary-color-50));
 
 	/* Bubble backgrounds */
 	--cc-background-user-message: var(--c26-background-user-message, #f2f0fa);
@@ -96,10 +104,15 @@ article.c26 {
 	--cc-user-message-contrast-color: var(--c26-user-message-contrast-color, #1f2937);
 	--cc-bot-message-contrast-color: var(--c26-bot-message-contrast-color, var(--cc-primary-contrast-color));
 	--cc-agent-message-contrast-color: var(--c26-agent-message-contrast-color, var(--cc-primary-contrast-color));
+	/* When bubble border + bg disabled, text shows on chat root surface — needs dark color in c26 (idle bubble bg is purple, so contrast is white; without bubble bg, switch to neutral-800) */
+	--cc-bot-message-no-bubble-color: var(--c26-bot-message-no-bubble-color, #111827);
 
 	/* Links */
 	--cc-text-link: var(--c26-text-link, var(--cc-primary-color));
 	--cc-text-link-hover: var(--c26-text-link-hover, var(--cc-primary-color-hover));
+	/* Bot/agent bubble bg is primary purple — links inside need contrast color so they remain visible */
+	--cc-bot-bubble-link-color: var(--c26-bot-bubble-link-color, var(--cc-primary-contrast-color));
+	--cc-bot-bubble-link-hover-color: var(--c26-bot-bubble-link-hover-color, var(--cc-primary-color-100));
 }
 
 /* Override any universal * { font-family } rule from host pages.
@@ -183,6 +196,25 @@ article.c26 .adaptivecard-wrapper [type="checkbox"]:checked:hover {
 }
 
 article.c26 .adaptivecard-wrapper [type="checkbox"]:active {
-	background-color: var(--c26-primary-color-700);
-	border-color: var(--c26-primary-color-700);
+	background-color: var(--cc-primary-color-700);
+	border-color: var(--cc-primary-color-700);
+}
+
+/* Audio controls — recolor black play/pause circle + download arrow to primary */
+article.c26 [data-testid="audio-controls"] button svg circle {
+	fill: var(--cc-primary-color);
+}
+
+article.c26 [data-testid="download-transcript-button"] svg path {
+	fill: var(--cc-primary-color);
+}
+
+/* Video preview — recolor light-mode play overlay to primary with contrast triangle */
+article.c26 [data-testid="video-message"] svg circle {
+	fill: var(--cc-primary-color);
+	fill-opacity: 1;
+}
+
+article.c26 [data-testid="video-message"] svg path {
+	fill: var(--cc-primary-contrast-color);
 }

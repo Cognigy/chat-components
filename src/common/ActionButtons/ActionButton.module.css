@@ -26,7 +26,7 @@ button.button svg,
 a.button svg,
 button.button path,
 a.button svg path {
-	fill: var(--cc-action-button-color);
+	fill: currentColor;
 	width: 12px;
 }
 

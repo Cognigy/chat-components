@@ -32,6 +32,18 @@ article:global(.user) .bubble {
 	color: var(--cc-user-message-contrast-color);
 }
 
+article:global(.bot) .bubble:not(.disableBorder),
+article:global(.agent) .bubble:not(.disableBorder),
+article:global(.engagement) .bubble:not(.disableBorder) {
+	--cc-text-link: var(--cc-bot-bubble-link-color, var(--cc-text-link));
+	--cc-text-link-hover: var(--cc-bot-bubble-link-hover-color, var(--cc-text-link-hover));
+}
+
+article:global(.bot) .bubble.disableBorder,
+article:global(.engagement) .bubble.disableBorder {
+	color: var(--cc-bot-message-no-bubble-color, var(--cc-bot-message-contrast-color));
+}
+
 article:not(:global(.user)) .incoming,
 article:global(.user) .incoming {
 	margin-inline-start: none;
