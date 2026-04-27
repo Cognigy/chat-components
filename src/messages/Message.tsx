@@ -13,6 +13,8 @@ import { CollateMessage, isEventMessage } from "../utils";
 import { IMessage } from "@cognigy/socket-client";
 import { useCollation } from "./hooks";
 
+const C26_THEME = "c26";
+
 export interface MessageProps {
 	action?: MessageSender;
 	className?: string;
@@ -30,7 +32,7 @@ export interface MessageProps {
 	plugins?: MessagePlugin[];
 	prevMessage?: IMessage;
 	theme?: IWebchatTheme;
-	uiTheme?: "c26";
+	defaultThemeName?: typeof C26_THEME;
 	avatarVisibility?: Partial<Record<NonNullable<IMessage["source"]>, boolean>>;
 	attributes?: React.HTMLProps<HTMLDivElement> & { styles?: React.CSSProperties };
 	onSetMessageAnimated?: (
@@ -61,7 +63,7 @@ const Message: FC<MessageProps> = props => {
 		onSetLiveRegionText,
 		plugins,
 		prevMessage,
-		uiTheme,
+		defaultThemeName,
 		"data-message-id": dataMessageId,
 	} = props;
 
@@ -90,7 +92,7 @@ const Message: FC<MessageProps> = props => {
 		classes.message,
 		shouldCollate && classes.collated,
 		isFullscreen && classes.fullscreen,
-		uiTheme === "c26" && "c26",
+		defaultThemeName === C26_THEME && C26_THEME,
 	);
 
 	const matchedPlugins = match(message, config, plugins);
@@ -148,7 +150,7 @@ const Message: FC<MessageProps> = props => {
 				{showHeader && (
 					<MessageHeader
 						enableAvatar={
-							uiTheme === "c26"
+							defaultThemeName === C26_THEME
 								? (message.source
 									? (avatarVisibility?.[message.source] ?? true)
 									: true)

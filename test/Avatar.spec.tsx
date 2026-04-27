@@ -69,24 +69,24 @@ describe("Avatars", () => {
 });
 
 describe("Avatars — c26 mode", () => {
-	it("shows user avatar by default when uiTheme=c26", async () => {
+	it("shows user avatar by default when defaultThemeName=c26", async () => {
 		await waitFor(() => {
 			render(
 				<Message
 					message={{ text: "Hi", source: "user" } as IMessage}
-					uiTheme="c26"
+					defaultThemeName="c26"
 				/>,
 			);
 		});
 		expect(screen.getByTestId("user-avatar")).toBeInTheDocument();
 	});
 
-	it("hides user avatar when uiTheme=c26 and avatarVisibility.user=false", async () => {
+	it("hides user avatar when defaultThemeName=c26 and avatarVisibility.user=false", async () => {
 		await waitFor(() => {
 			render(
 				<Message
 					message={{ text: "Hi", source: "user" } as IMessage}
-					uiTheme="c26"
+					defaultThemeName="c26"
 					avatarVisibility={{ user: false }}
 				/>,
 			);
@@ -94,12 +94,12 @@ describe("Avatars — c26 mode", () => {
 		expect(screen.queryByTestId("user-avatar")).not.toBeInTheDocument();
 	});
 
-	it("shows bot avatar by default when uiTheme=c26", async () => {
+	it("shows bot avatar by default when defaultThemeName=c26", async () => {
 		await waitFor(() => {
 			render(
 				<Message
 					message={{ text: "Hi", source: "bot" } as IMessage}
-					uiTheme="c26"
+					defaultThemeName="c26"
 				/>,
 			);
 		});

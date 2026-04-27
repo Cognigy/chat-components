@@ -1176,7 +1176,7 @@ const Screen: FC<ScreenProps> = props => {
 						action={action}
 						hasReply={messageParams?.hasReply}
 						isConversationEnded={messageParams?.isConversationEnded}
-						uiTheme={messageParams.c26 ? "c26" : undefined}
+						defaultThemeName={messageParams.c26 ? "c26" : undefined}
 						avatarVisibility={messageParams.c26 ? { user: true, bot: true, agent: true } : undefined}
 						openXAppOverlay={url => alert(`Open XApp Overlay, url is: ${url}`)}
 					/>
