@@ -32,7 +32,7 @@ export interface MessageProps {
 	plugins?: MessagePlugin[];
 	prevMessage?: IMessage;
 	theme?: IWebchatTheme;
-	defaultThemeName?: typeof C26_THEME;
+	defaultThemeName?: string;
 	avatarVisibility?: Partial<Record<NonNullable<IMessage["source"]>, boolean>>;
 	attributes?: React.HTMLProps<HTMLDivElement> & { styles?: React.CSSProperties };
 	onSetMessageAnimated?: (

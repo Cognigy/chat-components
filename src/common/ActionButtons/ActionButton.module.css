@@ -1,16 +1,16 @@
 button.button,
 a.button {
 	border-radius: var(--cc-action-button-border-radius, 19px);
-	padding: var(--cc-action-button-padding);
+	padding: var(--cc-action-button-padding, 8px 10px);
 	cursor: pointer;
 	display: flex;
 	align-items: center;
 	justify-content: center;
-	gap: var(--cc-action-button-gap);
+	gap: var(--cc-action-button-gap, 10px);
 	text-decoration: none;
-	background: var(--cc-action-button-background);
-	color: var(--cc-action-button-color);
-	font-weight: var(--cc-action-button-font-weight);
+	background: var(--cc-action-button-background, var(--cc-primary-color));
+	color: var(--cc-action-button-color, var(--cc-primary-contrast-color));
+	font-weight: var(--cc-action-button-font-weight, 400);
 	line-height: inherit;
 	min-height: var(--cc-action-button-min-height, auto);
 	border: none;
@@ -19,7 +19,7 @@ a.button {
 }
 
 a.button:global(.phone-number-or-url-anchor) {
-	background: var(--cc-action-button-background);
+	background: var(--cc-action-button-background, var(--cc-primary-color));
 }
 
 button.button svg,
@@ -34,7 +34,7 @@ button.button:hover,
 a.button:hover,
 button.button:focus,
 a.button:focus {
-	background: var(--cc-action-button-background-hover);
+	background: var(--cc-action-button-background-hover, var(--cc-primary-color-hover));
 }
 
 /* Explicitly increase the specificity of the :focus-visible selector by including the parent [data-cognigy-webchat-root] selector. This ensures custom focus styles override Firefox's default dotted outline. */
