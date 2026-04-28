@@ -74,7 +74,18 @@ import {
 	engagementTextMessage,
 	richBotMessage,
 	quickRepliesBotMessage,
-} from "./fixtures/layout-messages";
+	defaultPreviewQuickReplies,
+	defaultPreviewText,
+	xAppQuickReply,
+	xAppButton,
+	sanitizedHtmlMessage,
+	sanitizedCustomTagsMessage,
+	sanitizationDisabledMessage,
+	markdownText,
+	borderlessText,
+	collatedFollowupMessage,
+	collatedPrevMessage,
+} from "./fixtures/messages";
 import type { IMessage } from "@cognigy/socket-client";
 
 // ---- demo-page fixtures ----
@@ -159,13 +170,50 @@ function normalize(html: string): string {
 // the matcher early-returns and <Message> renders null, which would make the
 // comparison trivially pass (empty === empty). The non-empty-render guard in
 // assertSameDom catches such silent no-ops.
-type Case = { name: string; message: IMessage; config?: unknown };
+//
+// Optional `prevMessage` participates in collation: matcher / collation rules
+// suppress the header on follow-up messages from the same source within a
+// short timestamp window.
+type Case = {
+	name: string;
+	message: IMessage;
+	config?: unknown;
+	prevMessage?: IMessage;
+};
 
-// Engagement teaser config: matcher.ts gates engagement-source messages
-// behind `settings.teaserMessage.showInChat`. Without it, both renders
-// resolve to null and the case becomes vacuous coverage.
+// Per-tab widgetSettings configs. Source: test/demo.tsx — keep in sync if
+// the demo's config shape moves.
+
+// Engagement teaser: matcher.ts gates engagement-source messages behind
+// `settings.teaserMessage.showInChat`. Without it, both renders resolve to
+// null and the case becomes vacuous coverage.
 const engagementConfig = {
 	settings: { teaserMessage: { showInChat: true } },
+};
+
+// Default Preview: matcher.ts routes messages with `_defaultPreview` payload
+// to that channel only when this flag is set; otherwise it falls back to the
+// `_webchat` payload. Both demo Default-Preview fixtures encode "RENDER OK"
+// in `_defaultPreview` and "RENDER WRONG" in `_webchat` so the assertion
+// catches a regression that flipped the channel selection.
+const defaultPreviewConfig = {
+	settings: { widgetSettings: { enableDefaultPreview: true } },
+};
+
+// HTML sanitization variants from the demo's `HTML Sanitization` tab.
+const customAllowedTagsConfig = {
+	settings: { widgetSettings: { customAllowedHtmlTags: ["p", "strong"] } },
+};
+const sanitizationDisabledConfig = {
+	settings: { layout: { disableHtmlContentSanitization: true } },
+};
+
+// Markdown / layout-flag text variants from the `Text messages` tab.
+const renderMarkdownConfig = {
+	settings: { behavior: { renderMarkdown: true } },
+};
+const disableBorderConfig = {
+	settings: { layout: { disableBotOutputBorder: true } },
 };
 
 // Core source fixtures. These exercise the Message/Header/Body structural
@@ -181,12 +229,12 @@ const cases: Case[] = [
 ];
 
 // Demo-page coverage. One case per demo tab where the tab renders via
-// <Message> and is not inherently time- or animation-dependent. Skipped
-// tabs: "UI Components" (renders ActionButtons/Typography/ChatEvent directly,
-// not via <Message>), "Message Collation" (depends on prevMessage chaining),
-// "Streaming messages with markdown" (animationState changes DOM over time),
-// "Default Preview" + "HTML Sanitization" + "xApp Buttons" (require specific
-// widgetSettings.config injection that isn't trivially picked up from JSON).
+// <Message>. Skipped:
+//   - "UI Components" — renders ActionButtons / Typography / ChatEvent
+//     directly, not through <Message>.
+//   - "Streaming messages with markdown" — animationState transitions
+//     ("start" / "animating" / "done") change the DOM over time, so a static
+//     comparison would be flaky.
 const demoCases: Case[] = [
 	// Multimedia
 	{ name: "demo: image", message: asBot(imageFixture) },
@@ -211,11 +259,60 @@ const demoCases: Case[] = [
 	{ name: "demo: datepicker no time", message: asBot(datepickerNoTime) },
 	{ name: "demo: datepicker time only", message: asBot(datepickerTimeOnly) },
 	{ name: "demo: datepicker disable weekends", message: asBot(datepickerDisableWeekends) },
-	// Misc
-	// adaptiveCards fixture is an array — first entry is representative.
+	// Adaptive Cards — fixture is an array; cover all three indices since
+	// they exercise different card payload shapes.
 	{
-		name: "demo: adaptive cards (first)",
+		name: "demo: adaptive cards [0]",
 		message: asBot((adaptiveCardsFixture as unknown as object[])[0]),
+	},
+	{
+		name: "demo: adaptive cards [1]",
+		message: asBot((adaptiveCardsFixture as unknown as object[])[1]),
+	},
+	{
+		name: "demo: adaptive cards [2]",
+		message: asBot((adaptiveCardsFixture as unknown as object[])[2]),
+	},
+	// Default Preview — gated by widgetSettings.enableDefaultPreview; both
+	// fixtures contrast `_defaultPreview` ("RENDER OK") against `_webchat`
+	// ("RENDER WRONG") so the assertion catches a regression that flipped
+	// the channel selection.
+	{
+		name: "demo: default preview (quick replies)",
+		message: defaultPreviewQuickReplies,
+		config: defaultPreviewConfig,
+	},
+	{
+		name: "demo: default preview (text)",
+		message: defaultPreviewText,
+		config: defaultPreviewConfig,
+	},
+	// xApp Buttons — both shapes route through the matcher's openXApp branch.
+	{ name: "demo: xApp button (quick reply)", message: xAppQuickReply },
+	{ name: "demo: xApp button (template)", message: xAppButton },
+	// HTML Sanitization — default config is already covered by `bot text
+	// message`; these exercise the customAllowedHtmlTags / disableHtmlContent
+	// Sanitization branches.
+	{ name: "demo: sanitized html (default tags)", message: sanitizedHtmlMessage },
+	{
+		name: "demo: sanitized html (custom allowed tags)",
+		message: sanitizedCustomTagsMessage,
+		config: customAllowedTagsConfig,
+	},
+	{
+		name: "demo: sanitization disabled",
+		message: sanitizationDisabledMessage,
+		config: sanitizationDisabledConfig,
+	},
+	// Markdown / layout-flag text variants from the `Text messages` tab.
+	{ name: "demo: markdown text", message: markdownText, config: renderMarkdownConfig },
+	{ name: "demo: borderless text", message: borderlessText, config: disableBorderConfig },
+	// Message Collation — header suppression depends on `prevMessage`. This
+	// case reproduces the demo's "bot follows bot within window" scenario.
+	{
+		name: "demo: collated bot follow-up (no header)",
+		message: collatedFollowupMessage,
+		prevMessage: collatedPrevMessage,
 	},
 	{ name: "demo: webchat3 event", message: asBot(webchat3EventFixture) },
 ];
@@ -224,17 +321,17 @@ const demoCases: Case[] = [
 // normalize the HTML, compare. Also asserts the rendered HTML is non-empty
 // — without this guard, a fixture that silently fails to match any plugin
 // would produce empty === empty and pass without exercising any DOM.
-function assertSameDom(message: IMessage, config?: unknown) {
+function assertSameDom(message: IMessage, config?: unknown, prevMessage?: IMessage) {
 	const configProp = config as React.ComponentProps<typeof CurrentMessage>["config"];
 
 	const { container: current, unmount: unmountCurrent } = render(
-		<CurrentMessage message={message} config={configProp} />,
+		<CurrentMessage message={message} config={configProp} prevMessage={prevMessage} />,
 	);
 	const currentHtml = normalize(current.innerHTML);
 	unmountCurrent();
 
 	const { container: baseline, unmount: unmountBaseline } = render(
-		<BaselineMessage message={message} config={configProp} />,
+		<BaselineMessage message={message} config={configProp} prevMessage={prevMessage} />,
 	);
 	const baselineHtml = normalize(baseline.innerHTML);
 	unmountBaseline();
@@ -245,14 +342,16 @@ function assertSameDom(message: IMessage, config?: unknown) {
 
 describe(`DOM compatibility: branch vs @cognigy/chat-components@${baselineVersion}`, () => {
 	describe("core source fixtures", () => {
-		it.each(cases)("$name — <Message> matches published release DOM", ({ message, config }) =>
-			assertSameDom(message, config),
+		it.each(cases)(
+			"$name — <Message> matches published release DOM",
+			({ message, config, prevMessage }) => assertSameDom(message, config, prevMessage),
 		);
 	});
 
 	describe("demo-page message tabs", () => {
-		it.each(demoCases)("$name — matches published release DOM", ({ message, config }) =>
-			assertSameDom(message, config),
+		it.each(demoCases)(
+			"$name — matches published release DOM",
+			({ message, config, prevMessage }) => assertSameDom(message, config, prevMessage),
 		);
 	});
 });
