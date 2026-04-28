@@ -87,7 +87,7 @@ function main() {
 			(installed ? ` (replacing ${installed})` : "") +
 			"...",
 	);
-	run(`npm install --no-save --no-audit --no-fund ${ALIAS}@npm:${PKG_NAME}@${latest}`, {
+	run(`npm install --no-save --no-package-lock --no-audit --no-fund ${ALIAS}@npm:${PKG_NAME}@${latest}`, {
 		stdio: "inherit",
 	});
 	console.log(`[dom-compat] done.`);
