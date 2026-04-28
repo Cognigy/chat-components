@@ -149,8 +149,8 @@ function normalize(html: string): string {
 			.replace(/>\s+</g, "><")
 			// trim leading/trailing whitespace
 			.trim()
-			// mask React useId tokens like :r0:, :R1a:, :Rab:
-			.replace(/:[rR][0-9a-z]+:/g, ":__id__:")
+			// mask React useId tokens like :r0:, :R1a:, :Rab:, «r0», «R1a»
+			.replace(/(?::[rR][0-9a-z]+:|«[rR][0-9a-z]+»)/g, "__id__")
 			// mask react-tooltip / random uuid-ish ids seen in attribute values
 			.replace(/tooltip-[A-Za-z0-9_-]+/g, "tooltip-__id__")
 			// mask UUID v4-style ids (used by gallery subtitle/title/content ids)
