@@ -1,4 +1,16 @@
 :root {
+	--cc-font-family: var(--webchat-font-family, Figtree);
+	--cc-action-button-border-radius: var(--webchat-action-button-border-radius, 19px);
+	--cc-action-button-background: var(--webchat-action-button-background, var(--cc-primary-color));
+	--cc-action-button-background-hover: var(
+		--webchat-action-button-background-hover,
+		var(--cc-primary-color-hover)
+	);
+	--cc-action-button-color: var(--webchat-action-button-color, var(--cc-primary-contrast-color));
+	--cc-action-button-font-weight: var(--webchat-action-button-font-weight, 400);
+	--cc-action-button-padding: var(--webchat-action-button-padding, 8px 10px);
+	--cc-action-button-gap: var(--webchat-action-button-gap, 10px);
+
 	--cc-primary-color: var(--webchat-primary-color, #2455e6);
 	--cc-primary-color-hover: var(
 		--webchat-primary-color-hover,

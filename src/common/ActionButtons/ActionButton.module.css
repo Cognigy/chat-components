@@ -1,29 +1,32 @@
 button.button,
 a.button {
-	border-radius: 19px;
-	padding: 8px 10px;
+	border-radius: var(--cc-action-button-border-radius, 19px);
+	padding: var(--cc-action-button-padding, 8px 10px);
 	cursor: pointer;
 	display: flex;
 	align-items: center;
 	justify-content: center;
-	gap: 10px;
+	gap: var(--cc-action-button-gap, 10px);
 	text-decoration: none;
-	background: var(--cc-primary-color);
-	color: var(--cc-primary-contrast-color);
+	background: var(--cc-action-button-background, var(--cc-primary-color));
+	color: var(--cc-action-button-color, var(--cc-primary-contrast-color));
+	font-weight: var(--cc-action-button-font-weight, 400);
+	line-height: inherit;
+	min-height: var(--cc-action-button-min-height, auto);
 	border: none;
 	outline: none;
 	position: relative;
 }
 
 a.button:global(.phone-number-or-url-anchor) {
-	background: var(--cc-primary-color);
+	background: var(--cc-action-button-background, var(--cc-primary-color));
 }
 
 button.button svg,
 a.button svg,
 button.button path,
 a.button svg path {
-	fill: var(--cc-primary-contrast-color);
+	fill: currentColor;
 	width: 12px;
 }
 
@@ -31,7 +34,7 @@ button.button:hover,
 a.button:hover,
 button.button:focus,
 a.button:focus {
-	background: var(--cc-primary-color-hover);
+	background: var(--cc-action-button-background-hover, var(--cc-primary-color-hover));
 }
 
 /* Explicitly increase the specificity of the :focus-visible selector by including the parent [data-cognigy-webchat-root] selector. This ensures custom focus styles override Firefox's default dotted outline. */
@@ -49,8 +52,10 @@ button.button:disabled:focus,
 a.button.disabled,
 a.button.disabled:hover,
 a.button.disabled:focus {
-	background: var(--cc-primary-color-disabled);
-	cursor: default;
+	background: var(--cc-action-button-disabled-background, var(--cc-primary-color-disabled));
+	color: var(--cc-action-button-disabled-color, var(--cc-action-button-color));
+	opacity: var(--cc-action-button-disabled-opacity, 1);
+	cursor: var(--cc-action-button-disabled-cursor, default);
 	pointer-events: none;
 }
 
@@ -62,8 +67,8 @@ a.button.disabled:focus {
 	width: 100%;
 	height: 100%;
 	object-fit: cover;
-	border-top-left-radius: 19px;
-	border-bottom-left-radius: 19px;
+	border-top-left-radius: var(--cc-action-button-border-radius, 19px);
+	border-bottom-left-radius: var(--cc-action-button-border-radius, 19px);
 }
 
 .buttonImage.imageDisabled {

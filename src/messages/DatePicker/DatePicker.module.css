@@ -147,6 +147,7 @@
 	justify-content: space-between;
 	padding: 0px 10px;
 	height: 44px;
+	margin-top: var(--cc-datepicker-months-margin-top, 0);
 	margin-bottom: 24px;
 }
 
@@ -225,6 +226,7 @@
 .wrapper .content :global(.flatpickr-current-month) {
 	display: flex;
 	gap: 10px;
+	position: var(--cc-datepicker-current-month-position, static);
 }
 
 .wrapper .content :global(.flatpickr-current-month .flatpickr-monthDropdown-months) {
@@ -246,7 +248,8 @@
 .wrapper .content :global(.flatpickr-current-month) label {
 	color: var(--cc-black-40);
 	position: absolute;
-	top: -15px;
+	top: var(--cc-datepicker-label-top, -15px);
+	left: var(--cc-datepicker-label-left, auto);
 	padding-left: 6px;
 	font-size: 12px;
 }
@@ -429,7 +432,8 @@
 }
 
 .wrapper .content :global(.flatpickr-day.today .dayInner) {
-	background-color: var(--cc-primary-color-opacity-20);
+	background-color: var(--cc-datepicker-today-background, var(--cc-primary-color-opacity-20));
+	color: var(--cc-datepicker-today-color, inherit);
 }
 
 .wrapper .content :global(.flatpickr-day.selected .dayInner) {

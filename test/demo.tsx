@@ -3,6 +3,9 @@ import React, { Dispatch, FC, SetStateAction, useState } from "react";
 import ReactDOM from "react-dom/client";
 
 import "./demo.css";
+import "@fontsource/geist/400.css";
+import "@fontsource/geist/500.css";
+import "@fontsource/geist/600.css";
 import Message, { MessageProps } from "../src/messages/Message.tsx";
 import { IWebchatConfig, MessageSender } from "../src/messages/types.ts";
 
@@ -1095,8 +1098,10 @@ export const Menu = (props: MenuProps) => {
 };
 
 interface MessageParamsProps {
-	messageParams: MessageProviderProps["messageParams"];
-	setMessageParams: Dispatch<SetStateAction<{ hasReply: boolean; isConversationEnded: boolean }>>;
+	messageParams: { hasReply: boolean; isConversationEnded: boolean; c26: boolean };
+	setMessageParams: Dispatch<
+		SetStateAction<{ hasReply: boolean; isConversationEnded: boolean; c26: boolean }>
+	>;
 }
 const MessageParams = (props: MessageParamsProps) => {
 	const { setMessageParams, messageParams } = props;
@@ -1107,6 +1112,10 @@ const MessageParams = (props: MessageParamsProps) => {
 
 	const toggleHasReply = () => {
 		setMessageParams(prev => ({ ...prev, hasReply: !prev.hasReply }));
+	};
+
+	const toggleC26 = () => {
+		setMessageParams(prev => ({ ...prev, c26: !prev.c26 }));
 	};
 
 	return (
@@ -1129,6 +1138,11 @@ const MessageParams = (props: MessageParamsProps) => {
 				/>
 				<span className="slider" />
 			</label>
+			<label className="switch">
+				<p>C26 Theme</p>
+				<input type="checkbox" checked={!!messageParams?.c26} onChange={toggleC26} />
+				<span className="slider" />
+			</label>
 		</div>
 	);
 };
@@ -1144,11 +1158,15 @@ const Screen: FC<ScreenProps> = props => {
 	const [messageParams, setMessageParams] = useState({
 		hasReply: false,
 		isConversationEnded: false,
+		c26: false,
 	});
 
 	return (
 		<div id="content">
-			<div className={"chatRoot"}>
+			<div
+				className="chatRoot"
+				style={messageParams.c26 ? { backgroundColor: "#fff" } : undefined}
+			>
 				{messages.map((message, index) => (
 					<Message
 						key={index}
@@ -1156,6 +1174,10 @@ const Screen: FC<ScreenProps> = props => {
 						action={action}
 						hasReply={messageParams?.hasReply}
 						isConversationEnded={messageParams?.isConversationEnded}
+						defaultThemeName={messageParams.c26 ? "c26" : undefined}
+						avatarVisibility={
+							messageParams.c26 ? { user: true, bot: true, agent: true } : undefined
+						}
 						openXAppOverlay={url => alert(`Open XApp Overlay, url is: ${url}`)}
 					/>
 				))}

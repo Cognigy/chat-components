@@ -15,12 +15,14 @@ a.primaryButton.actionButton:global(.phone-number-or-url-anchor),
 button.primaryButton.button,
 a.primaryButton.button:global(.phone-number-or-url-anchor) {
 	width: 100%;
-	border-radius: 10px;
-	background-color: var(--cc-secondary-color);
-	color: var(--cc-secondary-contrast-color);
+	border-radius: var(--cc-primary-button-border-radius, 10px);
+	background-color: var(--cc-primary-button-background, var(--cc-secondary-color));
+	color: var(--cc-primary-button-color, var(--cc-secondary-contrast-color));
+	font-weight: var(--cc-primary-button-font-weight, inherit);
+	line-height: inherit;
 	border: none;
 	outline: none;
-	height: 44px;
+	height: var(--cc-primary-button-height, 44px);
 }
 button.primaryButton.actionButton:hover,
 button.primaryButton.actionButton:focus,
@@ -30,7 +32,7 @@ button.primaryButton.button:hover,
 button.primaryButton.button:focus,
 a.primaryButton.button:hover,
 a.primaryButton.button:focus {
-	background-color: var(--cc-secondary-color-hover);
+	background-color: var(--cc-primary-button-background-hover, var(--cc-secondary-color-hover));
 }
 
 button.primaryButton.actionButton:disabled,
@@ -42,9 +44,13 @@ a.primaryButton.actionButton:global(.disabled):hover,
 a.primaryButton.actionButton:global(.disabled):focus,
 button.primaryButton.button:disabled:hover,
 button.primaryButton.button:disabled:focus {
-	cursor: default;
+	cursor: var(--cc-primary-button-disabled-cursor, default);
+	opacity: var(--cc-primary-button-disabled-opacity, 1);
 	pointer-events: none;
-	background-color: var(--cc-secondary-color-disabled);
+	background-color: var(
+		--cc-primary-button-disabled-background,
+		var(--cc-secondary-color-disabled)
+	);
 }
 
 /* Secondary Button */
@@ -53,12 +59,16 @@ a.secondaryButton.actionButton:global(.phone-number-or-url-anchor),
 button.secondaryButton.button,
 a.secondaryButton.button:global(.phone-number-or-url-anchor) {
 	width: 100%;
-	border-radius: 10px;
-	background-color: var(--cc-white);
-	color: var(--cc-secondary-color);
-	border: 1px solid var(--cc-secondary-color);
+	border-radius: var(--cc-secondary-button-border-radius, 10px);
+	background-color: var(--cc-secondary-button-background, var(--cc-white));
+	color: var(--cc-secondary-button-color, var(--cc-secondary-color));
+	font-weight: var(--cc-secondary-button-font-weight, inherit);
+	line-height: inherit;
+	border: 1px solid var(--cc-secondary-button-border-color, var(--cc-secondary-color));
 	outline: none;
-	height: 44px;
+	height: var(--cc-secondary-button-height, 44px);
+	padding: var(--cc-secondary-button-padding, 0);
+	box-shadow: var(--cc-secondary-button-shadow, none);
 }
 button.secondaryButton.actionButton:hover,
 button.secondaryButton.actionButton:focus,
@@ -68,9 +78,9 @@ button.secondaryButton.button:hover,
 button.secondaryButton.button:focus,
 a.secondaryButton.button:hover,
 a.secondaryButton.button:focus {
-	color: var(--cc-secondary-color-hover);
-	border: 1px solid var(--cc-secondary-color-hover);
-	background-color: var(--cc-white);
+	color: var(--cc-secondary-button-color-hover, var(--cc-secondary-color-hover));
+	border: 1px solid var(--cc-secondary-button-border-color-hover, var(--cc-secondary-color-hover));
+	background-color: var(--cc-secondary-button-background-hover, var(--cc-white));
 }
 button.secondaryButton.actionButton:disabled,
 a.secondaryButton.actionButton:global(.disabled),
@@ -81,11 +91,13 @@ a.secondaryButton.actionButton:global(.disabled):hover,
 a.secondaryButton.actionButton:global(.disabled):focus,
 button.secondaryButton.button:disabled:hover,
 button.secondaryButton.button:disabled:focus {
-	cursor: default;
-	color: var(--cc-secondary-color-disabled);
+	cursor: var(--cc-secondary-button-disabled-cursor, default);
+	opacity: var(--cc-secondary-button-disabled-opacity, 1);
+	color: var(--cc-secondary-button-disabled-color, var(--cc-secondary-color-disabled));
 	pointer-events: none;
-	border: 1px solid var(--cc-secondary-color-disabled);
-	background-color: var(--cc-white);
+	border: 1px solid
+		var(--cc-secondary-button-disabled-border-color, var(--cc-secondary-color-disabled));
+	background-color: var(--cc-secondary-button-disabled-background, var(--cc-white));
 }
 
 [data-cognigy-webchat-root] button.primaryButton.actionButton:focus-visible,
@@ -95,7 +107,12 @@ button.secondaryButton.button:disabled:focus {
 [data-cognigy-webchat-root] button.primaryButton.button:focus-visible,
 [data-cognigy-webchat-root] a.primaryButton.button:focus-visible,
 [data-cognigy-webchat-root]
-	a.primaryButton.button:global(.phone-number-or-url-anchor):focus-visible,
+	a.primaryButton.button:global(.phone-number-or-url-anchor):focus-visible {
+	outline: var(--cc-primary-button-focus-outline, 2px solid var(--cc-primary-color-focus));
+	outline-offset: var(--cc-primary-button-focus-outline-offset, 2px);
+	box-shadow: var(--cc-primary-button-focus-shadow, 0 0 0 4px var(--cc-secondary-contrast-color));
+}
+
 [data-cognigy-webchat-root] button.secondaryButton.actionButton:focus-visible,
 [data-cognigy-webchat-root] a.secondaryButton.actionButton:focus-visible,
 [data-cognigy-webchat-root]
@@ -104,9 +121,21 @@ button.secondaryButton.button:disabled:focus {
 [data-cognigy-webchat-root] a.secondaryButton.button:focus-visible,
 [data-cognigy-webchat-root]
 	a.secondaryButton.button:global(.phone-number-or-url-anchor):focus-visible {
-	outline: 2px solid var(--cc-primary-color-focus);
-	outline-offset: 2px;
-	box-shadow: 0 0 0 4px var(--cc-secondary-contrast-color);
+	outline: var(--cc-secondary-button-focus-outline, 2px solid var(--cc-primary-color-focus));
+	outline-offset: var(--cc-secondary-button-focus-outline-offset, 2px);
+	box-shadow: var(
+		--cc-secondary-button-focus-shadow,
+		0 0 0 4px var(--cc-secondary-contrast-color)
+	);
+}
+
+button.secondaryButton.actionButton:active,
+a.secondaryButton.actionButton:active,
+a.secondaryButton.actionButton:global(.phone-number-or-url-anchor):active,
+button.secondaryButton.button:active,
+a.secondaryButton.button:active,
+a.secondaryButton.button:global(.phone-number-or-url-anchor):active {
+	box-shadow: var(--cc-secondary-button-active-shadow, var(--cc-secondary-button-shadow, none));
 }
 
 .buttonListItem {

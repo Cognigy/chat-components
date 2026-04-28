@@ -1,5 +1,5 @@
 .bubble {
-	border-radius: 15px;
+	border-radius: var(--cc-bubble-border-radius, 15px);
 	border: 1px solid var(--cc-border-bot-message);
 	padding: 12px;
 	max-width: 295px;
@@ -30,6 +30,18 @@ article:global(.user) .bubble {
 	background: var(--cc-background-user-message);
 	border-color: var(--cc-border-user-message);
 	color: var(--cc-user-message-contrast-color);
+}
+
+article:global(.c26.bot) .bubble:not(.disableBorder),
+article:global(.c26.agent) .bubble:not(.disableBorder),
+article:global(.c26.engagement) .bubble:not(.disableBorder) {
+	--cc-text-link: var(--cc-bot-bubble-link-color, var(--cc-text-link));
+	--cc-text-link-hover: var(--cc-bot-bubble-link-hover-color, var(--cc-text-link-hover));
+}
+
+article:global(.bot) .bubble.disableBorder,
+article:global(.engagement) .bubble.disableBorder {
+	color: var(--cc-bot-message-no-bubble-color, var(--cc-bot-message-contrast-color));
 }
 
 article:not(:global(.user)) .incoming,

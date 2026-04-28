@@ -16,6 +16,8 @@ import "@fontsource/figtree/600.css";
 import "@fontsource/figtree/600-italic.css";
 import "@fontsource/figtree/700.css";
 import "@fontsource/figtree/700-italic.css";
+import "./theme.css";
+import "./theme-c26.css";
 
 export {
 	Message,

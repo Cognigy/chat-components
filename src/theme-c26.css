@@ -1,0 +1,276 @@
+/* C26 visual theme — all rules scoped under article.c26
+ *
+ * Overrides existing --cc-* CSS custom properties that cascade to child
+ * components automatically. Does NOT reference CSS module class names
+ * (those are hashed in production builds).
+ *
+ * Defaults are wrapped in `var(--c26-*, default)` so consumers
+ * can override any c26 value via --c26-* tokens without patching CSS.
+ */
+
+article.c26 {
+	/* Typography */
+	--cc-font-family: var(--c26-font-family, "Geist", sans-serif);
+	--cc-font-size: var(--c26-font-size, 0.875rem);
+	font-family: var(--cc-font-family);
+	font-size: var(--cc-font-size);
+	line-height: var(--c26-line-height, 1.5rem);
+
+	/* Action button shape + UCL secondary variant colors (primary-50 bg, primary-900 text, primary-100 hover) */
+	--cc-action-button-border-radius: var(--c26-action-button-border-radius, 6px);
+	--cc-action-button-background: var(--c26-action-button-background, var(--cc-primary-color-50));
+	--cc-action-button-background-hover: var(
+		--c26-action-button-background-hover,
+		var(--cc-primary-color-100)
+	);
+	--cc-action-button-color: var(--c26-action-button-color, var(--cc-primary-color-900));
+	--cc-action-button-font-weight: var(--c26-action-button-font-weight, 500);
+	--cc-action-button-padding: var(--c26-action-button-padding, 8px 16px);
+	--cc-action-button-gap: var(--c26-action-button-gap, 8px);
+	--cc-action-button-min-height: var(--c26-action-button-min-height, 36px);
+	--cc-action-button-disabled-background: var(
+		--c26-action-button-disabled-background,
+		var(--cc-primary-color-50)
+	);
+	--cc-action-button-disabled-color: var(
+		--c26-action-button-disabled-color,
+		var(--cc-primary-color-900)
+	);
+	--cc-action-button-disabled-opacity: var(--c26-action-button-disabled-opacity, 0.5);
+	--cc-action-button-disabled-cursor: var(--c26-action-button-disabled-cursor, not-allowed);
+
+	/* Primary button (List/Gallery) — UCL `default` variant: primary-500 bg, white text, primary-600 hover */
+	--cc-primary-button-background: var(--c26-primary-button-background, var(--cc-primary-color));
+	--cc-primary-button-color: var(--c26-primary-button-color, var(--cc-primary-contrast-color));
+	--cc-primary-button-background-hover: var(
+		--c26-primary-button-background-hover,
+		var(--cc-primary-color-hover)
+	);
+	--cc-primary-button-border-radius: var(--c26-primary-button-border-radius, 6px);
+	--cc-primary-button-height: var(--c26-primary-button-height, 36px);
+	--cc-primary-button-font-weight: var(--c26-primary-button-font-weight, 500);
+	--cc-primary-button-disabled-background: var(
+		--c26-primary-button-disabled-background,
+		var(--cc-primary-color)
+	);
+	--cc-primary-button-disabled-opacity: var(--c26-primary-button-disabled-opacity, 0.5);
+	--cc-primary-button-disabled-cursor: var(--c26-primary-button-disabled-cursor, not-allowed);
+
+	/* Secondary button (List/Gallery) — UCL `outline` variant:
+	 * neutral-200 border, neutral-800 text, white bg, shadow-xs,
+	 * neutral-50 hover bg, primary-100 ring on active/focus-visible */
+	--cc-secondary-button-background: var(--c26-secondary-button-background, #ffffff);
+	--cc-secondary-button-color: var(--c26-secondary-button-color, #111827);
+	--cc-secondary-button-border-color: var(--c26-secondary-button-border-color, #d1d5db);
+	--cc-secondary-button-background-hover: var(--c26-secondary-button-background-hover, #ffffff);
+	--cc-secondary-button-color-hover: var(--c26-secondary-button-color-hover, #111827);
+	--cc-secondary-button-border-color-hover: var(
+		--c26-secondary-button-border-color-hover,
+		var(--cc-primary-color)
+	);
+	--cc-secondary-button-border-radius: var(--c26-secondary-button-border-radius, 6px);
+	--cc-secondary-button-height: var(--c26-secondary-button-height, 36px);
+	--cc-secondary-button-font-weight: var(--c26-secondary-button-font-weight, 500);
+	--cc-secondary-button-padding: var(--c26-secondary-button-padding, 8px 16px);
+	--cc-secondary-button-shadow: var(
+		--c26-secondary-button-shadow,
+		0 1px 2px rgba(31, 41, 55, 0.06)
+	);
+	--cc-secondary-button-active-shadow: var(
+		--c26-secondary-button-active-shadow,
+		0 0 0 4px var(--cc-primary-color-100)
+	);
+	--cc-secondary-button-focus-outline: var(--c26-secondary-button-focus-outline, none);
+	--cc-secondary-button-focus-outline-offset: var(--c26-secondary-button-focus-outline-offset, 0);
+	--cc-secondary-button-focus-shadow: var(
+		--c26-secondary-button-focus-shadow,
+		var(--cc-secondary-button-active-shadow)
+	);
+	--cc-secondary-button-disabled-color: var(--c26-secondary-button-disabled-color, #111827);
+	--cc-secondary-button-disabled-border-color: var(
+		--c26-secondary-button-disabled-border-color,
+		#d1d5db
+	);
+	--cc-secondary-button-disabled-background: var(
+		--c26-secondary-button-disabled-background,
+		#ffffff
+	);
+	--cc-secondary-button-disabled-opacity: var(--c26-secondary-button-disabled-opacity, 0.5);
+	--cc-secondary-button-disabled-cursor: var(--c26-secondary-button-disabled-cursor, not-allowed);
+
+	/* DatePicker — UCL primary-50 today highlight + month/year label layout */
+	--cc-datepicker-today-background: var(
+		--c26-datepicker-today-background,
+		var(--cc-primary-color-50)
+	);
+	--cc-datepicker-today-color: var(--c26-datepicker-today-color, var(--cc-primary-color-900));
+	--cc-datepicker-months-margin-top: var(--c26-datepicker-months-margin-top, 16px);
+	--cc-datepicker-current-month-position: var(--c26-datepicker-current-month-position, relative);
+	--cc-datepicker-label-top: var(--c26-datepicker-label-top, -24px);
+	--cc-datepicker-label-left: var(--c26-datepicker-label-left, 0);
+
+	/* Primary palette — affects buttons, links, focus rings via --cc-primary-color consumers */
+	--cc-primary-color: var(--c26-primary-color, #6e56cf);
+	--cc-primary-color-hover: var(--c26-primary-color-hover, #5c46b8);
+	--cc-primary-color-focus: var(--c26-primary-color-focus, var(--cc-primary-color));
+	--cc-primary-color-disabled: var(
+		--c26-primary-color-disabled,
+		color-mix(in srgb, var(--cc-primary-color), #fff 80%)
+	);
+	--cc-primary-color-opacity-10: var(
+		--c26-primary-color-opacity-10,
+		color-mix(in srgb, var(--cc-primary-color-focus) 10%, transparent)
+	);
+	--cc-primary-color-opacity-20: var(
+		--c26-primary-color-opacity-20,
+		color-mix(in srgb, var(--cc-primary-color-focus) 20%, transparent)
+	);
+	--cc-primary-contrast-color: var(--c26-primary-contrast-color, #ffffff);
+
+	/* Primary shade variants — used by buttons, inputs, checkboxes, focus rings */
+	--cc-primary-color-50: var(--c26-primary-color-50, #e0dbf5);
+	--cc-primary-color-100: var(--c26-primary-color-100, #c8bff0);
+	--cc-primary-color-300: var(--c26-primary-color-300, #8f73e3);
+	--cc-primary-color-700: var(--c26-primary-color-700, #4a369f);
+	--cc-primary-color-900: var(--c26-primary-color-900, #2a1b66);
+
+	/* Input surfaces — AdaptiveCards text/date/time/select/textarea */
+	--cc-input-border-color: var(--c26-input-border-color, #d1d5db);
+	--cc-input-border-color-hover: var(--c26-input-border-color-hover, var(--cc-primary-color-300));
+	--cc-input-text-color: var(--c26-input-text-color, #111827);
+	--cc-input-focus-ring: var(--c26-input-focus-ring, var(--cc-primary-color-50));
+
+	/* Bubble backgrounds */
+	--cc-background-user-message: var(--c26-background-user-message, #f2f0fa);
+	--cc-background-bot-message: var(--c26-background-bot-message, var(--cc-primary-color));
+	--cc-background-agent-message: var(--c26-background-agent-message, var(--cc-primary-color));
+
+	/* Bubble text colors */
+	--cc-user-message-contrast-color: var(--c26-user-message-contrast-color, #1f2937);
+	--cc-bot-message-contrast-color: var(
+		--c26-bot-message-contrast-color,
+		var(--cc-primary-contrast-color)
+	);
+	--cc-agent-message-contrast-color: var(
+		--c26-agent-message-contrast-color,
+		var(--cc-primary-contrast-color)
+	);
+	/* When bubble border + bg disabled, text shows on chat root surface — needs dark color in c26 (idle bubble bg is purple, so contrast is white; without bubble bg, switch to neutral-800) */
+	--cc-bot-message-no-bubble-color: var(--c26-bot-message-no-bubble-color, #111827);
+
+	/* Links */
+	--cc-text-link: var(--c26-text-link, var(--cc-primary-color));
+	--cc-text-link-hover: var(--c26-text-link-hover, var(--cc-primary-color-hover));
+	/* Bot/agent bubble bg is primary purple — links inside need contrast color so they remain visible */
+	--cc-bot-bubble-link-color: var(--c26-bot-bubble-link-color, var(--cc-primary-contrast-color));
+	--cc-bot-bubble-link-hover-color: var(
+		--c26-bot-bubble-link-hover-color,
+		var(--cc-primary-color-100)
+	);
+}
+
+/* Override any universal * { font-family } rule from host pages.
+ * Exclude monospace elements so code blocks keep their mono font. */
+article.c26 *:not(code):not(pre):not(kbd):not(samp):not(tt) {
+	font-family: var(--cc-font-family);
+}
+
+/* AdaptiveCards — UCL input styling (neutral-200 border, 6px radius, 36px, neutral-800 text, primary-300 hover, primary-500 focus + primary-50 ring) */
+article.c26 .adaptivecard-wrapper input:not([type="checkbox"]):not([type="radio"]),
+article.c26 .adaptivecard-wrapper textarea,
+article.c26 .adaptivecard-wrapper select {
+	border: 1px solid var(--cc-input-border-color);
+	border-radius: 6px;
+	/* !important required — default rule in styles.module.css (line ~101) also
+	 * uses !important to fight the AdaptiveCards library's own input styles. */
+	color: var(--cc-input-text-color) !important;
+	font-weight: 500;
+	padding: 4px 12px;
+}
+
+article.c26 .adaptivecard-wrapper input:not([type="checkbox"]):not([type="radio"]),
+article.c26 .adaptivecard-wrapper select {
+	height: 36px;
+}
+
+article.c26
+	.adaptivecard-wrapper
+	input:not([type="checkbox"]):not([type="radio"]):hover:not(:focus),
+article.c26 .adaptivecard-wrapper textarea:hover:not(:focus),
+article.c26 .adaptivecard-wrapper select:hover:not(:focus) {
+	border-color: var(--cc-input-border-color-hover);
+}
+
+article.c26 .adaptivecard-wrapper input:not([type="checkbox"]):not([type="radio"]):focus,
+article.c26 .adaptivecard-wrapper textarea:focus,
+article.c26 .adaptivecard-wrapper select:focus,
+article.c26 .adaptivecard-wrapper input:not([type="checkbox"]):not([type="radio"]):focus-visible,
+article.c26 .adaptivecard-wrapper textarea:focus-visible,
+article.c26 .adaptivecard-wrapper select:focus-visible {
+	outline: none;
+	border-color: var(--cc-primary-color);
+	box-shadow: 0 0 0 4px var(--cc-input-focus-ring);
+}
+
+/* Input icons (date, time, select chevron). Fill color is baked into the data:
+ * URI — CSS vars do not resolve inside url(). To recolor icons, override the
+ * entire image via --c26-input-*-icon. */
+article.c26 .adaptivecard-wrapper [type="date"] {
+	background-image: var(
+		--c26-input-date-icon,
+		url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 16 16' fill='none'%3E%3Cpath fill-rule='evenodd' clip-rule='evenodd' d='M3 0.75C3 0.335786 3.33579 0 3.75 0C4.16421 0 4.5 0.335786 4.5 0.75V3H11V0.75C11 0.335786 11.3358 0 11.75 0C12.1642 0 12.5 0.335786 12.5 0.75V3H14C15.1046 3 16 3.89543 16 5V14C16 15.1046 15.1046 16 14 16H2C0.895431 16 0 15.1046 0 14V5C0 3.89543 0.895431 3 2 3H3V0.75ZM1.5 6H14.5V14C14.5 14.2761 14.2761 14.5 14 14.5H2C1.72386 14.5 1.5 14.2761 1.5 14V6Z' fill='%236e56cf'/%3E%3C/svg%3E")
+	);
+}
+
+article.c26 .adaptivecard-wrapper [type="time"] {
+	background-image: var(
+		--c26-input-time-icon,
+		url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 16 16' fill='none'%3E%3Cpath fill-rule='evenodd' clip-rule='evenodd' d='M8 14.5C11.5899 14.5 14.5 11.5899 14.5 8C14.5 4.41015 11.5899 1.5 8 1.5C4.41015 1.5 1.5 4.41015 1.5 8C1.5 11.5899 4.41015 14.5 8 14.5ZM8 16C12.4183 16 16 12.4183 16 8C16 3.58172 12.4183 0 8 0C3.58172 0 0 3.58172 0 8C0 12.4183 3.58172 16 8 16Z' fill='%236e56cf'/%3E%3Cpath fill-rule='evenodd' clip-rule='evenodd' d='M11.0303 12.0303C10.7374 12.3232 10.2626 12.3232 9.96967 12.0303L7.25 9.31066L7.25 4C7.25 3.58579 7.58578 3.25 8 3.25C8.41421 3.25 8.75 3.58579 8.75 4L8.75 8.68934L11.0303 10.9697C11.3232 11.2626 11.3232 11.7374 11.0303 12.0303Z' fill='%236e56cf'/%3E%3C/svg%3E")
+	);
+}
+
+article.c26 .adaptivecard-wrapper select {
+	background-image: var(
+		--c26-select-chevron-icon,
+		url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 16 16' fill='none'%3E%3Cpath fill-rule='evenodd' clip-rule='evenodd' d='M1.34923 4.24022C1.76855 3.8808 2.39985 3.92936 2.75927 4.34869L8.00002 10.4629L13.2408 4.34869C13.6002 3.92936 14.2315 3.8808 14.6508 4.24022C15.0701 4.59965 15.1187 5.23095 14.7593 5.65027L9.51853 11.7645C8.72034 12.6957 7.2797 12.6957 6.4815 11.7645L1.24076 5.65027C0.881339 5.23095 0.929901 4.59965 1.34923 4.24022Z' fill='%236e56cf'/%3E%3C/svg%3E")
+	);
+}
+
+/* Checkbox — UCL primary purple for checked/active/hover */
+article.c26 .adaptivecard-wrapper [type="checkbox"]:hover {
+	border-color: var(--cc-primary-color);
+}
+
+article.c26 .adaptivecard-wrapper [type="checkbox"]:checked {
+	background-color: var(--cc-primary-color);
+	border-color: var(--cc-primary-color);
+}
+
+article.c26 .adaptivecard-wrapper [type="checkbox"]:checked:hover {
+	background-color: var(--cc-primary-color-hover);
+	border-color: var(--cc-primary-color-hover);
+}
+
+article.c26 .adaptivecard-wrapper [type="checkbox"]:active {
+	background-color: var(--cc-primary-color-700);
+	border-color: var(--cc-primary-color-700);
+}
+
+/* Audio controls — recolor black play/pause circle + download arrow to primary */
+article.c26 [data-testid="audio-controls"] button svg circle {
+	fill: var(--cc-primary-color);
+}
+
+article.c26 [data-testid="download-transcript-button"] svg path {
+	fill: var(--cc-primary-color);
+}
+
+/* Video preview — recolor light-mode play overlay to primary with contrast triangle */
+article.c26 [data-testid="video-message"] svg circle {
+	fill: var(--cc-primary-color);
+	fill-opacity: 1;
+}
+
+article.c26 [data-testid="video-message"] svg path {
+	fill: var(--cc-primary-contrast-color);
+}
