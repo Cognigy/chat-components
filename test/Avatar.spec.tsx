@@ -1,4 +1,4 @@
-import { render, waitFor, screen } from "@testing-library/react";
+import { render, screen } from "@testing-library/react";
 import { it, describe, expect } from "vitest";
 import Message from "src/messages/Message";
 import placeholderAvatar from "src/assets/svg/avatar_placeholder.svg";
@@ -33,83 +33,66 @@ describe("Avatars", () => {
 	} as unknown as IMessage;
 
 	it("shows placeholder avatar for agent by default", async () => {
-		await waitFor(() => {
-			render(<Message message={messageDefault} />);
-		});
+		render(<Message message={messageDefault} />);
 
-		expect(screen.getByTestId("agent-avatar")).toHaveAttribute("src", defaultAgentAvatarUrl);
+		expect(await screen.findByTestId("agent-avatar")).toHaveAttribute(
+			"src",
+			defaultAgentAvatarUrl,
+		);
 	});
 
 	it("shows the avatar from the avatarUrl prop", async () => {
-		await waitFor(() => {
-			render(<Message message={messageAvatarUrl} />);
-		});
+		render(<Message message={messageAvatarUrl} />);
 
-		expect(screen.getByTestId("agent-avatar")).toHaveAttribute("src", customAvatarUrl);
+		expect(await screen.findByTestId("agent-avatar")).toHaveAttribute("src", customAvatarUrl);
 	});
 
 	it("shows the avatar from the override mechanism", async () => {
-		await waitFor(() => {
-			render(<Message message={messageAvatarOverride} />);
-		});
+		render(<Message message={messageAvatarOverride} />);
 
-		expect(screen.getByTestId("agent-avatar")).toHaveAttribute(
+		expect(await screen.findByTestId("agent-avatar")).toHaveAttribute(
 			"src",
 			agentAvatarOverrideUrlOnce,
 		);
 	});
 
 	it("shows the sender name from the override mechanism", async () => {
-		await waitFor(() => {
-			render(<Message message={messageAvatarOverride} />);
-		});
+		render(<Message message={messageAvatarOverride} />);
 
-		expect(screen.getByTestId("sender-name")).toHaveTextContent("Agent Smith");
+		expect(await screen.findByTestId("sender-name")).toHaveTextContent("Agent Smith");
 	});
 });
 
 describe("Avatars — c26 mode", () => {
 	it("shows user avatar by default when defaultThemeName=c26", async () => {
-		await waitFor(() => {
-			render(
-				<Message
-					message={{ text: "Hi", source: "user" } as IMessage}
-					defaultThemeName="c26"
-				/>,
-			);
-		});
-		expect(screen.getByTestId("user-avatar")).toBeInTheDocument();
+		render(
+			<Message message={{ text: "Hi", source: "user" } as IMessage} defaultThemeName="c26" />,
+		);
+		expect(await screen.findByTestId("user-avatar")).toBeInTheDocument();
 	});
 
 	it("hides user avatar when defaultThemeName=c26 and avatarVisibility.user=false", async () => {
-		await waitFor(() => {
-			render(
-				<Message
-					message={{ text: "Hi", source: "user" } as IMessage}
-					defaultThemeName="c26"
-					avatarVisibility={{ user: false }}
-				/>,
-			);
-		});
+		render(
+			<Message
+				message={{ text: "Hi", source: "user" } as IMessage}
+				defaultThemeName="c26"
+				avatarVisibility={{ user: false }}
+			/>,
+		);
+		await screen.findByText("Hi");
 		expect(screen.queryByTestId("user-avatar")).not.toBeInTheDocument();
 	});
 
 	it("shows bot avatar by default when defaultThemeName=c26", async () => {
-		await waitFor(() => {
-			render(
-				<Message
-					message={{ text: "Hi", source: "bot" } as IMessage}
-					defaultThemeName="c26"
-				/>,
-			);
-		});
-		expect(screen.getByTestId("bot-avatar")).toBeInTheDocument();
+		render(
+			<Message message={{ text: "Hi", source: "bot" } as IMessage} defaultThemeName="c26" />,
+		);
+		expect(await screen.findByTestId("bot-avatar")).toBeInTheDocument();
 	});
 
 	it("does not show user avatar in default theme", async () => {
-		await waitFor(() => {
-			render(<Message message={{ text: "Hi", source: "user" } as IMessage} />);
-		});
+		render(<Message message={{ text: "Hi", source: "user" } as IMessage} />);
+		await screen.findByText("Hi");
 		expect(screen.queryByTestId("user-avatar")).not.toBeInTheDocument();
 	});
 });

@@ -84,7 +84,7 @@ article.c26 {
 	--cc-secondary-button-focus-outline-offset: var(--c26-secondary-button-focus-outline-offset, 0);
 	--cc-secondary-button-focus-shadow: var(
 		--c26-secondary-button-focus-shadow,
-		var(--cc-secondary-button-shadow, none)
+		var(--cc-secondary-button-active-shadow)
 	);
 	--cc-secondary-button-disabled-color: var(--c26-secondary-button-disabled-color, #111827);
 	--cc-secondary-button-disabled-border-color: var(
