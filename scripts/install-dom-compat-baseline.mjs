@@ -1,8 +1,8 @@
 /**
  * Installs the latest published `@cognigy/chat-components` as the aliased
  * dev-dependency `chat-components-baseline`. Consumed by
- * `test/layouts/dom-compat.spec.tsx`, which compares the current branch's
- * built DOM output against the last public release.
+ * `test/dom-compat.spec.tsx`, which compares the current branch's built
+ * DOM output against the last public release.
  *
  * Why a script instead of a pinned devDependency?
  *   A pinned version would drift as releases happen; we'd have to bump

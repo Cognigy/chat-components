@@ -1,7 +1,7 @@
 /**
  * Dedicated Vitest config for the DOM-compatibility spec.
  *
- * The main vite.config.ts excludes `test/layouts/dom-compat.spec.tsx`
+ * The main vite.config.ts excludes `test/dom-compat.spec.tsx`
  * from `npm test` because it has preconditions (a dist/ build and the
  * dynamically-installed `chat-components-baseline` alias) that only the
  * dom-compat workflow arranges. This config narrows `include` to that one
@@ -23,7 +23,7 @@ export default defineConfig({
 		environment: "jsdom",
 		globals: true,
 		setupFiles: ["./test/preSetup.js", "./test/setup.js"],
-		include: ["test/layouts/dom-compat.spec.tsx"],
+		include: ["test/dom-compat.spec.tsx"],
 		exclude: configDefaults.exclude, // Vitest's default — no dom-compat exclusion
 		css: {
 			modules: {

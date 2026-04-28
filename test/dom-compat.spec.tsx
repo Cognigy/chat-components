@@ -1,7 +1,7 @@
 /**
- * DOM compatibility: default webchat layout on this branch must render DOM
- * identical to the latest published library release (@cognigy/chat-components
- * installed dynamically as the `chat-components-baseline` alias by
+ * DOM compatibility: this branch's <Message> output must render DOM identical
+ * to the latest published library release (@cognigy/chat-components installed
+ * dynamically as the `chat-components-baseline` alias by
  * scripts/install-dom-compat-baseline.mjs — see that script for the why).
  *
  * Compares BUILT artifact vs BUILT artifact to avoid false positives caused
@@ -30,7 +30,7 @@
  * PRECONDITIONS:
  *   - `npm run test:dom-compat:install-baseline` has installed the
  *     `chat-components-baseline` alias (latest published release).
- *   - `npm run build` has produced `../../dist/chat-components.js`.
+ *   - `npm run build` has produced `../dist/chat-components.js`.
  * The CI workflow wires both steps before invoking `npm run test:dom-compat`.
  *
  * The test renders the same fixtures through <Message> from both packages
@@ -41,16 +41,16 @@
  * away before comparing because they are not part of the structural
  * contract.
  *
- * If this test fails, the default (no layout prop / `layout="webchat"`)
- * render path on this branch has diverged from the published release and the
- * backward-compatibility claim of PR #242 is broken.
+ * If this test fails, the <Message> render path on this branch has diverged
+ * from the published release — backward compatibility for consumers of the
+ * Message DOM contract is broken.
  */
 import { render } from "@testing-library/react";
 import { describe, it, expect } from "vitest";
 
 // Import from the branch's built dist/, not src/, so CSS-module resolution
 // matches the baseline package (which is also a dist/ bundle). See preamble.
-import { Message as CurrentMessage } from "../../dist/chat-components.js";
+import { Message as CurrentMessage } from "../dist/chat-components.js";
 import { Message as BaselineMessage } from "chat-components-baseline";
 // Read the installed baseline's version so the describe block / failure
 // messages show exactly which release we compared against. The baseline's
@@ -62,7 +62,7 @@ import { dirname, resolve } from "node:path";
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const baselineVersion: string = JSON.parse(
 	readFileSync(
-		resolve(__dirname, "../../node_modules/chat-components-baseline/package.json"),
+		resolve(__dirname, "../node_modules/chat-components-baseline/package.json"),
 		"utf8",
 	),
 ).version;
@@ -74,7 +74,7 @@ import {
 	engagementTextMessage,
 	richBotMessage,
 	quickRepliesBotMessage,
-} from "../fixtures/layout-messages";
+} from "./fixtures/layout-messages";
 import type { IMessage } from "@cognigy/socket-client";
 
 // ---- demo-page fixtures ----
@@ -84,28 +84,28 @@ import type { IMessage } from "@cognigy/socket-client";
 // setup like collation or streaming animation). Fixtures that don't ship with
 // a `source` field are given `"bot"` at rendering time — the published
 // baseline and the branch both follow the same rule so the comparison still holds.
-import imageFixture from "../fixtures/image.json";
-import imageDownloadableFixture from "../fixtures/image-downloadable.json";
-import imageBrokenFixture from "../fixtures/imageBroken.json";
-import videoFixture from "../fixtures/video.json";
-import videoYoutubeFixture from "../fixtures/videoYoutube.json";
-import videoAltTextFixture from "../fixtures/videoWithAltText.json";
-import audioFixture from "../fixtures/audio.json";
-import fileFixture from "../fixtures/file.json";
-import listFixture from "../fixtures/list.json";
-import galleryFixture from "../fixtures/gallery.json";
-import galleryNullButtonsFixture from "../fixtures/gallery-with-null-buttons.json";
-import actionButtonsFixture from "../fixtures/action-buttons.json";
-import adaptiveCardsFixture from "../fixtures/adaptiveCards.json";
-import webchat3EventFixture from "../fixtures/webchat3Event.json";
-import datepickerSingleDate from "../fixtures/datepicker/singleDate.json";
-import datepickerMinMax from "../fixtures/datepicker/singleDateWithMinMax.json";
-import datepickerMultiple from "../fixtures/datepicker/multiple.json";
-import datepickerRange from "../fixtures/datepicker/range.json";
-import datepickerWeeks from "../fixtures/datepicker/weekNumbers.json";
-import datepickerNoTime from "../fixtures/datepicker/noTime.json";
-import datepickerTimeOnly from "../fixtures/datepicker/timeOnly.json";
-import datepickerDisableWeekends from "../fixtures/datepicker/disableWeekends.json";
+import imageFixture from "./fixtures/image.json";
+import imageDownloadableFixture from "./fixtures/image-downloadable.json";
+import imageBrokenFixture from "./fixtures/imageBroken.json";
+import videoFixture from "./fixtures/video.json";
+import videoYoutubeFixture from "./fixtures/videoYoutube.json";
+import videoAltTextFixture from "./fixtures/videoWithAltText.json";
+import audioFixture from "./fixtures/audio.json";
+import fileFixture from "./fixtures/file.json";
+import listFixture from "./fixtures/list.json";
+import galleryFixture from "./fixtures/gallery.json";
+import galleryNullButtonsFixture from "./fixtures/gallery-with-null-buttons.json";
+import actionButtonsFixture from "./fixtures/action-buttons.json";
+import adaptiveCardsFixture from "./fixtures/adaptiveCards.json";
+import webchat3EventFixture from "./fixtures/webchat3Event.json";
+import datepickerSingleDate from "./fixtures/datepicker/singleDate.json";
+import datepickerMinMax from "./fixtures/datepicker/singleDateWithMinMax.json";
+import datepickerMultiple from "./fixtures/datepicker/multiple.json";
+import datepickerRange from "./fixtures/datepicker/range.json";
+import datepickerWeeks from "./fixtures/datepicker/weekNumbers.json";
+import datepickerNoTime from "./fixtures/datepicker/noTime.json";
+import datepickerTimeOnly from "./fixtures/datepicker/timeOnly.json";
+import datepickerDisableWeekends from "./fixtures/datepicker/disableWeekends.json";
 
 // Cast + default source helper. Fixtures are stored as plain JSON and some
 // omit `source` because the existing per-component specs accept whatever
@@ -156,9 +156,9 @@ function normalize(html: string): string {
 
 type Case = { name: string; message: IMessage };
 
-// Core layout / source fixtures. These exercise the Message/Header/Body
-// structural contract across every MessageSender variant plus the two plugin
-// payload shapes that exist in the layout-messages test helper.
+// Core source fixtures. These exercise the Message/Header/Body structural
+// contract across every MessageSender variant plus the two plugin payload
+// shapes that exist in the layout-messages test helper.
 const cases: Case[] = [
 	{ name: "bot text message", message: botTextMessage },
 	{ name: "user text message", message: userTextMessage },
@@ -210,9 +210,9 @@ const demoCases: Case[] = [
 
 // Shared assertion helper: render the same message through both packages,
 // normalize the HTML, compare. Extracted so every case reads the same.
-function assertSameDom(message: IMessage, props: Partial<{ layout: "webchat" }> = {}) {
+function assertSameDom(message: IMessage) {
 	const { container: current, unmount: unmountCurrent } = render(
-		<CurrentMessage message={message} {...props} />,
+		<CurrentMessage message={message} />,
 	);
 	const currentHtml = normalize(current.innerHTML);
 	unmountCurrent();
@@ -227,14 +227,10 @@ function assertSameDom(message: IMessage, props: Partial<{ layout: "webchat" }> 
 }
 
 describe(`DOM compatibility: branch vs @cognigy/chat-components@${baselineVersion}`, () => {
-	describe("core layout fixtures", () => {
-		it.each(cases)(
-			"$name — <Message> default layout matches published release DOM",
-			({ message }) => assertSameDom(message),
+	describe("core source fixtures", () => {
+		it.each(cases)("$name — <Message> matches published release DOM", ({ message }) =>
+			assertSameDom(message),
 		);
-
-		it('<Message layout="webchat"> explicit prop also matches baseline', () =>
-			assertSameDom(botTextMessage, { layout: "webchat" }));
 	});
 
 	describe("demo-page message tabs", () => {

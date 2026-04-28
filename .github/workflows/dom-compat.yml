@@ -5,7 +5,7 @@ name: DOM Compatibility
 # every supported message type on this branch and compares the DOM against
 # the same type rendered by the latest published @cognigy/chat-components
 # release. A failure means the branch would break backward compatibility
-# for consumers of the default webchat layout.
+# for consumers of the Message component's DOM contract.
 
 on:
     push:

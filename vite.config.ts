@@ -26,7 +26,7 @@ export default defineConfig({
 		// the dedicated dom-compat workflow / `npm run test:dom-compat`
 		// script arrange. vitest.dom-compat.config.ts narrows `include` to
 		// specifically that file for the dedicated run.
-		exclude: [...configDefaults.exclude, "test/layouts/dom-compat.spec.tsx"],
+		exclude: [...configDefaults.exclude, "test/dom-compat.spec.tsx"],
 		css: {
 			modules: {
 				classNameStrategy: "non-scoped",
