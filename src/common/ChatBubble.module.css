@@ -32,9 +32,9 @@ article:global(.user) .bubble {
 	color: var(--cc-user-message-contrast-color);
 }
 
-article.c26:global(.bot) .bubble:not(.disableBorder),
-article.c26:global(.agent) .bubble:not(.disableBorder),
-article.c26:global(.engagement) .bubble:not(.disableBorder) {
+article:global(.c26.bot) .bubble:not(.disableBorder),
+article:global(.c26.agent) .bubble:not(.disableBorder),
+article:global(.c26.engagement) .bubble:not(.disableBorder) {
 	--cc-text-link: var(--cc-bot-bubble-link-color, var(--cc-text-link));
 	--cc-text-link-hover: var(--cc-bot-bubble-link-hover-color, var(--cc-text-link-hover));
 }
