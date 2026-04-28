@@ -154,7 +154,19 @@ function normalize(html: string): string {
 	);
 }
 
-type Case = { name: string; message: IMessage };
+// Optional `config` is forwarded as the <Message config={...}> prop. Used to
+// unlock matcher branches that are gated behind widgetSettings — without it,
+// the matcher early-returns and <Message> renders null, which would make the
+// comparison trivially pass (empty === empty). The non-empty-render guard in
+// assertSameDom catches such silent no-ops.
+type Case = { name: string; message: IMessage; config?: unknown };
+
+// Engagement teaser config: matcher.ts gates engagement-source messages
+// behind `settings.teaserMessage.showInChat`. Without it, both renders
+// resolve to null and the case becomes vacuous coverage.
+const engagementConfig = {
+	settings: { teaserMessage: { showInChat: true } },
+};
 
 // Core source fixtures. These exercise the Message/Header/Body structural
 // contract across every MessageSender variant plus the two plugin payload
@@ -163,7 +175,7 @@ const cases: Case[] = [
 	{ name: "bot text message", message: botTextMessage },
 	{ name: "user text message", message: userTextMessage },
 	{ name: "agent text message", message: agentTextMessage },
-	{ name: "engagement message", message: engagementTextMessage },
+	{ name: "engagement message", message: engagementTextMessage, config: engagementConfig },
 	{ name: "bot gallery (generic template)", message: richBotMessage },
 	{ name: "bot quick replies", message: quickRepliesBotMessage },
 ];
@@ -209,33 +221,38 @@ const demoCases: Case[] = [
 ];
 
 // Shared assertion helper: render the same message through both packages,
-// normalize the HTML, compare. Extracted so every case reads the same.
-function assertSameDom(message: IMessage) {
+// normalize the HTML, compare. Also asserts the rendered HTML is non-empty
+// — without this guard, a fixture that silently fails to match any plugin
+// would produce empty === empty and pass without exercising any DOM.
+function assertSameDom(message: IMessage, config?: unknown) {
+	const configProp = config as React.ComponentProps<typeof CurrentMessage>["config"];
+
 	const { container: current, unmount: unmountCurrent } = render(
-		<CurrentMessage message={message} />,
+		<CurrentMessage message={message} config={configProp} />,
 	);
 	const currentHtml = normalize(current.innerHTML);
 	unmountCurrent();
 
 	const { container: baseline, unmount: unmountBaseline } = render(
-		<BaselineMessage message={message} />,
+		<BaselineMessage message={message} config={configProp} />,
 	);
 	const baselineHtml = normalize(baseline.innerHTML);
 	unmountBaseline();
 
+	expect(currentHtml).not.toBe("");
 	expect(currentHtml).toBe(baselineHtml);
 }
 
 describe(`DOM compatibility: branch vs @cognigy/chat-components@${baselineVersion}`, () => {
 	describe("core source fixtures", () => {
-		it.each(cases)("$name — <Message> matches published release DOM", ({ message }) =>
-			assertSameDom(message),
+		it.each(cases)("$name — <Message> matches published release DOM", ({ message, config }) =>
+			assertSameDom(message, config),
 		);
 	});
 
 	describe("demo-page message tabs", () => {
-		it.each(demoCases)("$name — matches published release DOM", ({ message }) =>
-			assertSameDom(message),
+		it.each(demoCases)("$name — matches published release DOM", ({ message, config }) =>
+			assertSameDom(message, config),
 		);
 	});
 });
