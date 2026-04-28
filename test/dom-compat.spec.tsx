@@ -218,7 +218,7 @@ const disableBorderConfig = {
 
 // Core source fixtures. These exercise the Message/Header/Body structural
 // contract across every MessageSender variant plus the two plugin payload
-// shapes that exist in the layout-messages test helper.
+// shapes defined in test/fixtures/messages.ts.
 const cases: Case[] = [
 	{ name: "bot text message", message: botTextMessage },
 	{ name: "user text message", message: userTextMessage },
