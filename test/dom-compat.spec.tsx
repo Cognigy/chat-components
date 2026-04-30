@@ -133,14 +133,21 @@ const asBot = (raw: unknown): IMessage => ({ source: "bot", ...(raw as object) }
 //      strings. Any attribute value *containing* such a token gets the
 //      token masked so cross-referenced attrs (aria-describedby, htmlFor,
 //      for, id) stay equal to themselves after masking.
-//   3. CSS-module hashed class names. The published baseline build emits
-//      classes in the default hashed form (`_header_21mid_1`, `_incoming_21mid_8`,
-//      `_title2-regular_1ltiv_41`), while the branch-under-test source is
-//      loaded by Vitest with `classNameStrategy: "non-scoped"` (see
-//      vite.config.ts test.css.modules), which yields plain class names
-//      (`header`, `incoming`, `title2-regular`). This is a build-time
-//      packaging difference, not a DOM-structural one, so we canonicalize
-//      both shapes to the plain name before comparing.
+//   3. CSS-module hashed class names. Both `CurrentMessage` and
+//      `BaselineMessage` are imported from built dist bundles, so both
+//      sides emit hashed class tokens (`_header_21mid_1`, `_incoming_21mid_8`,
+//      `_title2-regular_1ltiv_41`). The hash suffix is content-derived per
+//      build, so the same logical class can carry a different suffix
+//      between releases (or between two rebuilds of the same source after
+//      a node_modules shuffle) even when the underlying DOM structure and
+//      logical class identity are unchanged. That's a build-artifact
+//      difference, not a DOM-structural one, so we canonicalize both
+//      sides' tokens to their plain local names before comparing. The
+//      plain-name shape (`header`, `incoming`) is also what
+//      vite.config.ts uses for the regular Vitest run via
+//      `classNameStrategy: "non-scoped"` — the canonicalization is a
+//      no-op on that shape, which is convenient if anyone ever runs the
+//      spec against a non-dist source build.
 function normalize(html: string): string {
 	return (
 		html
