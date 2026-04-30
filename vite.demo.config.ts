@@ -9,7 +9,7 @@ export default defineConfig({
 		outDir: "dist-demo",
 		emptyOutDir: true,
 		target: "es2020",
-		sourcemap: true,
+		sourcemap: "hidden",
 	},
 	resolve: {
 		alias: {
