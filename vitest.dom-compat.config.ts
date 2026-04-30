@@ -9,9 +9,11 @@
  *
  * We can't use `mergeConfig` with the base config because mergeConfig
  * concatenates arrays — the base config's exclude would keep the dom-compat
- * spec excluded. Instead this file restates the few fields Vitest needs
- * (plugins are a no-op at test-run time beyond react/svgr, which Vitest
- * picks up from vite.config.ts via the shared resolve config below).
+ * spec excluded. And `vitest --config vitest.dom-compat.config.ts` does not
+ * automatically merge in vite.config.ts, so this file must restate every
+ * field Vitest needs to run the spec: the react / svgr plugins, the
+ * jsdom-environment + setup files, the CSS-module non-scoped strategy, and
+ * the resolve aliases used by the spec and its fixtures.
  */
 import { defineConfig, configDefaults } from "vitest/config";
 import react from "@vitejs/plugin-react-swc";

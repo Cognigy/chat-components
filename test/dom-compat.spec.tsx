@@ -67,6 +67,7 @@ const baselineVersion: string = JSON.parse(
 	),
 ).version;
 
+// Per-source / per-payload-shape fixtures hand-rolled for this spec.
 import {
 	botTextMessage,
 	userTextMessage,
@@ -86,15 +87,11 @@ import {
 	collatedFollowupMessage,
 	collatedPrevMessage,
 } from "./fixtures/messages";
-import type { IMessage } from "@cognigy/socket-client";
 
-// ---- demo-page fixtures ----
-// Each corresponds to a tab on test/demo.tsx. We cover every message type the
-// demo renders via a <Message> component (i.e. everything except the
-// non-Message tabs: "UI Components" and tabs that require stateful runtime
-// setup like collation or streaming animation). Fixtures that don't ship with
-// a `source` field are given `"bot"` at rendering time — the published
-// baseline and the branch both follow the same rule so the comparison still holds.
+// Demo-page fixtures. Each maps to a tab on test/demo.tsx; we cover every
+// message type that demo renders via <Message>. Fixtures that omit `source`
+// are given "bot" at render time via `asBot` — the baseline and the branch
+// both apply the same default, so the comparison still holds.
 import imageFixture from "./fixtures/image.json";
 import imageDownloadableFixture from "./fixtures/image-downloadable.json";
 import imageBrokenFixture from "./fixtures/imageBroken.json";
@@ -118,10 +115,12 @@ import datepickerNoTime from "./fixtures/datepicker/noTime.json";
 import datepickerTimeOnly from "./fixtures/datepicker/timeOnly.json";
 import datepickerDisableWeekends from "./fixtures/datepicker/disableWeekends.json";
 
-// Cast + default source helper. Fixtures are stored as plain JSON and some
-// omit `source` because the existing per-component specs accept whatever
-// shape the matcher needs; for Message-level rendering we must have a source
-// so the non-user / non-engagement branches flow as expected.
+import type { IMessage } from "@cognigy/socket-client";
+
+// Cast + default source helper. JSON fixtures sometimes omit `source`; the
+// existing per-component specs accept whatever shape the matcher needs, but
+// at the Message level a source is required so the non-user / non-engagement
+// branches flow as expected.
 const asBot = (raw: unknown): IMessage => ({ source: "bot", ...(raw as object) }) as IMessage;
 
 // Normalize HTML so that non-structural differences don't cause false
@@ -145,8 +144,11 @@ const asBot = (raw: unknown): IMessage => ({ source: "bot", ...(raw as object) }
 function normalize(html: string): string {
 	return (
 		html
-			// collapse whitespace between tags
-			.replace(/>\s+</g, "><")
+			// Collapse INDENTATION between tags only — whitespace runs that
+			// contain a newline. Single intentional spaces between inline
+			// elements (e.g. `</strong> <em>`) are preserved so a regression
+			// that drops or adds them is still caught.
+			.replace(/>\s*[\r\n]\s*</g, "><")
 			// trim leading/trailing whitespace
 			.trim()
 			// mask React useId tokens like :r0:, :R1a:, :Rab:, «r0», «R1a»
@@ -160,8 +162,13 @@ function normalize(html: string): string {
 			// canonicalize hashed CSS-module class names:
 			//   `_header_21mid_1` / `_title2-regular_1ltiv_41` → `header` / `title2-regular`
 			.replace(/\b_([A-Za-z][\w-]*?)_[A-Za-z0-9]{4,6}_\d+\b/g, "$1")
-			// collapse any resulting double spaces inside attribute values
-			.replace(/  +/g, " ")
+			// Collapse double spaces ONLY inside HTML attribute values. The
+			// CSS-module canonicalization above can leave `class="foo  bar"`
+			// when one of the originals was a hashed token; class values are
+			// space-separated so the extras are non-structural. Scoping this
+			// to attribute values preserves intentional double spaces in text
+			// content (e.g. `<pre>` blocks).
+			.replace(/="([^"]*)"/g, (_match, value: string) => `="${value.replace(/  +/g, " ")}"`)
 	);
 }
 
@@ -218,7 +225,7 @@ const disableBorderConfig = {
 
 // Core source fixtures. These exercise the Message/Header/Body structural
 // contract across every MessageSender variant plus the two plugin payload
-// shapes defined in test/fixtures/messages.ts.
+// shapes (gallery, quick replies) defined in test/fixtures/messages.ts.
 const cases: Case[] = [
 	{ name: "bot text message", message: botTextMessage },
 	{ name: "user text message", message: userTextMessage },
