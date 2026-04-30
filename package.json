@@ -20,7 +20,7 @@
 	"scripts": {
 		"dev": "vite --host",
 		"build": "tsc && vite build && node scripts/postbuild-secure-patch.mjs",
-		"build:demo": "vite build --config vite.demo.config.ts",
+		"build:demo": "tsc --noEmit && vite build --config vite.demo.config.ts",
 		"lint": "eslint . --ext ts,tsx --report-unused-disable-directives",
 		"preview": "vite preview",
 		"prepack": "npm run build",
