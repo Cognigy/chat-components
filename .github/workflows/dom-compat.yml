@@ -30,15 +30,20 @@ jobs:
                   node-version: 22.x
                   cache: "npm"
             - run: npm ci
-            # Dynamically installs the dist-tag `latest` of
-            # @cognigy/chat-components as the aliased dev-dep
-            # `chat-components-baseline` used by the dom-compat spec. Must
-            # run AFTER npm ci (which clears node_modules) and BEFORE the
-            # build / dom-compat test. See scripts/install-dom-compat-baseline.mjs.
-            - run: npm run test:dom-compat:install-baseline
-            # The dom-compat spec imports Message from `dist/chat-components.js`,
-            # so a production build must exist before the spec runs. Using
-            # the same build pipeline for both sides of the comparison avoids
-            # Vitest-only CSS-module class-name artifacts.
+            # Build the branch's dist/ FIRST, with the clean deps installed
+            # by `npm ci`. The dom-compat spec imports `Message` from
+            # `dist/chat-components.js`, so the production bundle must exist
+            # before the spec runs. Using the same build pipeline for both
+            # sides of the comparison avoids Vitest-only CSS-module
+            # class-name artifacts.
             - run: npm run build
+            # Install the published baseline AFTER the build. `npm install
+            # --no-save chat-components-baseline@npm:@cognigy/chat-components@<v>`
+            # still resolves and writes to node_modules (only the lockfile
+            # is left alone), so building first ensures our `dist/` was
+            # produced with the exact dependency tree pinned by the lockfile
+            # — not the alias-shifted tree that exists after install-baseline.
+            # See scripts/install-dom-compat-baseline.mjs for baseline-version
+            # selection.
+            - run: npm run test:dom-compat:install-baseline
             - run: npm run test:dom-compat
