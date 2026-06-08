@@ -27,5 +27,6 @@
 			"test/*": ["./test/*"]
 		}
 	},
-	"include": ["src", "test/*.spec.tsx", "test/demo.tsx"]
+	"include": ["src", "test/*.spec.tsx", "test/demo.tsx"],
+	"exclude": ["test/dom-compat.spec.tsx"]
 }
