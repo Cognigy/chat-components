@@ -288,3 +288,36 @@ article.c26 [data-testid="video-message"] svg circle {
 article.c26 [data-testid="video-message"] svg path {
 	fill: var(--cc-primary-contrast-color);
 }
+
+/* Date Picker "Open" button — expand for multi-line labels; border-box keeps the
+ * single-line baseline height (padding must not inflate min-height). */
+article.c26 button[aria-controls^="webchat-plugin-date-picker-"] {
+	box-sizing: border-box;
+	height: auto;
+	min-height: var(--cc-primary-button-height, 36px);
+	padding: 8px;
+}
+
+/* Date Picker overlay — scroll only the calendar body, keep the footer visible.
+ * overflow:hidden stops the wrapper itself scrolling (the responsive media
+ * queries set overflow-y:auto on it), so only the content scrolls. */
+article.c26 .webchat-plugin-date-picker > :not(.webchat-plugin-date-picker-header) {
+	display: flex;
+	flex: 1 1 auto;
+	flex-direction: column;
+	min-height: 0;
+	overflow: hidden;
+}
+
+article.c26 .webchat-plugin-date-picker-content {
+	/* Shrink + scroll when the picker is taller than the panel, but never grow
+	 * to fill — growing would push the footer button to the very bottom. */
+	flex: 0 1 auto;
+	min-height: 0;
+	overflow-x: hidden;
+	overflow-y: auto;
+}
+
+article.c26 .webchat-plugin-date-picker-footer {
+	flex-shrink: 0;
+}
