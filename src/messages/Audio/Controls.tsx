@@ -1,6 +1,6 @@
 import { ChangeEvent, FC, MutableRefObject, useRef, useMemo } from "react";
 import classes from "./Audio.module.css";
-import { AudioPause, AudioPlay, DownloadIcon } from "src/assets/svg";
+import { AudioPause, AudioPlay, DownloadIcon, VolumeIcon, VolumeXIcon } from "src/assets/svg";
 import ReactPlayer from "react-player";
 import { Tooltip } from "react-tooltip";
 import { useMessageContext } from "../hooks";
@@ -11,13 +11,29 @@ type ControlsProps = {
 	playing: boolean;
 	progress: number;
 	duration: number;
+	volume: number;
+	muted: boolean;
 	altText: string;
 	handlePlay: () => void;
 	handlePause: () => void;
+	onVolumeChange: (volume: number) => void;
+	onMuteToggle: () => void;
 };
 
 const Controls: FC<ControlsProps> = props => {
-	const { playerRef, playing, progress, duration, altText, handlePlay, handlePause } = props;
+	const {
+		playerRef,
+		playing,
+		progress,
+		duration,
+		volume,
+		muted,
+		altText,
+		handlePlay,
+		handlePause,
+		onVolumeChange,
+		onMuteToggle,
+	} = props;
 	const downloadTranscriptLinkRef = useRef<HTMLAnchorElement>(null);
 	const { config } = useMessageContext();
 
@@ -39,6 +55,12 @@ const Controls: FC<ControlsProps> = props => {
 
 	const handleSeekEnd = () => {
 		handlePlay();
+	};
+
+	const handleVolumeChange = (e: ChangeEvent<HTMLInputElement>) => {
+		const val = parseFloat(e.target.value);
+		onVolumeChange(val);
+		if (val > 0 && muted) onMuteToggle();
 	};
 
 	const handleDownloadTranscript = () => {
@@ -86,6 +108,15 @@ const Controls: FC<ControlsProps> = props => {
 		"Download transcript";
 	const audioTimeRemaningLabel =
 		config?.settings?.customTranslations?.ariaLabels?.audioTimeRemaining ?? "{time} remaining";
+	const muteAudioLabel =
+		config?.settings?.customTranslations?.ariaLabels?.muteAudio || "Mute audio";
+	const unmuteAudioLabel =
+		config?.settings?.customTranslations?.ariaLabels?.unmuteAudio || "Unmute audio";
+	const volumeLabel =
+		config?.settings?.customTranslations?.ariaLabels?.audioVolume || "Audio volume";
+
+	const effectiveVolume = muted ? 0 : volume;
+
 	return (
 		<div className={classes.audioWrapper} data-testid="audio-controls">
 			<div className={classes.controls}>
@@ -115,6 +146,32 @@ const Controls: FC<ControlsProps> = props => {
 							}%, var(--cc-black-80) ${progress * 100}%)`,
 						}}
 					/>
+				</div>
+
+				<div className={classes.volumeControl}>
+					<button
+						className={classes.muteButton}
+						onClick={onMuteToggle}
+						aria-label={muted ? unmuteAudioLabel : muteAudioLabel}
+					>
+						{muted || volume === 0 ? <VolumeXIcon /> : <VolumeIcon />}
+					</button>
+					<div className={classes.volumeSlider}>
+						<input
+							type="range"
+							min={0}
+							max={1}
+							step={0.01}
+							value={effectiveVolume}
+							aria-label={volumeLabel}
+							onChange={handleVolumeChange}
+							style={{
+								background: `linear-gradient(to right, var(--cc-primary-color-focus) ${
+									effectiveVolume * 100
+								}%, var(--cc-black-80) ${effectiveVolume * 100}%)`,
+							}}
+						/>
+					</div>
 				</div>
 
 				<div className="buttons">

@@ -1,6 +1,6 @@
 article .wrapper {
 	border-radius: var(--cc-bubble-border-radius);
-	max-width: 295px;
+	max-width: 360px;
 	position: relative;
 	display: flex;
 }
@@ -65,6 +65,93 @@ article button.playButton:focus-visible {
 article button.playButton:focus svg circle,
 article button.playButton:hover svg circle {
 	fill-opacity: 85%;
+}
+
+/*** Volume control ***/
+.volumeControl {
+	display: flex;
+	align-items: center;
+	gap: 4px;
+	flex-shrink: 0;
+}
+
+article button.muteButton {
+	all: unset;
+	outline: revert;
+	line-height: 0;
+	display: block;
+	cursor: pointer;
+	color: var(--cc-black-30);
+}
+
+article button.muteButton:hover,
+article button.muteButton:focus {
+	outline: none;
+}
+
+article button.muteButton:focus-visible {
+	outline: 2px solid var(--cc-primary-color-focus);
+	outline-offset: 2px;
+}
+
+.volumeSlider {
+	display: flex;
+	width: 51px;
+}
+
+article .volumeSlider input[type="range"] {
+	-webkit-appearance: none;
+	appearance: none;
+	width: 100%;
+	cursor: pointer;
+	outline: none;
+	border-radius: var(--cc-bubble-border-radius);
+	height: 3px;
+	background: var(--cc-black-80);
+}
+
+article .volumeSlider input[type="range"]::-webkit-slider-thumb {
+	-webkit-appearance: none;
+	appearance: none;
+	height: 12px;
+	width: 12px;
+	background-color: var(--cc-primary-color-focus);
+	border-radius: 50%;
+	border: none;
+	transition: 0.2s ease-in-out;
+}
+
+article .volumeSlider input[type="range"]::-moz-range-thumb {
+	height: 12px;
+	width: 12px;
+	background-color: var(--cc-primary-color-focus);
+	border-radius: 50%;
+	border: none;
+	transition: 0.2s ease-in-out;
+}
+
+article .volumeSlider input[type="range"]::-webkit-slider-thumb:hover {
+	box-shadow: 0 0 0 7px var(--cc-primary-color-opacity-10);
+}
+
+article .volumeSlider input[type="range"]:active::-webkit-slider-thumb {
+	box-shadow: 0 0 0 9px var(--cc-primary-color-opacity-20);
+}
+
+article .volumeSlider input[type="range"]:focus::-webkit-slider-thumb {
+	box-shadow: 0 0 0 9px var(--cc-primary-color-opacity-20);
+}
+
+article .volumeSlider input[type="range"]::-moz-range-thumb:hover {
+	box-shadow: 0 0 0 7px var(--cc-primary-color-opacity-10);
+}
+
+article .volumeSlider input[type="range"]:active::-moz-range-thumb {
+	box-shadow: 0 0 0 9px var(--cc-primary-color-opacity-20);
+}
+
+article .volumeSlider input[type="range"]:focus::-moz-range-thumb {
+	box-shadow: 0 0 0 9px var(--cc-primary-color-opacity-20);
 }
 
 /*** Custom range input ***/

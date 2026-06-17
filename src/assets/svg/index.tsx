@@ -9,6 +9,8 @@ import HeaderEllipsis from "./header_ellipsis.svg?react";
 import ArrowBack from "./arrow_back.svg?react";
 import BotAvatar from "./avatar_bot.svg?react";
 import PlaceholderAvatar from "./avatar_placeholder.svg?react";
+import VolumeIcon from "./volume.svg?react";
+import VolumeXIcon from "./volume_x.svg?react";
 
 export {
 	BotAvatar,
@@ -22,4 +24,6 @@ export {
 	LinkIcon,
 	HeaderEllipsis,
 	ArrowBack,
+	VolumeIcon,
+	VolumeXIcon,
 };
