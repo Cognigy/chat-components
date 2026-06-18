@@ -1,13 +1,13 @@
 import { ChangeEvent, FC, MutableRefObject, useRef, useMemo, useState, useEffect } from "react";
 import classes from "./Audio.module.css";
 import {
-	AudioPause,
-	AudioPlay,
 	DownloadIcon,
 	VolumeIcon,
 	VolumeXIcon,
 	EllipsisVerticalIcon,
 	CirclePlayIcon,
+	PlayIcon,
+	PauseIcon,
 } from "src/assets/svg";
 import ReactPlayer from "react-player";
 import { useMessageContext } from "../hooks";
@@ -158,9 +158,13 @@ const Controls: FC<ControlsProps> = props => {
 	return (
 		<div className={classes.audioWrapper} data-testid="audio-controls">
 			<div className={classes.controls}>
-				<div className="duration">
-					<time>{formatTime}</time>
-				</div>
+				<button
+					className={classes.playButton}
+					onClick={togglePlayAndPause}
+					aria-label={playing ? pauseAudioLabel : playAudioLabel}
+				>
+					{playing ? <PauseIcon /> : <PlayIcon />}
+				</button>
 
 				<div className={classes.progressBar}>
 					<input
@@ -184,6 +188,10 @@ const Controls: FC<ControlsProps> = props => {
 							}%, var(--cc-black-80) ${progress * 100}%)`,
 						}}
 					/>
+				</div>
+
+				<div className={classes.duration}>
+					<time>{formatTime}</time>
 				</div>
 
 				<div className={classes.volumeControl}>
@@ -212,16 +220,6 @@ const Controls: FC<ControlsProps> = props => {
 							}}
 						/>
 					</div>
-				</div>
-
-				<div className="buttons">
-					<button
-						className={classes.playButton}
-						onClick={togglePlayAndPause}
-						aria-label={playing ? pauseAudioLabel : playAudioLabel}
-					>
-						{playing ? <AudioPause /> : <AudioPlay />}
-					</button>
 				</div>
 
 				<div className={classes.menuContainer}>

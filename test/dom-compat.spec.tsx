@@ -256,12 +256,8 @@ const demoCases: Case[] = [
 	{ name: "demo: video", message: asBot(videoFixture) },
 	{ name: "demo: video (YouTube)", message: asBot(videoYoutubeFixture) },
 	{ name: "demo: video with alt text", message: asBot(videoAltTextFixture) },
-<<<<<<< HEAD
 	// audio intentionally excluded: volume control + options menu were added
 	// in AB#137478, so the DOM differs from the published baseline by design.
-=======
-	{ name: "demo: audio", message: asBot(audioFixture) },
->>>>>>> origin/main
 	{ name: "demo: file", message: asBot(fileFixture) },
 	// Templates
 	{ name: "demo: list", message: asBot(listFixture) },

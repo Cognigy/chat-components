@@ -13,6 +13,8 @@ import VolumeIcon from "./volume.svg?react";
 import VolumeXIcon from "./volume_x.svg?react";
 import EllipsisVerticalIcon from "./ellipsis_vertical.svg?react";
 import CirclePlayIcon from "./circle_play.svg?react";
+import PlayIcon from "./play.svg?react";
+import PauseIcon from "./pause.svg?react";
 
 export {
 	BotAvatar,
@@ -30,4 +32,6 @@ export {
 	VolumeXIcon,
 	EllipsisVerticalIcon,
 	CirclePlayIcon,
+	PlayIcon,
+	PauseIcon,
 };
