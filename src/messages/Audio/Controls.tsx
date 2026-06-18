@@ -1,10 +1,18 @@
-import { ChangeEvent, FC, MutableRefObject, useRef, useMemo } from "react";
+import { ChangeEvent, FC, MutableRefObject, useRef, useMemo, useState, useEffect } from "react";
 import classes from "./Audio.module.css";
-import { AudioPause, AudioPlay, DownloadIcon, VolumeIcon, VolumeXIcon } from "src/assets/svg";
+import {
+	AudioPause,
+	AudioPlay,
+	DownloadIcon,
+	VolumeIcon,
+	VolumeXIcon,
+	EllipsisVerticalIcon,
+	CirclePlayIcon,
+} from "src/assets/svg";
 import ReactPlayer from "react-player";
-import { Tooltip } from "react-tooltip";
 import { useMessageContext } from "../hooks";
 import { interpolateString } from "src/utils";
+import classnames from "classnames";
 
 type ControlsProps = {
 	playerRef: MutableRefObject<ReactPlayer | null>;
@@ -13,12 +21,16 @@ type ControlsProps = {
 	duration: number;
 	volume: number;
 	muted: boolean;
+	playbackRate: number;
 	altText: string;
 	handlePlay: () => void;
 	handlePause: () => void;
 	onVolumeChange: (volume: number) => void;
 	onMuteToggle: () => void;
+	onPlaybackRateChange: (rate: number) => void;
 };
+
+const PLAYBACK_SPEEDS = [0.5, 0.75, 1, 1.25, 1.5, 2];
 
 const Controls: FC<ControlsProps> = props => {
 	const {
@@ -28,14 +40,38 @@ const Controls: FC<ControlsProps> = props => {
 		duration,
 		volume,
 		muted,
+		playbackRate,
 		altText,
 		handlePlay,
 		handlePause,
 		onVolumeChange,
 		onMuteToggle,
+		onPlaybackRateChange,
 	} = props;
+
 	const downloadTranscriptLinkRef = useRef<HTMLAnchorElement>(null);
+	const menuRef = useRef<HTMLDivElement>(null);
+	const menuButtonRef = useRef<HTMLButtonElement>(null);
+	const [menuOpen, setMenuOpen] = useState(false);
+	const [menuView, setMenuView] = useState<"main" | "speed">("main");
 	const { config } = useMessageContext();
+
+	useEffect(() => {
+		if (!menuOpen) return;
+		const handleClickOutside = (e: MouseEvent) => {
+			if (
+				menuRef.current &&
+				!menuRef.current.contains(e.target as Node) &&
+				menuButtonRef.current &&
+				!menuButtonRef.current.contains(e.target as Node)
+			) {
+				setMenuOpen(false);
+				setMenuView("main");
+			}
+		};
+		document.addEventListener("mousedown", handleClickOutside);
+		return () => document.removeEventListener("mousedown", handleClickOutside);
+	}, [menuOpen]);
 
 	const togglePlayAndPause = () => {
 		if (playing) {
@@ -64,9 +100,14 @@ const Controls: FC<ControlsProps> = props => {
 	};
 
 	const handleDownloadTranscript = () => {
-		if (downloadTranscriptLinkRef.current) {
-			downloadTranscriptLinkRef.current.click();
-		}
+		downloadTranscriptLinkRef.current?.click();
+		setMenuOpen(false);
+		setMenuView("main");
+	};
+
+	const toggleMenu = () => {
+		setMenuOpen(o => !o);
+		if (menuOpen) setMenuView("main");
 	};
 
 	const formatTime = useMemo(() => {
@@ -85,7 +126,6 @@ const Controls: FC<ControlsProps> = props => {
 		return `${mm}:${ss}`;
 	}, [duration, progress]);
 
-	// Convert formatted time to readable text for screen readers
 	const timeToText = (time: string) => {
 		if (time.length < 6) {
 			time = `00:${time}`;
@@ -96,6 +136,7 @@ const Controls: FC<ControlsProps> = props => {
 		const secondsText = `${seconds} seconds`;
 		return `${hoursText}${minutesText}${secondsText}`;
 	};
+
 	const audioPlaybackProgressLabel =
 		config?.settings?.customTranslations?.ariaLabels?.audioPlaybackProgress ||
 		"Audio playback progress";
@@ -103,9 +144,6 @@ const Controls: FC<ControlsProps> = props => {
 		config?.settings?.customTranslations?.ariaLabels?.playAudio || "Play audio";
 	const pauseAudioLabel =
 		config?.settings?.customTranslations?.ariaLabels?.pauseAudio || "Pause audio";
-	const downloadTranscriptLabel =
-		config?.settings?.customTranslations?.ariaLabels?.downloadTranscript ||
-		"Download transcript";
 	const audioTimeRemaningLabel =
 		config?.settings?.customTranslations?.ariaLabels?.audioTimeRemaining ?? "{time} remaining";
 	const muteAudioLabel =
@@ -183,30 +221,84 @@ const Controls: FC<ControlsProps> = props => {
 						{playing ? <AudioPause /> : <AudioPlay />}
 					</button>
 				</div>
-			</div>
-			{/* Button to download audio transcript with tooltip */}
-			{altText && (
-				<>
+
+				<div className={classes.menuContainer}>
 					<button
-						onClick={handleDownloadTranscript}
-						aria-label={downloadTranscriptLabel}
-						className={classes.downloadButton}
-						data-tooltip-id="downloadTranscriptButton"
-						data-tooltip-place="top"
-						data-tooltip-content={downloadTranscriptLabel}
-						data-testid="download-transcript-button"
+						ref={menuButtonRef}
+						className={classnames(classes.menuButton, {
+							[classes.menuButtonActive]: menuOpen,
+						})}
+						onClick={toggleMenu}
+						aria-label="More options"
+						aria-expanded={menuOpen}
+						aria-haspopup="menu"
 					>
-						<DownloadIcon />
+						<EllipsisVerticalIcon />
 					</button>
-					<Tooltip id="downloadTranscriptButton" globalCloseEvents={{ escape: true }} />
-					<a
-						ref={downloadTranscriptLinkRef}
-						href={`data:text/plain;charset=utf-8,${encodeURIComponent(altText)}`}
-						download="audio-transcript.txt"
-						style={{ display: "none" }}
-						aria-hidden="true"
-					/>
-				</>
+
+					{menuOpen && (
+						<div ref={menuRef} className={classes.optionsMenu} role="menu">
+							{menuView === "main" ? (
+								<>
+									{altText && (
+										<button
+											className={classes.menuItem}
+											role="menuitem"
+											onClick={handleDownloadTranscript}
+										>
+											<DownloadIcon />
+											<span>Download</span>
+										</button>
+									)}
+									<button
+										className={classes.menuItem}
+										role="menuitem"
+										onClick={() => setMenuView("speed")}
+									>
+										<CirclePlayIcon />
+										<span>Playback speed</span>
+									</button>
+								</>
+							) : (
+								<>
+									<button
+										className={classes.menuBackButton}
+										onClick={() => setMenuView("main")}
+									>
+										← Playback speed
+									</button>
+									{PLAYBACK_SPEEDS.map(speed => (
+										<button
+											key={speed}
+											className={classnames(classes.menuItem, {
+												[classes.menuItemActive]: playbackRate === speed,
+											})}
+											role="menuitemradio"
+											aria-checked={playbackRate === speed}
+											onClick={() => {
+												onPlaybackRateChange(speed);
+												setMenuOpen(false);
+												setMenuView("main");
+											}}
+										>
+											{speed === 1 ? "Normal" : `${speed}×`}
+										</button>
+									))}
+								</>
+							)}
+						</div>
+					)}
+				</div>
+			</div>
+
+			{altText && (
+				<a
+					ref={downloadTranscriptLinkRef}
+					href={`data:text/plain;charset=utf-8,${encodeURIComponent(altText)}`}
+					download="audio-transcript.txt"
+					style={{ display: "none" }}
+					aria-hidden="true"
+				/>
 			)}
 		</div>
 	);

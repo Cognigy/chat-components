@@ -151,6 +151,9 @@ export interface IWebchatSettings {
 			audioPlaybackProgress?: string;
 			pauseAudio?: string;
 			playAudio?: string;
+			muteAudio?: string;
+			unmuteAudio?: string;
+			audioVolume?: string;
 			playVideo?: string;
 			downloadTranscript?: string;
 			closeDatePicker?: string;

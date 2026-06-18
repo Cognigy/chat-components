@@ -154,6 +154,116 @@ article .volumeSlider input[type="range"]:focus::-moz-range-thumb {
 	box-shadow: 0 0 0 9px var(--cc-primary-color-opacity-20);
 }
 
+/*** Options menu ***/
+.menuContainer {
+	position: relative;
+	flex-shrink: 0;
+}
+
+article button.menuButton {
+	all: unset;
+	cursor: pointer;
+	width: 28px;
+	height: 28px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	border-radius: 6px;
+	color: var(--cc-black-30);
+	transition: background-color 0.15s ease;
+}
+
+article button.menuButton:hover {
+	background-color: var(--cc-primary-color-opacity-10);
+}
+
+article button.menuButton:focus-visible {
+	outline: 2px solid var(--cc-primary-color-focus);
+	outline-offset: 2px;
+}
+
+article button.menuButtonActive {
+	background-color: var(--cc-primary-color-opacity-20);
+	box-shadow: 0px 1px 1.5px rgba(31, 41, 55, 0.1);
+}
+
+.optionsMenu {
+	position: absolute;
+	bottom: calc(100% + 6px);
+	right: 0;
+	background-color: var(--cc-white);
+	border: 1px solid var(--cc-black-80);
+	border-radius: 6px;
+	box-shadow: 0px 2px 6px rgba(31, 41, 55, 0.12);
+	min-width: 150px;
+	padding: 4px;
+	z-index: 100;
+	display: flex;
+	flex-direction: column;
+}
+
+article button.menuItem {
+	all: unset;
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	padding: 8px;
+	border-radius: 4px;
+	cursor: pointer;
+	font-size: 14px;
+	color: var(--cc-black-10);
+	width: 100%;
+	box-sizing: border-box;
+}
+
+article button.menuItem:hover {
+	background-color: var(--cc-black-95);
+}
+
+article button.menuItem:focus-visible {
+	outline: 2px solid var(--cc-primary-color-focus);
+	outline-offset: -2px;
+}
+
+article button.menuItem svg {
+	flex-shrink: 0;
+	color: var(--cc-black-30);
+}
+
+article button.menuItemActive {
+	color: var(--cc-primary-color-focus);
+	font-weight: 600;
+}
+
+article button.menuItemActive svg {
+	color: var(--cc-primary-color-focus);
+}
+
+article button.menuBackButton {
+	all: unset;
+	display: flex;
+	align-items: center;
+	gap: 6px;
+	padding: 6px 8px 8px;
+	font-size: 12px;
+	font-weight: 600;
+	color: var(--cc-black-30);
+	cursor: pointer;
+	width: 100%;
+	box-sizing: border-box;
+	border-bottom: 1px solid var(--cc-black-90);
+	margin-bottom: 4px;
+}
+
+article button.menuBackButton:hover {
+	color: var(--cc-black-10);
+}
+
+article button.menuBackButton:focus-visible {
+	outline: 2px solid var(--cc-primary-color-focus);
+	outline-offset: -2px;
+}
+
 /*** Custom range input ***/
 .progressBar {
 	display: flex;

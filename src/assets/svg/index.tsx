@@ -11,6 +11,8 @@ import BotAvatar from "./avatar_bot.svg?react";
 import PlaceholderAvatar from "./avatar_placeholder.svg?react";
 import VolumeIcon from "./volume.svg?react";
 import VolumeXIcon from "./volume_x.svg?react";
+import EllipsisVerticalIcon from "./ellipsis_vertical.svg?react";
+import CirclePlayIcon from "./circle_play.svg?react";
 
 export {
 	BotAvatar,
@@ -26,4 +28,6 @@ export {
 	ArrowBack,
 	VolumeIcon,
 	VolumeXIcon,
+	EllipsisVerticalIcon,
+	CirclePlayIcon,
 };

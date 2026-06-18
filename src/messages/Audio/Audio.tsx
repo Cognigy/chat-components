@@ -20,6 +20,7 @@ const Audio: FC = () => {
 	const [duration, setDuration] = useState(0);
 	const [volume, setVolume] = useState(1);
 	const [muted, setMuted] = useState(false);
+	const [playbackRate, setPlaybackRate] = useState(1);
 
 	const handleFocus = useCallback(
 		(player: ReactPlayer) => {
@@ -72,6 +73,7 @@ const Audio: FC = () => {
 				playing={playing}
 				volume={volume}
 				muted={muted}
+				playbackRate={playbackRate}
 				onPlay={handlePlay}
 				onPause={handlePause}
 				onProgress={handleProgress}
@@ -88,8 +90,10 @@ const Audio: FC = () => {
 				duration={duration}
 				volume={volume}
 				muted={muted}
+				playbackRate={playbackRate}
 				onVolumeChange={setVolume}
 				onMuteToggle={() => setMuted(m => !m)}
+				onPlaybackRateChange={setPlaybackRate}
 				handlePlay={handlePlay}
 				handlePause={handlePause}
 				altText={altText}
