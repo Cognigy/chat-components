@@ -45,7 +45,11 @@ article button.playButton {
 }
 
 article button.playButton:hover {
-	background-color: var(--cc-black-95);
+	background-color: var(--cc-primary-color-opacity-10);
+}
+
+article button.playButton:active {
+	background-color: var(--cc-primary-color-opacity-20);
 }
 
 article button.playButton:focus-visible {
@@ -165,7 +169,6 @@ article button.menuButton {
 	align-items: center;
 	justify-content: center;
 	background-color: transparent;
-	border: 1px solid var(--cc-black-80);
 	border-radius: 8px;
 	color: var(--cc-black-30);
 	flex-shrink: 0;
@@ -173,7 +176,11 @@ article button.menuButton {
 }
 
 article button.menuButton:hover {
-	background-color: var(--cc-black-95);
+	background-color: var(--cc-primary-color-opacity-10);
+}
+
+article button.menuButton:active {
+	background-color: var(--cc-primary-color-opacity-20);
 }
 
 article button.menuButton:focus-visible {
@@ -182,7 +189,7 @@ article button.menuButton:focus-visible {
 }
 
 article button.menuButtonActive {
-	background-color: var(--cc-primary-color-opacity-10);
+	background-color: var(--cc-primary-color-opacity-20);
 	box-shadow: 0px 1px 1.5px rgba(31, 41, 55, 0.1);
 }
 
