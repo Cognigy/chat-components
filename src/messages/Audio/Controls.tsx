@@ -144,7 +144,7 @@ const Controls: FC<ControlsProps> = props => {
 		config?.settings?.customTranslations?.ariaLabels?.playAudio || "Play audio";
 	const pauseAudioLabel =
 		config?.settings?.customTranslations?.ariaLabels?.pauseAudio || "Pause audio";
-	const audioTimeRemaningLabel =
+	const audioTimeRemainingLabel =
 		config?.settings?.customTranslations?.ariaLabels?.audioTimeRemaining ?? "{time} remaining";
 	const muteAudioLabel =
 		config?.settings?.customTranslations?.ariaLabels?.muteAudio || "Mute audio";
@@ -169,7 +169,7 @@ const Controls: FC<ControlsProps> = props => {
 						max={0.999999}
 						step="any"
 						value={progress}
-						aria-valuetext={interpolateString(audioTimeRemaningLabel, {
+						aria-valuetext={interpolateString(audioTimeRemainingLabel, {
 							time: timeToText(formatTime),
 						})}
 						aria-label={audioPlaybackProgressLabel}
@@ -191,6 +191,7 @@ const Controls: FC<ControlsProps> = props => {
 						className={classes.muteButton}
 						onClick={onMuteToggle}
 						aria-label={muted ? unmuteAudioLabel : muteAudioLabel}
+						data-testid="mute-button"
 					>
 						{muted || volume === 0 ? <VolumeXIcon /> : <VolumeIcon />}
 					</button>
@@ -202,6 +203,7 @@ const Controls: FC<ControlsProps> = props => {
 							step={0.01}
 							value={effectiveVolume}
 							aria-label={volumeLabel}
+							data-testid="volume-slider"
 							onChange={handleVolumeChange}
 							style={{
 								background: `linear-gradient(to right, var(--cc-primary-color-focus) ${
