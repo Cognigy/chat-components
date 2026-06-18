@@ -258,7 +258,7 @@ const demoCases: Case[] = [
 	{ name: "demo: video with alt text", message: asBot(videoAltTextFixture) },
 	// audio intentionally excluded: volume control + options menu were added
 	// in AB#137478, so the DOM differs from the published baseline by design.
-	// TODO: re-add audio once v0.73.0 is published and the baseline is updated to v0.73.0.
+	// TODO: re-add audio once v0.74.0 is published and the baseline is updated to v0.74.0.
 	{ name: "demo: file", message: asBot(fileFixture) },
 	// Templates
 	{ name: "demo: list", message: asBot(listFixture) },
