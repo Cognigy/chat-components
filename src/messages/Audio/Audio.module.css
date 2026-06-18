@@ -22,20 +22,21 @@ article .audioWrapper .controls {
 	display: flex;
 	flex-direction: row;
 	align-items: center;
-	justify-content: space-between;
-	gap: 16px;
+	gap: 8px;
 	width: 100%;
 }
 
 
 article button.playButton {
 	all: unset;
+	box-sizing: border-box;
 	cursor: pointer;
 	width: 32px;
 	height: 32px;
 	display: flex;
 	align-items: center;
 	justify-content: center;
+	background-color: transparent;
 	border: 1px solid var(--cc-black-80);
 	border-radius: 8px;
 	color: var(--cc-black-10);
@@ -97,8 +98,8 @@ article .volumeSlider input[type="range"] {
 	width: 100%;
 	cursor: pointer;
 	outline: none;
-	border-radius: var(--cc-bubble-border-radius);
-	height: 3px;
+	border-radius: 3px;
+	height: 6px;
 	background: var(--cc-black-80);
 }
 
@@ -107,18 +108,20 @@ article .volumeSlider input[type="range"]::-webkit-slider-thumb {
 	appearance: none;
 	height: 12px;
 	width: 12px;
-	background-color: var(--cc-primary-color-focus);
+	background-color: var(--cc-white);
 	border-radius: 50%;
-	border: none;
+	border: 2px solid var(--cc-primary-color-focus);
+	box-shadow: 0px 2px 6px 0px rgba(31, 41, 55, 0.12);
 	transition: 0.2s ease-in-out;
 }
 
 article .volumeSlider input[type="range"]::-moz-range-thumb {
 	height: 12px;
 	width: 12px;
-	background-color: var(--cc-primary-color-focus);
+	background-color: var(--cc-white);
 	border-radius: 50%;
-	border: none;
+	border: 2px solid var(--cc-primary-color-focus);
+	box-shadow: 0px 2px 6px 0px rgba(31, 41, 55, 0.12);
 	transition: 0.2s ease-in-out;
 }
 
@@ -154,19 +157,23 @@ article .volumeSlider input[type="range"]:focus::-moz-range-thumb {
 
 article button.menuButton {
 	all: unset;
+	box-sizing: border-box;
 	cursor: pointer;
-	width: 28px;
-	height: 28px;
+	width: 32px;
+	height: 32px;
 	display: flex;
 	align-items: center;
 	justify-content: center;
-	border-radius: 6px;
+	background-color: transparent;
+	border: 1px solid var(--cc-black-80);
+	border-radius: 8px;
 	color: var(--cc-black-30);
+	flex-shrink: 0;
 	transition: background-color 0.15s ease;
 }
 
 article button.menuButton:hover {
-	background-color: var(--cc-primary-color-opacity-10);
+	background-color: var(--cc-black-95);
 }
 
 article button.menuButton:focus-visible {
@@ -175,7 +182,7 @@ article button.menuButton:focus-visible {
 }
 
 article button.menuButtonActive {
-	background-color: var(--cc-primary-color-opacity-20);
+	background-color: var(--cc-primary-color-opacity-10);
 	box-shadow: 0px 1px 1.5px rgba(31, 41, 55, 0.1);
 }
 
@@ -268,8 +275,8 @@ article .progressBar input[type="range"] {
 	width: 100%;
 	cursor: pointer;
 	outline: none;
-	border-radius: var(--cc-bubble-border-radius);
-	height: 3px;
+	border-radius: 3px;
+	height: 6px;
 	background: var(--cc-black-80);
 }
 
@@ -277,21 +284,23 @@ article .progressBar input[type="range"] {
 article .progressBar input[type="range"]::-webkit-slider-thumb {
 	-webkit-appearance: none;
 	appearance: none;
-	height: 13px;
-	width: 13px;
-	background-color: var(--cc-primary-color-focus);
+	height: 12px;
+	width: 12px;
+	background-color: var(--cc-white);
 	border-radius: 50%;
-	border: none;
+	border: 2px solid var(--cc-primary-color-focus);
+	box-shadow: 0px 2px 6px 0px rgba(31, 41, 55, 0.12);
 	transition: 0.2s ease-in-out;
 }
 
 /* Thumb: Firefox */
 article .progressBar input[type="range"]::-moz-range-thumb {
-	height: 13px;
-	width: 13px;
-	background-color: var(--cc-primary-color-focus);
+	height: 12px;
+	width: 12px;
+	background-color: var(--cc-white);
 	border-radius: 50%;
-	border: none;
+	border: 2px solid var(--cc-primary-color-focus);
+	box-shadow: 0px 2px 6px 0px rgba(31, 41, 55, 0.12);
 	transition: 0.2s ease-in-out;
 }
 

@@ -185,7 +185,7 @@ const Controls: FC<ControlsProps> = props => {
 						style={{
 							background: `linear-gradient(to right, var(--cc-primary-color-focus) ${
 								progress * 100
-							}%, var(--cc-black-80) ${progress * 100}%)`,
+							}%, var(--cc-primary-color-opacity-10) ${progress * 100}%)`,
 						}}
 					/>
 				</div>
@@ -216,7 +216,7 @@ const Controls: FC<ControlsProps> = props => {
 							style={{
 								background: `linear-gradient(to right, var(--cc-primary-color-focus) ${
 									effectiveVolume * 100
-								}%, var(--cc-black-80) ${effectiveVolume * 100}%)`,
+								}%, var(--cc-primary-color-opacity-10) ${effectiveVolume * 100}%)`,
 							}}
 						/>
 					</div>
