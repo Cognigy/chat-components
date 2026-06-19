@@ -84,13 +84,21 @@ const Controls: FC<ControlsProps> = props => {
 		return () => document.removeEventListener("mousedown", handleClickOutside);
 	}, [menuOpen]);
 
-	// Focus first menu item when menu opens or view changes (APG menu button pattern)
+	// Focus management on open / view change (APG menu button pattern)
 	useEffect(() => {
 		if (!menuOpen) return;
-		const firstItem = menuRef.current?.querySelector<HTMLElement>(
-			"[role='menuitem'], [role='menuitemradio']",
-		);
-		firstItem?.focus();
+		if (menuView === "speed") {
+			// Focus the currently checked speed so the user immediately hears the active selection
+			const checkedItem = menuRef.current?.querySelector<HTMLElement>(
+				'[role="menuitemradio"][aria-checked="true"]',
+			);
+			const firstSpeed =
+				menuRef.current?.querySelector<HTMLElement>('[role="menuitemradio"]');
+			(checkedItem ?? firstSpeed)?.focus();
+		} else {
+			const firstItem = menuRef.current?.querySelector<HTMLElement>('[role="menuitem"]');
+			firstItem?.focus();
+		}
 	}, [menuOpen, menuView]);
 
 	const getMenuItems = useCallback((): HTMLElement[] => {
@@ -134,6 +142,12 @@ const Controls: FC<ControlsProps> = props => {
 			case "End":
 				e.preventDefault();
 				items[items.length - 1]?.focus();
+				break;
+			case "ArrowLeft":
+				if (menuView === "speed") {
+					e.preventDefault();
+					setMenuView("main");
+				}
 				break;
 		}
 	};
@@ -350,27 +364,36 @@ const Controls: FC<ControlsProps> = props => {
 										tabIndex={-1}
 										onClick={() => setMenuView("main")}
 									>
-										← {playbackSpeedLabel}
+										<span aria-hidden="true">← </span>
+										{playbackSpeedLabel}
 									</button>
-									{PLAYBACK_SPEEDS.map(speed => (
-										<button
-											key={speed}
-											className={classnames(classes.menuItem, {
-												[classes.menuItemActive]: playbackRate === speed,
-											})}
-											role="menuitemradio"
-											tabIndex={-1}
-											aria-checked={playbackRate === speed}
-											onClick={() => {
-												onPlaybackRateChange(speed);
-												setMenuOpen(false);
-												setMenuView("main");
-												menuButtonRef.current?.focus();
-											}}
-										>
-											{speed === 1 ? normalSpeedLabel : `${speed}×`}
-										</button>
-									))}
+									<div role="group" aria-label={playbackSpeedLabel}>
+										{PLAYBACK_SPEEDS.map(speed => (
+											<button
+												key={speed}
+												className={classnames(classes.menuItem, {
+													[classes.menuItemActive]:
+														playbackRate === speed,
+												})}
+												role="menuitemradio"
+												tabIndex={-1}
+												aria-checked={playbackRate === speed}
+												aria-label={
+													speed === 1
+														? `${normalSpeedLabel} speed`
+														: `${speed} times speed`
+												}
+												onClick={() => {
+													onPlaybackRateChange(speed);
+													setMenuOpen(false);
+													setMenuView("main");
+													menuButtonRef.current?.focus();
+												}}
+											>
+												{speed === 1 ? normalSpeedLabel : `${speed}×`}
+											</button>
+										))}
+									</div>
 								</>
 							)}
 						</div>

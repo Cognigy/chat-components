@@ -160,7 +160,7 @@ describe("Message Audio", () => {
 			expect(queryByRole("menu")).not.toBeInTheDocument();
 		});
 
-		it("navigates into playback speed submenu and focuses back button", async () => {
+		it("navigates into playback speed submenu and focuses the active speed", async () => {
 			const { getByRole, getAllByRole } = render(<Message message={message} />);
 			const trigger = await waitFor(() => getByRole("button", { name: "More options" }));
 
@@ -168,10 +168,25 @@ describe("Message Audio", () => {
 			fireEvent.click(getByRole("menuitem", { name: /Playback speed/i }));
 
 			await waitFor(() => {
-				// speed items rendered
 				expect(getAllByRole("menuitemradio").length).toBe(6);
-				// back button is the first [role="menuitem"] in speed view and receives focus
-				expect(document.activeElement).toHaveAttribute("role", "menuitem");
+				// default playbackRate is 1 — "Normal speed" item should be focused
+				expect(document.activeElement).toHaveAttribute("aria-checked", "true");
+			});
+		});
+
+		it("ArrowLeft in speed view goes back to main menu", async () => {
+			const { getByRole } = render(<Message message={message} />);
+			const trigger = await waitFor(() => getByRole("button", { name: "More options" }));
+
+			fireEvent.click(trigger);
+			fireEvent.click(getByRole("menuitem", { name: /Playback speed/i }));
+
+			await waitFor(() => getByRole("menuitemradio", { name: /Normal speed/i }));
+
+			fireEvent.keyDown(getByRole("menu"), { key: "ArrowLeft" });
+
+			await waitFor(() => {
+				expect(getByRole("menuitem", { name: /Download transcript/i })).toBeInTheDocument();
 			});
 		});
 
