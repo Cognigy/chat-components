@@ -64,6 +64,7 @@ const Controls: FC<ControlsProps> = props => {
 	const menuButtonRef = useRef<HTMLButtonElement>(null);
 	const [menuOpen, setMenuOpen] = useState(false);
 	const [menuView, setMenuView] = useState<"main" | "speed">("main");
+	const [menuFlipped, setMenuFlipped] = useState(false);
 	const [speedAnnouncement, setSpeedAnnouncement] = useState("");
 	const { config } = useMessageContext();
 
@@ -83,6 +84,14 @@ const Controls: FC<ControlsProps> = props => {
 		};
 		document.addEventListener("mousedown", handleClickOutside);
 		return () => document.removeEventListener("mousedown", handleClickOutside);
+	}, [menuOpen]);
+
+	// Flip menu downward when there isn't enough space above the button
+	useEffect(() => {
+		if (!menuOpen || !menuButtonRef.current || !menuRef.current) return;
+		const buttonRect = menuButtonRef.current.getBoundingClientRect();
+		const menuHeight = menuRef.current.offsetHeight;
+		setMenuFlipped(buttonRect.top < menuHeight + 8);
 	}, [menuOpen]);
 
 	// Focus management on open / view change (APG menu button pattern)
@@ -330,7 +339,9 @@ const Controls: FC<ControlsProps> = props => {
 					{menuOpen && (
 						<div
 							ref={menuRef}
-							className={classes.optionsMenu}
+							className={classnames(classes.optionsMenu, {
+								[classes.optionsMenuBelow]: menuFlipped,
+							})}
 							role="menu"
 							onKeyDown={handleMenuKeyDown}
 						>
