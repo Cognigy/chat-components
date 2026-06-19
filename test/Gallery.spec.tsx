@@ -45,8 +45,13 @@ describe("Message Gallery", () => {
 
 		// Title must live in the text content block beneath the image...
 		expect(contentBlock).not.toBeNull();
-		// ...and that block must not contain the image (i.e. the title is not overlaying it).
-		expect(contentBlock?.querySelector("img")).toBeNull();
+		// ...and the slide's main image (identified by its alt text) must not be a descendant
+		// of that block — i.e. the title is not overlaying the image. Scoped to alt text so
+		// the assertion survives ActionButtons rendering its own <img> elements in future.
+		const slideContainer = title.closest(".webchat-carousel-template-frame");
+		const slideImage = slideContainer?.querySelector('img[alt="foobar004g1"]');
+		expect(slideImage).not.toBeNull();
+		expect(contentBlock?.contains(slideImage!)).toBe(false);
 	});
 
 	it("renders the title below the image even when there is no subtitle or buttons", () => {
