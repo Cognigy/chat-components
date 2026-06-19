@@ -175,7 +175,7 @@ describe("Message Audio", () => {
 			});
 		});
 
-		it("selecting a playback speed closes the menu", async () => {
+		it("selecting a playback speed closes the menu and returns focus to trigger", async () => {
 			const { getByRole, getAllByRole, queryByRole } = render(<Message message={message} />);
 			const trigger = await waitFor(() => getByRole("button", { name: "More options" }));
 
@@ -186,6 +186,18 @@ describe("Message Audio", () => {
 			fireEvent.click(getAllByRole("menuitemradio")[2]); // 1× Normal
 
 			expect(queryByRole("menu")).not.toBeInTheDocument();
+			expect(document.activeElement).toBe(trigger);
+		});
+
+		it("activating Download transcript closes the menu and returns focus to trigger", async () => {
+			const { getByRole, queryByRole } = render(<Message message={message} />);
+			const trigger = await waitFor(() => getByRole("button", { name: "More options" }));
+
+			fireEvent.click(trigger);
+			fireEvent.click(getByRole("menuitem", { name: /Download transcript/i }));
+
+			expect(queryByRole("menu")).not.toBeInTheDocument();
+			expect(document.activeElement).toBe(trigger);
 		});
 	});
 });

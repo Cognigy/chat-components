@@ -168,6 +168,7 @@ const Controls: FC<ControlsProps> = props => {
 		downloadTranscriptLinkRef.current?.click();
 		setMenuOpen(false);
 		setMenuView("main");
+		menuButtonRef.current?.focus();
 	};
 
 	const toggleMenu = () => {
@@ -364,6 +365,7 @@ const Controls: FC<ControlsProps> = props => {
 												onPlaybackRateChange(speed);
 												setMenuOpen(false);
 												setMenuView("main");
+												menuButtonRef.current?.focus();
 											}}
 										>
 											{speed === 1 ? normalSpeedLabel : `${speed}×`}
