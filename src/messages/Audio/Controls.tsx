@@ -87,14 +87,18 @@ const Controls: FC<ControlsProps> = props => {
 	// Focus first menu item when menu opens or view changes (APG menu button pattern)
 	useEffect(() => {
 		if (!menuOpen) return;
-		const firstItem = menuRef.current?.querySelector<HTMLElement>("[role='menuitem'], [role='menuitemradio']");
+		const firstItem = menuRef.current?.querySelector<HTMLElement>(
+			"[role='menuitem'], [role='menuitemradio']",
+		);
 		firstItem?.focus();
 	}, [menuOpen, menuView]);
 
 	const getMenuItems = useCallback((): HTMLElement[] => {
 		if (!menuRef.current) return [];
 		return Array.from(
-			menuRef.current.querySelectorAll<HTMLElement>("[role='menuitem'], [role='menuitemradio']"),
+			menuRef.current.querySelectorAll<HTMLElement>(
+				"[role='menuitem'], [role='menuitemradio']",
+			),
 		);
 	}, []);
 
@@ -120,7 +124,8 @@ const Controls: FC<ControlsProps> = props => {
 				break;
 			case "ArrowUp":
 				e.preventDefault();
-				if (items.length > 0) items[(currentIndex - 1 + items.length) % items.length]?.focus();
+				if (items.length > 0)
+					items[(currentIndex - 1 + items.length) % items.length]?.focus();
 				break;
 			case "Home":
 				e.preventDefault();
