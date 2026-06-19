@@ -1,4 +1,14 @@
-import { ChangeEvent, FC, MutableRefObject, useRef, useMemo, useState, useEffect } from "react";
+import {
+	ChangeEvent,
+	FC,
+	KeyboardEvent,
+	MutableRefObject,
+	useRef,
+	useMemo,
+	useState,
+	useEffect,
+	useCallback,
+} from "react";
 import classes from "./Audio.module.css";
 import {
 	DownloadIcon,
@@ -56,6 +66,7 @@ const Controls: FC<ControlsProps> = props => {
 	const [menuView, setMenuView] = useState<"main" | "speed">("main");
 	const { config } = useMessageContext();
 
+	// Click-outside closes the menu
 	useEffect(() => {
 		if (!menuOpen) return;
 		const handleClickOutside = (e: MouseEvent) => {
@@ -72,6 +83,55 @@ const Controls: FC<ControlsProps> = props => {
 		document.addEventListener("mousedown", handleClickOutside);
 		return () => document.removeEventListener("mousedown", handleClickOutside);
 	}, [menuOpen]);
+
+	// Focus first menu item when menu opens or view changes (APG menu button pattern)
+	useEffect(() => {
+		if (!menuOpen) return;
+		const firstItem = menuRef.current?.querySelector<HTMLElement>("[role='menuitem'], [role='menuitemradio']");
+		firstItem?.focus();
+	}, [menuOpen, menuView]);
+
+	const getMenuItems = useCallback((): HTMLElement[] => {
+		if (!menuRef.current) return [];
+		return Array.from(
+			menuRef.current.querySelectorAll<HTMLElement>("[role='menuitem'], [role='menuitemradio']"),
+		);
+	}, []);
+
+	const handleMenuKeyDown = (e: KeyboardEvent<HTMLDivElement>) => {
+		const items = getMenuItems();
+		const currentIndex = items.indexOf(document.activeElement as HTMLElement);
+
+		switch (e.key) {
+			case "Escape":
+				e.preventDefault();
+				setMenuOpen(false);
+				setMenuView("main");
+				menuButtonRef.current?.focus();
+				break;
+			case "Tab":
+				// Close menu; let browser advance focus naturally to next element
+				setMenuOpen(false);
+				setMenuView("main");
+				break;
+			case "ArrowDown":
+				e.preventDefault();
+				if (items.length > 0) items[(currentIndex + 1) % items.length]?.focus();
+				break;
+			case "ArrowUp":
+				e.preventDefault();
+				if (items.length > 0) items[(currentIndex - 1 + items.length) % items.length]?.focus();
+				break;
+			case "Home":
+				e.preventDefault();
+				items[0]?.focus();
+				break;
+			case "End":
+				e.preventDefault();
+				items[items.length - 1]?.focus();
+				break;
+		}
+	};
 
 	const togglePlayAndPause = () => {
 		if (playing) {
@@ -237,13 +297,19 @@ const Controls: FC<ControlsProps> = props => {
 					</button>
 
 					{menuOpen && (
-						<div ref={menuRef} className={classes.optionsMenu} role="menu">
+						<div
+							ref={menuRef}
+							className={classes.optionsMenu}
+							role="menu"
+							onKeyDown={handleMenuKeyDown}
+						>
 							{menuView === "main" ? (
 								<>
 									{altText && (
 										<button
 											className={classes.menuItem}
 											role="menuitem"
+											tabIndex={-1}
 											onClick={handleDownloadTranscript}
 										>
 											<DownloadIcon />
@@ -253,6 +319,7 @@ const Controls: FC<ControlsProps> = props => {
 									<button
 										className={classes.menuItem}
 										role="menuitem"
+										tabIndex={-1}
 										onClick={() => setMenuView("speed")}
 									>
 										<CirclePlayIcon />
@@ -263,6 +330,8 @@ const Controls: FC<ControlsProps> = props => {
 								<>
 									<button
 										className={classes.menuBackButton}
+										role="menuitem"
+										tabIndex={-1}
 										onClick={() => setMenuView("main")}
 									>
 										← Playback speed
@@ -274,6 +343,7 @@ const Controls: FC<ControlsProps> = props => {
 												[classes.menuItemActive]: playbackRate === speed,
 											})}
 											role="menuitemradio"
+											tabIndex={-1}
 											aria-checked={playbackRate === speed}
 											onClick={() => {
 												onPlaybackRateChange(speed);
