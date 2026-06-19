@@ -24,7 +24,7 @@ const GalleryItem: FC<GallerySlideProps> = props => {
 		messageParams,
 		"data-message-id": dataMessageId,
 	} = useMessageContext();
-	const hasExtraInfo = subtitle || (buttons && buttons?.length > 0);
+	const hasContent = title || subtitle || (buttons && buttons?.length > 0);
 	const [isImageBroken, setImageBroken] = useState(false);
 	const { processHTML } = useSanitize();
 
@@ -60,14 +60,7 @@ const GalleryItem: FC<GallerySlideProps> = props => {
 
 	return (
 		<div className={classnames("webchat-carousel-template-frame", classes.slideItem)}>
-			<div className={classnames(classes.top, hasExtraInfo && classes.hasExtraInfo)}>
-				<Typography
-					variant="body-semibold"
-					component="h4"
-					dangerouslySetInnerHTML={{ __html: titleHtml }}
-					className="webchat-carousel-template-title"
-					id={titleId}
-				/>
+			<div className={classnames(classes.top, hasContent && classes.hasExtraInfo)}>
 				{isImageBroken ? (
 					<span className={classes.brokenImage} />
 				) : (
@@ -79,7 +72,7 @@ const GalleryItem: FC<GallerySlideProps> = props => {
 					/>
 				)}
 			</div>
-			{hasExtraInfo && (
+			{hasContent && (
 				<div
 					className={classnames("webchat-carousel-template-content", classes.bottom)}
 					onClick={handleClick}
@@ -90,6 +83,15 @@ const GalleryItem: FC<GallerySlideProps> = props => {
 					aria-labelledby={default_action?.url && title ? titleId : undefined}
 					aria-label={default_action?.url ? `${titleHtml}. ${opensInNewTab}` : undefined}
 				>
+					{title && (
+						<Typography
+							variant="body-semibold"
+							component="h4"
+							dangerouslySetInnerHTML={{ __html: titleHtml }}
+							className="webchat-carousel-template-title"
+							id={titleId}
+						/>
+					)}
 					{subtitle && (
 						<Typography
 							variant="body-regular"

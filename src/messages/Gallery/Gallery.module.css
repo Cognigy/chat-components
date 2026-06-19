@@ -47,15 +47,8 @@
 	border-bottom-right-radius: 0px;
 }
 
-.slideItem .top h4 {
-	position: absolute;
-	margin: 0px;
-	margin-inline-start: 8px;
-	bottom: 10px;
-	color: var(--cc-white);
-}
-
-.slideItem .bottom p {
+.slideItem .bottom p,
+.slideItem .bottom h4 {
 	padding: 0px;
 	margin: 0px;
 }

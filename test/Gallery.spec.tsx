@@ -36,4 +36,24 @@ describe("Message Gallery", () => {
 
 		expect(document.querySelector(".swiper-pagination")).toBeInTheDocument();
 	});
+
+	it("renders the title below the image, inside the content block (not overlaying the image)", () => {
+		const { getByText } = render(<Message message={message} />);
+
+		const title = getByText("Cat 2");
+		const contentBlock = title.closest(".webchat-carousel-template-content");
+
+		// Title must live in the text content block beneath the image...
+		expect(contentBlock).not.toBeNull();
+		// ...and that block must not contain the image (i.e. the title is not overlaying it).
+		expect(contentBlock?.querySelector("img")).toBeNull();
+	});
+
+	it("renders the title below the image even when there is no subtitle or buttons", () => {
+		const { getByText } = render(<Message message={message} />);
+
+		const title = getByText("Cat 8");
+
+		expect(title.closest(".webchat-carousel-template-content")).not.toBeNull();
+	});
 });
