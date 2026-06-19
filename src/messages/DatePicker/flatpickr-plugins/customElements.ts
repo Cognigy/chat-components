@@ -19,6 +19,69 @@ function customElements(pluginConfig: Config): Plugin {
 		// Store event handlers for navigation buttons
 		const navKeydownHandlers = new WeakMap<HTMLElement, (event: KeyboardEvent) => void>();
 
+		let liveRegion: HTMLElement | null = null;
+
+		function createLiveRegion() {
+			if (!fp?.calendarContainer) return;
+			liveRegion = document.createElement("span");
+			liveRegion.setAttribute("aria-live", "polite");
+			liveRegion.setAttribute("aria-atomic", "true");
+			liveRegion.setAttribute("role", "status");
+			liveRegion.style.position = "absolute";
+			liveRegion.style.width = "1px";
+			liveRegion.style.height = "1px";
+			liveRegion.style.overflow = "hidden";
+			liveRegion.style.clip = "rect(0, 0, 0, 0)";
+			liveRegion.style.whiteSpace = "nowrap";
+			fp.calendarContainer.appendChild(liveRegion);
+		}
+
+		function announceMonthYear() {
+			if (!liveRegion) return;
+			const monthName = fp.l10n.months.longhand[fp.currentMonth];
+			const year = fp.currentYear;
+			liveRegion.textContent = `${monthName} ${year}`;
+		}
+
+		function focusCurrentDay() {
+			if (!fp?.calendarContainer) return;
+			const selectedDay =
+				fp.calendarContainer.querySelector<HTMLElement>(".flatpickr-day.selected") ||
+				fp.calendarContainer.querySelector<HTMLElement>(".flatpickr-day.today") ||
+				fp.calendarContainer.querySelector<HTMLElement>(
+					".flatpickr-day:not(.flatpickr-disabled):not(.prevMonthDay):not(.nextMonthDay)",
+				);
+			if (selectedDay) {
+				const daysContainer = fp?.calendarContainer?.getElementsByClassName(
+					"flatpickr-innerContainer",
+				)[0] as HTMLElement;
+				if (daysContainer) {
+					// Use aria-activedescendant pattern for grid navigation
+					if (!selectedDay.id) {
+						selectedDay.id = `fp-day-${Math.random().toString(36).substring(2, 9)}`;
+					}
+					daysContainer.setAttribute("aria-activedescendant", selectedDay.id);
+				}
+			}
+		}
+
+		function updateDayAriaActivedescendant() {
+			if (!fp?.calendarContainer) return;
+			const daysContainer = fp?.calendarContainer?.getElementsByClassName(
+				"flatpickr-innerContainer",
+			)[0] as HTMLElement;
+			const selectedDay =
+				fp.calendarContainer.querySelector<HTMLElement>(".flatpickr-day.selected") ||
+				fp.calendarContainer.querySelector<HTMLElement>(".flatpickr-day.today");
+
+			if (daysContainer && selectedDay) {
+				if (!selectedDay.id) {
+					selectedDay.id = `fp-day-${Math.random().toString(36).substring(2, 9)}`;
+				}
+				daysContainer.setAttribute("aria-activedescendant", selectedDay.id);
+			}
+		}
+
 		function buildTimeArrows() {
 			if (!fp?.config?.enableTime) return;
 			const arrowUp = fp?.timeContainer?.getElementsByClassName("arrowUp");
@@ -176,7 +239,30 @@ function customElements(pluginConfig: Config): Plugin {
 			)[0];
 			if (daysContainer) {
 				daysContainer.setAttribute("tabindex", "0");
+				daysContainer.setAttribute("role", "grid");
+				daysContainer.setAttribute(
+					"aria-label",
+					customTranslations?.ariaLabels?.datePickerGridLabel || "Calendar",
+				);
+				daysContainer.setAttribute(
+					"aria-description",
+					customTranslations?.ariaLabels?.datePickerGridDescription ||
+						"Use arrow keys to navigate through dates",
+				);
 			}
+
+			const weekdayContainer =
+				fp?.calendarContainer?.querySelector(".flatpickr-weekdays");
+			if (weekdayContainer) {
+				weekdayContainer.setAttribute("role", "row");
+			}
+			const weekdaySpans = fp?.calendarContainer?.querySelectorAll(
+				".flatpickr-weekday",
+			);
+			weekdaySpans?.forEach(span => {
+				span.setAttribute("role", "columnheader");
+				span.setAttribute("abbr", span.textContent?.trim() || "");
+			});
 		}
 
 		// Observe month selector for changes and set tabindex again to 0. This is to ensure that the month selector is focusable all the time
@@ -303,6 +389,65 @@ function customElements(pluginConfig: Config): Plugin {
 			}
 		}
 
+		// Handle arrow key navigation for grid using aria-activedescendant
+		function setGridArrowKeyNavigation() {
+			const daysContainer = fp?.calendarContainer?.getElementsByClassName(
+				"flatpickr-innerContainer",
+			)[0] as HTMLElement;
+
+			if (!daysContainer) return;
+
+			daysContainer.addEventListener("keydown", (event: KeyboardEvent) => {
+				if (!["ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight"].includes(event.key)) {
+					return;
+				}
+
+				event.preventDefault();
+
+				const allDays = Array.from(
+					fp?.calendarContainer?.querySelectorAll<HTMLElement>(".flatpickr-day") || [],
+				);
+				const activeDayId = daysContainer.getAttribute("aria-activedescendant");
+				const currentDay = activeDayId
+					? fp?.calendarContainer?.querySelector(`#${activeDayId}`)
+					: null;
+				const currentIndex = currentDay ? allDays.indexOf(currentDay as HTMLElement) : -1;
+
+				let nextIndex = currentIndex;
+
+				// Get grid dimensions (7 columns for days of week)
+				const cols = 7;
+
+				switch (event.key) {
+					case "ArrowDown":
+						nextIndex = currentIndex + cols;
+						break;
+					case "ArrowUp":
+						nextIndex = currentIndex - cols;
+						break;
+					case "ArrowRight":
+						nextIndex = currentIndex + 1;
+						break;
+					case "ArrowLeft":
+						nextIndex = currentIndex - 1;
+						break;
+				}
+
+				// Clamp to valid range
+				if (nextIndex >= 0 && nextIndex < allDays.length) {
+					const nextDay = allDays[nextIndex];
+					if (!nextDay.classList.contains("flatpickr-disabled")) {
+						if (!nextDay.id) {
+							nextDay.id = `fp-day-${Math.random().toString(36).substring(2, 9)}`;
+						}
+						daysContainer.setAttribute("aria-activedescendant", nextDay.id);
+						// Announce the date via live region
+						announceMonthYear();
+					}
+				}
+			});
+		}
+
 		return {
 			onReady: [
 				upsertTimeArrows,
@@ -314,11 +459,16 @@ function customElements(pluginConfig: Config): Plugin {
 				setNavButtonsAlly,
 				observeNavButtons,
 				observeMonthSelector,
+				createLiveRegion,
+				focusCurrentDay,
+				setGridArrowKeyNavigation,
 
 				() => {
 					fp?.loadedPlugins?.push("customElements");
 				},
 			],
+			onMonthChange: [announceMonthYear],
+			onYearChange: [announceMonthYear],
 			onDayCreate: [
 				(_dObj, _dStr, _fp, dayElem) => {
 					// Set aria-disabled attribute based on flatpickr-disabled class
@@ -330,10 +480,31 @@ function customElements(pluginConfig: Config): Plugin {
 					}
 
 					dayElem.innerHTML = `<span class='dayInner'>${dayElem.innerHTML}</span>`;
+					// All day cells are not focusable by default (using aria-activedescendant pattern)
+					dayElem.setAttribute("tabindex", "-1");
+					// Use presentation role so individual dates don't announce as clickable items
+					dayElem.setAttribute("role", "presentation");
+					// Ensure each date has a unique ID for aria-activedescendant
+					if (!dayElem.id) {
+						dayElem.id = `fp-day-${Math.random().toString(36).substring(2, 9)}`;
+					}
+					// Add aria-label with full date so screen reader announces "June 1" when navigated
+					const dateNum = dayElem.textContent?.trim();
+					if (dateNum && !isDisabled) {
+						const monthName = fp.l10n.months.longhand[fp.currentMonth];
+						dayElem.setAttribute("aria-label", `${monthName} ${dateNum}, ${fp.currentYear}`);
+					}
 				},
 				handleWeekNumbers,
 			],
-			onValueUpdate: [upsertTimeArrows],
+			onValueUpdate: [upsertTimeArrows, updateDayAriaActivedescendant],
+			onMonthChange: [
+				announceMonthYear,
+				() => {
+					// Re-attach arrow key navigation when month changes
+					setGridArrowKeyNavigation();
+				},
+			],
 		};
 	};
 }

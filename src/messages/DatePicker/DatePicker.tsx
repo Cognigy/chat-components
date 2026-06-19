@@ -21,6 +21,7 @@ const DatePicker: FC = () => {
 	const [currentDate, setCurrentDate] = useState("");
 
 	const openButtonRef = useRef<HTMLButtonElement>(null);
+	const datePickerRef = useRef<HTMLDivElement>(null);
 
 	const datePickerHeading = useRandomId("webchatDatePickerHeading");
 
@@ -120,10 +121,10 @@ const DatePicker: FC = () => {
 			</PrimaryButton>
 			{showPicker && (
 				<div
+					ref={datePickerRef}
 					id={`webchat-plugin-date-picker-${message.id}`}
 					className={classnames(classes.wrapper, "webchat-plugin-date-picker")}
 					onKeyDown={handleKeyDown}
-					tabIndex={0}
 					role="dialog"
 					aria-modal="true"
 					aria-labelledby={datePickerHeading}
@@ -137,6 +138,7 @@ const DatePicker: FC = () => {
 								variant="h2-semibold"
 								component="h4"
 								className="webchat-list-template-header-title"
+								id={datePickerHeading}
 							>
 								{eventName || "Calendar"}
 							</Typography>
@@ -146,7 +148,6 @@ const DatePicker: FC = () => {
 							aria-label={closeDatePickerLabel}
 							className={classes.right}
 							data-testid="button-close"
-							autoFocus
 						>
 							<CloseIcon />
 						</button>
