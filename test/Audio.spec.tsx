@@ -204,6 +204,20 @@ describe("Message Audio", () => {
 			expect(document.activeElement).toBe(trigger);
 		});
 
+		it("selecting a playback speed announces the new speed via live region", async () => {
+			const { getByRole, getAllByRole } = render(<Message message={message} />);
+			const trigger = await waitFor(() => getByRole("button", { name: "More options" }));
+
+			fireEvent.click(trigger);
+			fireEvent.click(getByRole("menuitem", { name: /Playback speed/i }));
+
+			await waitFor(() => expect(getAllByRole("menuitemradio").length).toBeGreaterThan(0));
+			fireEvent.click(getAllByRole("menuitemradio")[0]); // 0.5× speed
+
+			const liveRegion = document.querySelector("[aria-live='polite']");
+			expect(liveRegion).toHaveTextContent("Playback speed: 0.5 times speed");
+		});
+
 		it("activating Download transcript closes the menu and returns focus to trigger", async () => {
 			const { getByRole, queryByRole } = render(<Message message={message} />);
 			const trigger = await waitFor(() => getByRole("button", { name: "More options" }));

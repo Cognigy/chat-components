@@ -64,6 +64,7 @@ const Controls: FC<ControlsProps> = props => {
 	const menuButtonRef = useRef<HTMLButtonElement>(null);
 	const [menuOpen, setMenuOpen] = useState(false);
 	const [menuView, setMenuView] = useState<"main" | "speed">("main");
+	const [speedAnnouncement, setSpeedAnnouncement] = useState("");
 	const { config } = useMessageContext();
 
 	// Click-outside closes the menu
@@ -385,6 +386,13 @@ const Controls: FC<ControlsProps> = props => {
 												}
 												onClick={() => {
 													onPlaybackRateChange(speed);
+													const label =
+														speed === 1
+															? `${normalSpeedLabel} speed`
+															: `${speed} times speed`;
+													setSpeedAnnouncement(
+														`${playbackSpeedLabel}: ${label}`,
+													);
 													setMenuOpen(false);
 													setMenuView("main");
 													menuButtonRef.current?.focus();
@@ -410,6 +418,24 @@ const Controls: FC<ControlsProps> = props => {
 					aria-hidden="true"
 				/>
 			)}
+
+			<div
+				aria-live="polite"
+				aria-atomic="true"
+				style={{
+					position: "absolute",
+					width: "1px",
+					height: "1px",
+					padding: 0,
+					margin: "-1px",
+					overflow: "hidden",
+					clip: "rect(0,0,0,0)",
+					whiteSpace: "nowrap",
+					border: 0,
+				}}
+			>
+				{speedAnnouncement}
+			</div>
 		</div>
 	);
 };
