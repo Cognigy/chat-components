@@ -192,6 +192,9 @@ export interface IWebchatSettings {
 				timestamp?: string;
 			};
 			audioTimeRemaining?: string;
+			audioMoreOptions?: string;
+			audioPlaybackSpeed?: string;
+			audioNormalSpeed?: string;
 		};
 	};
 	teaserMessage: {

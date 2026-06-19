@@ -212,6 +212,15 @@ const Controls: FC<ControlsProps> = props => {
 		config?.settings?.customTranslations?.ariaLabels?.unmuteAudio || "Unmute audio";
 	const volumeLabel =
 		config?.settings?.customTranslations?.ariaLabels?.audioVolume || "Audio volume";
+	const moreOptionsLabel =
+		config?.settings?.customTranslations?.ariaLabels?.audioMoreOptions || "More options";
+	const playbackSpeedLabel =
+		config?.settings?.customTranslations?.ariaLabels?.audioPlaybackSpeed || "Playback speed";
+	const normalSpeedLabel =
+		config?.settings?.customTranslations?.ariaLabels?.audioNormalSpeed || "Normal";
+	const downloadTranscriptLabel =
+		config?.settings?.customTranslations?.ariaLabels?.downloadTranscript ||
+		"Download transcript";
 
 	const effectiveVolume = muted ? 0 : volume;
 
@@ -271,6 +280,7 @@ const Controls: FC<ControlsProps> = props => {
 							step={0.01}
 							value={effectiveVolume}
 							aria-label={volumeLabel}
+							aria-valuetext={`${volumeLabel} ${Math.round(effectiveVolume * 100)}%`}
 							data-testid="volume-slider"
 							onChange={handleVolumeChange}
 							style={{
@@ -289,7 +299,7 @@ const Controls: FC<ControlsProps> = props => {
 							[classes.menuButtonActive]: menuOpen,
 						})}
 						onClick={toggleMenu}
-						aria-label="More options"
+						aria-label={moreOptionsLabel}
 						aria-expanded={menuOpen}
 						aria-haspopup="menu"
 					>
@@ -313,7 +323,7 @@ const Controls: FC<ControlsProps> = props => {
 											onClick={handleDownloadTranscript}
 										>
 											<DownloadIcon />
-											<span>Download</span>
+											<span>{downloadTranscriptLabel}</span>
 										</button>
 									)}
 									<button
@@ -323,7 +333,7 @@ const Controls: FC<ControlsProps> = props => {
 										onClick={() => setMenuView("speed")}
 									>
 										<CirclePlayIcon />
-										<span>Playback speed</span>
+										<span>{playbackSpeedLabel}</span>
 									</button>
 								</>
 							) : (
@@ -334,7 +344,7 @@ const Controls: FC<ControlsProps> = props => {
 										tabIndex={-1}
 										onClick={() => setMenuView("main")}
 									>
-										← Playback speed
+										← {playbackSpeedLabel}
 									</button>
 									{PLAYBACK_SPEEDS.map(speed => (
 										<button
@@ -351,7 +361,7 @@ const Controls: FC<ControlsProps> = props => {
 												setMenuView("main");
 											}}
 										>
-											{speed === 1 ? "Normal" : `${speed}×`}
+											{speed === 1 ? normalSpeedLabel : `${speed}×`}
 										</button>
 									))}
 								</>
