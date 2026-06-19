@@ -40,6 +40,13 @@ describe("Message Audio", () => {
 		expect((slider as HTMLInputElement).value).toBe("1");
 	});
 
+	it("volume slider has human-readable aria-valuetext", async () => {
+		const { getByTestId } = render(<Message message={message} />);
+
+		const slider = await waitFor(() => getByTestId("volume-slider"));
+		expect(slider).toHaveAttribute("aria-valuetext", "Audio volume 100%");
+	});
+
 	it("mute button toggles aria-label on click", async () => {
 		const { getByTestId } = render(<Message message={message} />);
 
@@ -75,5 +82,110 @@ describe("Message Audio", () => {
 
 		fireEvent.click(muteButton);
 		expect(slider.value).toBe("1");
+	});
+
+	describe("Options menu", () => {
+		it("opens on click and shows menu items", async () => {
+			const { getByRole, queryByRole } = render(<Message message={message} />);
+			const trigger = await waitFor(() => getByRole("button", { name: "More options" }));
+
+			expect(queryByRole("menu")).not.toBeInTheDocument();
+			fireEvent.click(trigger);
+			expect(getByRole("menu")).toBeInTheDocument();
+			expect(getByRole("menuitem", { name: /Download transcript/i })).toBeInTheDocument();
+			expect(getByRole("menuitem", { name: /Playback speed/i })).toBeInTheDocument();
+		});
+
+		it("closes on Escape and returns focus to trigger", async () => {
+			const { getByRole, queryByRole } = render(<Message message={message} />);
+			const trigger = await waitFor(() => getByRole("button", { name: "More options" }));
+
+			fireEvent.click(trigger);
+			const menu = getByRole("menu");
+
+			fireEvent.keyDown(menu, { key: "Escape" });
+
+			expect(queryByRole("menu")).not.toBeInTheDocument();
+			expect(document.activeElement).toBe(trigger);
+		});
+
+		it("focuses first menu item on open", async () => {
+			const { getByRole, getAllByRole } = render(<Message message={message} />);
+			const trigger = await waitFor(() => getByRole("button", { name: "More options" }));
+
+			fireEvent.click(trigger);
+
+			await waitFor(() => {
+				expect(document.activeElement).toBe(getAllByRole("menuitem")[0]);
+			});
+		});
+
+		it("ArrowDown moves focus to next item and wraps from last to first", async () => {
+			const { getByRole, getAllByRole } = render(<Message message={message} />);
+			const trigger = await waitFor(() => getByRole("button", { name: "More options" }));
+
+			fireEvent.click(trigger);
+			await waitFor(() => expect(document.activeElement).toBe(getAllByRole("menuitem")[0]));
+
+			const menu = getByRole("menu");
+			fireEvent.keyDown(menu, { key: "ArrowDown" });
+			expect(document.activeElement).toBe(getAllByRole("menuitem")[1]);
+
+			fireEvent.keyDown(menu, { key: "ArrowDown" });
+			expect(document.activeElement).toBe(getAllByRole("menuitem")[0]);
+		});
+
+		it("ArrowUp wraps from first to last item", async () => {
+			const { getByRole, getAllByRole } = render(<Message message={message} />);
+			const trigger = await waitFor(() => getByRole("button", { name: "More options" }));
+
+			fireEvent.click(trigger);
+			await waitFor(() => expect(document.activeElement).toBe(getAllByRole("menuitem")[0]));
+
+			const menu = getByRole("menu");
+			fireEvent.keyDown(menu, { key: "ArrowUp" });
+
+			const items = getAllByRole("menuitem");
+			expect(document.activeElement).toBe(items[items.length - 1]);
+		});
+
+		it("Tab closes the menu", async () => {
+			const { getByRole, queryByRole } = render(<Message message={message} />);
+			const trigger = await waitFor(() => getByRole("button", { name: "More options" }));
+
+			fireEvent.click(trigger);
+			expect(getByRole("menu")).toBeInTheDocument();
+
+			fireEvent.keyDown(getByRole("menu"), { key: "Tab" });
+			expect(queryByRole("menu")).not.toBeInTheDocument();
+		});
+
+		it("navigates into playback speed submenu and focuses back button", async () => {
+			const { getByRole, getAllByRole } = render(<Message message={message} />);
+			const trigger = await waitFor(() => getByRole("button", { name: "More options" }));
+
+			fireEvent.click(trigger);
+			fireEvent.click(getByRole("menuitem", { name: /Playback speed/i }));
+
+			await waitFor(() => {
+				// speed items rendered
+				expect(getAllByRole("menuitemradio").length).toBe(6);
+				// back button is the first [role="menuitem"] in speed view and receives focus
+				expect(document.activeElement).toHaveAttribute("role", "menuitem");
+			});
+		});
+
+		it("selecting a playback speed closes the menu", async () => {
+			const { getByRole, getAllByRole, queryByRole } = render(<Message message={message} />);
+			const trigger = await waitFor(() => getByRole("button", { name: "More options" }));
+
+			fireEvent.click(trigger);
+			fireEvent.click(getByRole("menuitem", { name: /Playback speed/i }));
+
+			await waitFor(() => expect(getAllByRole("menuitemradio").length).toBeGreaterThan(0));
+			fireEvent.click(getAllByRole("menuitemradio")[2]); // 1× Normal
+
+			expect(queryByRole("menu")).not.toBeInTheDocument();
+		});
 	});
 });
