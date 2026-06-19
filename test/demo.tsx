@@ -33,7 +33,6 @@ import datePickerDisableWeekends from "test/fixtures/datepicker/disableWeekends.
 
 import { IMessage } from "@cognigy/socket-client";
 import { ChatEvent, TypingIndicator, Typography } from "../src/index.ts";
-import { MessageProviderProps } from "src/messages/context.tsx";
 
 const action: MessageSender = (text, data) =>
 	alert("Text: " + JSON.stringify(text, null, 2) + " Data: " + JSON.stringify(data, null, 2));
