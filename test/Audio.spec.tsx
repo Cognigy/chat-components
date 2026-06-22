@@ -1,4 +1,4 @@
-import { render, waitFor, fireEvent } from "@testing-library/react";
+import { render, waitFor, fireEvent, act } from "@testing-library/react";
 import { it, describe, expect } from "vitest";
 import Message from "src/messages/Message";
 import audio from "test/fixtures/audio.json";
@@ -167,8 +167,25 @@ describe("Message Audio", () => {
 			fireEvent.click(trigger);
 			expect(getByRole("menu")).toBeInTheDocument();
 
+			// The scroll-close listener is armed one animation frame after open, so
+			// the open-time auto-scroll is ignored. Flush that frame before scrolling.
+			await act(
+				() => new Promise(resolve => requestAnimationFrame(() => resolve(undefined))),
+			);
+
 			fireEvent.scroll(window);
 			await waitFor(() => expect(queryByRole("menu")).not.toBeInTheDocument());
+		});
+
+		it("ignores the auto-scroll fired at open time (stays open)", async () => {
+			const { getByRole } = render(<Message message={message} />);
+			const trigger = await waitFor(() => getByRole("button", { name: "More options" }));
+
+			fireEvent.click(trigger);
+			// A scroll dispatched before the arming frame (e.g. the browser revealing
+			// a clipped trigger) must NOT dismiss the menu.
+			fireEvent.scroll(window);
+			expect(getByRole("menu")).toBeInTheDocument();
 		});
 
 		it("navigates into playback speed submenu and focuses the active speed", async () => {

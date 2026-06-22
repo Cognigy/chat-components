@@ -68,7 +68,10 @@ const Controls: FC<ControlsProps> = props => {
 	const [speedAnnouncement, setSpeedAnnouncement] = useState("");
 	const { config } = useMessageContext();
 
-	// Focus the relevant item for the current view (APG menu button pattern)
+	// Focus the relevant item for the current view (APG menu button pattern).
+	// preventScroll avoids the browser scrolling the item into view — that scroll
+	// would trip the scroll-to-close listener and dismiss the menu the instant it
+	// opens when the trigger sits near a scroll boundary (e.g. under the IP tabs).
 	const focusActiveView = useCallback(() => {
 		if (menuView === "speed") {
 			// Focus the currently checked speed so the user immediately hears the active selection
@@ -77,10 +80,10 @@ const Controls: FC<ControlsProps> = props => {
 			);
 			const firstSpeed =
 				menuRef.current?.querySelector<HTMLElement>('[role="menuitemradio"]');
-			(checkedItem ?? firstSpeed)?.focus();
+			(checkedItem ?? firstSpeed)?.focus({ preventScroll: true });
 		} else {
 			const firstItem = menuRef.current?.querySelector<HTMLElement>('[role="menuitem"]');
-			firstItem?.focus();
+			firstItem?.focus({ preventScroll: true });
 		}
 	}, [menuView]);
 
@@ -93,14 +96,29 @@ const Controls: FC<ControlsProps> = props => {
 	// Close the menu on any scroll — simpler and steadier than repositioning a
 	// fixed popover against a moving anchor. Capture phase catches scrolls on any
 	// ancestor scroll container, not just the window.
+	//
+	// Arming is deferred by one animation frame: opening the menu when the trigger
+	// is partially clipped by a scroll container (e.g. under the IP tabs) makes the
+	// browser auto-scroll to reveal the trigger, and that scroll dispatches right
+	// after this listener attaches. Without the guard it would dismiss the menu the
+	// instant it opens. The auto-scroll fires before the rAF callback, so it's
+	// ignored; genuine user scrolls afterwards still close the menu.
 	useEffect(() => {
 		if (!menuOpen) return;
+		let armed = false;
+		const raf = requestAnimationFrame(() => {
+			armed = true;
+		});
 		const close = () => {
+			if (!armed) return;
 			setMenuOpen(false);
 			setMenuView("main");
 		};
 		window.addEventListener("scroll", close, { capture: true, passive: true });
-		return () => window.removeEventListener("scroll", close, { capture: true });
+		return () => {
+			cancelAnimationFrame(raf);
+			window.removeEventListener("scroll", close, { capture: true });
+		};
 	}, [menuOpen]);
 
 	const getMenuItems = useCallback((): HTMLElement[] => {
@@ -121,7 +139,7 @@ const Controls: FC<ControlsProps> = props => {
 				e.preventDefault();
 				setMenuOpen(false);
 				setMenuView("main");
-				menuButtonRef.current?.focus();
+				menuButtonRef.current?.focus({ preventScroll: true });
 				break;
 			case "Tab":
 				// Close menu; let browser advance focus naturally to next element
@@ -130,20 +148,23 @@ const Controls: FC<ControlsProps> = props => {
 				break;
 			case "ArrowDown":
 				e.preventDefault();
-				if (items.length > 0) items[(currentIndex + 1) % items.length]?.focus();
+				if (items.length > 0)
+					items[(currentIndex + 1) % items.length]?.focus({ preventScroll: true });
 				break;
 			case "ArrowUp":
 				e.preventDefault();
 				if (items.length > 0)
-					items[(currentIndex - 1 + items.length) % items.length]?.focus();
+					items[(currentIndex - 1 + items.length) % items.length]?.focus({
+						preventScroll: true,
+					});
 				break;
 			case "Home":
 				e.preventDefault();
-				items[0]?.focus();
+				items[0]?.focus({ preventScroll: true });
 				break;
 			case "End":
 				e.preventDefault();
-				items[items.length - 1]?.focus();
+				items[items.length - 1]?.focus({ preventScroll: true });
 				break;
 			case "ArrowLeft":
 				if (menuView === "speed") {
@@ -184,7 +205,7 @@ const Controls: FC<ControlsProps> = props => {
 		downloadTranscriptLinkRef.current?.click();
 		setMenuOpen(false);
 		setMenuView("main");
-		menuButtonRef.current?.focus();
+		menuButtonRef.current?.focus({ preventScroll: true });
 	};
 
 	const handleOpenChange = (open: boolean) => {
@@ -409,7 +430,9 @@ const Controls: FC<ControlsProps> = props => {
 													);
 													setMenuOpen(false);
 													setMenuView("main");
-													menuButtonRef.current?.focus();
+													menuButtonRef.current?.focus({
+														preventScroll: true,
+													});
 												}}
 											>
 												{speed === 1 ? normalSpeedLabel : `${speed}×`}
