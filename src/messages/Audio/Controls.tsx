@@ -74,27 +74,30 @@ const Controls: FC<ControlsProps> = props => {
 	// preventScroll avoids the browser scrolling the item into view — that scroll
 	// would trip the scroll-to-close listener and dismiss the menu the instant it
 	// opens when the trigger sits near a scroll boundary (e.g. under the IP tabs).
-	const focusActiveView = useCallback((cameFromSpeed = false) => {
-		if (menuView === "speed") {
-			// Focus the currently checked speed so the user immediately hears the active selection
-			const checkedItem = menuRef.current?.querySelector<HTMLElement>(
-				'[role="menuitemradio"][aria-checked="true"]',
-			);
-			const firstSpeed =
-				menuRef.current?.querySelector<HTMLElement>('[role="menuitemradio"]');
-			(checkedItem ?? firstSpeed)?.focus({ preventScroll: true });
-		} else if (cameFromSpeed) {
-			// Returning from the speed submenu: APG says focus the parent menuitem we
-			// came from (the one with aria-haspopup), not the first item.
-			const parentItem = menuRef.current?.querySelector<HTMLElement>(
-				'[role="menuitem"][aria-haspopup="menu"]',
-			);
-			parentItem?.focus({ preventScroll: true });
-		} else {
-			const firstItem = menuRef.current?.querySelector<HTMLElement>('[role="menuitem"]');
-			firstItem?.focus({ preventScroll: true });
-		}
-	}, [menuView]);
+	const focusActiveView = useCallback(
+		(cameFromSpeed = false) => {
+			if (menuView === "speed") {
+				// Focus the currently checked speed so the user immediately hears the active selection
+				const checkedItem = menuRef.current?.querySelector<HTMLElement>(
+					'[role="menuitemradio"][aria-checked="true"]',
+				);
+				const firstSpeed =
+					menuRef.current?.querySelector<HTMLElement>('[role="menuitemradio"]');
+				(checkedItem ?? firstSpeed)?.focus({ preventScroll: true });
+			} else if (cameFromSpeed) {
+				// Returning from the speed submenu: APG says focus the parent menuitem we
+				// came from (the one with aria-haspopup), not the first item.
+				const parentItem = menuRef.current?.querySelector<HTMLElement>(
+					'[role="menuitem"][aria-haspopup="menu"]',
+				);
+				parentItem?.focus({ preventScroll: true });
+			} else {
+				const firstItem = menuRef.current?.querySelector<HTMLElement>('[role="menuitem"]');
+				firstItem?.focus({ preventScroll: true });
+			}
+		},
+		[menuView],
+	);
 
 	// Re-focus when switching between main and speed views while the menu is open.
 	// Guarded on an actual view change (not the open transition) so the initial
@@ -183,7 +186,8 @@ const Controls: FC<ControlsProps> = props => {
 				// submenu (aria-haspopup); the view-change effect handles the focus move.
 				if (
 					menuView === "main" &&
-					(document.activeElement as HTMLElement)?.getAttribute("aria-haspopup") === "menu"
+					(document.activeElement as HTMLElement)?.getAttribute("aria-haspopup") ===
+						"menu"
 				) {
 					e.preventDefault();
 					setMenuView("speed");

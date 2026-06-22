@@ -212,9 +212,9 @@ describe("Message Audio", () => {
 			// Move focus to Playback speed item (last menuitem)
 			const menu = getByRole("menu");
 			fireEvent.keyDown(menu, { key: "ArrowDown" });
-			expect(
-				(document.activeElement as HTMLElement).getAttribute("aria-haspopup"),
-			).toBe("menu");
+			expect((document.activeElement as HTMLElement).getAttribute("aria-haspopup")).toBe(
+				"menu",
+			);
 
 			fireEvent.keyDown(menu, { key: "ArrowRight" });
 			await waitFor(() => {
