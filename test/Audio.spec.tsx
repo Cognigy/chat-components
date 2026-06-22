@@ -196,7 +196,13 @@ describe("Message Audio", () => {
 			fireEvent.click(getByRole("menuitem", { name: /Playback speed/i }));
 
 			await waitFor(() => {
-				expect(getAllByRole("menuitemradio").length).toBe(6);
+				const items = getAllByRole("menuitemradio");
+				expect(items.length).toBe(6);
+				// Each item declares its own set size so AT reports "X of 6", not "X of 7"
+				items.forEach((item, i) => {
+					expect(item).toHaveAttribute("aria-setsize", "6");
+					expect(item).toHaveAttribute("aria-posinset", String(i + 1));
+				});
 				// default playbackRate is 1 — "Normal speed" item should be focused
 				expect(document.activeElement).toHaveAttribute("aria-checked", "true");
 			});

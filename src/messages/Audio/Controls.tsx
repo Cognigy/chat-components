@@ -410,7 +410,7 @@ const Controls: FC<ControlsProps> = props => {
 										{playbackSpeedLabel}
 									</button>
 									<div role="group" aria-label={playbackSpeedLabel}>
-										{PLAYBACK_SPEEDS.map(speed => (
+										{PLAYBACK_SPEEDS.map((speed, index) => (
 											<button
 												key={speed}
 												className={classnames(classes.menuItem, {
@@ -420,6 +420,8 @@ const Controls: FC<ControlsProps> = props => {
 												role="menuitemradio"
 												tabIndex={-1}
 												aria-checked={playbackRate === speed}
+												aria-setsize={PLAYBACK_SPEEDS.length}
+												aria-posinset={index + 1}
 												aria-label={
 													speed === 1
 														? `${normalSpeedLabel} speed`
