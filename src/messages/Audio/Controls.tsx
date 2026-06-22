@@ -88,10 +88,16 @@ const Controls: FC<ControlsProps> = props => {
 	}, [menuView]);
 
 	// Re-focus when switching between main and speed views while the menu is open.
-	// (Initial open focus is handled by Radix's onOpenAutoFocus to avoid racing its focus scope.)
+	// Guarded on an actual view change (not the open transition) so the initial
+	// open focus stays owned by Radix's onOpenAutoFocus and we don't race its
+	// focus scope. Tracking the previous view lets us list every dependency.
+	const prevMenuViewRef = useRef(menuView);
 	useEffect(() => {
-		if (menuOpen) focusActiveView();
-	}, [menuView]); // eslint-disable-line react-hooks/exhaustive-deps
+		if (menuOpen && prevMenuViewRef.current !== menuView) {
+			focusActiveView();
+		}
+		prevMenuViewRef.current = menuView;
+	}, [menuOpen, menuView, focusActiveView]);
 
 	// Close the menu on any scroll — simpler and steadier than repositioning a
 	// fixed popover against a moving anchor. Capture phase catches scrolls on any
