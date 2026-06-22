@@ -65,6 +65,7 @@
 	"dependencies": {
 		"@braintree/sanitize-url": "^7.1.1",
 		"@fontsource/figtree": "5.2.10",
+		"@radix-ui/react-popover": "^1.1.15",
 		"adaptivecards": "2.11.1",
 		"classnames": "^2.3.2",
 		"dompurify": "^3.0.11",

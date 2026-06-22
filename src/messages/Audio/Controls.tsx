@@ -9,6 +9,7 @@ import {
 	useEffect,
 	useCallback,
 } from "react";
+import * as Popover from "@radix-ui/react-popover";
 import classes from "./Audio.module.css";
 import {
 	DownloadIcon,
@@ -64,39 +65,11 @@ const Controls: FC<ControlsProps> = props => {
 	const menuButtonRef = useRef<HTMLButtonElement>(null);
 	const [menuOpen, setMenuOpen] = useState(false);
 	const [menuView, setMenuView] = useState<"main" | "speed">("main");
-	const [menuFlipped, setMenuFlipped] = useState(false);
 	const [speedAnnouncement, setSpeedAnnouncement] = useState("");
 	const { config } = useMessageContext();
 
-	// Click-outside closes the menu
-	useEffect(() => {
-		if (!menuOpen) return;
-		const handleClickOutside = (e: MouseEvent) => {
-			if (
-				menuRef.current &&
-				!menuRef.current.contains(e.target as Node) &&
-				menuButtonRef.current &&
-				!menuButtonRef.current.contains(e.target as Node)
-			) {
-				setMenuOpen(false);
-				setMenuView("main");
-			}
-		};
-		document.addEventListener("mousedown", handleClickOutside);
-		return () => document.removeEventListener("mousedown", handleClickOutside);
-	}, [menuOpen]);
-
-	// Flip menu downward when there isn't enough space above the button
-	useEffect(() => {
-		if (!menuOpen || !menuButtonRef.current || !menuRef.current) return;
-		const buttonRect = menuButtonRef.current.getBoundingClientRect();
-		const menuHeight = menuRef.current.offsetHeight;
-		setMenuFlipped(buttonRect.top < menuHeight + 8);
-	}, [menuOpen]);
-
-	// Focus management on open / view change (APG menu button pattern)
-	useEffect(() => {
-		if (!menuOpen) return;
+	// Focus the relevant item for the current view (APG menu button pattern)
+	const focusActiveView = useCallback(() => {
 		if (menuView === "speed") {
 			// Focus the currently checked speed so the user immediately hears the active selection
 			const checkedItem = menuRef.current?.querySelector<HTMLElement>(
@@ -109,7 +82,26 @@ const Controls: FC<ControlsProps> = props => {
 			const firstItem = menuRef.current?.querySelector<HTMLElement>('[role="menuitem"]');
 			firstItem?.focus();
 		}
-	}, [menuOpen, menuView]);
+	}, [menuView]);
+
+	// Re-focus when switching between main and speed views while the menu is open.
+	// (Initial open focus is handled by Radix's onOpenAutoFocus to avoid racing its focus scope.)
+	useEffect(() => {
+		if (menuOpen) focusActiveView();
+	}, [menuView]); // eslint-disable-line react-hooks/exhaustive-deps
+
+	// Close the menu on any scroll — simpler and steadier than repositioning a
+	// fixed popover against a moving anchor. Capture phase catches scrolls on any
+	// ancestor scroll container, not just the window.
+	useEffect(() => {
+		if (!menuOpen) return;
+		const close = () => {
+			setMenuOpen(false);
+			setMenuView("main");
+		};
+		window.addEventListener("scroll", close, { capture: true, passive: true });
+		return () => window.removeEventListener("scroll", close, { capture: true });
+	}, [menuOpen]);
 
 	const getMenuItems = useCallback((): HTMLElement[] => {
 		if (!menuRef.current) return [];
@@ -195,9 +187,9 @@ const Controls: FC<ControlsProps> = props => {
 		menuButtonRef.current?.focus();
 	};
 
-	const toggleMenu = () => {
-		setMenuOpen(o => !o);
-		if (menuOpen) setMenuView("main");
+	const handleOpenChange = (open: boolean) => {
+		setMenuOpen(open);
+		if (!open) setMenuView("main");
 	};
 
 	const formatTime = useMemo(() => {
@@ -261,6 +253,7 @@ const Controls: FC<ControlsProps> = props => {
 					className={classes.playButton}
 					onClick={togglePlayAndPause}
 					aria-label={playing ? pauseAudioLabel : playAudioLabel}
+					data-testid="play-pause-button"
 				>
 					{playing ? <PauseIcon /> : <PlayIcon />}
 				</button>
@@ -284,7 +277,9 @@ const Controls: FC<ControlsProps> = props => {
 						style={{
 							background: `linear-gradient(to right, var(--cc-primary-color-focus) ${
 								progress * 100
-							}%, var(--cc-primary-color-opacity-10) ${progress * 100}%)`,
+							}%, var(--cc-audio-slider-track, var(--cc-primary-color-opacity-10)) ${
+								progress * 100
+							}%)`,
 						}}
 					/>
 				</div>
@@ -316,34 +311,42 @@ const Controls: FC<ControlsProps> = props => {
 							style={{
 								background: `linear-gradient(to right, var(--cc-primary-color-focus) ${
 									effectiveVolume * 100
-								}%, var(--cc-primary-color-opacity-10) ${effectiveVolume * 100}%)`,
+								}%, var(--cc-audio-slider-track, var(--cc-primary-color-opacity-10)) ${
+									effectiveVolume * 100
+								}%)`,
 							}}
 						/>
 					</div>
 				</div>
 
-				<div className={classes.menuContainer}>
-					<button
-						ref={menuButtonRef}
-						className={classnames(classes.menuButton, {
-							[classes.menuButtonActive]: menuOpen,
-						})}
-						onClick={toggleMenu}
-						aria-label={moreOptionsLabel}
-						aria-expanded={menuOpen}
-						aria-haspopup="menu"
-					>
-						<EllipsisVerticalIcon />
-					</button>
+				<Popover.Root open={menuOpen} onOpenChange={handleOpenChange}>
+					<div className={classes.menuContainer}>
+						<Popover.Trigger asChild>
+							<button
+								ref={menuButtonRef}
+								className={classnames(classes.menuButton, {
+									[classes.menuButtonActive]: menuOpen,
+								})}
+								aria-label={moreOptionsLabel}
+								aria-haspopup="menu"
+							>
+								<EllipsisVerticalIcon />
+							</button>
+						</Popover.Trigger>
 
-					{menuOpen && (
-						<div
+						<Popover.Content
 							ref={menuRef}
-							className={classnames(classes.optionsMenu, {
-								[classes.optionsMenuBelow]: menuFlipped,
-							})}
+							className={classes.optionsMenu}
 							role="menu"
+							side="bottom"
+							align="end"
+							sideOffset={6}
+							collisionPadding={8}
 							onKeyDown={handleMenuKeyDown}
+							onOpenAutoFocus={e => {
+								e.preventDefault();
+								focusActiveView();
+							}}
 						>
 							{menuView === "main" ? (
 								<>
@@ -415,9 +418,9 @@ const Controls: FC<ControlsProps> = props => {
 									</div>
 								</>
 							)}
-						</div>
-					)}
-				</div>
+						</Popover.Content>
+					</div>
+				</Popover.Root>
 			</div>
 
 			{altText && (

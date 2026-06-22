@@ -160,6 +160,17 @@ describe("Message Audio", () => {
 			expect(queryByRole("menu")).not.toBeInTheDocument();
 		});
 
+		it("closes the menu on scroll", async () => {
+			const { getByRole, queryByRole } = render(<Message message={message} />);
+			const trigger = await waitFor(() => getByRole("button", { name: "More options" }));
+
+			fireEvent.click(trigger);
+			expect(getByRole("menu")).toBeInTheDocument();
+
+			fireEvent.scroll(window);
+			await waitFor(() => expect(queryByRole("menu")).not.toBeInTheDocument());
+		});
+
 		it("navigates into playback speed submenu and focuses the active speed", async () => {
 			const { getByRole, getAllByRole } = render(<Message message={message} />);
 			const trigger = await waitFor(() => getByRole("button", { name: "More options" }));

@@ -134,6 +134,18 @@ article.c26 {
 	--cc-primary-color-700: var(--c26-primary-color-700, #164479);
 	--cc-primary-color-900: var(--c26-primary-color-900, #0b233d);
 
+	/* Audio player + dropdown menu (Figma C26 nodes 9791-11644 / 9791-11667).
+	 * Consumed by Audio.module.css with legacy fallbacks so the non-c26 theme
+	 * keeps its previous look. */
+	--cc-audio-border: var(--c26-audio-border, #e5e7eb); /* Neutrals/N100 */
+	--cc-audio-slider-track: var(--c26-audio-slider-track, #ecf5fe); /* Primary/P25 */
+	--cc-audio-time-color: var(--c26-audio-time-color, #4b5563); /* Neutrals/N500 */
+	--cc-audio-menu-text: var(--c26-audio-menu-text, #1f2937); /* Neutrals/N700 */
+	--cc-audio-menu-active-bg: var(
+		--c26-audio-menu-active-bg,
+		var(--cc-primary-color-100)
+	); /* Primary/P100 */
+
 	/* Input surfaces — AdaptiveCards text/date/time/select/textarea */
 	--cc-input-border-color: var(--c26-input-border-color, #d1d5db);
 	--cc-input-border-color-hover: var(--c26-input-border-color-hover, var(--cc-primary-color-300));
@@ -256,8 +268,10 @@ article.c26 .adaptivecard-wrapper [type="checkbox"]:active {
 	border-color: var(--cc-primary-color-700);
 }
 
-/* Audio controls — recolor black play/pause circle + download arrow to primary */
-article.c26 [data-testid="audio-controls"] button svg circle {
+/* Audio controls — recolor the main play/pause circle + download arrow to primary.
+ * Scoped to the play/pause button so it does NOT recolor the circle-play icon
+ * inside the options menu (Playback speed), which must stay neutral per design. */
+article.c26 [data-testid="audio-controls"] [data-testid="play-pause-button"] svg circle {
 	fill: var(--cc-primary-color);
 }
 

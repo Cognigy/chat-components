@@ -258,6 +258,7 @@ const screens: TScreen[] = [
 		title: "Multimedia messages",
 		anchor: "multimedia-messages",
 		messages: [
+			{ message: audio as IMessage },
 			{ message: image as IMessage },
 			{ message: imageDownloadable as IMessage },
 			{
@@ -277,7 +278,6 @@ const screens: TScreen[] = [
 			{ message: video as IMessage },
 			{ message: videoYoutube as IMessage },
 			{ message: videoAltText as IMessage },
-			{ message: audio as IMessage },
 		],
 	},
 	{
