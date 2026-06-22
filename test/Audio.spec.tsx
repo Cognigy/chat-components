@@ -196,15 +196,29 @@ describe("Message Audio", () => {
 			fireEvent.click(getByRole("menuitem", { name: /Playback speed/i }));
 
 			await waitFor(() => {
-				const items = getAllByRole("menuitemradio");
-				expect(items.length).toBe(6);
-				// Each item declares its own set size so AT reports "X of 6", not "X of 7"
-				items.forEach((item, i) => {
-					expect(item).toHaveAttribute("aria-setsize", "6");
-					expect(item).toHaveAttribute("aria-posinset", String(i + 1));
-				});
+				expect(getAllByRole("menuitemradio").length).toBe(6);
 				// default playbackRate is 1 — "Normal speed" item should be focused
 				expect(document.activeElement).toHaveAttribute("aria-checked", "true");
+			});
+		});
+
+		it("ArrowRight on Playback speed item opens speed submenu", async () => {
+			const { getByRole, getAllByRole } = render(<Message message={message} />);
+			const trigger = await waitFor(() => getByRole("button", { name: "More options" }));
+
+			fireEvent.click(trigger);
+			await waitFor(() => expect(document.activeElement).toBe(getAllByRole("menuitem")[0]));
+
+			// Move focus to Playback speed item (last menuitem)
+			const menu = getByRole("menu");
+			fireEvent.keyDown(menu, { key: "ArrowDown" });
+			expect(
+				(document.activeElement as HTMLElement).getAttribute("aria-haspopup"),
+			).toBe("menu");
+
+			fireEvent.keyDown(menu, { key: "ArrowRight" });
+			await waitFor(() => {
+				expect(getAllByRole("menuitemradio").length).toBe(6);
 			});
 		});
 
@@ -217,10 +231,33 @@ describe("Message Audio", () => {
 
 			await waitFor(() => getByRole("menuitemradio", { name: /Normal speed/i }));
 
-			fireEvent.keyDown(getByRole("menu"), { key: "ArrowLeft" });
+			// ArrowLeft exits the speed submenu — need to query the nested menu
+			const menus = document.querySelectorAll('[role="menu"]');
+			const innerMenu = menus[menus.length - 1] as HTMLElement;
+			fireEvent.keyDown(innerMenu, { key: "ArrowLeft" });
 
 			await waitFor(() => {
 				expect(getByRole("menuitem", { name: /Download transcript/i })).toBeInTheDocument();
+			});
+		});
+
+		it("Escape in speed view goes back to main menu (not close)", async () => {
+			const { getByRole, queryByRole } = render(<Message message={message} />);
+			const trigger = await waitFor(() => getByRole("button", { name: "More options" }));
+
+			fireEvent.click(trigger);
+			fireEvent.click(getByRole("menuitem", { name: /Playback speed/i }));
+
+			await waitFor(() => getByRole("menuitemradio", { name: /Normal speed/i }));
+
+			const menus = document.querySelectorAll('[role="menu"]');
+			const innerMenu = menus[menus.length - 1] as HTMLElement;
+			fireEvent.keyDown(innerMenu, { key: "Escape" });
+
+			await waitFor(() => {
+				// Menu stays open, returns to main view
+				expect(getByRole("menuitem", { name: /Download transcript/i })).toBeInTheDocument();
+				expect(queryByRole("menuitemradio")).not.toBeInTheDocument();
 			});
 		});
 

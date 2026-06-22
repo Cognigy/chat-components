@@ -244,29 +244,36 @@ article button.menuItemActive svg {
 	color: var(--cc-primary-color-focus);
 }
 
-article button.menuBackButton {
-	all: unset;
+.menuViewHeader {
 	display: flex;
 	align-items: center;
-	gap: 6px;
-	padding: 6px 8px 8px;
-	font-size: 12px;
-	font-weight: 600;
-	color: var(--cc-black-30);
-	cursor: pointer;
-	width: 100%;
-	box-sizing: border-box;
+	gap: 4px;
+	padding: 4px 8px 6px;
 	border-bottom: 1px solid var(--cc-black-90);
 	margin-bottom: 4px;
 }
 
-article button.menuBackButton:hover {
-	color: var(--cc-black-10);
+.menuViewTitle {
+	font-size: 12px;
+	font-weight: 600;
+	color: var(--cc-black-30);
 }
 
-article button.menuBackButton:focus-visible {
-	outline: 2px solid var(--cc-primary-color-focus);
-	outline-offset: -2px;
+article button.menuBackButton {
+	all: unset;
+	box-sizing: border-box;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	cursor: pointer;
+	color: var(--cc-black-30);
+	width: 20px;
+	height: 20px;
+	flex-shrink: 0;
+}
+
+article button.menuBackButton:hover {
+	color: var(--cc-black-10);
 }
 
 /*** Custom range input ***/

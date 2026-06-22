@@ -8,6 +8,7 @@ import {
 	useState,
 	useEffect,
 	useCallback,
+	useId,
 } from "react";
 import * as Popover from "@radix-ui/react-popover";
 import classes from "./Audio.module.css";
@@ -19,6 +20,7 @@ import {
 	CirclePlayIcon,
 	PlayIcon,
 	PauseIcon,
+	ArrowBack,
 } from "src/assets/svg";
 import ReactPlayer from "react-player";
 import { useMessageContext } from "../hooks";
@@ -72,7 +74,7 @@ const Controls: FC<ControlsProps> = props => {
 	// preventScroll avoids the browser scrolling the item into view — that scroll
 	// would trip the scroll-to-close listener and dismiss the menu the instant it
 	// opens when the trigger sits near a scroll boundary (e.g. under the IP tabs).
-	const focusActiveView = useCallback(() => {
+	const focusActiveView = useCallback((cameFromSpeed = false) => {
 		if (menuView === "speed") {
 			// Focus the currently checked speed so the user immediately hears the active selection
 			const checkedItem = menuRef.current?.querySelector<HTMLElement>(
@@ -81,6 +83,13 @@ const Controls: FC<ControlsProps> = props => {
 			const firstSpeed =
 				menuRef.current?.querySelector<HTMLElement>('[role="menuitemradio"]');
 			(checkedItem ?? firstSpeed)?.focus({ preventScroll: true });
+		} else if (cameFromSpeed) {
+			// Returning from the speed submenu: APG says focus the parent menuitem we
+			// came from (the one with aria-haspopup), not the first item.
+			const parentItem = menuRef.current?.querySelector<HTMLElement>(
+				'[role="menuitem"][aria-haspopup="menu"]',
+			);
+			parentItem?.focus({ preventScroll: true });
 		} else {
 			const firstItem = menuRef.current?.querySelector<HTMLElement>('[role="menuitem"]');
 			firstItem?.focus({ preventScroll: true });
@@ -94,7 +103,7 @@ const Controls: FC<ControlsProps> = props => {
 	const prevMenuViewRef = useRef(menuView);
 	useEffect(() => {
 		if (menuOpen && prevMenuViewRef.current !== menuView) {
-			focusActiveView();
+			focusActiveView(prevMenuViewRef.current === "speed");
 		}
 		prevMenuViewRef.current = menuView;
 	}, [menuOpen, menuView, focusActiveView]);
@@ -141,12 +150,8 @@ const Controls: FC<ControlsProps> = props => {
 		const currentIndex = items.indexOf(document.activeElement as HTMLElement);
 
 		switch (e.key) {
-			case "Escape":
-				e.preventDefault();
-				setMenuOpen(false);
-				setMenuView("main");
-				menuButtonRef.current?.focus({ preventScroll: true });
-				break;
+			// Escape is handled by Popover.Content's onEscapeKeyDown so we can
+			// intercept Radix's default dismiss for the two-level submenu behavior.
 			case "Tab":
 				// Close menu; let browser advance focus naturally to next element
 				setMenuOpen(false);
@@ -171,6 +176,18 @@ const Controls: FC<ControlsProps> = props => {
 			case "End":
 				e.preventDefault();
 				items[items.length - 1]?.focus({ preventScroll: true });
+				break;
+			case "ArrowRight":
+				// APG: Right Arrow on a parent menuitem opens its submenu and moves
+				// focus to the first submenu item. Only the Playback speed item has a
+				// submenu (aria-haspopup); the view-change effect handles the focus move.
+				if (
+					menuView === "main" &&
+					(document.activeElement as HTMLElement)?.getAttribute("aria-haspopup") === "menu"
+				) {
+					e.preventDefault();
+					setMenuView("speed");
+				}
 				break;
 			case "ArrowLeft":
 				if (menuView === "speed") {
@@ -271,6 +288,10 @@ const Controls: FC<ControlsProps> = props => {
 		config?.settings?.customTranslations?.ariaLabels?.downloadTranscript ||
 		"Download transcript";
 
+	// Unique id so the visible "Playback speed" title can name the speed submenu via
+	// aria-labelledby without colliding when multiple audio messages share a page.
+	const speedHeadingId = useId();
+
 	const effectiveVolume = muted ? 0 : volume;
 
 	return (
@@ -370,6 +391,20 @@ const Controls: FC<ControlsProps> = props => {
 							sideOffset={6}
 							collisionPadding={8}
 							onKeyDown={handleMenuKeyDown}
+							onEscapeKeyDown={e => {
+								// APG: Escape closes the innermost menu. In the speed submenu,
+								// prevent Radix's full dismiss and step back to the main view
+								// (the view-change effect re-focuses the Playback speed parent).
+								// In the main view, let Radix dismiss but explicitly restore
+								// focus — Radix's FocusScope return is unreliable in some
+								// environments (e.g. jsdom).
+								if (menuView === "speed") {
+									e.preventDefault();
+									setMenuView("main");
+								} else {
+									menuButtonRef.current?.focus({ preventScroll: true });
+								}
+							}}
 							onOpenAutoFocus={e => {
 								e.preventDefault();
 								focusActiveView();
@@ -392,6 +427,13 @@ const Controls: FC<ControlsProps> = props => {
 										className={classes.menuItem}
 										role="menuitem"
 										tabIndex={-1}
+										// Parent menuitem of the speed submenu (APG menu pattern):
+										// haspopup conveys the submenu relationship so AT enters
+										// the submenu in focus mode. This view-switching popover
+										// only renders this item in the main view (submenu hidden),
+										// so aria-expanded is false whenever it's present.
+										aria-haspopup="menu"
+										aria-expanded={false}
 										onClick={() => setMenuView("speed")}
 									>
 										<CirclePlayIcon />
@@ -400,17 +442,33 @@ const Controls: FC<ControlsProps> = props => {
 								</>
 							) : (
 								<>
-									<button
-										className={classes.menuBackButton}
-										role="menuitem"
-										tabIndex={-1}
-										onClick={() => setMenuView("main")}
-									>
-										<span aria-hidden="true">← </span>
-										{playbackSpeedLabel}
-									</button>
-									<div role="group" aria-label={playbackSpeedLabel}>
-										{PLAYBACK_SPEEDS.map((speed, index) => (
+									<div className={classes.menuViewHeader}>
+										{/*
+										 * Pointer-only back affordance. The APG menu pattern has
+										 * no focusable back item — keyboard/AT users go back via
+										 * ArrowLeft or Escape (see handleMenuKeyDown). Exposing it
+										 * to AT made it either a counted "1 of 1" menuitem or a
+										 * roleless control that dropped NVDA out of focus mode
+										 * (arrows stopped moving focus). So the icon button is
+										 * aria-hidden + tabIndex=-1: clickable for mouse/touch,
+										 * invisible to AT and the keyboard. The title beside it
+										 * stays exposed and names the submenu (aria-labelledby).
+										 */}
+										<button
+											className={classes.menuBackButton}
+											type="button"
+											tabIndex={-1}
+											aria-hidden="true"
+											onClick={() => setMenuView("main")}
+										>
+											<ArrowBack />
+										</button>
+										<span id={speedHeadingId} className={classes.menuViewTitle}>
+											{playbackSpeedLabel}
+										</span>
+									</div>
+									<div role="menu" aria-labelledby={speedHeadingId}>
+										{PLAYBACK_SPEEDS.map(speed => (
 											<button
 												key={speed}
 												className={classnames(classes.menuItem, {
@@ -420,8 +478,6 @@ const Controls: FC<ControlsProps> = props => {
 												role="menuitemradio"
 												tabIndex={-1}
 												aria-checked={playbackRate === speed}
-												aria-setsize={PLAYBACK_SPEEDS.length}
-												aria-posinset={index + 1}
 												aria-label={
 													speed === 1
 														? `${normalSpeedLabel} speed`
