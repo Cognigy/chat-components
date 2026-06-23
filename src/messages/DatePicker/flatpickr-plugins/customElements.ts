@@ -10,6 +10,13 @@ export interface Config {
 /**
  * Custom flatpickr plugin that adds some DOM elements for webchat v3 design
  * It handles timeContainer, weekNumbers, and custom accessibility logic for some datepicker elements.
+ *
+ * The calendar grid follows the W3C ARIA APG "Date Picker Dialog" pattern:
+ * - `.flatpickr-rContainer` is the `role="grid"` (it wraps the weekday header row and the day rows)
+ * - the weekday header is a `role="row"` of `role="columnheader"` cells
+ * - the day cells are `role="gridcell"`, grouped 7-per-`role="row"`
+ * - focus is managed with a roving tabindex: exactly one day is `tabindex="0"`, the rest `-1`
+ * - arrow keys / Home / End / PageUp / PageDown move real DOM focus between days
  */
 function customElements(pluginConfig: Config): Plugin {
 	// fp`refers to the Flatpickr instance
@@ -20,6 +27,10 @@ function customElements(pluginConfig: Config): Plugin {
 		const navKeydownHandlers = new WeakMap<HTMLElement, (event: KeyboardEvent) => void>();
 
 		let liveRegion: HTMLElement | null = null;
+		// When true, a month/year change is being driven by our PageUp/PageDown handler, which
+		// will announce the landed date itself; suppress the month/year-only announcement so the
+		// two don't compete in the live region.
+		let suppressMonthYearAnnounce = false;
 
 		function createLiveRegion() {
 			if (!fp?.calendarContainer) return;
@@ -36,50 +47,67 @@ function customElements(pluginConfig: Config): Plugin {
 			fp.calendarContainer.appendChild(liveRegion);
 		}
 
-		function announceMonthYear() {
-			if (!liveRegion) return;
-			const monthName = fp.l10n.months.longhand[fp.currentMonth];
-			const year = fp.currentYear;
-			liveRegion.textContent = `${monthName} ${year}`;
+		// Push a message into the polite live region so NVDA speaks it. Re-set even when the
+		// text is unchanged (clear first) so repeated navigation to equivalent labels still
+		// announces.
+		function announce(message: string) {
+			if (!liveRegion || !message) return;
+			// Clearing first guarantees a DOM change is observed even if the text repeats.
+			liveRegion.textContent = "";
+			liveRegion.textContent = message;
 		}
 
-		function focusCurrentDay() {
-			if (!fp?.calendarContainer) return;
-			const selectedDay =
+		// Announce the visible month/year — used when the month/year is changed via the nav
+		// buttons or the month/year dropdowns, where focus stays on the control (not a day),
+		// so no day-focus announcement fires.
+		function announceMonthYear() {
+			if (suppressMonthYearAnnounce) return;
+			const monthName = fp.l10n.months.longhand[fp.currentMonth];
+			announce(`${monthName} ${fp.currentYear}`);
+		}
+
+		// Announce a focused day's full spoken date (e.g. "June 23, 2026"). Driven on every
+		// day focus change. NVDA does not reliably re-announce a roving-focus gridcell on its
+		// own, so this live-region message is what the user actually hears when focus moves
+		// between dates via arrows / Home / End / PageUp / PageDown. Because the message
+		// includes the month and year, it also covers the month/year change on Page navigation.
+		function announceDay(dayElem: HTMLElement | null) {
+			const label = dayElem?.getAttribute("aria-label");
+			if (label) announce(label);
+		}
+
+		// Returns the currently "selectable" day cells of the visible month, i.e. days that
+		// belong to the current month and are not disabled. Used for roving-focus targets.
+		function getDayCells(): HTMLElement[] {
+			return Array.from(
+				fp?.calendarContainer?.querySelectorAll<HTMLElement>(".dayContainer .flatpickr-day") ||
+					[],
+			);
+		}
+
+		// Roving tabindex: make exactly one day focusable (tabindex="0"); all others tabindex="-1".
+		// Optionally move real DOM focus to it so the screen reader announces the date.
+		function setActiveDay(dayElem: HTMLElement | null, options?: { focus?: boolean }) {
+			if (!dayElem) return;
+			getDayCells().forEach(day => {
+				day.setAttribute("tabindex", day === dayElem ? "0" : "-1");
+			});
+			if (options?.focus) {
+				dayElem.focus();
+			}
+		}
+
+		// Pick the day cell that should be the initial roving-focus target:
+		// the selected day, else today, else the first enabled day of the current month.
+		function getInitialActiveDay(): HTMLElement | null {
+			if (!fp?.calendarContainer) return null;
+			return (
 				fp.calendarContainer.querySelector<HTMLElement>(".flatpickr-day.selected") ||
 				fp.calendarContainer.querySelector<HTMLElement>(".flatpickr-day.today") ||
 				fp.calendarContainer.querySelector<HTMLElement>(
-					".flatpickr-day:not(.flatpickr-disabled):not(.prevMonthDay):not(.nextMonthDay)",
-				);
-			if (selectedDay) {
-				const daysContainer = fp?.calendarContainer?.getElementsByClassName(
-					"flatpickr-innerContainer",
-				)[0] as HTMLElement;
-				if (daysContainer) {
-					// Use aria-activedescendant pattern for grid navigation
-					if (!selectedDay.id) {
-						selectedDay.id = `fp-day-${Math.random().toString(36).substring(2, 9)}`;
-					}
-					daysContainer.setAttribute("aria-activedescendant", selectedDay.id);
-				}
-			}
-		}
-
-		function updateDayAriaActivedescendant() {
-			if (!fp?.calendarContainer) return;
-			const daysContainer = fp?.calendarContainer?.getElementsByClassName(
-				"flatpickr-innerContainer",
-			)[0] as HTMLElement;
-			const selectedDay =
-				fp.calendarContainer.querySelector<HTMLElement>(".flatpickr-day.selected") ||
-				fp.calendarContainer.querySelector<HTMLElement>(".flatpickr-day.today");
-
-			if (daysContainer && selectedDay) {
-				if (!selectedDay.id) {
-					selectedDay.id = `fp-day-${Math.random().toString(36).substring(2, 9)}`;
-				}
-				daysContainer.setAttribute("aria-activedescendant", selectedDay.id);
-			}
+					".dayContainer .flatpickr-day:not(.flatpickr-disabled):not(.prevMonthDay):not(.nextMonthDay)",
+				)
+			);
 		}
 
 		function buildTimeArrows() {
@@ -231,38 +259,106 @@ function customElements(pluginConfig: Config): Plugin {
 			}
 		}
 
-		// Remove tabindex from calender container and set it to innerContainer
+		// Number of columns in the calendar grid (7 days of the week).
+		const GRID_COLS = 7;
+
+		// Apply the grid structure roles (role="grid" / "columnheader").
+		// Day cells keep their position semantics via aria-rowindex/aria-colindex applied
+		// per-render in applyDayGridIndices() — we deliberately do NOT wrap them in physical
+		// row elements, because flatpickr's native arrow navigation indexes the day cells as
+		// direct children of `.dayContainer`; wrapping them breaks that navigation.
 		function setDateSelectAlly() {
+			// The calendar container is not the grid; keep it out of the tab order.
 			fp?.calendarContainer?.setAttribute("tabindex", "-1");
-			const daysContainer = fp?.calendarContainer?.getElementsByClassName(
-				"flatpickr-innerContainer",
-			)[0];
-			if (daysContainer) {
-				daysContainer.setAttribute("tabindex", "0");
-				daysContainer.setAttribute("role", "grid");
-				daysContainer.setAttribute(
+
+			// `.flatpickr-rContainer` wraps both the weekday header row and the day grid,
+			// so it is the correct element to carry role="grid".
+			const grid = fp?.calendarContainer?.querySelector<HTMLElement>(".flatpickr-rContainer");
+			if (grid) {
+				grid.setAttribute("role", "grid");
+				grid.setAttribute(
 					"aria-label",
 					customTranslations?.ariaLabels?.datePickerGridLabel || "Calendar",
 				);
-				daysContainer.setAttribute(
+				grid.setAttribute(
 					"aria-description",
 					customTranslations?.ariaLabels?.datePickerGridDescription ||
 						"Use arrow keys to navigate through dates",
 				);
+				grid.setAttribute("aria-colcount", String(GRID_COLS));
+				// 1 weekday header row + 6 week rows.
+				grid.setAttribute("aria-rowcount", "7");
 			}
 
-			const weekdayContainer =
-				fp?.calendarContainer?.querySelector(".flatpickr-weekdays");
+			// `.flatpickr-innerContainer` is just a layout wrapper now (focus lives on a day cell).
+			const innerContainer = fp?.calendarContainer?.getElementsByClassName(
+				"flatpickr-innerContainer",
+			)[0];
+			innerContainer?.removeAttribute("tabindex");
+			innerContainer?.removeAttribute("role");
+			innerContainer?.removeAttribute("aria-activedescendant");
+
+			// Weekday header is row 1 of the grid; each weekday is a columnheader.
+			const weekdayContainer = fp?.calendarContainer?.querySelector(".flatpickr-weekdays");
 			if (weekdayContainer) {
 				weekdayContainer.setAttribute("role", "row");
+				weekdayContainer.setAttribute("aria-rowindex", "1");
 			}
-			const weekdaySpans = fp?.calendarContainer?.querySelectorAll(
-				".flatpickr-weekday",
-			);
-			weekdaySpans?.forEach(span => {
+			const weekdaySpans = fp?.calendarContainer?.querySelectorAll(".flatpickr-weekday");
+			weekdaySpans?.forEach((span, index) => {
 				span.setAttribute("role", "columnheader");
 				span.setAttribute("abbr", span.textContent?.trim() || "");
+				span.setAttribute("aria-colindex", String((index % GRID_COLS) + 1));
 			});
+		}
+
+		// Give the flat list of day cells grid row/column semantics via aria-rowindex and
+		// aria-colindex (instead of physical role="row" wrappers, which would break flatpickr's
+		// native arrow navigation). The `.dayContainer` is the rowgroup. Flatpickr rebuilds
+		// `.dayContainer` on every render, so this must run after each rebuild.
+		function applyDayGridIndices() {
+			const dayContainer =
+				fp?.calendarContainer?.querySelector<HTMLElement>(".dayContainer");
+			if (!dayContainer) return;
+
+			dayContainer.setAttribute("role", "rowgroup");
+
+			const dayCells = Array.from(
+				dayContainer.querySelectorAll<HTMLElement>(":scope > .flatpickr-day"),
+			);
+			dayCells.forEach((cell, i) => {
+				// Day rows start at grid row 2 (row 1 is the weekday header).
+				cell.setAttribute("aria-rowindex", String(Math.floor(i / GRID_COLS) + 2));
+				cell.setAttribute("aria-colindex", String((i % GRID_COLS) + 1));
+			});
+		}
+
+		// Re-apply grid row roles and restore the single focusable day whenever flatpickr
+		// rebuilds the day grid (default-date application, redraws, month/year changes).
+		// A MutationObserver on the stable `.flatpickr-days` container is the most robust hook,
+		// matching the defensive pattern used for the nav buttons and month selector.
+		function observeDayGrid() {
+			const daysContainer =
+				fp?.calendarContainer?.querySelector<HTMLElement>(".flatpickr-days");
+			if (!daysContainer || daysContainer.dataset.gridObserved === "true") return;
+			daysContainer.dataset.gridObserved = "true";
+
+			const reapply = () => {
+				applyDayGridIndices();
+				// Keep exactly one focusable day. Preserve the existing roving target if it is
+				// still in the DOM; otherwise fall back to the selected/today/first day.
+				const existing = daysContainer.querySelector<HTMLElement>(
+					".flatpickr-day[tabindex='0']",
+				);
+				setActiveDay(existing || getInitialActiveDay(), { focus: false });
+			};
+
+			// `.dayContainer` is replaced on every flatpickr render; re-apply on each childList
+			// change. We only set attributes (not move nodes), so this never re-triggers itself.
+			const observer = new MutationObserver(() => reapply());
+			observer.observe(daysContainer, { childList: true, subtree: true });
+			// Apply once immediately for the initial render.
+			reapply();
 		}
 
 		// Observe month selector for changes and set tabindex again to 0. This is to ensure that the month selector is focusable all the time
@@ -389,62 +485,134 @@ function customElements(pluginConfig: Config): Plugin {
 			}
 		}
 
-		// Handle arrow key navigation for grid using aria-activedescendant
-		function setGridArrowKeyNavigation() {
-			const daysContainer = fp?.calendarContainer?.getElementsByClassName(
-				"flatpickr-innerContainer",
-			)[0] as HTMLElement;
+		// In-month day cells of the visible month (excludes prev/next-month overflow cells).
+		function getInMonthCells(): HTMLElement[] {
+			return getDayCells().filter(
+				c =>
+					!c.classList.contains("prevMonthDay") && !c.classList.contains("nextMonthDay"),
+			);
+		}
 
-			if (!daysContainer) return;
+		// After a month/year change, move roving focus to the day with the same day-of-month
+		// number (APG PageUp/PageDown behavior). If that day does not exist in the new month
+		// (e.g. Jan 31 -> Feb), focus the last day of the month instead.
+		function focusSameOrLastDayOfMonth(dayNumber: number) {
+			const inMonth = getInMonthCells();
+			if (inMonth.length === 0) {
+				setActiveDay(getInitialActiveDay(), { focus: true });
+				return;
+			}
+			const sameDay = inMonth.find(c => Number(c.textContent?.trim()) === dayNumber);
+			const target = sameDay || inMonth[inMonth.length - 1];
+			setActiveDay(target, { focus: true });
+		}
+
+		// Keyboard navigation for the calendar grid.
+		//
+		// IMPORTANT: flatpickr already implements Arrow-key navigation natively (focusOnDay /
+		// getNextAvailableDay), including disabled-day skipping and crossing month boundaries.
+		// We deliberately do NOT handle Arrow keys here — doing so previously ran two handlers in
+		// parallel that fought over focus (each arrow moved focus twice, and focus was lost after
+		// a month change). Instead we let flatpickr own the arrows and only add the keys it lacks:
+		// Home / End (within the week) and PageUp / PageDown (prev/next month, same day number).
+		// A separate `focusin` listener (see syncRovingTabindex) keeps the roving tabindex aligned
+		// with whatever day flatpickr focuses, so Tab can always re-enter the grid.
+		function setGridKeyNavigation() {
+			const daysContainer =
+				fp?.calendarContainer?.querySelector<HTMLElement>(".flatpickr-days");
+			if (!daysContainer || daysContainer.dataset.keyboardBound === "true") return;
+			daysContainer.dataset.keyboardBound = "true";
+
+			const cols = 7;
 
 			daysContainer.addEventListener("keydown", (event: KeyboardEvent) => {
-				if (!["ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight"].includes(event.key)) {
-					return;
-				}
-
-				event.preventDefault();
-
-				const allDays = Array.from(
-					fp?.calendarContainer?.querySelectorAll<HTMLElement>(".flatpickr-day") || [],
-				);
-				const activeDayId = daysContainer.getAttribute("aria-activedescendant");
-				const currentDay = activeDayId
-					? fp?.calendarContainer?.querySelector(`#${activeDayId}`)
-					: null;
-				const currentIndex = currentDay ? allDays.indexOf(currentDay as HTMLElement) : -1;
-
-				let nextIndex = currentIndex;
-
-				// Get grid dimensions (7 columns for days of week)
-				const cols = 7;
+				const currentDay = event.target as HTMLElement;
+				if (!currentDay?.classList?.contains("flatpickr-day")) return;
 
 				switch (event.key) {
-					case "ArrowDown":
-						nextIndex = currentIndex + cols;
-						break;
-					case "ArrowUp":
-						nextIndex = currentIndex - cols;
-						break;
-					case "ArrowRight":
-						nextIndex = currentIndex + 1;
-						break;
-					case "ArrowLeft":
-						nextIndex = currentIndex - 1;
-						break;
-				}
-
-				// Clamp to valid range
-				if (nextIndex >= 0 && nextIndex < allDays.length) {
-					const nextDay = allDays[nextIndex];
-					if (!nextDay.classList.contains("flatpickr-disabled")) {
-						if (!nextDay.id) {
-							nextDay.id = `fp-day-${Math.random().toString(36).substring(2, 9)}`;
+					case "Home":
+					case "End": {
+						// First (col 0) / last (col 6) day of the focused week. Operate on the full
+						// day list so week columns line up regardless of disabled days.
+						event.preventDefault();
+						event.stopPropagation();
+						const cells = getDayCells();
+						const idx = cells.indexOf(currentDay);
+						if (idx === -1) return;
+						const weekStart = idx - (idx % cols);
+						const targetIdx =
+							event.key === "Home" ? weekStart : weekStart + (cols - 1);
+						const target = cells[targetIdx];
+						if (target && !target.classList.contains("flatpickr-disabled")) {
+							setActiveDay(target, { focus: true });
 						}
-						daysContainer.setAttribute("aria-activedescendant", nextDay.id);
-						// Announce the date via live region
-						announceMonthYear();
+						return;
 					}
+					case "PageUp":
+					case "PageDown": {
+						// Prev/next month (Shift = year), keeping the same day-of-month number.
+						// stopPropagation so flatpickr's keydown never also acts on this event.
+						event.preventDefault();
+						event.stopPropagation();
+						const dayNumber = Number(currentDay.textContent?.trim());
+						const forward = event.key === "PageDown";
+						// Suppress flatpickr's month/year-change announcement; focusing the landed
+						// day below announces the full date (which already includes month + year).
+						suppressMonthYearAnnounce = true;
+						if (event.shiftKey) {
+							fp.changeYear(fp.currentYear + (forward ? 1 : -1));
+						} else {
+							fp.changeMonth(forward ? 1 : -1);
+						}
+						suppressMonthYearAnnounce = false;
+						focusSameOrLastDayOfMonth(dayNumber);
+						return;
+					}
+					case "Tab": {
+						// Let the browser move focus out of the grid natively (forward to the time
+						// fields / submit, backward to the month-year nav). We only stop the event
+						// reaching flatpickr's own keydown, which otherwise hijacks Shift+Tab and
+						// sends focus to its hidden input (a dead end). We do NOT preventDefault, so
+						// native tabbing proceeds; and the dialog's focus trap does not act on a day
+						// cell (never the first/last focusable), so stopping propagation is safe.
+						event.stopPropagation();
+						return;
+					}
+					case "Enter":
+					case " ":
+					case "Spacebar": {
+						// Select the focused day. flatpickr selects on Enter natively, but Space
+						// does not select, so handle both here and stop flatpickr double-acting.
+						event.preventDefault();
+						event.stopPropagation();
+						currentDay.click();
+						return;
+					}
+					// Arrow keys intentionally fall through to flatpickr's native handler.
 				}
+			});
+		}
+
+		// On every day-cell focus: (1) keep the roving tabindex (a single tabindex="0" day)
+		// aligned with the focused day — whether moved by flatpickr's native arrow handling or by
+		// our Home/End/Page handlers — so Tab always re-enters the grid on the right day; and
+		// (2) announce the focused date via the live region, since NVDA does not reliably speak a
+		// roving-focus gridcell on its own.
+		function syncRovingTabindex() {
+			const daysContainer =
+				fp?.calendarContainer?.querySelector<HTMLElement>(".flatpickr-days");
+			if (!daysContainer || daysContainer.dataset.focusinBound === "true") return;
+			daysContainer.dataset.focusinBound = "true";
+
+			daysContainer.addEventListener("focusin", (event: FocusEvent) => {
+				const target = event.target as HTMLElement;
+				if (!target?.classList?.contains("flatpickr-day")) return;
+				if (target.getAttribute("tabindex") !== "0") {
+					getDayCells().forEach(day => {
+						day.setAttribute("tabindex", day === target ? "0" : "-1");
+					});
+				}
+				announceDay(target);
 			});
 		}
 
@@ -460,14 +628,17 @@ function customElements(pluginConfig: Config): Plugin {
 				observeNavButtons,
 				observeMonthSelector,
 				createLiveRegion,
-				focusCurrentDay,
-				setGridArrowKeyNavigation,
+				setGridKeyNavigation,
+				syncRovingTabindex,
+				// Apply grid row roles + the initial roving-focus day, and keep them correct
+				// across every flatpickr rebuild. Does not steal focus — the dialog focuses its
+				// heading on open; the first Tab into the grid lands on the focusable day.
+				observeDayGrid,
 
 				() => {
 					fp?.loadedPlugins?.push("customElements");
 				},
 			],
-			onMonthChange: [announceMonthYear],
 			onYearChange: [announceMonthYear],
 			onDayCreate: [
 				(_dObj, _dStr, _fp, dayElem) => {
@@ -480,31 +651,57 @@ function customElements(pluginConfig: Config): Plugin {
 					}
 
 					dayElem.innerHTML = `<span class='dayInner'>${dayElem.innerHTML}</span>`;
-					// All day cells are not focusable by default (using aria-activedescendant pattern)
+					// Real gridcell so the screen reader exposes it as the focused cell of the grid
+					// (the previous role="presentation" hid it, which broke arrow-key navigation).
+					dayElem.setAttribute("role", "gridcell");
+					// Roving tabindex default: not focusable until promoted by setActiveDay().
 					dayElem.setAttribute("tabindex", "-1");
-					// Use presentation role so individual dates don't announce as clickable items
-					dayElem.setAttribute("role", "presentation");
-					// Ensure each date has a unique ID for aria-activedescendant
+					// Mark the selected day for assistive tech.
+					if (dayElem.classList.contains("selected")) {
+						dayElem.setAttribute("aria-selected", "true");
+					} else {
+						dayElem.removeAttribute("aria-selected");
+					}
+					// Ensure each date has a unique ID (used by tests / potential labelling).
 					if (!dayElem.id) {
 						dayElem.id = `fp-day-${Math.random().toString(36).substring(2, 9)}`;
 					}
-					// Add aria-label with full date so screen reader announces "June 1" when navigated
-					const dateNum = dayElem.textContent?.trim();
-					if (dateNum && !isDisabled) {
-						const monthName = fp.l10n.months.longhand[fp.currentMonth];
-						dayElem.setAttribute("aria-label", `${monthName} ${dateNum}, ${fp.currentYear}`);
+					// Spoken aria-label so the screen reader announces e.g. "June 1, 2026" when the
+					// day is focused. Use the cell's own date (dayElem.dateObj) rather than the
+					// visible month, so prev/next-month days announce their real month — not "June 31".
+					const cellDate = (dayElem as unknown as { dateObj?: Date }).dateObj;
+					if (cellDate) {
+						const monthName = fp.l10n.months.longhand[cellDate.getMonth()];
+						dayElem.setAttribute(
+							"aria-label",
+							`${monthName} ${cellDate.getDate()}, ${cellDate.getFullYear()}`,
+						);
 					}
 				},
 				handleWeekNumbers,
 			],
-			onValueUpdate: [upsertTimeArrows, updateDayAriaActivedescendant],
-			onMonthChange: [
-				announceMonthYear,
+			onValueUpdate: [
+				upsertTimeArrows,
+				// Selecting a date rebuilds the day grid synchronously (flatpickr calls
+				// buildDays() before firing onValueUpdate). Re-apply the grid indices and restore
+				// a single focusable day so the roving-tabindex invariant survives selection, and
+				// mark the newly selected gridcell.
 				() => {
-					// Re-attach arrow key navigation when month changes
-					setGridArrowKeyNavigation();
+					applyDayGridIndices();
+					const selected = fp?.calendarContainer?.querySelector<HTMLElement>(
+						".dayContainer .flatpickr-day.selected",
+					);
+					getDayCells().forEach(day => {
+						if (day.classList.contains("selected")) {
+							day.setAttribute("aria-selected", "true");
+						} else {
+							day.removeAttribute("aria-selected");
+						}
+					});
+					setActiveDay(selected || getInitialActiveDay(), { focus: false });
 				},
 			],
+			onMonthChange: [announceMonthYear],
 		};
 	};
 }
