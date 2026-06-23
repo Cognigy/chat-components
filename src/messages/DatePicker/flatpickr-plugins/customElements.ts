@@ -493,6 +493,27 @@ function customElements(pluginConfig: Config): Plugin {
 			);
 		}
 
+		// Read the real Date for a day cell (flatpickr stores it on dateObj).
+		function cellDate(cell: HTMLElement): Date | undefined {
+			return (cell as unknown as { dateObj?: Date }).dateObj;
+		}
+
+		// Find the IN-MONTH cell for a given Y/M/D in the currently visible grid, if present
+		// (ignores prev/next-month overflow cells so we match the canonical cell for that date).
+		function findInMonthCellByDate(date: Date): HTMLElement | null {
+			return (
+				getInMonthCells().find(c => {
+					const d = cellDate(c);
+					return (
+						!!d &&
+						d.getFullYear() === date.getFullYear() &&
+						d.getMonth() === date.getMonth() &&
+						d.getDate() === date.getDate()
+					);
+				}) || null
+			);
+		}
+
 		// After a month/year change, move roving focus to the day with the same day-of-month
 		// number (APG PageUp/PageDown behavior). If that day does not exist in the new month
 		// (e.g. Jan 31 -> Feb), focus the last day of the month instead.
@@ -509,14 +530,16 @@ function customElements(pluginConfig: Config): Plugin {
 
 		// Keyboard navigation for the calendar grid.
 		//
-		// IMPORTANT: flatpickr already implements Arrow-key navigation natively (focusOnDay /
-		// getNextAvailableDay), including disabled-day skipping and crossing month boundaries.
-		// We deliberately do NOT handle Arrow keys here — doing so previously ran two handlers in
-		// parallel that fought over focus (each arrow moved focus twice, and focus was lost after
-		// a month change). Instead we let flatpickr own the arrows and only add the keys it lacks:
-		// Home / End (within the week) and PageUp / PageDown (prev/next month, same day number).
-		// A separate `focusin` listener (see syncRovingTabindex) keeps the roving tabindex aligned
-		// with whatever day flatpickr focuses, so Tab can always re-enter the grid.
+		// IMPORTANT: flatpickr implements Arrow-key navigation natively (focusOnDay /
+		// getNextAvailableDay), including disabled-day skipping. We let flatpickr own arrow moves
+		// that stay WITHIN the visible month — handling them ourselves previously ran two handlers
+		// in parallel that fought over focus. We only take over an arrow when the move crosses a
+		// month boundary, because flatpickr there jumps to the "first available day" of the new
+		// grid (non-sequential, confusing for screen-reader users) instead of the sequential
+		// next/previous calendar day. We also add the keys flatpickr lacks: Home / End (within the
+		// week) and PageUp / PageDown (prev/next month, same day number). A separate `focusin`
+		// listener (see syncRovingTabindex) keeps the roving tabindex aligned with whatever day is
+		// focused, so Tab can always re-enter the grid.
 		function setGridKeyNavigation() {
 			const daysContainer =
 				fp?.calendarContainer?.querySelector<HTMLElement>(".flatpickr-days");
@@ -588,7 +611,57 @@ function customElements(pluginConfig: Config): Plugin {
 						currentDay.click();
 						return;
 					}
-					// Arrow keys intentionally fall through to flatpickr's native handler.
+					case "ArrowLeft":
+					case "ArrowRight":
+					case "ArrowUp":
+					case "ArrowDown": {
+						// Within the visible month, flatpickr's native arrow navigation is correct,
+						// so we let it handle the move (fall through). We ONLY take over when the
+						// move would cross a month boundary: flatpickr's cross-month behavior jumps
+						// to the "first available day" of the new grid (e.g. ArrowRight on July 11 ->
+						// June 28), which is non-sequential and confusing for screen-reader users.
+						// Instead we move to the SEQUENTIAL next/previous calendar day.
+						const from = cellDate(currentDay);
+						if (!from) return; // no date info -> leave it to flatpickr
+
+						const deltaDays =
+							event.key === "ArrowRight"
+								? 1
+								: event.key === "ArrowLeft"
+								? -1
+								: event.key === "ArrowDown"
+								? cols
+								: -cols;
+						const targetDate = new Date(from);
+						targetDate.setDate(targetDate.getDate() + deltaDays);
+
+						// If the sequential target is an in-month cell already in this grid, let
+						// flatpickr move focus there natively (no interception).
+						if (findInMonthCellByDate(targetDate)) return;
+
+						// Otherwise the target lives in the adjacent month: flip the calendar and
+						// land focus on that exact date (sequential), announced via focusin.
+						event.preventDefault();
+						event.stopPropagation();
+						suppressMonthYearAnnounce = true;
+						fp.changeMonth(deltaDays > 0 ? 1 : -1);
+						suppressMonthYearAnnounce = false;
+
+						const exact = findInMonthCellByDate(targetDate);
+						if (exact && !exact.classList.contains("flatpickr-disabled")) {
+							setActiveDay(exact, { focus: true });
+						} else {
+							// Exact date missing/disabled (rare, e.g. min/max bounds): fall back to
+							// the nearest enabled in-month day in the direction of travel.
+							const inMonth = getInMonthCells().filter(
+								c => !c.classList.contains("flatpickr-disabled"),
+							);
+							const fallback =
+								deltaDays > 0 ? inMonth[0] : inMonth[inMonth.length - 1];
+							setActiveDay(fallback || getInitialActiveDay(), { focus: true });
+						}
+						return;
+					}
 				}
 			});
 		}
@@ -612,7 +685,22 @@ function customElements(pluginConfig: Config): Plugin {
 						day.setAttribute("tabindex", day === target ? "0" : "-1");
 					});
 				}
-				announceDay(target);
+
+				// When focus enters the grid from OUTSIDE (e.g. tabbing/clicking from the
+				// next-month button), NVDA speaks the grid's own context ("Calendar, table, use
+				// arrow keys…") and drops a live-region update that lands at the same moment. Defer
+				// the date announcement one tick so it is spoken AFTER the grid context, instead of
+				// being clobbered by it. For moves WITHIN the grid (arrows/Home/End/Page) there is
+				// no competing context speech, so announce immediately.
+				const fromOutsideGrid = !(
+					event.relatedTarget instanceof HTMLElement &&
+					daysContainer.contains(event.relatedTarget)
+				);
+				if (fromOutsideGrid) {
+					setTimeout(() => announceDay(target), 50);
+				} else {
+					announceDay(target);
+				}
 			});
 		}
 
