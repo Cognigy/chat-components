@@ -9,6 +9,12 @@ import HeaderEllipsis from "./header_ellipsis.svg?react";
 import ArrowBack from "./arrow_back.svg?react";
 import BotAvatar from "./avatar_bot.svg?react";
 import PlaceholderAvatar from "./avatar_placeholder.svg?react";
+import VolumeIcon from "./volume.svg?react";
+import VolumeXIcon from "./volume_x.svg?react";
+import EllipsisVerticalIcon from "./ellipsis_vertical.svg?react";
+import CirclePlayIcon from "./circle_play.svg?react";
+import PlayIcon from "./play.svg?react";
+import PauseIcon from "./pause.svg?react";
 
 export {
 	BotAvatar,
@@ -22,4 +28,10 @@ export {
 	LinkIcon,
 	HeaderEllipsis,
 	ArrowBack,
+	VolumeIcon,
+	VolumeXIcon,
+	EllipsisVerticalIcon,
+	CirclePlayIcon,
+	PlayIcon,
+	PauseIcon,
 };

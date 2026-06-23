@@ -98,7 +98,6 @@ import imageBrokenFixture from "./fixtures/imageBroken.json";
 import videoFixture from "./fixtures/video.json";
 import videoYoutubeFixture from "./fixtures/videoYoutube.json";
 import videoAltTextFixture from "./fixtures/videoWithAltText.json";
-import audioFixture from "./fixtures/audio.json";
 import fileFixture from "./fixtures/file.json";
 import listFixture from "./fixtures/list.json";
 import galleryFixture from "./fixtures/gallery.json";
@@ -257,7 +256,9 @@ const demoCases: Case[] = [
 	{ name: "demo: video", message: asBot(videoFixture) },
 	{ name: "demo: video (YouTube)", message: asBot(videoYoutubeFixture) },
 	{ name: "demo: video with alt text", message: asBot(videoAltTextFixture) },
-	{ name: "demo: audio", message: asBot(audioFixture) },
+	// audio intentionally excluded: volume control + options menu were added
+	// in AB#137478, so the DOM differs from the published baseline by design.
+	// TODO: re-add audio once v0.74.0 is published and the baseline is updated to v0.74.0.
 	{ name: "demo: file", message: asBot(fileFixture) },
 	// Templates
 	{ name: "demo: list", message: asBot(listFixture) },
