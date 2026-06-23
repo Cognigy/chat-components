@@ -233,6 +233,10 @@ article button.menuItem:focus-visible {
 article button.menuItem svg {
 	flex-shrink: 0;
 	color: var(--cc-audio-menu-text, var(--cc-black-30));
+	/* Prevent host-page CSS resets (e.g. Tailwind preflight `svg { fill: currentColor }`)
+	 * from overriding the SVG's own fill="none" presentation attribute on stroke-based icons. */
+	fill: none;
+	stroke: currentColor;
 }
 
 article button.menuItemActive {

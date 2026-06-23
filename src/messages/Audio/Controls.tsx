@@ -65,10 +65,27 @@ const Controls: FC<ControlsProps> = props => {
 	const downloadTranscriptLinkRef = useRef<HTMLAnchorElement>(null);
 	const menuRef = useRef<HTMLDivElement>(null);
 	const menuButtonRef = useRef<HTMLButtonElement>(null);
+	const scrollContainerRef = useRef<HTMLElement | null>(null);
 	const [menuOpen, setMenuOpen] = useState(false);
 	const [menuView, setMenuView] = useState<"main" | "speed">("main");
 	const [speedAnnouncement, setSpeedAnnouncement] = useState("");
 	const { config } = useMessageContext();
+
+	// Find the nearest scrollable ancestor once on mount so Radix uses it as the
+	// collision boundary instead of the viewport. This matters in constrained host
+	// panels (e.g. Interaction Panel MFE) where the viewport bottom is close to the
+	// trigger even when the scroll container has plenty of room below.
+	useEffect(() => {
+		let el = menuButtonRef.current?.parentElement ?? null;
+		while (el && el !== document.body) {
+			const { overflow, overflowY } = getComputedStyle(el);
+			if (/(auto|scroll|overlay)/.test(overflow + overflowY)) {
+				scrollContainerRef.current = el;
+				break;
+			}
+			el = el.parentElement;
+		}
+	}, []);
 
 	// Focus the relevant item for the current view (APG menu button pattern).
 	// preventScroll avoids the browser scrolling the item into view — that scroll
@@ -394,6 +411,7 @@ const Controls: FC<ControlsProps> = props => {
 							align="end"
 							sideOffset={6}
 							collisionPadding={8}
+							collisionBoundary={scrollContainerRef.current ?? undefined}
 							onKeyDown={handleMenuKeyDown}
 							onEscapeKeyDown={e => {
 								// APG: Escape closes the innermost menu. In the speed submenu,
