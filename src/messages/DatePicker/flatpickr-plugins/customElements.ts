@@ -83,8 +83,9 @@ function customElements(pluginConfig: Config): Plugin {
 		// belong to the current month and are not disabled. Used for roving-focus targets.
 		function getDayCells(): HTMLElement[] {
 			return Array.from(
-				fp?.calendarContainer?.querySelectorAll<HTMLElement>(".dayContainer .flatpickr-day") ||
-					[],
+				fp?.calendarContainer?.querySelectorAll<HTMLElement>(
+					".dayContainer .flatpickr-day",
+				) || [],
 			);
 		}
 
@@ -320,8 +321,7 @@ function customElements(pluginConfig: Config): Plugin {
 		// native arrow navigation). The `.dayContainer` is the rowgroup. Flatpickr rebuilds
 		// `.dayContainer` on every render, so this must run after each rebuild.
 		function applyDayGridIndices() {
-			const dayContainer =
-				fp?.calendarContainer?.querySelector<HTMLElement>(".dayContainer");
+			const dayContainer = fp?.calendarContainer?.querySelector<HTMLElement>(".dayContainer");
 			if (!dayContainer) return;
 
 			dayContainer.setAttribute("role", "rowgroup");
@@ -508,8 +508,7 @@ function customElements(pluginConfig: Config): Plugin {
 		// In-month day cells of the visible month (excludes prev/next-month overflow cells).
 		function getInMonthCells(): HTMLElement[] {
 			return getDayCells().filter(
-				c =>
-					!c.classList.contains("prevMonthDay") && !c.classList.contains("nextMonthDay"),
+				c => !c.classList.contains("prevMonthDay") && !c.classList.contains("nextMonthDay"),
 			);
 		}
 
@@ -598,8 +597,7 @@ function customElements(pluginConfig: Config): Plugin {
 						const idx = cells.indexOf(currentDay);
 						if (idx === -1) return;
 						const weekStart = idx - (idx % cols);
-						const targetIdx =
-							event.key === "Home" ? weekStart : weekStart + (cols - 1);
+						const targetIdx = event.key === "Home" ? weekStart : weekStart + (cols - 1);
 						const target = cells[targetIdx];
 						if (target && !target.classList.contains("flatpickr-disabled")) {
 							setActiveDay(target, { focus: true });
@@ -667,10 +665,10 @@ function customElements(pluginConfig: Config): Plugin {
 							event.key === "ArrowRight"
 								? 1
 								: event.key === "ArrowLeft"
-								? -1
-								: event.key === "ArrowDown"
-								? cols
-								: -cols;
+									? -1
+									: event.key === "ArrowDown"
+										? cols
+										: -cols;
 						const targetDate = new Date(from);
 						targetDate.setDate(targetDate.getDate() + deltaDays);
 

@@ -22,8 +22,7 @@ const getDayCells = (root: HTMLElement) =>
 	Array.from(root.querySelectorAll<HTMLElement>(".dayContainer .flatpickr-day"));
 
 // flatpickr stores the real Date for each day cell on `dateObj`.
-const dateOf = (cell: Element | null) =>
-	(cell as unknown as { dateObj?: Date } | null)?.dateObj;
+const dateOf = (cell: Element | null) => (cell as unknown as { dateObj?: Date } | null)?.dateObj;
 
 // Dispatch a keydown carrying a real keyCode. Flatpickr's native arrow navigation reads
 // e.keyCode, so arrow tests must set it (Testing Library's keyDown leaves keyCode at 0).
@@ -214,10 +213,15 @@ describe("DatePicker Accessibility (W3C APG grid pattern)", () => {
 
 		pressKey("PageDown");
 		const after = dateOf(document.activeElement)!;
-		expect((document.activeElement as HTMLElement).classList.contains("flatpickr-day")).toBe(true);
+		expect((document.activeElement as HTMLElement).classList.contains("flatpickr-day")).toBe(
+			true,
+		);
 		expect(after.getDate()).toBe(before.getDate()); // same day-of-month
 		// Month advanced by one (wrapping year at December).
-		expect((after.getFullYear() - before.getFullYear()) * 12 + (after.getMonth() - before.getMonth())).toBe(1);
+		expect(
+			(after.getFullYear() - before.getFullYear()) * 12 +
+				(after.getMonth() - before.getMonth()),
+		).toBe(1);
 		expect(root.querySelectorAll('.flatpickr-day[tabindex="0"]')).toHaveLength(1);
 
 		// Still navigable after the month change.
@@ -256,7 +260,9 @@ describe("DatePicker Accessibility (W3C APG grid pattern)", () => {
 
 		pressKey("ArrowRight");
 		await waitFor(() =>
-			expect((document.activeElement as HTMLElement).classList.contains("flatpickr-day")).toBe(true),
+			expect(
+				(document.activeElement as HTMLElement).classList.contains("flatpickr-day"),
+			).toBe(true),
 		);
 		expect(dateOf(document.activeElement)!.getTime() - lastTime).toBe(86_400_000); // +1 day
 
@@ -268,7 +274,9 @@ describe("DatePicker Accessibility (W3C APG grid pattern)", () => {
 
 		pressKey("ArrowLeft");
 		await waitFor(() =>
-			expect((document.activeElement as HTMLElement).classList.contains("flatpickr-day")).toBe(true),
+			expect(
+				(document.activeElement as HTMLElement).classList.contains("flatpickr-day"),
+			).toBe(true),
 		);
 		expect(firstTime - dateOf(document.activeElement)!.getTime()).toBe(86_400_000); // -1 day
 	});
@@ -314,7 +322,9 @@ describe("DatePicker Accessibility (W3C APG grid pattern)", () => {
 		// handler stops that. jsdom does not perform native tab movement, so assert the negative:
 		// focus did NOT jump to the hidden input.
 		pressKey("Tab", true);
-		expect((document.activeElement as HTMLElement).classList.contains("flatpickr-input")).toBe(false);
+		expect((document.activeElement as HTMLElement).classList.contains("flatpickr-input")).toBe(
+			false,
+		);
 	});
 
 	it("Issue H - re-entering the grid re-announces the date (cell aria-label toggle)", async () => {

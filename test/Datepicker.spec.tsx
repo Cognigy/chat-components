@@ -181,7 +181,10 @@ describe("Message Datepicker", () => {
 		await waitFor(() => expect(isFocusedDay()).toBe(true));
 
 		// Move and make the second pick.
-		fireEvent.keyDown(document.activeElement as HTMLElement, { key: "ArrowRight", keyCode: 39 });
+		fireEvent.keyDown(document.activeElement as HTMLElement, {
+			key: "ArrowRight",
+			keyCode: 39,
+		});
 		fireEvent.keyDown(document.activeElement as HTMLElement, { key: "Enter", keyCode: 13 });
 		await waitFor(() => expect(isFocusedDay()).toBe(true));
 
