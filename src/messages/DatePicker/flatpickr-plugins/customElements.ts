@@ -35,9 +35,14 @@ function customElements(pluginConfig: Config): Plugin {
 		function createLiveRegion() {
 			if (!fp?.calendarContainer) return;
 			liveRegion = document.createElement("span");
-			liveRegion.setAttribute("aria-live", "polite");
+			// Assertive: the focused-date message must interrupt/queue past NVDA's grid-context
+			// speech so the date is spoken on EVERY entry (first entry, re-entry, arrow moves).
+			// A polite region was unreliable here — it was dropped while NVDA was busy reading the
+			// grid context, so the date went unannounced on re-entry. role="alert" implies an
+			// assertive live region; the explicit aria-live keeps it unambiguous across ATs.
+			liveRegion.setAttribute("aria-live", "assertive");
 			liveRegion.setAttribute("aria-atomic", "true");
-			liveRegion.setAttribute("role", "status");
+			liveRegion.setAttribute("role", "alert");
 			liveRegion.style.position = "absolute";
 			liveRegion.style.width = "1px";
 			liveRegion.style.height = "1px";
@@ -47,14 +52,19 @@ function customElements(pluginConfig: Config): Plugin {
 			fp.calendarContainer.appendChild(liveRegion);
 		}
 
-		// Push a message into the polite live region so NVDA speaks it. Re-set even when the
-		// text is unchanged (clear first) so repeated navigation to equivalent labels still
-		// announces.
+		// Push a message into the (assertive) live region so NVDA speaks it. The clear and the set
+		// must land in SEPARATE ticks: doing both synchronously collapses to a single observed
+		// value, so re-announcing the SAME text (e.g. tabbing out of the grid and back onto the
+		// same date) would be seen as "no change" and stay silent. Emptying now and writing the
+		// message on the next tick guarantees the assistive tech observes a real transition
+		// (previous -> "" -> message) and speaks it every time, even when the text repeats.
 		function announce(message: string) {
 			if (!liveRegion || !message) return;
-			// Clearing first guarantees a DOM change is observed even if the text repeats.
 			liveRegion.textContent = "";
-			liveRegion.textContent = message;
+			const region = liveRegion;
+			setTimeout(() => {
+				region.textContent = message;
+			}, 0);
 		}
 
 		// Announce the visible month/year — used when the month/year is changed via the nav
@@ -64,16 +74,6 @@ function customElements(pluginConfig: Config): Plugin {
 			if (suppressMonthYearAnnounce) return;
 			const monthName = fp.l10n.months.longhand[fp.currentMonth];
 			announce(`${monthName} ${fp.currentYear}`);
-		}
-
-		// Announce a focused day's full spoken date (e.g. "June 23, 2026"). Driven on every
-		// day focus change. NVDA does not reliably re-announce a roving-focus gridcell on its
-		// own, so this live-region message is what the user actually hears when focus moves
-		// between dates via arrows / Home / End / PageUp / PageDown. Because the message
-		// includes the month and year, it also covers the month/year change on Page navigation.
-		function announceDay(dayElem: HTMLElement | null) {
-			const label = dayElem?.getAttribute("aria-label");
-			if (label) announce(label);
 		}
 
 		// Returns the currently "selectable" day cells of the visible month, i.e. days that
@@ -730,8 +730,8 @@ function customElements(pluginConfig: Config): Plugin {
 		// On every day-cell focus: (1) keep the roving tabindex (a single tabindex="0" day)
 		// aligned with the focused day — whether moved by flatpickr's native arrow handling or by
 		// our Home/End/Page handlers — so Tab always re-enters the grid on the right day; and
-		// (2) announce the focused date via the live region, since NVDA does not reliably speak a
-		// roving-focus gridcell on its own.
+		// (2) force NVDA to announce the focused date by toggling the focused cell's accessible
+		// name (NVDA does not reliably re-read an unchanged roving-focus gridcell on its own).
 		function syncRovingTabindex() {
 			const daysContainer =
 				fp?.calendarContainer?.querySelector<HTMLElement>(".flatpickr-days");
@@ -747,20 +747,22 @@ function customElements(pluginConfig: Config): Plugin {
 					});
 				}
 
-				// When focus enters the grid from OUTSIDE (e.g. tabbing/clicking from the
-				// next-month button), NVDA speaks the grid's own context ("Calendar, table, use
-				// arrow keys…") and drops a live-region update that lands at the same moment. Defer
-				// the date announcement one tick so it is spoken AFTER the grid context, instead of
-				// being clobbered by it. For moves WITHIN the grid (arrows/Home/End/Page) there is
-				// no competing context speech, so announce immediately.
-				const fromOutsideGrid = !(
-					event.relatedTarget instanceof HTMLElement &&
-					daysContainer.contains(event.relatedTarget)
-				);
-				if (fromOutsideGrid) {
-					setTimeout(() => announceDay(target), 50);
-				} else {
-					announceDay(target);
+				// Make NVDA speak the focused date on EVERY focus, including re-entry.
+				//
+				// The speech viewer shows NVDA reliably reads the grid context ("Calendar, table,
+				// Use arrow keys…") on every entry — that context is part of the focus event. The
+				// date is carried on the FOCUSED CELL's own accessible name; we toggle it (blank
+				// now, restore on the next tick) so NVDA sees a fresh name and re-reads the date as
+				// part of that same reliable focus path, instead of via a live region (which NVDA
+				// dropped on re-entry). We do NOT also push to the live region here — that produced
+				// a duplicate announcement of the date.
+				const dateLabel = target.getAttribute("aria-label");
+				if (dateLabel) {
+					target.setAttribute("aria-label", "");
+					setTimeout(() => {
+						// Only restore if this cell is still in the DOM (not rebuilt by a month flip).
+						if (target.isConnected) target.setAttribute("aria-label", dateLabel);
+					}, 0);
 				}
 			});
 		}
