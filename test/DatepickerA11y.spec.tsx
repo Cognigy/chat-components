@@ -24,6 +24,16 @@ const getDayCells = (root: HTMLElement) =>
 // flatpickr stores the real Date for each day cell on `dateObj`.
 const dateOf = (cell: Element | null) => (cell as unknown as { dateObj?: Date } | null)?.dateObj;
 
+// Compare two dates by calendar date (year/month/day) only. Asserting raw getTime() deltas of
+// 86,400,000ms is DST-flaky: a midnight-to-midnight "day" is 23h or 25h across a DST transition.
+const ymd = (date: Date) => `${date.getFullYear()}-${date.getMonth()}-${date.getDate()}`;
+// The calendar date N days after `from`, using local-date arithmetic (DST-safe, unlike ±86.4e6 ms).
+const addDays = (from: Date, days: number) => {
+	const date = new Date(from);
+	date.setDate(date.getDate() + days);
+	return date;
+};
+
 // Dispatch a keydown carrying a real keyCode. Flatpickr's native arrow navigation reads
 // e.keyCode, so arrow tests must set it (Testing Library's keyDown leaves keyCode at 0).
 const KEY_CODES: Record<string, number> = {
@@ -161,26 +171,26 @@ describe("DatePicker Accessibility (W3C APG grid pattern)", () => {
 
 		const start = activeDay(root)!;
 		start.focus();
-		const startTime = dateOf(start)!.getTime();
+		const startDate = dateOf(start)!;
 
 		// ArrowRight -> the very next day (exactly one step), with real DOM focus.
 		pressKey("ArrowRight");
 		const afterRight = document.activeElement as HTMLElement;
 		expect(afterRight).not.toBe(start);
 		expect(afterRight.classList.contains("flatpickr-day")).toBe(true);
-		expect(dateOf(afterRight)!.getTime() - startTime).toBe(86_400_000); // +1 day
+		expect(ymd(dateOf(afterRight)!)).toBe(ymd(addDays(startDate, 1))); // +1 calendar day
 		expect(root.querySelectorAll('.flatpickr-day[tabindex="0"]')).toHaveLength(1);
 		expect(activeDay(root)).toBe(afterRight); // roving tabindex follows DOM focus
 
 		// ArrowLeft -> back to the start day.
 		pressKey("ArrowLeft");
-		expect(dateOf(document.activeElement)!.getTime()).toBe(startTime);
+		expect(ymd(dateOf(document.activeElement)!)).toBe(ymd(startDate));
 
 		// ArrowDown -> +1 week, ArrowUp -> back.
 		pressKey("ArrowDown");
-		expect(dateOf(document.activeElement)!.getTime() - startTime).toBe(7 * 86_400_000);
+		expect(ymd(dateOf(document.activeElement)!)).toBe(ymd(addDays(startDate, 7)));
 		pressKey("ArrowUp");
-		expect(dateOf(document.activeElement)!.getTime()).toBe(startTime);
+		expect(ymd(dateOf(document.activeElement)!)).toBe(ymd(startDate));
 		expect(root.querySelectorAll('.flatpickr-day[tabindex="0"]')).toHaveLength(1);
 
 		// The focused cell still ends up announcing its date (aria-label restored after toggle).
@@ -254,7 +264,7 @@ describe("DatePicker Accessibility (W3C APG grid pattern)", () => {
 		// Last visible cell is a next-month overflow day; ArrowRight should land on the NEXT
 		// calendar day (sequential), not flatpickr's "first available day of the new month".
 		const last = getDayCells(root).at(-1)!;
-		const lastTime = dateOf(last)!.getTime();
+		const lastDate = dateOf(last)!;
 		last.setAttribute("tabindex", "0");
 		last.focus();
 
@@ -264,11 +274,11 @@ describe("DatePicker Accessibility (W3C APG grid pattern)", () => {
 				(document.activeElement as HTMLElement).classList.contains("flatpickr-day"),
 			).toBe(true),
 		);
-		expect(dateOf(document.activeElement)!.getTime() - lastTime).toBe(86_400_000); // +1 day
+		expect(ymd(dateOf(document.activeElement)!)).toBe(ymd(addDays(lastDate, 1))); // +1 calendar day
 
 		// First visible cell is a prev-month overflow day; ArrowLeft -> previous calendar day.
 		const first = getDayCells(root)[0];
-		const firstTime = dateOf(first)!.getTime();
+		const firstDate = dateOf(first)!;
 		first.setAttribute("tabindex", "0");
 		first.focus();
 
@@ -278,7 +288,7 @@ describe("DatePicker Accessibility (W3C APG grid pattern)", () => {
 				(document.activeElement as HTMLElement).classList.contains("flatpickr-day"),
 			).toBe(true),
 		);
-		expect(firstTime - dateOf(document.activeElement)!.getTime()).toBe(86_400_000); // -1 day
+		expect(ymd(dateOf(document.activeElement)!)).toBe(ymd(addDays(firstDate, -1))); // -1 calendar day
 	});
 
 	it("Issue E - Enter selects the focused day and keeps roving focus valid", async () => {

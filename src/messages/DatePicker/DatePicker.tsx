@@ -103,7 +103,10 @@ const DatePicker: FC = () => {
 		}
 		if (shiftTabKeyPress) {
 			// Handle Reverse Tab Navigation
-			if (event.target === firstFocusable) {
+			if (event.target === firstFocusable || event.target === headingRef.current) {
+				// The heading is focused programmatically on open via tabIndex=-1, so it is not
+				// part of getFocusableElements() and would not be treated as firstFocusable. Trap
+				// Shift+Tab here too, otherwise focus escapes the aria-modal dialog on first keypress.
 				event.preventDefault();
 				lastFocusable?.focus();
 			} else if (event.target === firstTimePickerField) {

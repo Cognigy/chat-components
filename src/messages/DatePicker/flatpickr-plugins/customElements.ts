@@ -29,6 +29,13 @@ function customElements(pluginConfig: Config): Plugin {
 		// Store event handlers for navigation buttons
 		const navKeydownHandlers = new WeakMap<HTMLElement, (event: KeyboardEvent) => void>();
 
+		// All long-lived MutationObservers created by this plugin. They observe DOM that flatpickr
+		// owns, so they outlive a single render; collect them and disconnect every one in onDestroy
+		// to avoid leaking observers (and the nodes they reference) when the instance is destroyed.
+		const observers: MutationObserver[] = [];
+		// Pending timeouts (e.g. the month-selector debounce) cleared on destroy.
+		const timeouts: ReturnType<typeof setTimeout>[] = [];
+
 		let liveRegion: HTMLElement | null = null;
 		// When true, a month/year change is being driven by our PageUp/PageDown handler, which
 		// will announce the landed date itself; suppress the month/year-only announcement so the
@@ -247,6 +254,7 @@ function customElements(pluginConfig: Config): Plugin {
 					attributes: true,
 					attributeFilter: ["class"],
 				});
+				observers.push(observer);
 				prevButton.dataset.observed = "true";
 			}
 
@@ -259,6 +267,7 @@ function customElements(pluginConfig: Config): Plugin {
 					attributes: true,
 					attributeFilter: ["class"],
 				});
+				observers.push(observer);
 				nextButton.dataset.observed = "true";
 			}
 		}
@@ -377,6 +386,7 @@ function customElements(pluginConfig: Config): Plugin {
 			// observer's childList watch.
 			const observer = new MutationObserver(() => refreshGridAfterRebuild());
 			observer.observe(daysContainer, { childList: true, subtree: true });
+			observers.push(observer);
 			// Apply once immediately for the initial render.
 			refreshGridAfterRebuild();
 		}
@@ -401,6 +411,7 @@ function customElements(pluginConfig: Config): Plugin {
 					timeout = setTimeout(() => {
 						monthSelector.setAttribute("tabindex", "0");
 					}, 100);
+					timeouts.push(timeout);
 				});
 
 				observer.observe(monthSelector, {
@@ -408,6 +419,7 @@ function customElements(pluginConfig: Config): Plugin {
 					childList: false,
 					subtree: false,
 				});
+				observers.push(observer);
 				monthSelector.dataset.observed = "true";
 			}
 		}
@@ -791,6 +803,18 @@ function customElements(pluginConfig: Config): Plugin {
 			});
 		}
 
+		// Disconnect every observer and clear pending timeouts created by this plugin. flatpickr
+		// calls onDestroy when the instance is destroyed/unmounted; without this the long-lived
+		// observers (nav buttons, day grid, month selector) would keep referencing detached DOM.
+		function cleanup() {
+			observers.forEach(observer => observer.disconnect());
+			observers.length = 0;
+			timeouts.forEach(timeout => clearTimeout(timeout));
+			timeouts.length = 0;
+			liveRegion?.remove();
+			liveRegion = null;
+		}
+
 		return {
 			onReady: [
 				upsertTimeArrows,
@@ -853,6 +877,7 @@ function customElements(pluginConfig: Config): Plugin {
 				refreshGridAfterRebuild,
 			],
 			onMonthChange: [announceMonthYear],
+			onDestroy: [cleanup],
 		};
 	};
 }
