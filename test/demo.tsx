@@ -33,7 +33,6 @@ import datePickerDisableWeekends from "test/fixtures/datepicker/disableWeekends.
 
 import { IMessage } from "@cognigy/socket-client";
 import { ChatEvent, TypingIndicator, Typography } from "../src/index.ts";
-import { MessageProviderProps } from "src/messages/context.tsx";
 
 const action: MessageSender = (text, data) =>
 	alert("Text: " + JSON.stringify(text, null, 2) + " Data: " + JSON.stringify(data, null, 2));
@@ -259,6 +258,7 @@ const screens: TScreen[] = [
 		title: "Multimedia messages",
 		anchor: "multimedia-messages",
 		messages: [
+			{ message: audio as IMessage },
 			{ message: image as IMessage },
 			{ message: imageDownloadable as IMessage },
 			{
@@ -278,7 +278,6 @@ const screens: TScreen[] = [
 			{ message: video as IMessage },
 			{ message: videoYoutube as IMessage },
 			{ message: videoAltText as IMessage },
-			{ message: audio as IMessage },
 		],
 	},
 	{
