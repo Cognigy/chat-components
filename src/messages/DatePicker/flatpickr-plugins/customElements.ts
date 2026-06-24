@@ -8,18 +8,21 @@ export interface Config {
 }
 
 /**
- * Custom flatpickr plugin that adds some DOM elements for webchat v3 design
- * It handles timeContainer, weekNumbers, and custom accessibility logic for some datepicker elements.
+ * Custom flatpickr plugin for the webchat v3 datepicker. It builds the timeContainer and
+ * weekNumbers DOM and layers accessibility on top of flatpickr's calendar.
  *
  * The calendar grid follows the W3C ARIA APG "Date Picker Dialog" pattern:
- * - `.flatpickr-rContainer` is the `role="grid"` (it wraps the weekday header row and the day rows)
+ * - `.flatpickr-rContainer` is the `role="grid"` (wraps the weekday header row and the day grid)
  * - the weekday header is a `role="row"` of `role="columnheader"` cells
- * - the day cells are `role="gridcell"`, grouped 7-per-`role="row"`
- * - focus is managed with a roving tabindex: exactly one day is `tabindex="0"`, the rest `-1`
- * - arrow keys / Home / End / PageUp / PageDown move real DOM focus between days
+ * - day cells are flat `role="gridcell"` elements with `aria-rowindex`/`aria-colindex` (NOT
+ *   physical `role="row"` wrappers, which would break flatpickr's native arrow navigation that
+ *   indexes the day cells as direct children of `.dayContainer`)
+ * - focus uses a roving tabindex: exactly one day is `tabindex="0"`, the rest `-1`
+ * - flatpickr owns in-month arrow navigation; this plugin adds Home/End, PageUp/PageDown, and
+ *   sequential cross-month arrow movement, and announces the focused date to screen readers
  */
 function customElements(pluginConfig: Config): Plugin {
-	// fp`refers to the Flatpickr instance
+	// `fp` is the Flatpickr instance.
 	return function (fp: Instance) {
 		const { arrowIcon, customTranslations } = pluginConfig;
 
@@ -333,32 +336,49 @@ function customElements(pluginConfig: Config): Plugin {
 			});
 		}
 
-		// Re-apply grid row roles and restore the single focusable day whenever flatpickr
-		// rebuilds the day grid (default-date application, redraws, month/year changes).
-		// A MutationObserver on the stable `.flatpickr-days` container is the most robust hook,
-		// matching the defensive pattern used for the nav buttons and month selector.
+		// Mark the currently selected day cell(s) with aria-selected for assistive tech.
+		function markSelectedCells() {
+			getDayCells().forEach(day => {
+				if (day.classList.contains("selected")) {
+					day.setAttribute("aria-selected", "true");
+				} else {
+					day.removeAttribute("aria-selected");
+				}
+			});
+		}
+
+		// Keep exactly one focusable day after a rebuild, WITHOUT moving focus: preserve the
+		// existing roving target if it survived, else fall back to the selected/today/first day.
+		function restoreRovingDay() {
+			const existing = fp?.calendarContainer?.querySelector<HTMLElement>(
+				".dayContainer .flatpickr-day[tabindex='0']",
+			);
+			setActiveDay(existing || getInitialActiveDay(), { focus: false });
+		}
+
+		// After flatpickr rebuilds the day grid: refresh row/column indices, selection state, and
+		// the roving tabindex. Used by both the MutationObserver and the onValueUpdate hook.
+		function refreshGridAfterRebuild() {
+			applyDayGridIndices();
+			markSelectedCells();
+			restoreRovingDay();
+		}
+
+		// flatpickr replaces `.dayContainer` on every render (default-date application, redraws,
+		// month/year changes). Observe the stable `.flatpickr-days` container and refresh after
+		// each rebuild — the same defensive pattern used for the nav buttons and month selector.
 		function observeDayGrid() {
 			const daysContainer =
 				fp?.calendarContainer?.querySelector<HTMLElement>(".flatpickr-days");
 			if (!daysContainer || daysContainer.dataset.gridObserved === "true") return;
 			daysContainer.dataset.gridObserved = "true";
 
-			const reapply = () => {
-				applyDayGridIndices();
-				// Keep exactly one focusable day. Preserve the existing roving target if it is
-				// still in the DOM; otherwise fall back to the selected/today/first day.
-				const existing = daysContainer.querySelector<HTMLElement>(
-					".flatpickr-day[tabindex='0']",
-				);
-				setActiveDay(existing || getInitialActiveDay(), { focus: false });
-			};
-
-			// `.dayContainer` is replaced on every flatpickr render; re-apply on each childList
-			// change. We only set attributes (not move nodes), so this never re-triggers itself.
-			const observer = new MutationObserver(() => reapply());
+			// The refresh only sets attributes (never moves nodes), so it never re-triggers the
+			// observer's childList watch.
+			const observer = new MutationObserver(() => refreshGridAfterRebuild());
 			observer.observe(daysContainer, { childList: true, subtree: true });
 			// Apply once immediately for the initial render.
-			reapply();
+			refreshGridAfterRebuild();
 		}
 
 		// Observe month selector for changes and set tabindex again to 0. This is to ensure that the month selector is focusable all the time
@@ -496,6 +516,12 @@ function customElements(pluginConfig: Config): Plugin {
 		// Read the real Date for a day cell (flatpickr stores it on dateObj).
 		function cellDate(cell: HTMLElement): Date | undefined {
 			return (cell as unknown as { dateObj?: Date }).dateObj;
+		}
+
+		// Spoken date label for a cell, e.g. "June 1, 2026". Uses the cell's own date so
+		// prev/next-month overflow cells announce their real month (not the visible month).
+		function getDayLabel(date: Date): string {
+			return `${fp.l10n.months.longhand[date.getMonth()]} ${date.getDate()}, ${date.getFullYear()}`;
 		}
 
 		function sameYMD(a: Date | undefined, b: Date): boolean {
@@ -813,50 +839,20 @@ function customElements(pluginConfig: Config): Plugin {
 					} else {
 						dayElem.removeAttribute("aria-selected");
 					}
-					// Ensure each date has a unique ID (used by tests / potential labelling).
-					if (!dayElem.id) {
-						dayElem.id = `fp-day-${Math.random().toString(36).substring(2, 9)}`;
-					}
-					// Spoken aria-label so the screen reader announces e.g. "June 1, 2026" when the
-					// day is focused. Use the cell's own date (dayElem.dateObj) rather than the
-					// visible month, so prev/next-month days announce their real month — not "June 31".
-					const cellDate = (dayElem as unknown as { dateObj?: Date }).dateObj;
-					if (cellDate) {
-						const monthName = fp.l10n.months.longhand[cellDate.getMonth()];
-						dayElem.setAttribute(
-							"aria-label",
-							`${monthName} ${cellDate.getDate()}, ${cellDate.getFullYear()}`,
-						);
-					}
+					// Spoken aria-label so the screen reader announces e.g. "June 1, 2026" on focus.
+					const date = cellDate(dayElem);
+					if (date) dayElem.setAttribute("aria-label", getDayLabel(date));
 				},
 				handleWeekNumbers,
 			],
 			onValueUpdate: [
 				upsertTimeArrows,
-				// Selecting a date rebuilds the day grid synchronously (flatpickr calls
-				// buildDays() before firing onValueUpdate). Re-apply the grid indices, mark the
-				// selected gridcell(s), and keep the roving tabindex pointed at a valid day.
-				() => {
-					applyDayGridIndices();
-
-					getDayCells().forEach(day => {
-						if (day.classList.contains("selected")) {
-							day.setAttribute("aria-selected", "true");
-						} else {
-							day.removeAttribute("aria-selected");
-						}
-					});
-
-					// Keep the roving tabindex pointed at a valid day WITHOUT moving focus here.
-					// For a date selection, flatpickr force-moves focus AFTER this hook (to the time
-					// picker, or to a now-detached day -> <body>); that is handled by the click
-					// capture listener's microtask, which places focus on the just-selected day once
-					// selectDate has fully run. Moving focus here would be overwritten by flatpickr.
-					const existing = fp?.calendarContainer?.querySelector<HTMLElement>(
-						".dayContainer .flatpickr-day[tabindex='0']",
-					);
-					setActiveDay(existing || getInitialActiveDay(), { focus: false });
-				},
+				// Selecting a date rebuilds the day grid synchronously (flatpickr calls buildDays()
+				// before firing onValueUpdate), so refresh indices/selection/roving tabindex.
+				// We do NOT move focus here: flatpickr force-moves focus AFTER this hook (to the
+				// time picker, or to a now-detached day -> <body>); the click-capture listener's
+				// microtask places focus on the just-selected day once selectDate has fully run.
+				refreshGridAfterRebuild,
 			],
 			onMonthChange: [announceMonthYear],
 		};
