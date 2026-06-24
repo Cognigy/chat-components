@@ -498,19 +498,28 @@ function customElements(pluginConfig: Config): Plugin {
 			return (cell as unknown as { dateObj?: Date }).dateObj;
 		}
 
+		function sameYMD(a: Date | undefined, b: Date): boolean {
+			return (
+				!!a &&
+				a.getFullYear() === b.getFullYear() &&
+				a.getMonth() === b.getMonth() &&
+				a.getDate() === b.getDate()
+			);
+		}
+
 		// Find the IN-MONTH cell for a given Y/M/D in the currently visible grid, if present
 		// (ignores prev/next-month overflow cells so we match the canonical cell for that date).
 		function findInMonthCellByDate(date: Date): HTMLElement | null {
+			return getInMonthCells().find(c => sameYMD(cellDate(c), date)) || null;
+		}
+
+		// Find ANY cell (including prev/next-month overflow cells) for a given Y/M/D in the
+		// currently visible grid. Preference is still given to the canonical in-month cell.
+		function findAnyCellByDate(date: Date): HTMLElement | null {
 			return (
-				getInMonthCells().find(c => {
-					const d = cellDate(c);
-					return (
-						!!d &&
-						d.getFullYear() === date.getFullYear() &&
-						d.getMonth() === date.getMonth() &&
-						d.getDate() === date.getDate()
-					);
-				}) || null
+				findInMonthCellByDate(date) ||
+				getDayCells().find(c => sameYMD(cellDate(c), date)) ||
+				null
 			);
 		}
 
@@ -608,6 +617,10 @@ function customElements(pluginConfig: Config): Plugin {
 						// does not select, so handle both here and stop flatpickr double-acting.
 						event.preventDefault();
 						event.stopPropagation();
+						// Select the focused day by dispatching a click — this routes through the
+						// same day-click path as the mouse, so the click capture listener below marks
+						// the selection and suppresses flatpickr's hour-focus jump uniformly for both
+						// keyboard and mouse. onValueUpdate then keeps focus on the selected day.
 						currentDay.click();
 						return;
 					}
@@ -664,6 +677,54 @@ function customElements(pluginConfig: Config): Plugin {
 					}
 				}
 			});
+
+			// Selecting a day fires a click on the day cell — for the mouse directly, and for the
+			// keyboard via currentDay.click() in the Enter/Space handler above. flatpickr binds its
+			// selectDate to the days container (bubble phase). At the end of selectDate it
+			// force-moves focus: to the time picker's hour field when a time picker exists, or to
+			// the just-clicked day element otherwise (but that element is detached by the preceding
+			// buildDays() rebuild, so focus actually drops to <body>). Either way the user is pulled
+			// out of the grid, and the hour case causes a focus flash the screen reader announces.
+			//
+			// In the CAPTURE phase here (before flatpickr's bubble-phase selectDate runs) we
+			// neutralize the hour field's .focus() so flatpickr can't focus it at all — that
+			// removes the focus flash the screen reader would otherwise announce. Then, on the next
+			// microtask — after selectDate has fully run, including its own focus calls — we place
+			// focus on the just-selected day in the rebuilt grid. This keeps the user in the grid
+			// for single/range/multiple selection, with or without a time picker. The hour focus
+			// override is restored in the same microtask (guarded so re-entrant clicks never
+			// capture an already-neutralized focus and leave the field unfocusable).
+			let hourFocusSuppressed = false;
+			daysContainer.addEventListener(
+				"click",
+				(event: MouseEvent) => {
+					const cell = (event.target as HTMLElement)?.closest?.(".flatpickr-day");
+					if (!cell || cell.classList.contains("flatpickr-disabled")) return;
+
+					const hour = fp?.hourElement;
+					let restoreHourFocus: (() => void) | null = null;
+					if (hour && !hourFocusSuppressed) {
+						hourFocusSuppressed = true;
+						const originalFocus = hour.focus.bind(hour);
+						hour.focus = () => {};
+						restoreHourFocus = () => {
+							hour.focus = originalFocus;
+							hourFocusSuppressed = false;
+						};
+					}
+
+					Promise.resolve().then(() => {
+						restoreHourFocus?.();
+						// Dialog may have closed (e.g. Confirm clicked); don't focus a detached grid.
+						if (!fp?.calendarContainer?.isConnected) return;
+						// Read the selected date now — selectDate has run and updated it by this point.
+						const selectedDate = fp.latestSelectedDateObj;
+						const justSelected = selectedDate && findAnyCellByDate(selectedDate);
+						setActiveDay(justSelected || getInitialActiveDay(), { focus: true });
+					});
+				},
+				true,
+			);
 		}
 
 		// On every day-cell focus: (1) keep the roving tabindex (a single tabindex="0" day)
@@ -771,14 +832,11 @@ function customElements(pluginConfig: Config): Plugin {
 			onValueUpdate: [
 				upsertTimeArrows,
 				// Selecting a date rebuilds the day grid synchronously (flatpickr calls
-				// buildDays() before firing onValueUpdate). Re-apply the grid indices and restore
-				// a single focusable day so the roving-tabindex invariant survives selection, and
-				// mark the newly selected gridcell.
+				// buildDays() before firing onValueUpdate). Re-apply the grid indices, mark the
+				// selected gridcell(s), and keep the roving tabindex pointed at a valid day.
 				() => {
 					applyDayGridIndices();
-					const selected = fp?.calendarContainer?.querySelector<HTMLElement>(
-						".dayContainer .flatpickr-day.selected",
-					);
+
 					getDayCells().forEach(day => {
 						if (day.classList.contains("selected")) {
 							day.setAttribute("aria-selected", "true");
@@ -786,7 +844,16 @@ function customElements(pluginConfig: Config): Plugin {
 							day.removeAttribute("aria-selected");
 						}
 					});
-					setActiveDay(selected || getInitialActiveDay(), { focus: false });
+
+					// Keep the roving tabindex pointed at a valid day WITHOUT moving focus here.
+					// For a date selection, flatpickr force-moves focus AFTER this hook (to the time
+					// picker, or to a now-detached day -> <body>); that is handled by the click
+					// capture listener's microtask, which places focus on the just-selected day once
+					// selectDate has fully run. Moving focus here would be overwritten by flatpickr.
+					const existing = fp?.calendarContainer?.querySelector<HTMLElement>(
+						".dayContainer .flatpickr-day[tabindex='0']",
+					);
+					setActiveDay(existing || getInitialActiveDay(), { focus: false });
 				},
 			],
 			onMonthChange: [announceMonthYear],
