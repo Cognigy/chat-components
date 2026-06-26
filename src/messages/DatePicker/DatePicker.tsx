@@ -1,4 +1,4 @@
-import { FC, useState, KeyboardEvent, useMemo, useRef } from "react";
+import { FC, useState, KeyboardEvent, useMemo, useRef, useEffect } from "react";
 import classes from "./DatePicker.module.css";
 import classnames from "classnames";
 import Flatpickr from "react-flatpickr";
@@ -21,8 +21,19 @@ const DatePicker: FC = () => {
 	const [currentDate, setCurrentDate] = useState("");
 
 	const openButtonRef = useRef<HTMLButtonElement>(null);
+	const datePickerRef = useRef<HTMLDivElement>(null);
+	const headingRef = useRef<HTMLElement>(null);
 
 	const datePickerHeading = useRandomId("webchatDatePickerHeading");
+
+	// When the dialog opens, move focus to its heading so the screen reader announces the
+	// dialog name. The user can then Tab/arrow into the calendar grid, where the
+	// selected/today date is the single focusable cell (roving tabindex).
+	useEffect(() => {
+		if (showPicker) {
+			headingRef.current?.focus();
+		}
+	}, [showPicker]);
 
 	if (!message?.data?._plugin || message.data._plugin.type !== "date-picker") return;
 
@@ -92,7 +103,10 @@ const DatePicker: FC = () => {
 		}
 		if (shiftTabKeyPress) {
 			// Handle Reverse Tab Navigation
-			if (event.target === firstFocusable) {
+			if (event.target === firstFocusable || event.target === headingRef.current) {
+				// The heading is focused programmatically on open via tabIndex=-1, so it is not
+				// part of getFocusableElements() and would not be treated as firstFocusable. Trap
+				// Shift+Tab here too, otherwise focus escapes the aria-modal dialog on first keypress.
 				event.preventDefault();
 				lastFocusable?.focus();
 			} else if (event.target === firstTimePickerField) {
@@ -120,10 +134,10 @@ const DatePicker: FC = () => {
 			</PrimaryButton>
 			{showPicker && (
 				<div
+					ref={datePickerRef}
 					id={`webchat-plugin-date-picker-${message.id}`}
 					className={classnames(classes.wrapper, "webchat-plugin-date-picker")}
 					onKeyDown={handleKeyDown}
-					tabIndex={0}
 					role="dialog"
 					aria-modal="true"
 					aria-labelledby={datePickerHeading}
@@ -134,9 +148,12 @@ const DatePicker: FC = () => {
 						<span className={classes.left}></span>
 						<span className={classes.center}>
 							<Typography
+								ref={headingRef}
+								tabIndex={-1}
 								variant="h2-semibold"
 								component="h4"
 								className="webchat-list-template-header-title"
+								id={datePickerHeading}
 							>
 								{eventName || "Calendar"}
 							</Typography>
@@ -146,7 +163,6 @@ const DatePicker: FC = () => {
 							aria-label={closeDatePickerLabel}
 							className={classes.right}
 							data-testid="button-close"
-							autoFocus
 						>
 							<CloseIcon />
 						</button>
