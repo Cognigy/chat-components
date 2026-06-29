@@ -37,8 +37,11 @@ const GalleryItem: FC<GallerySlideProps> = props => {
 	const [isImageBroken, setImageBroken] = useState(false);
 	const { processHTML } = useSanitize();
 
-	const titleHtml = processHTML(title);
-	const subtitleHtml = processHTML(subtitle);
+	// `title`/`subtitle` are optional on gallery elements; coalesce to "" so
+	// processHTML never receives undefined (it expects a string and the result
+	// is interpolated into ARIA labels).
+	const titleHtml = processHTML(title || "");
+	const subtitleHtml = processHTML(subtitle || "");
 
 	const titleId = useRandomId("webchatCarouselTemplateTitle");
 	const subtitleId = useRandomId("webchatCarouselTemplateSubtitle");
@@ -80,7 +83,7 @@ const GalleryItem: FC<GallerySlideProps> = props => {
 	return (
 		<div className={classnames("webchat-carousel-template-frame", classes.slideItem)}>
 			<div className={classnames(classes.top, showContentBlock && classes.hasExtraInfo)}>
-				{!titleBelowImage && titleElement}
+				{!titleBelowImage && title && titleElement}
 				{isImageBroken ? (
 					<span className={classes.brokenImage} />
 				) : (

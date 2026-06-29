@@ -30,8 +30,9 @@ export interface IWebchatSettings {
 		disableBotOutputBorder: boolean;
 		botOutputMaxWidthPercentage: number;
 		chatWindowWidth: number;
-		// Render a gallery card's title in the text block beneath the image instead of overlaying it on the image
-		galleryCardTitleBelowImage: boolean;
+		// Render a gallery card's title in the text block beneath the image instead of overlaying it on the image.
+		// Optional: absent/false = legacy overlay (default).
+		galleryCardTitleBelowImage?: boolean;
 	};
 	colors: {
 		primaryColor: string;
