@@ -3,9 +3,15 @@ import { it, describe, expect } from "vitest";
 import Message from "src/messages/Message";
 import gallery from "test/fixtures/gallery.json";
 import { IMessage } from "@cognigy/socket-client";
+import { IWebchatConfig } from "src/messages/types";
 
 describe("Message Gallery", () => {
 	const message = gallery as unknown as IMessage;
+
+	// Opt-in config that moves the card title beneath the image (CSA-85062).
+	const titleBelowImageConfig = {
+		settings: { layout: { galleryCardTitleBelowImage: true } },
+	} as IWebchatConfig;
 
 	it("renders Gallery message", () => {
 		const { getByTestId } = render(<Message message={message} />);
@@ -37,8 +43,26 @@ describe("Message Gallery", () => {
 		expect(document.querySelector(".swiper-pagination")).toBeInTheDocument();
 	});
 
-	it("renders the title below the image, inside the content block (not overlaying the image)", () => {
+	it("overlays the title on the image by default (no galleryCardTitleBelowImage)", () => {
 		const { getByText } = render(<Message message={message} />);
+
+		const title = getByText("Cat 2");
+
+		// Default (legacy) layout: the title lives in the image container, not the
+		// content block beneath it.
+		const slideContainer = title.closest(".webchat-carousel-template-frame");
+		const slideImage = slideContainer?.querySelector('img[alt="foobar004g1"]');
+		expect(slideImage).not.toBeNull();
+		// Title shares the same container as the image (the overlay `.top` block)...
+		expect(title.parentElement?.contains(slideImage!)).toBe(true);
+		// ...and is not inside the text content block.
+		expect(title.closest(".webchat-carousel-template-content")).toBeNull();
+	});
+
+	it("renders the title below the image when galleryCardTitleBelowImage is enabled", () => {
+		const { getByText } = render(
+			<Message message={message} config={titleBelowImageConfig} />,
+		);
 
 		const title = getByText("Cat 2");
 		const contentBlock = title.closest(".webchat-carousel-template-content");
@@ -55,7 +79,9 @@ describe("Message Gallery", () => {
 	});
 
 	it("renders the title below the image even when there is no subtitle or buttons", () => {
-		const { getByText } = render(<Message message={message} />);
+		const { getByText } = render(
+			<Message message={message} config={titleBelowImageConfig} />,
+		);
 
 		const title = getByText("Cat 8");
 

@@ -24,7 +24,16 @@ const GalleryItem: FC<GallerySlideProps> = props => {
 		messageParams,
 		"data-message-id": dataMessageId,
 	} = useMessageContext();
-	const hasContent = title || subtitle || (buttons && buttons?.length > 0);
+	const hasExtraInfo = subtitle || (buttons && buttons?.length > 0);
+	// Opt-in layout: when enabled the title renders in the content block beneath
+	// the image instead of overlaying it (CSA-85062). Defaults to the legacy
+	// overlay so existing consumers' DOM is unchanged.
+	const titleBelowImage = !!config?.settings?.layout?.galleryCardTitleBelowImage;
+	// The content block (and the squared-off image corners it forces) must show
+	// whenever there is something below the image. With the overlay layout that's
+	// only subtitle/buttons; with the opt-in layout a title-only card also needs
+	// the block because the title now lives there.
+	const showContentBlock = (titleBelowImage && title) || hasExtraInfo;
 	const [isImageBroken, setImageBroken] = useState(false);
 	const { processHTML } = useSanitize();
 
@@ -58,9 +67,20 @@ const GalleryItem: FC<GallerySlideProps> = props => {
 		}
 	};
 
+	const titleElement = (
+		<Typography
+			variant="body-semibold"
+			component="h4"
+			dangerouslySetInnerHTML={{ __html: titleHtml }}
+			className="webchat-carousel-template-title"
+			id={titleId}
+		/>
+	);
+
 	return (
 		<div className={classnames("webchat-carousel-template-frame", classes.slideItem)}>
-			<div className={classnames(classes.top, hasContent && classes.hasExtraInfo)}>
+			<div className={classnames(classes.top, showContentBlock && classes.hasExtraInfo)}>
+				{!titleBelowImage && titleElement}
 				{isImageBroken ? (
 					<span className={classes.brokenImage} />
 				) : (
@@ -72,7 +92,7 @@ const GalleryItem: FC<GallerySlideProps> = props => {
 					/>
 				)}
 			</div>
-			{hasContent && (
+			{showContentBlock && (
 				<div
 					className={classnames("webchat-carousel-template-content", classes.bottom)}
 					onClick={handleClick}
@@ -83,15 +103,7 @@ const GalleryItem: FC<GallerySlideProps> = props => {
 					aria-labelledby={default_action?.url && title ? titleId : undefined}
 					aria-label={default_action?.url ? `${titleHtml}. ${opensInNewTab}` : undefined}
 				>
-					{title && (
-						<Typography
-							variant="body-semibold"
-							component="h4"
-							dangerouslySetInnerHTML={{ __html: titleHtml }}
-							className="webchat-carousel-template-title"
-							id={titleId}
-						/>
-					)}
+					{titleBelowImage && title && titleElement}
 					{subtitle && (
 						<Typography
 							variant="body-regular"

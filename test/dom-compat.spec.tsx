@@ -355,43 +355,18 @@ function assertSameDom(message: IMessage, config?: unknown, prevMessage?: IMessa
 	expect(currentHtml).toBe(baselineHtml);
 }
 
-// CSA-85062 intentionally moves the Gallery card title out of the image
-// container (`.top`) and into the text content block (`.bottom`) so it no
-// longer overlays the image. The published baseline (currently 0.72.0) still
-// renders the previous overlay structure, so these three cases are expected
-// to diverge against any baseline released before 0.74.1. Once 0.74.1
-// publishes, `scripts/install-dom-compat-baseline.mjs` will resolve the
-// baseline to that version (or newer) and the gallery DOM will match again.
-//
-// TODO(CSA-85062): remove this skip-list and the accompanying `it.skip.each`
-// blocks below once 0.74.1 ships to npm latest.
-const INTENTIONALLY_DIVERGING_FROM_PRE_0_74_1 = new Set<string>([
-	"bot gallery (generic template)",
-	"demo: gallery",
-	"demo: gallery (null buttons)",
-]);
-const isSkipped = (c: Case) => INTENTIONALLY_DIVERGING_FROM_PRE_0_74_1.has(c.name);
-
 describe(`DOM compatibility: branch vs @cognigy/chat-components@${baselineVersion}`, () => {
 	describe("core source fixtures", () => {
-		it.each(cases.filter(c => !isSkipped(c)))(
+		it.each(cases)(
 			"$name — <Message> matches published release DOM",
 			({ message, config, prevMessage }) => assertSameDom(message, config, prevMessage),
-		);
-		it.skip.each(cases.filter(isSkipped))(
-			"$name — skipped: intentional DOM change pending 0.74.1 publish (CSA-85062)",
-			() => {},
 		);
 	});
 
 	describe("demo-page message tabs", () => {
-		it.each(demoCases.filter(c => !isSkipped(c)))(
+		it.each(demoCases)(
 			"$name — matches published release DOM",
 			({ message, config, prevMessage }) => assertSameDom(message, config, prevMessage),
-		);
-		it.skip.each(demoCases.filter(isSkipped))(
-			"$name — skipped: intentional DOM change pending 0.74.1 publish (CSA-85062)",
-			() => {},
 		);
 	});
 });
