@@ -60,9 +60,7 @@ describe("Message Gallery", () => {
 	});
 
 	it("renders the title below the image when galleryCardTitleBelowImage is enabled", () => {
-		const { getByText } = render(
-			<Message message={message} config={titleBelowImageConfig} />,
-		);
+		const { getByText } = render(<Message message={message} config={titleBelowImageConfig} />);
 
 		const title = getByText("Cat 2");
 		const contentBlock = title.closest(".webchat-carousel-template-content");
@@ -79,9 +77,7 @@ describe("Message Gallery", () => {
 	});
 
 	it("renders the title below the image even when there is no subtitle or buttons", () => {
-		const { getByText } = render(
-			<Message message={message} config={titleBelowImageConfig} />,
-		);
+		const { getByText } = render(<Message message={message} config={titleBelowImageConfig} />);
 
 		const title = getByText("Cat 8");
 
