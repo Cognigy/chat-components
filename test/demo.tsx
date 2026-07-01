@@ -426,7 +426,7 @@ const screens: TScreen[] = [
 									attachment: {
 										type: "template",
 										payload: {
-											text: "Multilingual buttons — screen readers should pronounce each language correctly when focused:",
+											text: "Multilingual buttons — screen readers should pronounce each language correctly:",
 											template_type: "button",
 											buttons: [
 												{

@@ -92,7 +92,7 @@ const ActionButton: FC<ActionButtonProps> = props => {
 						position: position.toString(),
 						total: total.toString(),
 					},
-				) + ":"
+				) + ": "
 			: null;
 
 	const PhoneNumberAnchor = (props: React.HTMLAttributes<HTMLAnchorElement>) =>
@@ -208,7 +208,7 @@ const ActionButton: FC<ActionButtonProps> = props => {
 			{renderIcon()}
 			{isWebURL && isWebURLButtonTargetBlank && (
 				<span className={mainClasses.srOnly}>
-					{opensInNewTabLabel}
+					{`, ${opensInNewTabLabel}`}
 				</span>
 			)}
 		</Component>

@@ -52,7 +52,7 @@ describe("Action Buttons", () => {
 
 		allInteractive.forEach(el => {
 			const srOnlySpan = el.querySelector("span");
-			expect(srOnlySpan?.textContent).toMatch(/\d+ of 4:/);
+			expect(srOnlySpan?.textContent).toMatch(/\d+ of 4: /);
 		});
 	});
 
@@ -74,7 +74,7 @@ describe("Action Buttons", () => {
 		});
 
 		const links = screen.getAllByRole("link");
-		const webUrlLink = links.find(link => link.textContent?.includes("Opens in new tab"));
+		const webUrlLink = links.find(link => link.textContent?.includes(", Opens in new tab"));
 		expect(webUrlLink).toBeInTheDocument();
 	});
 
