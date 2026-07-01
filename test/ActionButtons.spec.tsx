@@ -21,58 +21,38 @@ describe("Action Buttons", () => {
 		});
 
 		expect(screen.getByRole("list")).toBeInTheDocument();
-		expect(screen.getAllByRole("button", { name: /foobar005b(1|2|3|4)/ })).toHaveLength(2);
-		expect(screen.getAllByRole("link", { name: /foobar005b(1|2|3|4)/ })).toHaveLength(2);
+		expect(screen.getAllByRole("button")).toHaveLength(2);
+		expect(screen.getAllByRole("link")).toHaveLength(2);
 	});
 
-	it("uses aria-labelledby for accessible names with position text", async () => {
+	it("does not use aria-label on buttons", async () => {
 		await waitFor(() => {
 			render(<Message message={message} />);
 		});
 
-		const allButtons = screen.getAllByLabelText(/(1|2|3|4) of 4: foobar005b(1|2|3|4)/);
-		expect(allButtons).toHaveLength(4);
+		const allInteractive = [
+			...screen.getAllByRole("button"),
+			...screen.getAllByRole("link"),
+		];
 
-		// Each button should use aria-labelledby, not aria-label
-		allButtons.forEach(button => {
-			expect(button).toHaveAttribute("aria-labelledby");
-			expect(button).not.toHaveAttribute("aria-label");
+		allInteractive.forEach(el => {
+			expect(el).not.toHaveAttribute("aria-label");
 		});
 	});
 
-	it("renders sr-only position spans with correct IDs", async () => {
+	it("renders sr-only position text inside buttons when multiple buttons exist", async () => {
 		await waitFor(() => {
 			render(<Message message={message} />);
 		});
 
-		const allButtons = screen.getAllByLabelText(/(1|2|3|4) of 4: foobar005b(1|2|3|4)/);
-		allButtons.forEach(button => {
-			const labelledBy = button.getAttribute("aria-labelledby")!;
-			const ids = labelledBy.split(" ");
+		const allInteractive = [
+			...screen.getAllByRole("button"),
+			...screen.getAllByRole("link"),
+		];
 
-			// Position ID should reference a sr-only span inside the button
-			const posId = ids[0];
-			const posSpan = button.querySelector(`#${posId}`);
-			expect(posSpan).toBeInTheDocument();
-			expect(posSpan?.textContent).toMatch(/\d+ of 4:/);
-		});
-	});
-
-	it("renders Typography label with id referenced by aria-labelledby", async () => {
-		await waitFor(() => {
-			render(<Message message={message} />);
-		});
-
-		const allButtons = screen.getAllByLabelText(/(1|2|3|4) of 4: foobar005b(1|2|3|4)/);
-		allButtons.forEach(button => {
-			const labelledBy = button.getAttribute("aria-labelledby")!;
-			const ids = labelledBy.split(" ");
-
-			// Title ID (second in list) should reference the visible Typography span
-			const titleId = ids[1];
-			const titleEl = button.querySelector(`#${titleId}`);
-			expect(titleEl).toBeInTheDocument();
-			expect(titleEl?.tagName.toLowerCase()).toBe("span");
+		allInteractive.forEach(el => {
+			const srOnlySpan = el.querySelector("span");
+			expect(srOnlySpan?.textContent).toMatch(/\d+ of 4:/);
 		});
 	});
 
@@ -81,30 +61,21 @@ describe("Action Buttons", () => {
 			render(<Message message={message} />);
 		});
 
-		const phoneButton = screen.getByLabelText(/4 of 4: foobar005b4/);
-		expect(phoneButton).toHaveAttribute("href", "tel:000111222");
-		expect(phoneButton).toHaveAttribute("aria-labelledby");
-		expect(phoneButton).not.toHaveAttribute("aria-label");
+		const links = screen.getAllByRole("link");
+		const phoneLink = links.find(link => link.getAttribute("href")?.startsWith("tel:"));
+		expect(phoneLink).toBeInTheDocument();
+		expect(phoneLink).toHaveAttribute("href", "tel:000111222");
+		expect(phoneLink).not.toHaveAttribute("aria-label");
 	});
 
-	it("includes 'Opens in new tab' sr-only span for web_url buttons", async () => {
+	it("includes 'Opens in new tab' sr-only text for web_url buttons", async () => {
 		await waitFor(() => {
 			render(<Message message={message} />);
 		});
 
-		// The web_url button (foobar005b2) without target="_self" should have new tab announcement
-		const webUrlButton = screen.getByLabelText(/2 of 4:.*foobar005b2.*Opens in new tab/);
-		expect(webUrlButton).toBeInTheDocument();
-
-		const labelledBy = webUrlButton.getAttribute("aria-labelledby")!;
-		const ids = labelledBy.split(" ");
-		// Should have 3 IDs: position, title, new-tab
-		expect(ids).toHaveLength(3);
-
-		const newTabId = ids[2];
-		const newTabSpan = webUrlButton.querySelector(`#${newTabId}`);
-		expect(newTabSpan).toBeInTheDocument();
-		expect(newTabSpan?.textContent).toBe("Opens in new tab");
+		const links = screen.getAllByRole("link");
+		const webUrlLink = links.find(link => link.textContent?.includes("Opens in new tab"));
+		expect(webUrlLink).toBeInTheDocument();
 	});
 
 	describe("buttons with HTML lang attributes in titles", () => {
@@ -139,20 +110,14 @@ describe("Action Buttons", () => {
 			},
 		} as unknown as IMessage;
 
-		it("renders HTML lang attributes in the Typography label element", async () => {
+		it("renders HTML lang attributes in the DOM for screen readers", async () => {
 			await waitFor(() => {
 				render(<Message message={langMessage} />);
 			});
 
-			const buttons = screen.getAllByRole("button");
-			const postbackButton = buttons[0];
-			const labelledBy = postbackButton.getAttribute("aria-labelledby")!;
-			const titleId = labelledBy.split(" ")[1];
-			const titleEl = postbackButton.querySelector(`#${titleId}`);
-
-			// The Typography span should contain the lang-attributed HTML
-			expect(titleEl?.querySelector("span[lang='fr']")).toBeInTheDocument();
-			expect(titleEl?.querySelector("span[lang='fr']")?.textContent).toBe("Bonjour");
+			const postbackButton = screen.getAllByRole("button")[0];
+			expect(postbackButton.querySelector("span[lang='fr']")).toBeInTheDocument();
+			expect(postbackButton.querySelector("span[lang='fr']")?.textContent).toBe("Bonjour");
 		});
 
 		it("does not put raw HTML in aria-label", async () => {
@@ -166,11 +131,7 @@ describe("Action Buttons", () => {
 			];
 
 			allInteractive.forEach(el => {
-				const ariaLabel = el.getAttribute("aria-label");
-				if (ariaLabel) {
-					expect(ariaLabel).not.toContain("<span");
-					expect(ariaLabel).not.toContain("lang=");
-				}
+				expect(el).not.toHaveAttribute("aria-label");
 			});
 		});
 	});

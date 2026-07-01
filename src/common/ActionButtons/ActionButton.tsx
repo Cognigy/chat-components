@@ -83,10 +83,6 @@ const ActionButton: FC<ActionButtonProps> = props => {
 	const opensInNewTabLabel =
 		config?.settings?.customTranslations?.ariaLabels?.opensInNewTab || "Opens in new tab";
 
-	const posId = `${props.id}-pos`;
-	const titleId = `${props.id}-title`;
-	const newTabId = `${props.id}-newtab`;
-
 	const positionText =
 		total > 1
 			? interpolateString(
@@ -98,14 +94,6 @@ const ActionButton: FC<ActionButtonProps> = props => {
 					},
 				) + ":"
 			: null;
-
-	const ariaLabelledBy = [
-		positionText ? posId : null,
-		titleId,
-		isWebURL && isWebURLButtonTargetBlank ? newTabId : null,
-	]
-		.filter(Boolean)
-		.join(" ");
 
 	const PhoneNumberAnchor = (props: React.HTMLAttributes<HTMLAnchorElement>) =>
 		button.payload ? <a {...props} href={`tel:${button.payload}`} /> : null;
@@ -190,12 +178,11 @@ const ActionButton: FC<ActionButtonProps> = props => {
 				isPhoneNumber && "phone-number-or-url-anchor",
 				isWebURL && "phone-number-or-url-anchor",
 			)}
-			aria-labelledby={ariaLabelledBy}
 			aria-disabled={disabled}
 			tabIndex={disabled ? -1 : 0}
 		>
 			{positionText && (
-				<span id={posId} className={mainClasses.srOnly}>
+				<span className={mainClasses.srOnly}>
 					{positionText}
 				</span>
 			)}
@@ -213,7 +200,6 @@ const ActionButton: FC<ActionButtonProps> = props => {
 				</div>
 			)}
 			<Typography
-				id={titleId}
 				variant={size === "large" ? "title1-semibold" : "cta-semibold"}
 				component="span"
 				dangerouslySetInnerHTML={{ __html }}
@@ -221,7 +207,7 @@ const ActionButton: FC<ActionButtonProps> = props => {
 			/>
 			{renderIcon()}
 			{isWebURL && isWebURLButtonTargetBlank && (
-				<span id={newTabId} className={mainClasses.srOnly}>
+				<span className={mainClasses.srOnly}>
 					{opensInNewTabLabel}
 				</span>
 			)}

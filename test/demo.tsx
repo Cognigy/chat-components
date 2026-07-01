@@ -441,8 +441,8 @@ const screens: TScreen[] = [
 												},
 												{
 													type: "web_url",
-													title: '<span lang="ja">東京</span> travel guide',
-													url: "https://example.com/tokyo",
+													title: '<span lang="es">jalapeño</span> recipe',
+													url: "https://example.com/recipe",
 												},
 												{
 													type: "phone_number",
@@ -1273,6 +1273,7 @@ const Demo = () => {
 
 	return (
 		<section>
+			<button>Download the <span lang="de">Datenschutzerklärung</span></button>
 			<Menu currentScreen={currentScreen} setCurrentScreen={setCurrentScreen} />
 			<Screen messages={screen?.messages} content={screen?.content} />
 		</section>
