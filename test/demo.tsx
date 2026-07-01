@@ -414,6 +414,79 @@ const screens: TScreen[] = [
 					},
 				},
 			},
+			{
+				title: "Buttons with lang attributes in titles",
+				message: {
+					avatarName: "Cognigy",
+					source: "bot",
+					data: {
+						_cognigy: {
+							_webchat: {
+								message: {
+									attachment: {
+										type: "template",
+										payload: {
+											text: "Multilingual buttons — screen readers should pronounce each language correctly when focused:",
+											template_type: "button",
+											buttons: [
+												{
+													type: "postback",
+													payload: "greet_fr",
+													title: '<span lang="fr">Bonjour</span> – French greeting',
+												},
+												{
+													type: "postback",
+													payload: "greet_de",
+													title: '<span lang="de">Guten Tag! Jetzt Bestellen</span> – German greeting',
+												},
+												{
+													type: "web_url",
+													title: '<span lang="ja">東京</span> travel guide',
+													url: "https://example.com/tokyo",
+												},
+												{
+													type: "phone_number",
+													payload: "0049301234567",
+													title: 'Call <span lang="de">Berlin</span> office',
+												},
+											],
+										},
+									},
+								},
+							},
+						},
+					},
+				},
+			},
+			{
+				title: "Single button with lang (no position prefix)",
+				message: {
+					avatarName: "Cognigy",
+					source: "bot",
+					data: {
+						_cognigy: {
+							_webchat: {
+								message: {
+									attachment: {
+										type: "template",
+										payload: {
+											text: "A single button should have no position prefix:",
+											template_type: "button",
+											buttons: [
+												{
+													type: "postback",
+													payload: "greet_es",
+													title: '<span lang="es">Hola</span> – Spanish greeting',
+												},
+											],
+										},
+									},
+								},
+							},
+						},
+					},
+				},
+			},
 		],
 	},
 	{
