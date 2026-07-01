@@ -30,10 +30,7 @@ describe("Action Buttons", () => {
 			render(<Message message={message} />);
 		});
 
-		const allInteractive = [
-			...screen.getAllByRole("button"),
-			...screen.getAllByRole("link"),
-		];
+		const allInteractive = [...screen.getAllByRole("button"), ...screen.getAllByRole("link")];
 
 		allInteractive.forEach(el => {
 			expect(el).not.toHaveAttribute("aria-label");
@@ -45,10 +42,7 @@ describe("Action Buttons", () => {
 			render(<Message message={message} />);
 		});
 
-		const allInteractive = [
-			...screen.getAllByRole("button"),
-			...screen.getAllByRole("link"),
-		];
+		const allInteractive = [...screen.getAllByRole("button"), ...screen.getAllByRole("link")];
 
 		allInteractive.forEach(el => {
 			const srOnlySpan = el.querySelector("span");

@@ -181,11 +181,7 @@ const ActionButton: FC<ActionButtonProps> = props => {
 			aria-disabled={disabled}
 			tabIndex={disabled ? -1 : 0}
 		>
-			{positionText && (
-				<span className={mainClasses.srOnly}>
-					{positionText}
-				</span>
-			)}
+			{positionText && <span className={mainClasses.srOnly}>{positionText}</span>}
 			{!!buttonImage && (
 				<div className={classes.buttonImageContainer}>
 					<img
@@ -207,9 +203,7 @@ const ActionButton: FC<ActionButtonProps> = props => {
 			/>
 			{renderIcon()}
 			{isWebURL && isWebURLButtonTargetBlank && (
-				<span className={mainClasses.srOnly}>
-					{`, ${opensInNewTabLabel}`}
-				</span>
+				<span className={mainClasses.srOnly}>{`, ${opensInNewTabLabel}`}</span>
 			)}
 		</Component>
 	);

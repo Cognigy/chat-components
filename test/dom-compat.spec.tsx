@@ -74,7 +74,6 @@ import {
 	agentTextMessage,
 	engagementTextMessage,
 	richBotMessage,
-	quickRepliesBotMessage,
 	defaultPreviewQuickReplies,
 	defaultPreviewText,
 	xAppQuickReply,
@@ -93,16 +92,11 @@ import {
 // are given "bot" at render time via `asBot` — the baseline and the branch
 // both apply the same default, so the comparison still holds.
 import imageFixture from "./fixtures/image.json";
-import imageDownloadableFixture from "./fixtures/image-downloadable.json";
 import imageBrokenFixture from "./fixtures/imageBroken.json";
 import videoFixture from "./fixtures/video.json";
 import videoYoutubeFixture from "./fixtures/videoYoutube.json";
 import videoAltTextFixture from "./fixtures/videoWithAltText.json";
 import fileFixture from "./fixtures/file.json";
-import listFixture from "./fixtures/list.json";
-import galleryFixture from "./fixtures/gallery.json";
-import galleryNullButtonsFixture from "./fixtures/gallery-with-null-buttons.json";
-import actionButtonsFixture from "./fixtures/action-buttons.json";
 import adaptiveCardsFixture from "./fixtures/adaptiveCards.json";
 import webchat3EventFixture from "./fixtures/webchat3Event.json";
 import datepickerSingleDate from "./fixtures/datepicker/singleDate.json";
@@ -238,7 +232,10 @@ const cases: Case[] = [
 	{ name: "agent text message", message: agentTextMessage },
 	{ name: "engagement message", message: engagementTextMessage, config: engagementConfig },
 	{ name: "bot gallery (generic template)", message: richBotMessage },
-	{ name: "bot quick replies", message: quickRepliesBotMessage },
+	// bot quick replies intentionally excluded: aria-label removed and sr-only
+	// position/new-tab spans added in AB#105550, so the DOM differs from the
+	// published baseline by design.
+	// TODO: re-add once the baseline is updated past v0.76.0.
 ];
 
 // Demo-page coverage. One case per demo tab where the tab renders via
@@ -251,7 +248,9 @@ const cases: Case[] = [
 const demoCases: Case[] = [
 	// Multimedia
 	{ name: "demo: image", message: asBot(imageFixture) },
-	{ name: "demo: image downloadable", message: asBot(imageDownloadableFixture) },
+	// image-downloadable intentionally excluded: contains action buttons whose
+	// DOM changed in AB#105550 (aria-label removed, sr-only spans added).
+	// TODO: re-add once the baseline is updated past v0.76.0.
 	{ name: "demo: image broken", message: asBot(imageBrokenFixture) },
 	{ name: "demo: video", message: asBot(videoFixture) },
 	{ name: "demo: video (YouTube)", message: asBot(videoYoutubeFixture) },
@@ -260,11 +259,9 @@ const demoCases: Case[] = [
 	// in AB#137478, so the DOM differs from the published baseline by design.
 	// TODO: re-add audio once v0.74.0 is published and the baseline is updated to v0.74.0.
 	{ name: "demo: file", message: asBot(fileFixture) },
-	// Templates
-	{ name: "demo: list", message: asBot(listFixture) },
-	{ name: "demo: gallery", message: asBot(galleryFixture) },
-	{ name: "demo: gallery (null buttons)", message: asBot(galleryNullButtonsFixture) },
-	{ name: "demo: quick replies / buttons", message: asBot(actionButtonsFixture) },
+	// Templates containing action buttons intentionally excluded: DOM changed
+	// in AB#105550 (aria-label removed, sr-only position/new-tab spans added).
+	// TODO: re-add once the baseline is updated past v0.76.0.
 	// Datepicker variants (closed calendar — open state is non-deterministic)
 	{ name: "demo: datepicker single date", message: asBot(datepickerSingleDate) },
 	{ name: "demo: datepicker single date w/ min-max", message: asBot(datepickerMinMax) },
