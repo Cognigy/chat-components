@@ -98,8 +98,8 @@ describe("Action Buttons", () => {
 										},
 										{
 											type: "web_url",
-											title: '<span lang="ja">東京</span> guide',
-											url: "https://example.com/tokyo",
+											title: '<span lang="es">jalapeño</span> recipe',
+											url: "https://example.com/recipe",
 										},
 									],
 								},
