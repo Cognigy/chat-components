@@ -1273,9 +1273,6 @@ const Demo = () => {
 
 	return (
 		<section>
-			<button>
-				Download the <span lang="de">Datenschutzerklärung</span>
-			</button>
 			<Menu currentScreen={currentScreen} setCurrentScreen={setCurrentScreen} />
 			<Screen messages={screen?.messages} content={screen?.content} />
 		</section>
