@@ -1,4 +1,5 @@
-[![ESLint](https://github.com/Cognigy/chat-components/actions/workflows/eslint.yml/badge.svg)](https://github.com/Cognigy/chat-components/actions/workflows/eslint.yml)
+[![ESLint](https://github.com/Cognigy/chat-components/actions/workflows/lint.yml/badge.svg)](https://github.com/Cognigy/chat-components/actions/workflows/lint.yml)
+[![Accessibility](https://github.com/Cognigy/chat-components/actions/workflows/a11y.yml/badge.svg)](https://github.com/Cognigy/chat-components/actions/workflows/a11y.yml)
 
 # Chat Components
 
