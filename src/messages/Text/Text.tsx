@@ -99,6 +99,9 @@ const Text: FC<TextProps> = props => {
 					urlTransform={url => url}
 					components={{
 						a: ({ node: _node, ...props }) => (
+							/* eslint-disable-next-line jsx-a11y/anchor-has-content -- react-markdown
+							   component override: the link text always arrives as children via the
+							   {...props} spread from the markdown AST; the rule cannot see it. */
 							<a target="_blank" rel="noreferrer" {...props} />
 						),
 						p: ({ node: _node, children, ...props }) => (

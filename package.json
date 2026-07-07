@@ -31,7 +31,8 @@
 		"test:dom-compat": "vitest run --config vitest.dom-compat.config.ts",
 		"codeql:scan": "rimraf node_modules && npm ci --omit=dev && codeql database create --overwrite codeql-db --language=typescript-javascript --source-root=. --codescanning-config=codeql-config.yml && codeql database analyze codeql-db codeql/javascript-queries --format=sarifv2.1.0 --output=codeql-results.sarif --threads=0",
 		"codeql:scan:dist": "npm ci && npm run build && rimraf node_modules && codeql database create --overwrite codeql-db --language=javascript --source-root=dist && codeql database analyze codeql-db codeql/javascript-queries --format=sarifv2.1.0 --output=codeql-results-dist.sarif --threads=0",
-		"test:a11y": "vitest run test/a11y.spec.tsx"
+		"test:a11y": "vitest run test/a11y.spec.tsx",
+		"lint:a11y": "eslint . --config eslint.a11y.config.js --no-config-lookup"
 	},
 	"devDependencies": {
 		"@cognigy/socket-client": "5.0.0-beta.20",

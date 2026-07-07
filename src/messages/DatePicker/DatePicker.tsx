@@ -133,6 +133,9 @@ const DatePicker: FC = () => {
 				{openText}
 			</PrimaryButton>
 			{showPicker && (
+				/* eslint-disable-next-line jsx-a11y/no-noninteractive-element-interactions -- standard
+				   ARIA modal pattern: the keydown listener on the role="dialog" container implements
+				   the dialog's focus trap and Escape handling (APG dialog-modal), not a click target. */
 				<div
 					ref={datePickerRef}
 					id={`webchat-plugin-date-picker-${message.id}`}

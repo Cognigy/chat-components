@@ -96,8 +96,13 @@ const ActionButton: FC<ActionButtonProps> = props => {
 			: null;
 
 	const PhoneNumberAnchor = (props: React.HTMLAttributes<HTMLAnchorElement>) =>
+		/* eslint-disable-next-line jsx-a11y/anchor-has-content -- render-prop component:
+		   the button title always arrives as children via the {...props} spread; the rule
+		   cannot see through the indirection. */
 		button.payload ? <a {...props} href={`tel:${button.payload}`} /> : null;
 	const Anchor = (props: React.HTMLAttributes<HTMLAnchorElement>) =>
+		/* eslint-disable-next-line jsx-a11y/anchor-has-content -- same render-prop pattern
+		   as PhoneNumberAnchor: children come in via the {...props} spread. */
 		isWebURL ? <a {...props} href={button.url} target={button.target} /> : null;
 	const Button = (props: React.HTMLAttributes<HTMLButtonElement>) => (
 		<button {...props} disabled={disabled} />
