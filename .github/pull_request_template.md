@@ -1,6 +1,3 @@
-<!-- Keep this template in sync with .azuredevops/pull_request_template.md — GitHub ignores
-     .azuredevops/, and PRs are reviewed on GitHub, so both copies must match. -->
-
 # Success criteria
 
 Please describe what should be possible after this change. List all individual items on a separate line.
