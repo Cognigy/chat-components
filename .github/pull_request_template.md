@@ -24,16 +24,13 @@ Please describe the individual steps on how a peer can test your change.
 - [ ] Exchanges data with external systems
 - [ ] No security implications
 
-<!-- Only items CI cannot verify belong here — the lint:a11y and test:a11y gates
-     already block the PR on their own. -->
-
 # Accessibility (WCAG 2.2 AA)
+
+<!-- CI already gates linting (lint:a11y) and axe (test:a11y) — these are the two
+     things no gate can catch. Everything else: docs/accessibility.md -->
 
 - [ ] New message types have a case entry in `test/fixtures/message-cases.ts` (one entry covers both the axe and DOM-compat gates)
 - [ ] Interaction spec (`<Component>A11y.spec.tsx`) added/updated for new or changed interactive behavior
-- [ ] No unjustified `eslint-disable jsx-a11y/*` comments or known-violation allowlist entries
-- [ ] Intentional changes to rendered `aria-*`/`role` attributes are called out in the release notes so Webchat can re-run its accessibility suite on the version bump (`docs/accessibility.md`, "ARIA is API")
-- [ ] Contrast checked manually via the demo (`npm run dev`) if colors changed
 
 # Additional considerations
 
