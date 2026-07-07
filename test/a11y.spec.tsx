@@ -35,6 +35,7 @@ import { runAxe, formatViolations } from "./a11y-utils";
 import datepickerSingleDate from "./fixtures/datepicker/singleDate.json";
 import imageDownloadableFixture from "./fixtures/image-downloadable.json";
 import galleryFixture from "./fixtures/gallery.json";
+import audioFixture from "./fixtures/audio.json";
 
 /**
  * Pre-existing, ticketed violations. Keyed by case name; each entry names
@@ -153,5 +154,15 @@ describe("Accessibility (WCAG 2.2 AA): interaction states", () => {
 		fireEvent.click(screen.getByLabelText("Next slide"));
 
 		await expectA11yCompliant("stateful: gallery after slide navigation", container);
+	});
+
+	it("audio player with open More-options menu — no axe violations", async () => {
+		render(<Message message={asBot(audioFixture)} />);
+
+		fireEvent.click(await screen.findByRole("button", { name: "More options" }));
+		await screen.findByRole("menu");
+
+		// The Radix popover renders into a portal — scan the whole body.
+		await expectA11yCompliant("stateful: audio options menu open", document.body);
 	});
 });
