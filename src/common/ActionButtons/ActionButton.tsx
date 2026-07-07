@@ -5,6 +5,7 @@ import { getWebchatButtonLabel, interpolateString, moveFocusToMessageFocusTarget
 import { sanitizeHTMLWithConfig } from "src/sanitize";
 import { sanitizeUrl } from "@braintree/sanitize-url";
 import classes from "./ActionButton.module.css";
+import mainClasses from "src/main.module.css";
 import { LinkIcon } from "src/assets/svg";
 import { MessageProps, Typography } from "src/index";
 
@@ -77,35 +78,22 @@ const ActionButton: FC<ActionButtonProps> = props => {
 
 	const isPhoneNumber =
 		button.payload && (buttonType === "phone_number" || buttonType === "user_phone_number");
-	const buttonTitle = button.title || "";
-
 	const isWebURL = "type" in button && button.type === "web_url";
 	const isWebURLButtonTargetBlank = isWebURL && button.target !== "_self";
 	const opensInNewTabLabel =
 		config?.settings?.customTranslations?.ariaLabels?.opensInNewTab || "Opens in new tab";
 
-	const getAriaLabel = () => {
-		const isURLInNewTab = isWebURL && isWebURLButtonTargetBlank;
-		const newTabURLButtonTitle = `${buttonTitle}. ${opensInNewTabLabel}`;
-		const buttonTitleWithTarget = isURLInNewTab ? newTabURLButtonTitle : button.title;
-
-		if (total > 1) {
-			return (
-				interpolateString(
+	const positionText =
+		total > 1
+			? interpolateString(
 					config?.settings?.customTranslations?.ariaLabels?.actionButtonPositionText ??
 						"{position} of {total}",
 					{
 						position: position.toString(),
 						total: total.toString(),
 					},
-				) +
-				": " +
-				buttonTitleWithTarget
-			);
-		} else if (total <= 1 && isURLInNewTab) {
-			return newTabURLButtonTitle;
-		}
-	};
+				) + ": "
+			: null;
 
 	const PhoneNumberAnchor = (props: React.HTMLAttributes<HTMLAnchorElement>) =>
 		button.payload ? <a {...props} href={`tel:${button.payload}`} /> : null;
@@ -190,10 +178,10 @@ const ActionButton: FC<ActionButtonProps> = props => {
 				isPhoneNumber && "phone-number-or-url-anchor",
 				isWebURL && "phone-number-or-url-anchor",
 			)}
-			aria-label={getAriaLabel()}
 			aria-disabled={disabled}
 			tabIndex={disabled ? -1 : 0}
 		>
+			{positionText && <span className={mainClasses.srOnly}>{positionText}</span>}
 			{!!buttonImage && (
 				<div className={classes.buttonImageContainer}>
 					<img
@@ -214,6 +202,9 @@ const ActionButton: FC<ActionButtonProps> = props => {
 				className={!!buttonImage && classes.buttonLabelWithImage}
 			/>
 			{renderIcon()}
+			{isWebURL && isWebURLButtonTargetBlank && (
+				<span className={mainClasses.srOnly}>{`, ${opensInNewTabLabel}`}</span>
+			)}
 		</Component>
 	);
 };
