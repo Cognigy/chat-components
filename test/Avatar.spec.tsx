@@ -70,7 +70,9 @@ describe("Avatars", () => {
 		unmount();
 
 		render(<Message message={messageAvatarUrl} />);
-		expect(await screen.findByTestId("agent-avatar")).not.toHaveAttribute("data-default-avatar");
+		expect(await screen.findByTestId("agent-avatar")).not.toHaveAttribute(
+			"data-default-avatar",
+		);
 	});
 });
 
