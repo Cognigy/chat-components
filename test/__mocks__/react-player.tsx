@@ -189,15 +189,24 @@ const ReactPlayer = forwardRef<MockReactPlayerHandle, MockReactPlayerProps>((pro
 
 	return (
 		<div className={className} style={style}>
+			{/* Mirror the real react-player Preview semantics: it renders a plain
+			    div with only tabIndex from `previewTabIndex` — no role, no
+			    aria-label, no native button fallback. Video.tsx relies on that
+			    contract (it passes previewTabIndex={-1} and puts the button
+			    semantics on its own wrapper); diverging here makes the axe gate
+			    report nested-interactive violations that don't exist with the
+			    real player. */}
 			{light && (
 				<div
 					className="react-player__preview"
 					onClick={handlePreviewClick}
 					tabIndex={previewTabIndex ?? 0}
-					aria-label="Preview"
-					role="button"
 				>
-					{playIcon ?? <button type="button">Play</button>}
+					{playIcon ?? (
+						<div className="react-player__shadow">
+							<div className="react-player__play-icon" />
+						</div>
+					)}
 				</div>
 			)}
 			{mediaElement}

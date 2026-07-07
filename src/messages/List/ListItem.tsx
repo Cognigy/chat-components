@@ -82,13 +82,20 @@ const ListItem: FC<IListItemProps> = props => {
 	const renderImage = useMemo(() => {
 		if (!image_url) return null;
 
+		// Without alt text a role="img" would expose an unnamed image to
+		// assistive technology (axe: role-img-alt); treat it as decorative
+		// instead so screen readers skip it entirely.
 		return (
 			<div
 				className={classes.listItemImage}
 				style={{ backgroundImage: getBackgroundImage(image_url) }}
 				data-testid="regular-image"
 			>
-				<span role="img" aria-label={image_alt_text} />
+				{image_alt_text ? (
+					<span role="img" aria-label={image_alt_text} />
+				) : (
+					<span aria-hidden="true" />
+				)}
 			</div>
 		);
 	}, [image_alt_text, image_url]);
