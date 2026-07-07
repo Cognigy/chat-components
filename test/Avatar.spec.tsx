@@ -61,6 +61,19 @@ describe("Avatars", () => {
 
 		expect(await screen.findByTestId("sender-name")).toHaveTextContent("Agent Smith");
 	});
+
+	it("applies the background class to default avatars but not to custom images (AB#90506)", async () => {
+		const { unmount } = render(<Message message={messageDefault} />);
+		const defaultClasses = (await screen.findByTestId("agent-avatar")).className.split(" ");
+		unmount();
+
+		render(<Message message={messageAvatarUrl} />);
+		const customClasses = (await screen.findByTestId("agent-avatar")).className.split(" ");
+
+		// Default avatar has one extra class (the background) that the custom image lacks.
+		const extraOnDefault = defaultClasses.filter(cls => !customClasses.includes(cls));
+		expect(extraOnDefault).toHaveLength(1);
+	});
 });
 
 describe("Avatars — c26 mode", () => {

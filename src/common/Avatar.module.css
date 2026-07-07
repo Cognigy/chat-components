@@ -4,3 +4,8 @@ article .avatar {
 	height: 28px;
 	box-sizing: border-box;
 }
+
+/* Background only for bundled defaults; custom images stay transparent (AB#90506). */
+article .avatar.defaultAvatar {
+	background-color: var(--cc-primary-color);
+}

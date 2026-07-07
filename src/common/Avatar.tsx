@@ -46,8 +46,11 @@ const Avatar: FC<AvatarProps> = props => {
 		overrides.botAvatarOverrideUrlOnce,
 	]);
 
+	const isDefaultAvatar = avatarUrl === botAvatar || avatarUrl === placeholderAvatar;
+
 	const classNames = classnames(
 		classes.avatar,
+		isDefaultAvatar && classes.defaultAvatar,
 		props.className,
 		"webchat-avatar",
 		message?.source,
