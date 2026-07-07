@@ -117,7 +117,19 @@ const KEY_CODES: Record<string, number> = {
 };
 
 export const pressKey = (key: string, shiftKey = false) => {
-	const el = document.activeElement as HTMLElement;
+	if (!(key in KEY_CODES)) {
+		throw new Error(
+			`pressKey: no keyCode mapping for "${key}" — add it to KEY_CODES in test/a11y-utils.ts ` +
+				`(libraries like flatpickr read e.keyCode, so dispatching without one silently no-ops).`,
+		);
+	}
+	const el = document.activeElement;
+	if (!(el instanceof HTMLElement)) {
+		throw new Error(
+			`pressKey("${key}"): document.activeElement is ${el ? el.nodeName : "null"} — ` +
+				`focus a target element (e.g. element.focus()) before dispatching keys.`,
+		);
+	}
 	el.dispatchEvent(
 		new KeyboardEvent("keydown", {
 			key,

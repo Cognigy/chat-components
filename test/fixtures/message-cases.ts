@@ -148,10 +148,7 @@ export const demoCases: Case[] = [
 	{ name: "demo: video", message: asBot(videoFixture) },
 	{ name: "demo: video (YouTube)", message: asBot(videoYoutubeFixture) },
 	{ name: "demo: video with alt text", message: asBot(videoAltTextFixture) },
-	// audio intentionally excluded: volume control + options menu were added
-	// in AB#137478, so the DOM differs from the published baseline by design.
-	// TODO: re-add audio once v0.74.0 is published and the baseline is updated to v0.74.0.
-	// (Until then audio is still a11y-covered via `a11yOnlyCases` below.)
+	{ name: "demo: audio", message: asBot(audioFixture) },
 	{ name: "demo: file", message: asBot(fileFixture) },
 	// Templates
 	{ name: "demo: list", message: asBot(listFixture) },
@@ -225,7 +222,9 @@ export const demoCases: Case[] = [
 	{ name: "demo: webchat3 event", message: asBot(webchat3EventFixture) },
 ];
 
-// Cases covered by the a11y gate only. dom-compat excludes these for
-// baseline-version reasons (see the audio TODO in `demoCases`); the a11y
-// sweep has no baseline, so it takes the superset.
-export const a11yOnlyCases: Case[] = [{ name: "demo: audio", message: asBot(audioFixture) }];
+// Cases covered by the a11y gate only. Use this table for a case that cannot
+// run under dom-compat at all (e.g. its render is non-deterministic across
+// packages); for a case whose DOM merely diverges from the current baseline
+// by design, prefer the version-aware skip set in test/dom-compat.spec.tsx —
+// it re-enables the case automatically once the fix version publishes.
+export const a11yOnlyCases: Case[] = [];
