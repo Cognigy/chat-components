@@ -1,7 +1,8 @@
-<!-- Keep this template in sync with .github/pull_request_template.md — GitHub ignores
+<!-- Keep this template in sync with .azuredevops/pull_request_template.md — GitHub ignores
      .azuredevops/, and PRs are reviewed on GitHub, so both copies must match. -->
 
 # Success criteria
+
 Please describe what should be possible after this change. List all individual items on a separate line.
 
 - A
@@ -9,6 +10,7 @@ Please describe what should be possible after this change. List all individual i
 - C
 
 # How to test
+
 Please describe the individual steps on how a peer can test your change.
 
 1. A
@@ -16,6 +18,7 @@ Please describe the individual steps on how a peer can test your change.
 3. C
 
 # Security
+
 - [ ] Possible injection vector
 - [ ] Authentication/Access controls touched
 - [ ] Sensitive Data could be exposed
@@ -25,6 +28,7 @@ Please describe the individual steps on how a peer can test your change.
 - [ ] No security implications
 
 # Accessibility (WCAG 2.2 AA)
+
 - [ ] `npm run lint:a11y` passes
 - [ ] `npm run test:a11y` passes (new message types added to `test/fixtures/message-cases.ts`)
 - [ ] Interaction spec (`<Component>A11y.spec.tsx`) added/updated for new or changed interactive behavior
@@ -33,7 +37,9 @@ Please describe the individual steps on how a peer can test your change.
 - [ ] Contrast checked manually via the demo (`npm run dev`) if colors changed
 
 # Additional considerations
+
 - [ ] This PR might have performance implications
 
 # Documentation Considerations
+
 These are hints for the documentation team to help write the docs.
