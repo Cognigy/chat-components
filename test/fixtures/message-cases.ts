@@ -228,6 +228,4 @@ export const demoCases: Case[] = [
 // Cases covered by the a11y gate only. dom-compat excludes these for
 // baseline-version reasons (see the audio TODO in `demoCases`); the a11y
 // sweep has no baseline, so it takes the superset.
-export const a11yOnlyCases: Case[] = [
-	{ name: "demo: audio", message: asBot(audioFixture) },
-];
+export const a11yOnlyCases: Case[] = [{ name: "demo: audio", message: asBot(audioFixture) }];

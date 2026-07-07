@@ -105,19 +105,22 @@ async function expectA11yCompliant(caseName: string, container: Element) {
 const sweepCases: Case[] = [...coreCases, ...demoCases, ...a11yOnlyCases];
 
 describe("Accessibility (WCAG 2.2 AA): message-type sweep", () => {
-	it.each(sweepCases)("$name — renders without axe violations", async ({ name, message, config, prevMessage }) => {
-		const configProp = config as React.ComponentProps<typeof Message>["config"];
-		const { container } = render(
-			<Message message={message} config={configProp} prevMessage={prevMessage} />,
-		);
+	it.each(sweepCases)(
+		"$name — renders without axe violations",
+		async ({ name, message, config, prevMessage }) => {
+			const configProp = config as React.ComponentProps<typeof Message>["config"];
+			const { container } = render(
+				<Message message={message} config={configProp} prevMessage={prevMessage} />,
+			);
 
-		// Same guard as dom-compat's assertSameDom: a fixture that fails to
-		// match any plugin renders null, and axe on an empty container would
-		// pass vacuously without exercising any DOM.
-		expect(container.innerHTML).not.toBe("");
+			// Same guard as dom-compat's assertSameDom: a fixture that fails to
+			// match any plugin renders null, and axe on an empty container would
+			// pass vacuously without exercising any DOM.
+			expect(container.innerHTML).not.toBe("");
 
-		await expectA11yCompliant(name, container);
-	});
+			await expectA11yCompliant(name, container);
+		},
+	);
 });
 
 describe("Accessibility (WCAG 2.2 AA): interaction states", () => {

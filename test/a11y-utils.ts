@@ -62,7 +62,10 @@ export function formatViolations(violations: Result[]): string {
 	return violations
 		.map(violation => {
 			const nodes = violation.nodes
-				.map(node => `      ${node.html}\n        → ${node.failureSummary?.replace(/\n/g, "\n        ")}`)
+				.map(
+					node =>
+						`      ${node.html}\n        → ${node.failureSummary?.replace(/\n/g, "\n        ")}`,
+				)
 				.join("\n");
 			return [
 				`  ✗ ${violation.id} (${violation.impact}): ${violation.help}`,
