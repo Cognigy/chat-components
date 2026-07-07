@@ -62,17 +62,15 @@ describe("Avatars", () => {
 		expect(await screen.findByTestId("sender-name")).toHaveTextContent("Agent Smith");
 	});
 
-	it("applies the background class to default avatars but not to custom images (AB#90506)", async () => {
+	// The primary-color background is scoped in CSS to `[data-default-avatar]`, so only the
+	// bundled default avatars get it while custom images stay transparent (AB#90506).
+	it("marks bundled default avatars with data-default-avatar but not custom images", async () => {
 		const { unmount } = render(<Message message={messageDefault} />);
-		const defaultClasses = (await screen.findByTestId("agent-avatar")).className.split(" ");
+		expect(await screen.findByTestId("agent-avatar")).toHaveAttribute("data-default-avatar");
 		unmount();
 
 		render(<Message message={messageAvatarUrl} />);
-		const customClasses = (await screen.findByTestId("agent-avatar")).className.split(" ");
-
-		// Default avatar has one extra class (the background) that the custom image lacks.
-		const extraOnDefault = defaultClasses.filter(cls => !customClasses.includes(cls));
-		expect(extraOnDefault).toHaveLength(1);
+		expect(await screen.findByTestId("agent-avatar")).not.toHaveAttribute("data-default-avatar");
 	});
 });
 

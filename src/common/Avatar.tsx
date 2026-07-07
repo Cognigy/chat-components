@@ -46,11 +46,13 @@ const Avatar: FC<AvatarProps> = props => {
 		overrides.botAvatarOverrideUrlOnce,
 	]);
 
+	// Only bundled defaults get the primary-color background; custom images stay
+	// transparent to avoid the ring (AB#90506). Identity check, not src — a custom
+	// URL can be anything, including a data: URI SVG.
 	const isDefaultAvatar = avatarUrl === botAvatar || avatarUrl === placeholderAvatar;
 
 	const classNames = classnames(
 		classes.avatar,
-		isDefaultAvatar && classes.defaultAvatar,
 		props.className,
 		"webchat-avatar",
 		message?.source,
@@ -61,6 +63,7 @@ const Avatar: FC<AvatarProps> = props => {
 			alt=""
 			className={classNames}
 			src={avatarUrl}
+			data-default-avatar={isDefaultAvatar ? "" : undefined}
 			onError={() => setAvatarUrl(placeholderAvatar)}
 			data-testid={`${message?.source || "unknown source"}-avatar`}
 		/>

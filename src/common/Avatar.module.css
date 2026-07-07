@@ -5,7 +5,7 @@ article .avatar {
 	box-sizing: border-box;
 }
 
-/* Background only for bundled defaults; custom images stay transparent (AB#90506). */
-article .avatar.defaultAvatar {
+/* Background only for the bundled default avatars (see Avatar.tsx); custom images stay transparent (AB#90506). */
+article .avatar[data-default-avatar] {
 	background-color: var(--cc-primary-color);
 }
