@@ -19,9 +19,10 @@ import { componentMapping } from "./eslint.a11y.config.js";
  *  - jsx-a11y
  */
 export default [
-	// Ignore patterns
+	// Ignore patterns. dist-demo is the built demo bundle (npm run build:demo)
+	// — generated output, same as dist.
 	{
-		ignores: ["dist"],
+		ignores: ["dist", "dist-demo"],
 	},
 
 	// Base JS recommended rules (apply to all files)

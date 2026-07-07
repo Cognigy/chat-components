@@ -13,8 +13,8 @@ expect.extend(matchers);
 // browsers render them fine. Map innerText onto textContent so jsdom
 // renders match browser output. (Approximation: textContent ignores
 // styling/visibility, which is irrelevant for these tests.)
-if (!Object.getOwnPropertyDescriptor(window.HTMLElement.prototype, "innerText")) {
-	Object.defineProperty(window.HTMLElement.prototype, "innerText", {
+if (!Object.getOwnPropertyDescriptor(globalThis.HTMLElement.prototype, "innerText")) {
+	Object.defineProperty(globalThis.HTMLElement.prototype, "innerText", {
 		get() {
 			return this.textContent;
 		},
