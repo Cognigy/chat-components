@@ -194,6 +194,7 @@ describe("normalize preserves the accessibility contract", () => {
 //   - AB#144248: ListItem renders images without `image_alt_text` as
 //     `<span aria-hidden="true">` instead of an unnamed `<span role="img">`
 //     (axe: role-img-alt) — affects "demo: list" (also in the set above).
+//   - AB#90506 Avatart new data attribute which distinguishes between default avatart and custom avatart
 // All of these stay in the shared corpus, so the a11y gate keeps scanning
 // them. The skip is version-aware — once 0.77.0 ships to npm latest,
 // install-dom-compat-baseline resolves to it, the condition turns false,
