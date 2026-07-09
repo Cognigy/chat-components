@@ -108,34 +108,43 @@ import type { IMessage } from "@cognigy/socket-client";
 // themselves. The "normalize preserves the accessibility contract" test below
 // guards this property.
 function normalize(html: string): string {
-	return (
-		html
-			// Collapse INDENTATION between tags only — whitespace runs that
-			// contain a newline. Single intentional spaces between inline
-			// elements (e.g. `</strong> <em>`) are preserved so a regression
-			// that drops or adds them is still caught.
-			.replace(/>\s*[\r\n]\s*</g, "><")
-			// trim leading/trailing whitespace
-			.trim()
-			// mask React useId tokens like :r0:, :R1a:, :Rab:, «r0», «R1a»
-			.replace(/(?::[rR][0-9a-z]+:|«[rR][0-9a-z]+»)/g, "__id__")
-			// mask react-tooltip / random uuid-ish ids seen in attribute values
-			.replace(/tooltip-[A-Za-z0-9_-]+/g, "tooltip-__id__")
-			// mask UUID v4-style ids (used by gallery subtitle/title/content ids)
-			.replace(/[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/g, "__uuid__")
-			// mask swiper auto-generated wrapper/container ids: `swiper-wrapper-<hex>`
-			.replace(/swiper-wrapper-[0-9a-f]+/g, "swiper-wrapper-__id__")
-			// canonicalize hashed CSS-module class names:
-			//   `_header_21mid_1` / `_title2-regular_1ltiv_41` → `header` / `title2-regular`
-			.replace(/\b_([A-Za-z][\w-]*?)_[A-Za-z0-9]{4,6}_\d+\b/g, "$1")
-			// Collapse double spaces ONLY inside HTML attribute values. The
-			// CSS-module canonicalization above can leave `class="foo  bar"`
-			// when one of the originals was a hashed token; class values are
-			// space-separated so the extras are non-structural. Scoping this
-			// to attribute values preserves intentional double spaces in text
-			// content (e.g. `<pre>` blocks).
-			.replace(/="([^"]*)"/g, (_match, value: string) => `="${value.replace(/  +/g, " ")}"`)
-	);
+	const normalized = html
+		// Collapse INDENTATION between tags only — whitespace runs that
+		// contain a newline. Single intentional spaces between inline
+		// elements (e.g. `</strong> <em>`) are preserved so a regression
+		// that drops or adds them is still caught.
+		.replace(/>\s*[\r\n]\s*</g, "><")
+		// trim leading/trailing whitespace
+		.trim()
+		// mask React useId tokens like :r0:, :R1a:, :Rab:, «r0», «R1a»
+		.replace(/(?::[rR][0-9a-z]+:|«[rR][0-9a-z]+»)/g, "__id__")
+		// mask react-tooltip / random uuid-ish ids seen in attribute values
+		.replace(/tooltip-[A-Za-z0-9_-]+/g, "tooltip-__id__")
+		// mask UUID v4-style ids (used by gallery subtitle/title/content ids)
+		.replace(/[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/g, "__uuid__")
+		// mask swiper auto-generated wrapper/container ids: `swiper-wrapper-<hex>`
+		.replace(/swiper-wrapper-[0-9a-f]+/g, "swiper-wrapper-__id__")
+		// canonicalize hashed CSS-module class names:
+		//   `_header_21mid_1` / `_title2-regular_1ltiv_41` → `header` / `title2-regular`
+		.replace(/\b_([A-Za-z][\w-]*?)_[A-Za-z0-9]{4,6}_\d+\b/g, "$1")
+		// Collapse double spaces ONLY inside HTML attribute values. The
+		// CSS-module canonicalization above can leave `class="foo  bar"`
+		// when one of the originals was a hashed token; class values are
+		// space-separated so the extras are non-structural. Scoping this
+		// to attribute values preserves intentional double spaces in text
+		// content (e.g. `<pre>` blocks).
+		.replace(/="([^"]*)"/g, (_match, value: string) => `="${value.replace(/  +/g, " ")}"`);
+
+	// AB#90506: bundled default avatars gained a `data-default-avatar` attribute in
+	// 0.77.0 (scopes their primary-color background; custom images must not get it).
+	// While the dom-compat baseline predates 0.77.0, strip it from BOTH sides so the
+	// rest of the DOM is still compared instead of skipping these cases wholesale. Once
+	// 0.77.0 is npm latest the baseline carries the attribute, the gate turns false, and
+	// the comparison covers it again — including that custom avatars never get it.
+	// TODO(AB#90506): delete this branch once 0.77.0 is on npm latest.
+	return semverLt(baselineVersion, "0.77.0")
+		? normalized.replace(/ data-default-avatar=""/g, "")
+		: normalized;
 }
 
 // Shared assertion helper: render the same message through both packages,
@@ -194,7 +203,8 @@ describe("normalize preserves the accessibility contract", () => {
 //   - AB#144248: ListItem renders images without `image_alt_text` as
 //     `<span aria-hidden="true">` instead of an unnamed `<span role="img">`
 //     (axe: role-img-alt) — affects "demo: list" (also in the set above).
-//   - AB#90506 Avatart new data attribute which distinguishes between default avatart and custom avatart
+// (AB#90506's avatar divergence touches nearly every case, so it's masked in
+// normalize() rather than listed here — see the data-default-avatar note there.)
 // All of these stay in the shared corpus, so the a11y gate keeps scanning
 // them. The skip is version-aware — once 0.77.0 ships to npm latest,
 // install-dom-compat-baseline resolves to it, the condition turns false,
