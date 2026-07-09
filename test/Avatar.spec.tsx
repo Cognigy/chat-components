@@ -61,6 +61,19 @@ describe("Avatars", () => {
 
 		expect(await screen.findByTestId("sender-name")).toHaveTextContent("Agent Smith");
 	});
+
+	// The primary-color background is scoped in CSS to `[data-default-avatar]`, so only the
+	// bundled default avatars get it while custom images stay transparent (AB#90506).
+	it("marks bundled default avatars with data-default-avatar but not custom images", async () => {
+		const { unmount } = render(<Message message={messageDefault} />);
+		expect(await screen.findByTestId("agent-avatar")).toHaveAttribute("data-default-avatar");
+		unmount();
+
+		render(<Message message={messageAvatarUrl} />);
+		expect(await screen.findByTestId("agent-avatar")).not.toHaveAttribute(
+			"data-default-avatar",
+		);
+	});
 });
 
 describe("Avatars — c26 mode", () => {

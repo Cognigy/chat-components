@@ -2,6 +2,10 @@ article .avatar {
 	border-radius: 1000px;
 	width: 28px;
 	height: 28px;
-	background-color: var(--cc-primary-color);
 	box-sizing: border-box;
+}
+
+/* Background only for the bundled default avatars (see Avatar.tsx); custom images stay transparent (AB#90506). */
+article .avatar[data-default-avatar] {
+	background-color: var(--cc-primary-color);
 }
