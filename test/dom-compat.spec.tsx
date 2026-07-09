@@ -67,54 +67,12 @@ const baselineVersion: string = JSON.parse(
 	),
 ).version;
 
-// Per-source / per-payload-shape fixtures hand-rolled for this spec.
-import {
-	botTextMessage,
-	userTextMessage,
-	agentTextMessage,
-	engagementTextMessage,
-	richBotMessage,
-	defaultPreviewQuickReplies,
-	defaultPreviewText,
-	xAppQuickReply,
-	xAppButton,
-	sanitizedHtmlMessage,
-	sanitizedCustomTagsMessage,
-	sanitizationDisabledMessage,
-	markdownText,
-	borderlessText,
-	collatedFollowupMessage,
-	collatedPrevMessage,
-} from "./fixtures/messages";
-
-// Demo-page fixtures. Each maps to a tab on test/demo.tsx; we cover every
-// message type that demo renders via <Message>. Fixtures that omit `source`
-// are given "bot" at render time via `asBot` — the baseline and the branch
-// both apply the same default, so the comparison still holds.
-import imageFixture from "./fixtures/image.json";
-import imageBrokenFixture from "./fixtures/imageBroken.json";
-import videoFixture from "./fixtures/video.json";
-import videoYoutubeFixture from "./fixtures/videoYoutube.json";
-import videoAltTextFixture from "./fixtures/videoWithAltText.json";
-import fileFixture from "./fixtures/file.json";
-import adaptiveCardsFixture from "./fixtures/adaptiveCards.json";
-import webchat3EventFixture from "./fixtures/webchat3Event.json";
-import datepickerSingleDate from "./fixtures/datepicker/singleDate.json";
-import datepickerMinMax from "./fixtures/datepicker/singleDateWithMinMax.json";
-import datepickerMultiple from "./fixtures/datepicker/multiple.json";
-import datepickerRange from "./fixtures/datepicker/range.json";
-import datepickerWeeks from "./fixtures/datepicker/weekNumbers.json";
-import datepickerNoTime from "./fixtures/datepicker/noTime.json";
-import datepickerTimeOnly from "./fixtures/datepicker/timeOnly.json";
-import datepickerDisableWeekends from "./fixtures/datepicker/disableWeekends.json";
+// The shared <Message> case corpus. The same tables drive the a11y gate
+// (test/a11y.spec.tsx) — a new message type added there is automatically
+// covered by both gates. See test/fixtures/message-cases.ts.
+import { coreCases, demoCases, type Case } from "./fixtures/message-cases";
 
 import type { IMessage } from "@cognigy/socket-client";
-
-// Cast + default source helper. JSON fixtures sometimes omit `source`; the
-// existing per-component specs accept whatever shape the matcher needs, but
-// at the Message level a source is required so the non-user / non-engagement
-// branches flow as expected.
-const asBot = (raw: unknown): IMessage => ({ source: "bot", ...(raw as object) }) as IMessage;
 
 // Normalize HTML so that non-structural differences don't cause false
 // positives. We strip:
@@ -141,6 +99,14 @@ const asBot = (raw: unknown): IMessage => ({ source: "bot", ...(raw as object) }
 //      `classNameStrategy: "non-scoped"` — the canonicalization is a
 //      no-op on that shape, which is convenient if anyone ever runs the
 //      spec against a non-dist source build.
+//
+// NOT stripped — deliberately: `aria-*`, `role`, `alt`, `tabindex` and every
+// other semantic attribute. They are consumer-facing API — assistive
+// technology in Webchat 3 depends on them — so a regression in any of them
+// must fail this comparison. Only the generated id VALUES inside such
+// attributes are masked (symmetrically on both sides), never the attributes
+// themselves. The "normalize preserves the accessibility contract" test below
+// guards this property.
 function normalize(html: string): string {
 	return (
 		html
@@ -172,163 +138,6 @@ function normalize(html: string): string {
 	);
 }
 
-// Optional `config` is forwarded as the <Message config={...}> prop. Used to
-// unlock matcher branches that are gated behind widgetSettings — without it,
-// the matcher early-returns and <Message> renders null, which would make the
-// comparison trivially pass (empty === empty). The non-empty-render guard in
-// assertSameDom catches such silent no-ops.
-//
-// Optional `prevMessage` participates in collation: matcher / collation rules
-// suppress the header on follow-up messages from the same source within a
-// short timestamp window.
-type Case = {
-	name: string;
-	message: IMessage;
-	config?: unknown;
-	prevMessage?: IMessage;
-};
-
-// Per-tab widgetSettings configs. Source: test/demo.tsx — keep in sync if
-// the demo's config shape moves.
-
-// Engagement teaser: matcher.ts gates engagement-source messages behind
-// `settings.teaserMessage.showInChat`. Without it, both renders resolve to
-// null and the case becomes vacuous coverage.
-const engagementConfig = {
-	settings: { teaserMessage: { showInChat: true } },
-};
-
-// Default Preview: matcher.ts routes messages with `_defaultPreview` payload
-// to that channel only when this flag is set; otherwise it falls back to the
-// `_webchat` payload. Both demo Default-Preview fixtures encode "RENDER OK"
-// in `_defaultPreview` and "RENDER WRONG" in `_webchat` so the assertion
-// catches a regression that flipped the channel selection.
-const defaultPreviewConfig = {
-	settings: { widgetSettings: { enableDefaultPreview: true } },
-};
-
-// HTML sanitization variants from the demo's `HTML Sanitization` tab.
-const customAllowedTagsConfig = {
-	settings: { widgetSettings: { customAllowedHtmlTags: ["p", "strong"] } },
-};
-const sanitizationDisabledConfig = {
-	settings: { layout: { disableHtmlContentSanitization: true } },
-};
-
-// Markdown / layout-flag text variants from the `Text messages` tab.
-const renderMarkdownConfig = {
-	settings: { behavior: { renderMarkdown: true } },
-};
-const disableBorderConfig = {
-	settings: { layout: { disableBotOutputBorder: true } },
-};
-
-// Core source fixtures. These exercise the Message/Header/Body structural
-// contract across every MessageSender variant plus the two plugin payload
-// shapes (gallery, quick replies) defined in test/fixtures/messages.ts.
-const cases: Case[] = [
-	{ name: "bot text message", message: botTextMessage },
-	{ name: "user text message", message: userTextMessage },
-	{ name: "agent text message", message: agentTextMessage },
-	{ name: "engagement message", message: engagementTextMessage, config: engagementConfig },
-	{ name: "bot gallery (generic template)", message: richBotMessage },
-	// bot quick replies intentionally excluded: aria-label removed and sr-only
-	// position/new-tab spans added in AB#105550, so the DOM differs from the
-	// published baseline by design.
-	// TODO: re-add once the baseline is updated past v0.76.0.
-];
-
-// Demo-page coverage. One case per demo tab where the tab renders via
-// <Message>. Skipped:
-//   - "UI Components" — renders ActionButtons / Typography / ChatEvent
-//     directly, not through <Message>.
-//   - "Streaming messages with markdown" — animationState transitions
-//     ("start" / "animating" / "done") change the DOM over time, so a static
-//     comparison would be flaky.
-const demoCases: Case[] = [
-	// Multimedia
-	{ name: "demo: image", message: asBot(imageFixture) },
-	// image-downloadable intentionally excluded: contains action buttons whose
-	// DOM changed in AB#105550 (aria-label removed, sr-only spans added).
-	// TODO: re-add once the baseline is updated past v0.76.0.
-	{ name: "demo: image broken", message: asBot(imageBrokenFixture) },
-	{ name: "demo: video", message: asBot(videoFixture) },
-	{ name: "demo: video (YouTube)", message: asBot(videoYoutubeFixture) },
-	{ name: "demo: video with alt text", message: asBot(videoAltTextFixture) },
-	// audio intentionally excluded: volume control + options menu were added
-	// in AB#137478, so the DOM differs from the published baseline by design.
-	// TODO: re-add audio once v0.74.0 is published and the baseline is updated to v0.74.0.
-	{ name: "demo: file", message: asBot(fileFixture) },
-	// Templates containing action buttons intentionally excluded: DOM changed
-	// in AB#105550 (aria-label removed, sr-only position/new-tab spans added).
-	// TODO: re-add once the baseline is updated past v0.76.0.
-	// Datepicker variants (closed calendar — open state is non-deterministic)
-	{ name: "demo: datepicker single date", message: asBot(datepickerSingleDate) },
-	{ name: "demo: datepicker single date w/ min-max", message: asBot(datepickerMinMax) },
-	{ name: "demo: datepicker multiple", message: asBot(datepickerMultiple) },
-	{ name: "demo: datepicker range", message: asBot(datepickerRange) },
-	{ name: "demo: datepicker week numbers", message: asBot(datepickerWeeks) },
-	{ name: "demo: datepicker no time", message: asBot(datepickerNoTime) },
-	{ name: "demo: datepicker time only", message: asBot(datepickerTimeOnly) },
-	{ name: "demo: datepicker disable weekends", message: asBot(datepickerDisableWeekends) },
-	// Adaptive Cards — fixture is an array; cover all three indices since
-	// they exercise different card payload shapes.
-	{
-		name: "demo: adaptive cards [0]",
-		message: asBot((adaptiveCardsFixture as unknown as object[])[0]),
-	},
-	{
-		name: "demo: adaptive cards [1]",
-		message: asBot((adaptiveCardsFixture as unknown as object[])[1]),
-	},
-	{
-		name: "demo: adaptive cards [2]",
-		message: asBot((adaptiveCardsFixture as unknown as object[])[2]),
-	},
-	// Default Preview — gated by widgetSettings.enableDefaultPreview; both
-	// fixtures contrast `_defaultPreview` ("RENDER OK") against `_webchat`
-	// ("RENDER WRONG") so the assertion catches a regression that flipped
-	// the channel selection.
-	{
-		name: "demo: default preview (quick replies)",
-		message: defaultPreviewQuickReplies,
-		config: defaultPreviewConfig,
-	},
-	{
-		name: "demo: default preview (text)",
-		message: defaultPreviewText,
-		config: defaultPreviewConfig,
-	},
-	// xApp Buttons — both shapes route through the matcher's openXApp branch.
-	{ name: "demo: xApp button (quick reply)", message: xAppQuickReply },
-	{ name: "demo: xApp button (template)", message: xAppButton },
-	// HTML Sanitization — default config is already covered by `bot text
-	// message`; these exercise the customAllowedHtmlTags / disableHtmlContent
-	// Sanitization branches.
-	{ name: "demo: sanitized html (default tags)", message: sanitizedHtmlMessage },
-	{
-		name: "demo: sanitized html (custom allowed tags)",
-		message: sanitizedCustomTagsMessage,
-		config: customAllowedTagsConfig,
-	},
-	{
-		name: "demo: sanitization disabled",
-		message: sanitizationDisabledMessage,
-		config: sanitizationDisabledConfig,
-	},
-	// Markdown / layout-flag text variants from the `Text messages` tab.
-	{ name: "demo: markdown text", message: markdownText, config: renderMarkdownConfig },
-	{ name: "demo: borderless text", message: borderlessText, config: disableBorderConfig },
-	// Message Collation — header suppression depends on `prevMessage`. This
-	// case reproduces the demo's "bot follows bot within window" scenario.
-	{
-		name: "demo: collated bot follow-up (no header)",
-		message: collatedFollowupMessage,
-		prevMessage: collatedPrevMessage,
-	},
-	{ name: "demo: webchat3 event", message: asBot(webchat3EventFixture) },
-];
-
 // Shared assertion helper: render the same message through both packages,
 // normalize the HTML, compare. Also asserts the rendered HTML is non-empty
 // — without this guard, a fixture that silently fails to match any plugin
@@ -352,18 +161,83 @@ function assertSameDom(message: IMessage, config?: unknown, prevMessage?: IMessa
 	expect(currentHtml).toBe(baselineHtml);
 }
 
+// Guard for the accessibility half of the DOM contract: normalize() must
+// never strip semantic attributes. If a future normalizer change masks or
+// removes aria-*/role/alt/tabindex, ARIA regressions vs the published
+// release would pass dom-compat silently — this test makes that change
+// impossible to land unnoticed. See docs/accessibility.md ("aria is API").
+describe("normalize preserves the accessibility contract", () => {
+	it("keeps aria-*, role, alt and tabindex attributes intact", () => {
+		const html =
+			'<div role="button" tabindex="0" aria-label="Close" aria-expanded="false">' +
+			'<img alt="Product photo" role="img" /></div>';
+		const normalized = normalize(html);
+		expect(normalized).toContain('role="button"');
+		expect(normalized).toContain('tabindex="0"');
+		expect(normalized).toContain('aria-label="Close"');
+		expect(normalized).toContain('aria-expanded="false"');
+		expect(normalized).toContain('alt="Product photo"');
+		expect(normalized).toContain('role="img"');
+	});
+
+	it("masks only the generated id token inside cross-referencing aria attributes", () => {
+		// The useId token in the VALUE is masked, but the attribute survives.
+		const normalized = normalize('<button aria-describedby=":r7:">x</button>');
+		expect(normalized).toContain('aria-describedby="__id__"');
+	});
+});
+
+// Cases whose DOM intentionally diverges from releases before 0.77.0:
+//   - AB#105550: ActionButton dropped its aria-label and gained sr-only
+//     position/new-tab spans — affects every case containing action buttons
+//     (quick replies, image-downloadable, list, gallery, buttons template).
+//   - AB#144248: ListItem renders images without `image_alt_text` as
+//     `<span aria-hidden="true">` instead of an unnamed `<span role="img">`
+//     (axe: role-img-alt) — affects "demo: list" (also in the set above).
+// All of these stay in the shared corpus, so the a11y gate keeps scanning
+// them. The skip is version-aware — once 0.77.0 ships to npm latest,
+// install-dom-compat-baseline resolves to it, the condition turns false,
+// and the cases re-enable themselves.
+// TODO(AB#144248): delete this block once 0.77.0 is on npm latest.
+const INTENTIONALLY_DIVERGING_PRE_0_77 = new Set<string>([
+	"bot quick replies",
+	"demo: image downloadable",
+	"demo: list",
+	"demo: gallery",
+	"demo: gallery (null buttons)",
+	"demo: quick replies / buttons",
+]);
+const semverLt = (a: string, b: string): boolean => {
+	const pa = a.split(".").map(Number);
+	const pb = b.split(".").map(Number);
+	for (let i = 0; i < 3; i++) {
+		if ((pa[i] ?? 0) !== (pb[i] ?? 0)) return (pa[i] ?? 0) < (pb[i] ?? 0);
+	}
+	return false;
+};
+const isSkipped = (c: Case) =>
+	semverLt(baselineVersion, "0.77.0") && INTENTIONALLY_DIVERGING_PRE_0_77.has(c.name);
+
 describe(`DOM compatibility: branch vs @cognigy/chat-components@${baselineVersion}`, () => {
 	describe("core source fixtures", () => {
-		it.each(cases)(
+		it.each(coreCases.filter(c => !isSkipped(c)))(
 			"$name — <Message> matches published release DOM",
 			({ message, config, prevMessage }) => assertSameDom(message, config, prevMessage),
+		);
+		it.skip.each(coreCases.filter(isSkipped))(
+			"$name — skipped: intentional DOM change pending 0.77.0 publish (AB#105550 / AB#144248)",
+			() => {},
 		);
 	});
 
 	describe("demo-page message tabs", () => {
-		it.each(demoCases)(
+		it.each(demoCases.filter(c => !isSkipped(c)))(
 			"$name — matches published release DOM",
 			({ message, config, prevMessage }) => assertSameDom(message, config, prevMessage),
+		);
+		it.skip.each(demoCases.filter(isSkipped))(
+			"$name — skipped: intentional DOM change pending 0.77.0 publish (AB#105550 / AB#144248)",
+			() => {},
 		);
 	});
 });

@@ -1,0 +1,40 @@
+name: Accessibility
+
+# Blocking WCAG 2.2 AA gates, one job per gate so each shows as its own
+# check on the PR (same rationale as dom-compat.yml). The full-ESLint SARIF
+# flow in lint.yml stays untouched — it is advisory code-scanning, while
+# these jobs are the enforcement. See docs/accessibility.md.
+
+on:
+    push:
+        branches: [main]
+    pull_request:
+        branches: [main]
+
+jobs:
+    lint:
+        name: Accessibility lint (jsx-a11y)
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v4
+            - uses: actions/setup-node@v4
+              with:
+                  node-version: 22.x
+                  cache: "npm"
+            - run: npm ci
+            - run: npm run lint:a11y
+
+    axe:
+        name: Accessibility axe (WCAG 2.2 AA)
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v4
+            - uses: actions/setup-node@v4
+              with:
+                  node-version: 22.x
+                  cache: "npm"
+            - run: npm ci
+            # test/a11y.spec.tsx renders every message-type case from the
+            # shared corpus (test/fixtures/message-cases.ts) plus interaction
+            # states, from src/ — no build precondition.
+            - run: npm run test:a11y

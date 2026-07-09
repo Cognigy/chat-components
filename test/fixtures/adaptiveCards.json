@@ -26,7 +26,8 @@
 												"type": "Image",
 												"style": "Person",
 												"url": "https://placewaifu.com/image/128/128",
-												"size": "Small"
+												"size": "Small",
+												"altText": "Kitty-Land visitor profile picture"
 											}
 										],
 										"width": "auto"

@@ -5,6 +5,7 @@ import reactHooks from "eslint-plugin-react-hooks";
 import reactRefresh from "eslint-plugin-react-refresh";
 import jsxA11y from "eslint-plugin-jsx-a11y";
 import globals from "globals";
+import { componentMapping } from "./eslint.a11y.config.js";
 
 /**
  * ESLint v9 flat config migrated from legacy .eslintrc.cjs
@@ -18,9 +19,10 @@ import globals from "globals";
  *  - jsx-a11y
  */
 export default [
-	// Ignore patterns
+	// Ignore patterns. dist-demo is the built demo bundle (npm run build:demo)
+	// — generated output, same as dist.
 	{
-		ignores: ["dist"],
+		ignores: ["dist", "dist-demo"],
 	},
 
 	// Base JS recommended rules (apply to all files)
@@ -63,7 +65,17 @@ export default [
 			"react-refresh": reactRefresh,
 			"jsx-a11y": jsxA11y,
 		},
+		settings: {
+			// See eslint.a11y.config.js — lets jsx-a11y see through the
+			// library's own button wrappers.
+			"jsx-a11y": { components: componentMapping },
+		},
 		rules: {
+			// Accessibility (WCAG 2.2 AA governance — see docs/accessibility.md).
+			// The same ruleset runs standalone as the blocking `lint:a11y` CI
+			// gate via eslint.a11y.config.js; enabling it here too surfaces
+			// violations in editors during normal work.
+			...jsxA11y.flatConfigs.recommended.rules,
 			// Recommended TypeScript rules
 			...tseslint.configs.recommended.rules,
 			// React Hooks legacy rules only
@@ -88,5 +100,15 @@ export default [
 				},
 			],
 		},
+	},
+
+	// Test-only mocks never ship; their DOM deliberately mimics third-party
+	// library output (e.g. react-player's preview), so accessibility rules
+	// don't apply. Mirrors the `ignores` entry in eslint.a11y.config.js.
+	{
+		files: ["test/__mocks__/**"],
+		rules: Object.fromEntries(
+			Object.keys(jsxA11y.flatConfigs.recommended.rules).map(rule => [rule, "off"]),
+		),
 	},
 ];

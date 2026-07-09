@@ -533,6 +533,9 @@ const Controls: FC<ControlsProps> = props => {
 			</div>
 
 			{altText && (
+				/* eslint-disable-next-line jsx-a11y/anchor-has-content -- intentionally
+				   content-less: hidden (display:none, aria-hidden) data-URI download target,
+				   activated programmatically by the visible "Download Transcript" button. */
 				<a
 					ref={downloadTranscriptLinkRef}
 					href={`data:text/plain;charset=utf-8,${encodeURIComponent(altText)}`}
