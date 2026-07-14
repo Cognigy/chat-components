@@ -79,6 +79,7 @@ const ActionButton: FC<ActionButtonProps> = props => {
 	const isPhoneNumber =
 		button.payload && (buttonType === "phone_number" || buttonType === "user_phone_number");
 	const isWebURL = "type" in button && button.type === "web_url";
+	const sanitizedButtonUrl = sanitizeUrl(button.url);
 	const isWebURLButtonTargetBlank = isWebURL && button.target !== "_self";
 	const opensInNewTabLabel =
 		config?.settings?.customTranslations?.ariaLabels?.opensInNewTab || "Opens in new tab";
@@ -109,7 +110,7 @@ const ActionButton: FC<ActionButtonProps> = props => {
 				href={
 					config?.settings?.layout?.disableUrlButtonSanitization
 						? button.url
-						: sanitizeUrl(button.url)
+						: sanitizedButtonUrl
 				}
 				target={button.target}
 			/>
@@ -145,7 +146,7 @@ const ActionButton: FC<ActionButtonProps> = props => {
 			// Sanitized path owns navigation, so a neutralized URL can no-op.
 			event.preventDefault();
 
-			const url = sanitizeUrl(button.url);
+			const url = sanitizedButtonUrl;
 
 			// prevent no-ops from sending you to a blank page
 			if (url === "about:blank") return;

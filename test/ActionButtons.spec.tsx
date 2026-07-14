@@ -280,5 +280,43 @@ describe("web_url button URL sanitization", () => {
 			expect(clickEvent.defaultPrevented).toBe(false);
 			expect(openSpy).not.toHaveBeenCalled();
 		});
+
+		it("opens a safe URL in the same tab (_self) when the button target is _self", async () => {
+			const openSpy = vi.spyOn(window, "open").mockImplementation(() => null);
+			const message = {
+				text: null,
+				data: {
+					_cognigy: {
+						_webchat: {
+							message: {
+								attachment: {
+									type: "template",
+									payload: {
+										text: "Links",
+										template_type: "button",
+										buttons: [
+											{
+												type: "web_url",
+												title: "Visit",
+												url: "https://example.com/",
+												target: "_self",
+											},
+										],
+									},
+								},
+							},
+						},
+					},
+				},
+			} as unknown as IMessage;
+
+			await waitFor(() => {
+				render(<Message message={message} config={sanitizeOnConfig} />);
+			});
+
+			const clickEvent = clickLinkAndGetEvent(screen.getByRole("link"));
+			expect(clickEvent.defaultPrevented).toBe(true);
+			expect(openSpy).toHaveBeenCalledWith("https://example.com/", "_self");
+		});
 	});
 });
