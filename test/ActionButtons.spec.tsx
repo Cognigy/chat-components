@@ -3,6 +3,7 @@ import { it, describe, expect } from "vitest";
 import Message from "src/messages/Message";
 import buttons from "test/fixtures/action-buttons.json";
 import { IMessage } from "@cognigy/socket-client";
+import { IWebchatConfig } from "src/messages/types";
 
 describe("Action Buttons", () => {
 	const message = buttons as unknown as IMessage;
@@ -127,6 +128,81 @@ describe("Action Buttons", () => {
 			allInteractive.forEach(el => {
 				expect(el).not.toHaveAttribute("aria-label");
 			});
+		});
+	});
+});
+
+describe("web_url button URL sanitization", () => {
+	// Single-button message so exactly one link is rendered.
+	const webUrlMessage = (url: string) =>
+		({
+			text: null,
+			data: {
+				_cognigy: {
+					_webchat: {
+						message: {
+							attachment: {
+								type: "template",
+								payload: {
+									text: "Links",
+									template_type: "button",
+									buttons: [{ type: "web_url", title: "Visit", url }],
+								},
+							},
+						},
+					},
+				},
+			},
+		}) as unknown as IMessage;
+
+	const sanitizeOnConfig = {
+		settings: { layout: { disableUrlButtonSanitization: false } },
+	} as IWebchatConfig;
+	const sanitizeOffConfig = {
+		settings: { layout: { disableUrlButtonSanitization: true } },
+	} as IWebchatConfig;
+
+	describe("rendered href (Fix A)", () => {
+		it("renders a javascript: URL as about:blank when sanitization is on (default)", async () => {
+			await waitFor(() => {
+				render(
+					<Message
+						message={webUrlMessage("javascript:alert(1)")}
+						config={sanitizeOnConfig}
+					/>,
+				);
+			});
+
+			const link = screen.getByRole("link");
+			expect(link).toHaveAttribute("href", "about:blank");
+		});
+
+		it("renders the raw javascript: URL when sanitization is disabled", async () => {
+			await waitFor(() => {
+				render(
+					<Message
+						message={webUrlMessage("javascript:alert(1)")}
+						config={sanitizeOffConfig}
+					/>,
+				);
+			});
+
+			const link = screen.getByRole("link");
+			expect(link).toHaveAttribute("href", "javascript:alert(1)");
+		});
+
+		it("leaves a safe https URL unchanged when sanitization is on", async () => {
+			await waitFor(() => {
+				render(
+					<Message
+						message={webUrlMessage("https://example.com/")}
+						config={sanitizeOnConfig}
+					/>,
+				);
+			});
+
+			const link = screen.getByRole("link");
+			expect(link).toHaveAttribute("href", "https://example.com/");
 		});
 	});
 });
