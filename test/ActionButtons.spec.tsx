@@ -1,5 +1,5 @@
-import { render, waitFor, screen } from "@testing-library/react";
-import { it, describe, expect } from "vitest";
+import { render, waitFor, screen, fireEvent, createEvent } from "@testing-library/react";
+import { it, describe, expect, vi, afterEach } from "vitest";
 import Message from "src/messages/Message";
 import buttons from "test/fixtures/action-buttons.json";
 import { IMessage } from "@cognigy/socket-client";
@@ -203,6 +203,82 @@ describe("web_url button URL sanitization", () => {
 
 			const link = screen.getByRole("link");
 			expect(link).toHaveAttribute("href", "https://example.com/");
+		});
+	});
+
+	describe("click behavior (Fix B)", () => {
+		afterEach(() => {
+			vi.restoreAllMocks();
+		});
+
+		const clickLinkAndGetEvent = (link: Element) => {
+			const clickEvent = createEvent.click(link);
+			fireEvent(link, clickEvent);
+			return clickEvent;
+		};
+
+		it("prevents native navigation and does not open a javascript: URL when sanitization is on", async () => {
+			const openSpy = vi.spyOn(window, "open").mockImplementation(() => null);
+			await waitFor(() => {
+				render(
+					<Message
+						message={webUrlMessage("javascript:alert(1)")}
+						config={sanitizeOnConfig}
+					/>,
+				);
+			});
+
+			const clickEvent = clickLinkAndGetEvent(screen.getByRole("link"));
+			expect(clickEvent.defaultPrevented).toBe(true);
+			expect(openSpy).not.toHaveBeenCalled();
+		});
+
+		it("prevents native navigation and opens a safe URL via window.open when sanitization is on", async () => {
+			const openSpy = vi.spyOn(window, "open").mockImplementation(() => null);
+			await waitFor(() => {
+				render(
+					<Message
+						message={webUrlMessage("https://example.com/")}
+						config={sanitizeOnConfig}
+					/>,
+				);
+			});
+
+			const clickEvent = clickLinkAndGetEvent(screen.getByRole("link"));
+			expect(clickEvent.defaultPrevented).toBe(true);
+			expect(openSpy).toHaveBeenCalledWith("https://example.com/", "_blank");
+		});
+
+		it("allows native navigation (no preventDefault, no window.open) for a javascript: URL when sanitization is disabled", async () => {
+			const openSpy = vi.spyOn(window, "open").mockImplementation(() => null);
+			await waitFor(() => {
+				render(
+					<Message
+						message={webUrlMessage("javascript:alert(1)")}
+						config={sanitizeOffConfig}
+					/>,
+				);
+			});
+
+			const clickEvent = clickLinkAndGetEvent(screen.getByRole("link"));
+			expect(clickEvent.defaultPrevented).toBe(false);
+			expect(openSpy).not.toHaveBeenCalled();
+		});
+
+		it("allows native navigation for a safe URL when sanitization is disabled", async () => {
+			const openSpy = vi.spyOn(window, "open").mockImplementation(() => null);
+			await waitFor(() => {
+				render(
+					<Message
+						message={webUrlMessage("https://example.com/")}
+						config={sanitizeOffConfig}
+					/>,
+				);
+			});
+
+			const clickEvent = clickLinkAndGetEvent(screen.getByRole("link"));
+			expect(clickEvent.defaultPrevented).toBe(false);
+			expect(openSpy).not.toHaveBeenCalled();
 		});
 	});
 });

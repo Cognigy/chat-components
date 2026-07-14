@@ -135,22 +135,28 @@ const ActionButton: FC<ActionButtonProps> = props => {
 		}
 
 		if (isWebURL) {
-			const url = config?.settings?.layout?.disableUrlButtonSanitization
-				? button.url
-				: sanitizeUrl(button.url);
+			if (config?.settings?.layout?.disableUrlButtonSanitization) {
+				// Escape hatch (opt-in, intentionally permissive): let native anchor
+				// navigation handle the raw href — including javascript: URLs.
+				// Deliberately no preventDefault / no window.open here.
+				return;
+			}
+
+			// Sanitized path owns navigation, so a neutralized URL can no-op.
+			event.preventDefault();
+
+			const url = sanitizeUrl(button.url);
 
 			// prevent no-ops from sending you to a blank page
 			if (url === "about:blank") return;
+
 			window.open(url, isWebURLButtonTargetBlank ? "_blank" : "_self");
+			return;
 		}
 
 		if (disabled) return;
 
 		event.preventDefault();
-
-		if (isWebURL) {
-			return;
-		}
 
 		if (buttonType === "openXApp") {
 			openXAppOverlay?.(button.payload);
