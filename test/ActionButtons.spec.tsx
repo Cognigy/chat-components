@@ -223,6 +223,7 @@ describe("web_url button URL sanitization", () => {
 				render(
 					<Message
 						message={webUrlMessage("javascript:alert(1)")}
+						action={() => {}}
 						config={sanitizeOnConfig}
 					/>,
 				);
@@ -239,6 +240,7 @@ describe("web_url button URL sanitization", () => {
 				render(
 					<Message
 						message={webUrlMessage("https://example.com/")}
+						action={() => {}}
 						config={sanitizeOnConfig}
 					/>,
 				);
@@ -255,6 +257,7 @@ describe("web_url button URL sanitization", () => {
 				render(
 					<Message
 						message={webUrlMessage("javascript:alert(1)")}
+						action={() => {}}
 						config={sanitizeOffConfig}
 					/>,
 				);
@@ -271,6 +274,7 @@ describe("web_url button URL sanitization", () => {
 				render(
 					<Message
 						message={webUrlMessage("https://example.com/")}
+						action={() => {}}
 						config={sanitizeOffConfig}
 					/>,
 				);
@@ -311,12 +315,108 @@ describe("web_url button URL sanitization", () => {
 			} as unknown as IMessage;
 
 			await waitFor(() => {
-				render(<Message message={message} config={sanitizeOnConfig} />);
+				render(<Message message={message} action={() => {}} config={sanitizeOnConfig} />);
 			});
 
 			const clickEvent = clickLinkAndGetEvent(screen.getByRole("link"));
 			expect(clickEvent.defaultPrevented).toBe(true);
 			expect(openSpy).toHaveBeenCalledWith("https://example.com/", "_self");
+		});
+
+		// A disabled web_url button (no `action` provided, so ActionButtons
+		// renders it disabled) must not navigate or execute in either mode.
+		describe("disabled buttons do not navigate", () => {
+			it("blocks window.open and prevents default when sanitization is on", async () => {
+				const openSpy = vi.spyOn(window, "open").mockImplementation(() => null);
+				await waitFor(() => {
+					render(
+						<Message
+							message={webUrlMessage("https://example.com/")}
+							config={sanitizeOnConfig}
+						/>,
+					);
+				});
+
+				const clickEvent = clickLinkAndGetEvent(screen.getByRole("link"));
+				expect(clickEvent.defaultPrevented).toBe(true);
+				expect(openSpy).not.toHaveBeenCalled();
+			});
+
+			it("blocks native navigation of a javascript: URL when sanitization is disabled", async () => {
+				const openSpy = vi.spyOn(window, "open").mockImplementation(() => null);
+				await waitFor(() => {
+					render(
+						<Message
+							message={webUrlMessage("javascript:alert(1)")}
+							config={sanitizeOffConfig}
+						/>,
+					);
+				});
+
+				const clickEvent = clickLinkAndGetEvent(screen.getByRole("link"));
+				expect(clickEvent.defaultPrevented).toBe(true);
+				expect(openSpy).not.toHaveBeenCalled();
+			});
+		});
+	});
+
+	// #83: the "opens in new tab" sr-only announcement must reflect real behavior.
+	describe("opens-in-new-tab announcement", () => {
+		const webUrlMessageWithTarget = (target?: string) =>
+			({
+				text: null,
+				data: {
+					_cognigy: {
+						_webchat: {
+							message: {
+								attachment: {
+									type: "template",
+									payload: {
+										text: "Links",
+										template_type: "button",
+										buttons: [
+											{
+												type: "web_url",
+												title: "Visit",
+												url: "https://example.com/",
+												...(target ? { target } : {}),
+											},
+										],
+									},
+								},
+							},
+						},
+					},
+				},
+			}) as unknown as IMessage;
+
+		it("announces new tab for an untargeted web_url when sanitization is on", async () => {
+			await waitFor(() => {
+				render(<Message message={webUrlMessageWithTarget()} config={sanitizeOnConfig} />);
+			});
+
+			expect(screen.getByRole("link").textContent).toContain("Opens in new tab");
+		});
+
+		it("does not announce new tab for an untargeted web_url when sanitization is disabled", async () => {
+			await waitFor(() => {
+				render(<Message message={webUrlMessageWithTarget()} config={sanitizeOffConfig} />);
+			});
+
+			expect(screen.getByRole("link").textContent).not.toContain("Opens in new tab");
+		});
+
+		it("announces new tab for target=_blank when sanitization is disabled", async () => {
+			await waitFor(() => {
+				render(
+					<Message
+						message={webUrlMessageWithTarget("_blank")}
+						config={sanitizeOffConfig}
+					/>,
+				);
+			});
+
+			expect(screen.getByRole("link").textContent).toContain("Opens in new tab");
 		});
 	});
 });

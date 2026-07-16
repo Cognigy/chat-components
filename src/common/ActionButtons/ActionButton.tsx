@@ -79,8 +79,23 @@ const ActionButton: FC<ActionButtonProps> = props => {
 	const isPhoneNumber =
 		button.payload && (buttonType === "phone_number" || buttonType === "user_phone_number");
 	const isWebURL = "type" in button && button.type === "web_url";
-	const sanitizedButtonUrl = sanitizeUrl(button.url);
+	// Only web_url buttons carry a navigable URL; skip sanitizing (and avoid
+	// passing an undefined url into sanitizeUrl) for postback/phone buttons.
+	const sanitizedButtonUrl = isWebURL ? sanitizeUrl(button.url) : undefined;
+	// The href rendered for web_url anchors: raw only when the consumer has
+	// explicitly opted out of sanitization, otherwise the sanitized value.
+	const webUrlHref = config?.settings?.layout?.disableUrlButtonSanitization
+		? button.url
+		: sanitizedButtonUrl;
 	const isWebURLButtonTargetBlank = isWebURL && button.target !== "_self";
+	// Whether activating the button actually opens a new tab — drives the
+	// sr-only announcement so it matches real behavior. The sanitized path
+	// navigates via window.open (new tab unless target is "_self"); the
+	// sanitization opt-out uses native anchor navigation, which only opens a
+	// new tab for an explicit target="_blank".
+	const opensInNewTab = config?.settings?.layout?.disableUrlButtonSanitization
+		? isWebURL && button.target === "_blank"
+		: isWebURLButtonTargetBlank;
 	const opensInNewTabLabel =
 		config?.settings?.customTranslations?.ariaLabels?.opensInNewTab || "Opens in new tab";
 
@@ -102,19 +117,9 @@ const ActionButton: FC<ActionButtonProps> = props => {
 		   cannot see through the indirection. */
 		button.payload ? <a {...props} href={`tel:${button.payload}`} /> : null;
 	const Anchor = (props: React.HTMLAttributes<HTMLAnchorElement>) =>
-		isWebURL ? (
-			/* eslint-disable-next-line jsx-a11y/anchor-has-content -- same render-prop pattern
-			   as PhoneNumberAnchor: children come in via the {...props} spread. */
-			<a
-				{...props}
-				href={
-					config?.settings?.layout?.disableUrlButtonSanitization
-						? button.url
-						: sanitizedButtonUrl
-				}
-				target={button.target}
-			/>
-		) : null;
+		/* eslint-disable-next-line jsx-a11y/anchor-has-content -- same render-prop pattern
+		   as PhoneNumberAnchor: children come in via the {...props} spread. */
+		isWebURL ? <a {...props} href={webUrlHref} target={button.target} /> : null;
 	const Button = (props: React.HTMLAttributes<HTMLButtonElement>) => (
 		<button {...props} disabled={disabled} />
 	);
@@ -139,12 +144,17 @@ const ActionButton: FC<ActionButtonProps> = props => {
 			if (config?.settings?.layout?.disableUrlButtonSanitization) {
 				// Escape hatch (opt-in, intentionally permissive): let native anchor
 				// navigation handle the raw href — including javascript: URLs.
-				// Deliberately no preventDefault / no window.open here.
+				// A disabled button must not act, so block its native navigation;
+				// otherwise defer to the anchor's native navigation (no window.open).
+				if (disabled) event.preventDefault();
 				return;
 			}
 
 			// Sanitized path owns navigation, so a neutralized URL can no-op.
 			event.preventDefault();
+
+			// A disabled button must not navigate.
+			if (disabled) return;
 
 			const url = sanitizedButtonUrl;
 
@@ -224,7 +234,7 @@ const ActionButton: FC<ActionButtonProps> = props => {
 				className={!!buttonImage && classes.buttonLabelWithImage}
 			/>
 			{renderIcon()}
-			{isWebURL && isWebURLButtonTargetBlank && (
+			{opensInNewTab && (
 				<span className={mainClasses.srOnly}>{`, ${opensInNewTabLabel}`}</span>
 			)}
 		</Component>
