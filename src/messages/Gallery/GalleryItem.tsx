@@ -29,11 +29,6 @@ const GalleryItem: FC<GallerySlideProps> = props => {
 	// the image instead of overlaying it (CSA-85062). Defaults to the legacy
 	// overlay so existing consumers' DOM is unchanged.
 	const titleBelowImage = !!config?.settings?.layout?.galleryCardTitleBelowImage;
-	// The content block (and the squared-off image corners it forces) must show
-	// whenever there is something below the image. With the overlay layout that's
-	// only subtitle/buttons; with the opt-in layout a title-only card also needs
-	// the block because the title now lives there.
-	const showContentBlock = (titleBelowImage && title) || hasExtraInfo;
 	const [isImageBroken, setImageBroken] = useState(false);
 	const { processHTML } = useSanitize();
 
@@ -42,6 +37,17 @@ const GalleryItem: FC<GallerySlideProps> = props => {
 	// is interpolated into ARIA labels).
 	const titleHtml = processHTML(title || "");
 	const subtitleHtml = processHTML(subtitle || "");
+	// Whether there is a visible title *after* sanitization. Guarding on the raw
+	// `title` is unsafe: a value that is entirely strippable markup (e.g.
+	// "<script>…</script>") is truthy but sanitizes to "", which would otherwise
+	// render a blank <h4> and force an empty content block beneath the image.
+	const hasTitle = !!titleHtml;
+
+	// The content block (and the squared-off image corners it forces) must show
+	// whenever there is something below the image. With the overlay layout that's
+	// only subtitle/buttons; with the opt-in layout a title-only card also needs
+	// the block because the title now lives there.
+	const showContentBlock = (titleBelowImage && hasTitle) || hasExtraInfo;
 
 	const titleId = useRandomId("webchatCarouselTemplateTitle");
 	const subtitleId = useRandomId("webchatCarouselTemplateSubtitle");
@@ -83,7 +89,7 @@ const GalleryItem: FC<GallerySlideProps> = props => {
 	return (
 		<div className={classnames("webchat-carousel-template-frame", classes.slideItem)}>
 			<div className={classnames(classes.top, showContentBlock && classes.hasExtraInfo)}>
-				{!titleBelowImage && title && titleElement}
+				{!titleBelowImage && hasTitle && titleElement}
 				{isImageBroken ? (
 					<span className={classes.brokenImage} />
 				) : (
@@ -103,10 +109,10 @@ const GalleryItem: FC<GallerySlideProps> = props => {
 					role={default_action?.url ? "link" : undefined}
 					id={contentId}
 					aria-describedby={default_action?.url && subtitle ? subtitleId : undefined}
-					aria-labelledby={default_action?.url && title ? titleId : undefined}
+					aria-labelledby={default_action?.url && hasTitle ? titleId : undefined}
 					aria-label={default_action?.url ? `${titleHtml}. ${opensInNewTab}` : undefined}
 				>
-					{titleBelowImage && title && titleElement}
+					{titleBelowImage && hasTitle && titleElement}
 					{subtitle && (
 						<Typography
 							variant="body-regular"
@@ -128,7 +134,7 @@ const GalleryItem: FC<GallerySlideProps> = props => {
 							action={shouldBeDisabled ? undefined : action}
 							config={config}
 							onEmitAnalytics={onEmitAnalytics}
-							templateTextId={title ? titleId : undefined}
+							templateTextId={hasTitle ? titleId : undefined}
 						/>
 					)}
 				</div>

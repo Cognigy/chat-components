@@ -83,4 +83,54 @@ describe("Message Gallery", () => {
 
 		expect(title.closest(".webchat-carousel-template-content")).not.toBeNull();
 	});
+
+	// Build a single-card gallery message whose only card has the given title and
+	// no subtitle/buttons — used to exercise the "title sanitizes to empty" guard
+	// without touching the shared gallery.json fixture (which is also compared by
+	// the dom-compat suite).
+	const makeSingleCardMessage = (title: string): IMessage => {
+		const clone = JSON.parse(JSON.stringify(gallery));
+		clone.data._cognigy._webchat.message.attachment.payload.elements = [
+			{
+				title,
+				subtitle: "",
+				image_url: "https://placewaifu.com/image/300/300",
+				image_alt_text: "titleless",
+				buttons: [],
+			},
+		];
+		return clone as unknown as IMessage;
+	};
+
+	// A title that is entirely strippable markup: truthy as a raw string, but
+	// sanitizes to "" so there is no visible title to render.
+	const stripToEmptyTitle = "<script>alert(1)</script>";
+
+	it("does not render an empty title overlay when the title sanitizes to empty (default layout)", () => {
+		const { container, getByTestId } = render(
+			<Message message={makeSingleCardMessage(stripToEmptyTitle)} />,
+		);
+
+		expect(getByTestId("gallery-message")).toBeInTheDocument();
+		// No title element is emitted, so there is no blank overlay <h4> in `.top`.
+		expect(container.querySelector(".webchat-carousel-template-title")).toBeNull();
+		// With no title/subtitle/buttons there is nothing below the image, so the
+		// content block must not be forced open.
+		expect(container.querySelector(".webchat-carousel-template-content")).toBeNull();
+	});
+
+	it("does not render an empty title or blank content block when the title sanitizes to empty (title-below-image layout)", () => {
+		const { container, getByTestId } = render(
+			<Message
+				message={makeSingleCardMessage(stripToEmptyTitle)}
+				config={titleBelowImageConfig}
+			/>,
+		);
+
+		expect(getByTestId("gallery-message")).toBeInTheDocument();
+		// No title <h4> in the content block...
+		expect(container.querySelector(".webchat-carousel-template-title")).toBeNull();
+		// ...and the empty content block is not forced open beneath the image.
+		expect(container.querySelector(".webchat-carousel-template-content")).toBeNull();
+	});
 });
