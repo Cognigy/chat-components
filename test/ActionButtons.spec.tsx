@@ -204,6 +204,24 @@ describe("web_url button URL sanitization", () => {
 			const link = screen.getByRole("link");
 			expect(link).toHaveAttribute("href", "https://example.com/");
 		});
+
+		// Regression: sanitizeUrl normalizes safe URLs (adds a trailing slash),
+		// but the rendered href must stay byte-identical to the raw URL so this
+		// does not become a breaking DOM change for consumers. Only dangerous
+		// URLs are rewritten (to about:blank).
+		it("renders a non-normalized safe URL byte-identical when sanitization is on", async () => {
+			await waitFor(() => {
+				render(
+					<Message
+						message={webUrlMessage("https://example.com")}
+						config={sanitizeOnConfig}
+					/>,
+				);
+			});
+
+			const link = screen.getByRole("link");
+			expect(link).toHaveAttribute("href", "https://example.com");
+		});
 	});
 
 	describe("click behavior (Fix B)", () => {

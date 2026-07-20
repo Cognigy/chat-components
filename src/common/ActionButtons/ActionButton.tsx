@@ -82,11 +82,18 @@ const ActionButton: FC<ActionButtonProps> = props => {
 	// Only web_url buttons carry a navigable URL; skip sanitizing (and avoid
 	// passing an undefined url into sanitizeUrl) for postback/phone buttons.
 	const sanitizedButtonUrl = isWebURL ? sanitizeUrl(button.url) : undefined;
-	// The href rendered for web_url anchors: raw only when the consumer has
-	// explicitly opted out of sanitization, otherwise the sanitized value.
+	// Neutralize only dangerous URLs; keep safe URLs byte-identical. sanitizeUrl
+	// normalizes safe URLs (adds a trailing slash, lowercases scheme/host), so
+	// rendering its output for every href would silently change the rendered
+	// markup for consumers (e.g. `https://example.com` -> `https://example.com/`)
+	// — a breaking DOM change. `=== "about:blank"` is sanitizeUrl's dangerous-URL
+	// signal (it also catches obfuscated payloads like `java\tscript:`, since
+	// control chars are stripped before detection), so we only swap in that case.
 	const webUrlHref = config?.settings?.layout?.disableUrlButtonSanitization
 		? button.url
-		: sanitizedButtonUrl;
+		: sanitizedButtonUrl === "about:blank"
+			? "about:blank"
+			: button.url;
 	const isWebURLButtonTargetBlank = isWebURL && button.target !== "_self";
 	// Whether activating the button actually opens a new tab — drives the
 	// sr-only announcement so it matches real behavior. The sanitized path
