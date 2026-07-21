@@ -37,3 +37,6 @@ codeql-results-dist.sarif
 
 # Claude Code worktrees
 .worktrees/
+
+# Superpowers design specs (local only)
+docs/superpowers/
