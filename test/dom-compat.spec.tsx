@@ -70,7 +70,7 @@ const baselineVersion: string = JSON.parse(
 // The shared <Message> case corpus. The same tables drive the a11y gate
 // (test/a11y.spec.tsx) — a new message type added there is automatically
 // covered by both gates. See test/fixtures/message-cases.ts.
-import { coreCases, demoCases, type Case } from "./fixtures/message-cases";
+import { coreCases, demoCases } from "./fixtures/message-cases";
 
 import type { IMessage } from "@cognigy/socket-client";
 
@@ -135,16 +135,7 @@ function normalize(html: string): string {
 		// content (e.g. `<pre>` blocks).
 		.replace(/="([^"]*)"/g, (_match, value: string) => `="${value.replace(/  +/g, " ")}"`);
 
-	// AB#90506: bundled default avatars gained a `data-default-avatar` attribute in
-	// 0.77.0 (scopes their primary-color background; custom images must not get it).
-	// While the dom-compat baseline predates 0.77.0, strip it from BOTH sides so the
-	// rest of the DOM is still compared instead of skipping these cases wholesale. Once
-	// 0.77.0 is npm latest the baseline carries the attribute, the gate turns false, and
-	// the comparison covers it again — including that custom avatars never get it.
-	// TODO(AB#90506): delete this branch once 0.77.0 is on npm latest.
-	return semverLt(baselineVersion, "0.77.0")
-		? normalized.replace(/ data-default-avatar=""/g, "")
-		: normalized;
+	return normalized;
 }
 
 // Shared assertion helper: render the same message through both packages,
@@ -196,59 +187,18 @@ describe("normalize preserves the accessibility contract", () => {
 	});
 });
 
-// Cases whose DOM intentionally diverges from releases before 0.77.0:
-//   - AB#105550: ActionButton dropped its aria-label and gained sr-only
-//     position/new-tab spans — affects every case containing action buttons
-//     (quick replies, image-downloadable, list, gallery, buttons template).
-//   - AB#144248: ListItem renders images without `image_alt_text` as
-//     `<span aria-hidden="true">` instead of an unnamed `<span role="img">`
-//     (axe: role-img-alt) — affects "demo: list" (also in the set above).
-// (AB#90506's avatar divergence touches nearly every case, so it's masked in
-// normalize() rather than listed here — see the data-default-avatar note there.)
-// All of these stay in the shared corpus, so the a11y gate keeps scanning
-// them. The skip is version-aware — once 0.77.0 ships to npm latest,
-// install-dom-compat-baseline resolves to it, the condition turns false,
-// and the cases re-enable themselves.
-// TODO(AB#144248): delete this block once 0.77.0 is on npm latest.
-const INTENTIONALLY_DIVERGING_PRE_0_77 = new Set<string>([
-	"bot quick replies",
-	"demo: image downloadable",
-	"demo: list",
-	"demo: gallery",
-	"demo: gallery (null buttons)",
-	"demo: quick replies / buttons",
-]);
-const semverLt = (a: string, b: string): boolean => {
-	const pa = a.split(".").map(Number);
-	const pb = b.split(".").map(Number);
-	for (let i = 0; i < 3; i++) {
-		if ((pa[i] ?? 0) !== (pb[i] ?? 0)) return (pa[i] ?? 0) < (pb[i] ?? 0);
-	}
-	return false;
-};
-const isSkipped = (c: Case) =>
-	semverLt(baselineVersion, "0.77.0") && INTENTIONALLY_DIVERGING_PRE_0_77.has(c.name);
-
 describe(`DOM compatibility: branch vs @cognigy/chat-components@${baselineVersion}`, () => {
 	describe("core source fixtures", () => {
-		it.each(coreCases.filter(c => !isSkipped(c)))(
+		it.each(coreCases)(
 			"$name — <Message> matches published release DOM",
 			({ message, config, prevMessage }) => assertSameDom(message, config, prevMessage),
-		);
-		it.skip.each(coreCases.filter(isSkipped))(
-			"$name — skipped: intentional DOM change pending 0.77.0 publish (AB#105550 / AB#144248)",
-			() => {},
 		);
 	});
 
 	describe("demo-page message tabs", () => {
-		it.each(demoCases.filter(c => !isSkipped(c)))(
+		it.each(demoCases)(
 			"$name — matches published release DOM",
 			({ message, config, prevMessage }) => assertSameDom(message, config, prevMessage),
-		);
-		it.skip.each(demoCases.filter(isSkipped))(
-			"$name — skipped: intentional DOM change pending 0.77.0 publish (AB#105550 / AB#144248)",
-			() => {},
 		);
 	});
 });
