@@ -47,6 +47,10 @@
 	border-bottom-right-radius: 0px;
 }
 
+/*
+** Default (legacy) layout: the title overlays the bottom of the image.
+** Used when `galleryCardTitleBelowImage` is not enabled.
+*/
 .slideItem .top h4 {
 	position: absolute;
 	margin: 0px;
@@ -55,7 +59,12 @@
 	color: var(--cc-white);
 }
 
-.slideItem .bottom p {
+/*
+** Opt-in layout (galleryCardTitleBelowImage): the title moves into the content
+** block beneath the image, so it shares the subtitle's flush margins/padding.
+*/
+.slideItem .bottom p,
+.slideItem .bottom h4 {
 	padding: 0px;
 	margin: 0px;
 }

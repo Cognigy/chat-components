@@ -3,9 +3,15 @@ import { it, describe, expect } from "vitest";
 import Message from "src/messages/Message";
 import gallery from "test/fixtures/gallery.json";
 import { IMessage } from "@cognigy/socket-client";
+import { IWebchatConfig } from "src/messages/types";
 
 describe("Message Gallery", () => {
 	const message = gallery as unknown as IMessage;
+
+	// Opt-in config that moves the card title beneath the image (CSA-85062).
+	const titleBelowImageConfig = {
+		settings: { layout: { galleryCardTitleBelowImage: true } },
+	} as IWebchatConfig;
 
 	it("renders Gallery message", () => {
 		const { getByTestId } = render(<Message message={message} />);
@@ -35,5 +41,96 @@ describe("Message Gallery", () => {
 		render(<Message message={message} />);
 
 		expect(document.querySelector(".swiper-pagination")).toBeInTheDocument();
+	});
+
+	it("overlays the title on the image by default (no galleryCardTitleBelowImage)", () => {
+		const { getByText } = render(<Message message={message} />);
+
+		const title = getByText("Cat 2");
+
+		// Default (legacy) layout: the title lives in the image container, not the
+		// content block beneath it.
+		const slideContainer = title.closest(".webchat-carousel-template-frame");
+		const slideImage = slideContainer?.querySelector('img[alt="foobar004g1"]');
+		expect(slideImage).not.toBeNull();
+		// Title shares the same container as the image (the overlay `.top` block)...
+		expect(title.parentElement?.contains(slideImage!)).toBe(true);
+		// ...and is not inside the text content block.
+		expect(title.closest(".webchat-carousel-template-content")).toBeNull();
+	});
+
+	it("renders the title below the image when galleryCardTitleBelowImage is enabled", () => {
+		const { getByText } = render(<Message message={message} config={titleBelowImageConfig} />);
+
+		const title = getByText("Cat 2");
+		const contentBlock = title.closest(".webchat-carousel-template-content");
+
+		// Title must live in the text content block beneath the image...
+		expect(contentBlock).not.toBeNull();
+		// ...and the slide's main image (identified by its alt text) must not be a descendant
+		// of that block — i.e. the title is not overlaying the image. Scoped to alt text so
+		// the assertion survives ActionButtons rendering its own <img> elements in future.
+		const slideContainer = title.closest(".webchat-carousel-template-frame");
+		const slideImage = slideContainer?.querySelector('img[alt="foobar004g1"]');
+		expect(slideImage).not.toBeNull();
+		expect(contentBlock?.contains(slideImage!)).toBe(false);
+	});
+
+	it("renders the title below the image even when there is no subtitle or buttons", () => {
+		const { getByText } = render(<Message message={message} config={titleBelowImageConfig} />);
+
+		const title = getByText("Cat 8");
+
+		expect(title.closest(".webchat-carousel-template-content")).not.toBeNull();
+	});
+
+	// Build a single-card gallery message whose only card has the given title and
+	// no subtitle/buttons — used to exercise the "title sanitizes to empty" guard
+	// without touching the shared gallery.json fixture (which is also compared by
+	// the dom-compat suite).
+	const makeSingleCardMessage = (title: string): IMessage => {
+		const clone = JSON.parse(JSON.stringify(gallery));
+		clone.data._cognigy._webchat.message.attachment.payload.elements = [
+			{
+				title,
+				subtitle: "",
+				image_url: "https://placewaifu.com/image/300/300",
+				image_alt_text: "titleless",
+				buttons: [],
+			},
+		];
+		return clone as unknown as IMessage;
+	};
+
+	// A title that is entirely strippable markup: truthy as a raw string, but
+	// sanitizes to "" so there is no visible title to render.
+	const stripToEmptyTitle = "<script>alert(1)</script>";
+
+	it("does not render an empty title overlay when the title sanitizes to empty (default layout)", () => {
+		const { container, getByTestId } = render(
+			<Message message={makeSingleCardMessage(stripToEmptyTitle)} />,
+		);
+
+		expect(getByTestId("gallery-message")).toBeInTheDocument();
+		// No title element is emitted, so there is no blank overlay <h4> in `.top`.
+		expect(container.querySelector(".webchat-carousel-template-title")).toBeNull();
+		// With no title/subtitle/buttons there is nothing below the image, so the
+		// content block must not be forced open.
+		expect(container.querySelector(".webchat-carousel-template-content")).toBeNull();
+	});
+
+	it("does not render an empty title or blank content block when the title sanitizes to empty (title-below-image layout)", () => {
+		const { container, getByTestId } = render(
+			<Message
+				message={makeSingleCardMessage(stripToEmptyTitle)}
+				config={titleBelowImageConfig}
+			/>,
+		);
+
+		expect(getByTestId("gallery-message")).toBeInTheDocument();
+		// No title <h4> in the content block...
+		expect(container.querySelector(".webchat-carousel-template-title")).toBeNull();
+		// ...and the empty content block is not forced open beneath the image.
+		expect(container.querySelector(".webchat-carousel-template-content")).toBeNull();
 	});
 });
