@@ -44,3 +44,12 @@ Push the changes to the GitHub and create a PR.
 `git push --tags`
 
 This will trigger the GitHub Action to create a release on GitHub and will publish the package to npm.
+
+Both `release.yml` and `publish.yml` trigger on the tag push itself. Creating a
+GitHub release by hand does **not** publish to npm — if a publish run fails, re-run
+it against the existing tag instead:
+
+`gh workflow run publish.yml --ref <tag>`
+
+Dispatch against a tag ref (e.g. `v1.2.3`), never a branch. Publishing is guarded
+to `refs/tags/v*` and will skip on anything else.
