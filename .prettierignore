@@ -1,2 +1,7 @@
 # PR template:
 .azuredevops/*
+
+# Nested Claude Code git worktrees — full checkouts of this repo under
+# .claude/worktrees/<name>. Formatting them would report every unformatted
+# file from unrelated branches; CI never sees them (fresh checkout).
+.claude/worktrees/
