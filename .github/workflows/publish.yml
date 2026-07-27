@@ -3,9 +3,22 @@
 
 name: Publish
 
+# Triggers on the tag push, NOT on `release: published`. release.yml creates the
+# GitHub release with the built-in GITHUB_TOKEN, and releases created by
+# GITHUB_TOKEN do not emit workflow-triggering events — so a `release` trigger
+# here would never fire.
+#
+# The FILENAME of this workflow (publish.yml) is part of the npm trusted-publisher
+# binding configured on npmjs.com. Renaming or moving this file breaks OIDC
+# authentication for `npm publish` until the npm-side config is updated to match.
 on:
-    release:
-        types: [published]
+    push:
+        tags:
+            - "v*"
+    # Escape hatch: lets a maintainer re-run a failed publish against an existing
+    # tag (`gh workflow run publish.yml --ref v0.79.0`) without deleting and
+    # re-pushing the tag. Always dispatch against a TAG ref, never a branch.
+    workflow_dispatch:
 
 permissions:
     id-token: write # Required for npm trusted publishing (OIDC)
