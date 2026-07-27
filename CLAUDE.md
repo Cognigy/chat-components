@@ -10,7 +10,7 @@
 - `npm run test:a11y` — axe gate only (`test/a11y.spec.tsx`).
 - `npm run lint:a11y` — a11y-only ESLint gate (`eslint.a11y.config.js`); what CI blocks on.
 - `npm run lint` — full ESLint (a11y rules included; rest is advisory SARIF in CI).
-- `npm run test:dom-compat:install-baseline && npm run build && npm run test:dom-compat` — DOM-compatibility gate vs. the latest published release.
+- `npm ci && npm run build && npm run test:dom-compat:install-baseline && npm run test:dom-compat` — DOM-compatibility gate vs. the latest published release. **Order matters** (mirrors `.github/workflows/dom-compat.yml`): build `dist/` against the clean lockfile-pinned tree _before_ `install-baseline`, since that step aliases in the published release with `npm install --no-save` and can drift ranged deps in `node_modules`. Building after it produces false diffs (e.g. swiper/radix `aria-controls` mismatches on gallery/audio cases) that never happen on CI.
 
 ## Accessibility is non-negotiable
 
