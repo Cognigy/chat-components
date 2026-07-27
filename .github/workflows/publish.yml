@@ -1,5 +1,7 @@
-# This workflow will run tests using node and then publish a package to GitHub Packages when a release is created
-# For more information see: https://docs.github.com/en/actions/publishing-packages/publishing-nodejs-packages
+# Runs the test suite with node, then publishes the package to npm when a `v*`
+# tag is pushed. Authentication uses npm trusted publishing (OIDC) — there is no
+# static npm token involved.
+# For more information see: https://docs.npmjs.com/trusted-publishers
 
 name: Publish
 
@@ -17,7 +19,9 @@ on:
             - "v*"
     # Escape hatch: lets a maintainer re-run a failed publish against an existing
     # tag (`gh workflow run publish.yml --ref v0.79.0`) without deleting and
-    # re-pushing the tag. Always dispatch against a TAG ref, never a branch.
+    # re-pushing the tag. Must be dispatched against a TAG ref — the job-level
+    # `if` below enforces that, since dispatching from a branch would otherwise
+    # publish whatever happens to be on that branch.
     workflow_dispatch:
 
 permissions:
@@ -26,6 +30,9 @@ permissions:
 
 jobs:
     build:
+        # Tag refs only. Guards workflow_dispatch from a branch ref, which would
+        # otherwise publish whatever is on that branch under a version nobody tagged.
+        if: startsWith(github.ref, 'refs/tags/v')
         runs-on: ubuntu-latest
         steps:
             - uses: actions/checkout@v3
@@ -43,6 +50,10 @@ jobs:
 
     publish-npm:
         needs: build
+        # Repeated deliberately: `needs` alone already skips this job when build is
+        # skipped, but this is the step that actually publishes — it should not rely
+        # on another job's guard to stay tag-only.
+        if: startsWith(github.ref, 'refs/tags/v')
         runs-on: ubuntu-latest
         steps:
             - uses: actions/checkout@v3
