@@ -26,7 +26,10 @@ export default defineConfig({
 		globals: true,
 		setupFiles: ["./test/preSetup.js", "./test/setup.js"],
 		include: ["test/dom-compat.spec.tsx"],
-		exclude: configDefaults.exclude, // Vitest's default — no dom-compat exclusion
+		// Vitest's default — no dom-compat exclusion — plus the nested Claude
+		// Code worktrees guard from vite.config.ts. `include` above is already
+		// root-anchored, so this is belt-and-braces against a future widening.
+		exclude: [...configDefaults.exclude, "**/.claude/worktrees/**"],
 		css: {
 			modules: {
 				classNameStrategy: "non-scoped",

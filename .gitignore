@@ -35,8 +35,12 @@ codeql-results.sarif
 codeql-db
 codeql-results-dist.sarif
 
-# Claude Code worktrees
+# Claude Code worktrees — full checkouts of this repo nested inside it.
+# Also excluded from the local quality gates, which (unlike git) don't read
+# ignore files: eslint.config.js / eslint.a11y.config.js `ignores`,
+# vite.config.ts + vitest.dom-compat.config.ts `test.exclude`, .prettierignore.
 .worktrees/
+.claude/worktrees/
 
 # Superpowers design specs (local only)
 docs/superpowers/
