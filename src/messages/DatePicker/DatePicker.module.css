@@ -273,13 +273,78 @@
 } */
 
 .wrapper .content :global(.flatpickr-current-month .numInputWrapper) {
-	width: 60px;
+	/* Wide enough that the centred 4-digit year clears the 14px arrow column on the right. */
+	width: 76px;
 	height: 44px;
 }
 
+/*
+** Year stepper arrows. Flatpickr builds these itself (createNumberInput("cur-year")) and wires
+** up click-to-increment natively, but the flatpickr.css port above only copied the
+** .numInputWrapper wrapper/input rules and skipped every `.numInputWrapper span` rule, so the
+** arrows had no geometry and were explicitly hidden. Restore flatpickr's own geometry, with
+** three deliberate departures from stock: the glyph colour comes from a theme token instead of
+** flatpickr's hardcoded rgba(); the arrows stay visible at rest rather than revealing on
+** `.numInputWrapper:hover` (the whole complaint in CSA-92602 is that the year reads as a static
+** box, which a hover-gated affordance would not fix); and they carry no hover background, with
+** a wider hit area instead of flatpickr's cramped 14px one.
+*/
 .wrapper .content :global(.flatpickr-current-month .numInputWrapper span.arrowUp),
 .wrapper .content :global(.flatpickr-current-month .numInputWrapper span.arrowDown) {
-	display: none;
+	position: absolute;
+	right: 1px;
+	width: 24px;
+	height: 50%;
+	padding: 0 7px 0 7px;
+	box-sizing: border-box;
+	line-height: 50%;
+	cursor: pointer;
+	opacity: 1;
+}
+
+.wrapper .content :global(.flatpickr-current-month .numInputWrapper span.arrowUp) {
+	top: 1px;
+}
+
+.wrapper .content :global(.flatpickr-current-month .numInputWrapper span.arrowDown) {
+	top: 50%;
+}
+
+.wrapper .content :global(.flatpickr-current-month .numInputWrapper span:after) {
+	display: block;
+	content: "";
+	position: absolute;
+	border-left: 4px solid transparent;
+	border-right: 4px solid transparent;
+}
+
+.wrapper .content :global(.flatpickr-current-month .numInputWrapper span.arrowUp:after) {
+	border-bottom: 4px solid var(--cc-black-10);
+	top: 26%;
+}
+
+.wrapper .content :global(.flatpickr-current-month .numInputWrapper span.arrowDown:after) {
+	border-top: 4px solid var(--cc-black-10);
+	top: 40%;
+}
+
+/*
+** flatpickr disables the year input when minDate/maxDate pin it to a single year, but it does
+** not disable the arrows. Mute them off the input's state (they follow it in the DOM) so they
+** match the disabled treatment the nav and time arrows already get.
+*/
+.wrapper
+	.content
+	:global(.flatpickr-current-month .numInputWrapper input.cur-year[disabled] ~ span) {
+	cursor: default;
+	pointer-events: none;
+}
+
+.wrapper
+	.content
+	:global(.flatpickr-current-month .numInputWrapper input.cur-year[disabled] ~ span:after) {
+	border-bottom-color: var(--cc-black-80);
+	border-top-color: var(--cc-black-80);
 }
 
 .wrapper .content :global(.flatpickr-current-month input.cur-year) {
@@ -779,8 +844,9 @@
 		font-size: 16px;
 	}
 
+	/* Same reasoning as the base rule, scaled for the 16px anti-auto-zoom font size. */
 	.wrapper .content :global(.flatpickr-current-month .numInputWrapper) {
-		width: 64px;
+		width: 80px;
 	}
 
 	.wrapper .content :global(.flatpickr-current-month input.cur-year) {
