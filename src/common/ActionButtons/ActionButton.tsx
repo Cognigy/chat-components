@@ -148,14 +148,8 @@ const ActionButton: FC<ActionButtonProps> = props => {
 		}
 
 		if (isWebURL) {
-			if (config?.settings?.layout?.disableUrlButtonSanitization) {
-				// Escape hatch (opt-in, intentionally permissive): let native anchor
-				// navigation handle the raw href — including javascript: URLs.
-				// A disabled button must not act, so block its native navigation;
-				// otherwise defer to the anchor's native navigation (no window.open).
-				if (disabled) event.preventDefault();
-				return;
-			}
+			
+			const url = config?.settings?.layout?.disableUrlButtonSanitization ? button.url :  sanitizedButtonUrl;
 
 			// Sanitized path owns navigation, so a neutralized URL can no-op.
 			event.preventDefault();
@@ -163,7 +157,6 @@ const ActionButton: FC<ActionButtonProps> = props => {
 			// A disabled button must not navigate.
 			if (disabled) return;
 
-			const url = sanitizedButtonUrl;
 
 			// prevent no-ops from sending you to a blank page
 			if (url === "about:blank") return;
