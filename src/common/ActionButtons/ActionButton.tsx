@@ -95,14 +95,11 @@ const ActionButton: FC<ActionButtonProps> = props => {
 			? "about:blank"
 			: button.url;
 	const isWebURLButtonTargetBlank = isWebURL && button.target !== "_self";
-	// Whether activating the button actually opens a new tab — drives the
-	// sr-only announcement so it matches real behavior. The sanitized path
-	// navigates via window.open (new tab unless target is "_self"); the
-	// sanitization opt-out uses native anchor navigation, which only opens a
-	// new tab for an explicit target="_blank".
-	const opensInNewTab = config?.settings?.layout?.disableUrlButtonSanitization
-		? isWebURL && button.target === "_blank"
-		: isWebURLButtonTargetBlank;
+	// Whether activating the button opens a new tab — drives the sr-only
+	// announcement so it matches real behavior. Both sanitization modes now
+	// navigate via window.open, which opens a new tab unless the button
+	// targets "_self".
+	const opensInNewTab = isWebURLButtonTargetBlank;
 	const opensInNewTabLabel =
 		config?.settings?.customTranslations?.ariaLabels?.opensInNewTab || "Opens in new tab";
 
@@ -148,15 +145,18 @@ const ActionButton: FC<ActionButtonProps> = props => {
 		}
 
 		if (isWebURL) {
-			
-			const url = config?.settings?.layout?.disableUrlButtonSanitization ? button.url :  sanitizedButtonUrl;
+			// Both modes navigate via window.open: the opt-out uses the raw URL,
+			// the default uses the sanitized value. preventDefault runs first so
+			// the anchor's native navigation never fires (a neutralized URL can
+			// then no-op without leaking the raw href to the browser).
+			const url = config?.settings?.layout?.disableUrlButtonSanitization
+				? button.url
+				: sanitizedButtonUrl;
 
-			// Sanitized path owns navigation, so a neutralized URL can no-op.
 			event.preventDefault();
 
 			// A disabled button must not navigate.
 			if (disabled) return;
-
 
 			// prevent no-ops from sending you to a blank page
 			if (url === "about:blank") return;
