@@ -273,7 +273,7 @@
 } */
 
 .wrapper .content :global(.flatpickr-current-month .numInputWrapper) {
-	/* Wide enough that the centred 4-digit year clears the 14px arrow column on the right. */
+	/* Wide enough that the centred 4-digit year clears the 24px arrow column on the right. */
 	width: 76px;
 	height: 44px;
 }
@@ -283,31 +283,54 @@
 ** up click-to-increment natively, but the flatpickr.css port above only copied the
 ** .numInputWrapper wrapper/input rules and skipped every `.numInputWrapper span` rule, so the
 ** arrows had no geometry and were explicitly hidden. Restore flatpickr's own geometry, with
-** three deliberate departures from stock: the glyph colour comes from a theme token instead of
-** flatpickr's hardcoded rgba(); the arrows stay visible at rest rather than revealing on
-** `.numInputWrapper:hover` (the whole complaint in CSA-92602 is that the year reads as a static
-** box, which a hover-gated affordance would not fix); and they carry no hover background, with
-** a wider hit area instead of flatpickr's cramped 14px one.
+** three deliberate departures from stock:
+**
+** 1. The glyph colour comes from a theme token instead of flatpickr's hardcoded rgba(), and the
+**    arrows carry no hover background.
+** 2. They reveal on `:focus-within` as well as `:hover`. Stock flatpickr is hover-only, which
+**    leaves keyboard users with no visible affordance. Keeping them hidden at rest matters
+**    because this library is exact-pinned by Webchat: anything that changes the at-rest
+**    rendering ships to every end customer on the next version bump, and CSA-92602 is a
+**    functional complaint (no way to change the year with the mouse), which hover/focus reveal
+**    fully addresses.
+** 3. 24x24 hit areas instead of flatpickr's cramped 14px column, so target size (WCAG 2.2
+**    SC 2.5.8) is met outright rather than leaning on the "equivalent means" exemption that the
+**    input's type-a-year and ArrowUp/ArrowDown paths provide. The spans are 24px tall inside a
+**    44px field, so they overhang it by 2px above and below; nothing in the month header clips
+**    them. They meet exactly at the midline (-2px + 24px = 22px = 50% of 44px), so the two
+**    targets do not overlap and a click cannot be captured by the wrong arrow.
+**
+** While hidden they are also inert, so a click near the right edge of the year field cannot
+** step the year before the arrows have appeared.
 */
 .wrapper .content :global(.flatpickr-current-month .numInputWrapper span.arrowUp),
 .wrapper .content :global(.flatpickr-current-month .numInputWrapper span.arrowDown) {
 	position: absolute;
 	right: 1px;
 	width: 24px;
-	height: 50%;
+	height: 24px;
 	padding: 0 7px 0 7px;
 	box-sizing: border-box;
 	line-height: 50%;
 	cursor: pointer;
-	opacity: 1;
+	opacity: 0;
+	pointer-events: none;
 }
 
 .wrapper .content :global(.flatpickr-current-month .numInputWrapper span.arrowUp) {
-	top: 1px;
+	top: -2px;
 }
 
 .wrapper .content :global(.flatpickr-current-month .numInputWrapper span.arrowDown) {
 	top: 50%;
+}
+
+.wrapper .content :global(.flatpickr-current-month .numInputWrapper:hover span.arrowUp),
+.wrapper .content :global(.flatpickr-current-month .numInputWrapper:hover span.arrowDown),
+.wrapper .content :global(.flatpickr-current-month .numInputWrapper:focus-within span.arrowUp),
+.wrapper .content :global(.flatpickr-current-month .numInputWrapper:focus-within span.arrowDown) {
+	opacity: 1;
+	pointer-events: auto;
 }
 
 .wrapper .content :global(.flatpickr-current-month .numInputWrapper span:after) {
@@ -318,20 +341,28 @@
 	border-right: 4px solid transparent;
 }
 
+/*
+** The glyphs are decorations inside the hit areas, so they can be pulled toward the field's
+** vertical midline without shrinking the 24x24 targets. These percentages are relative to the
+** 24px spans and land the two triangles ~8px apart, centred on the midline, instead of pushed
+** to the top and bottom of the 44px field.
+*/
 .wrapper .content :global(.flatpickr-current-month .numInputWrapper span.arrowUp:after) {
 	border-bottom: 4px solid var(--cc-black-10);
-	top: 26%;
+	top: 66%;
 }
 
 .wrapper .content :global(.flatpickr-current-month .numInputWrapper span.arrowDown:after) {
 	border-top: 4px solid var(--cc-black-10);
-	top: 40%;
+	top: 18%;
 }
 
 /*
 ** flatpickr disables the year input when minDate/maxDate pin it to a single year, but it does
 ** not disable the arrows. Mute them off the input's state (they follow it in the DOM) so they
-** match the disabled treatment the nav and time arrows already get.
+** match the disabled treatment the nav and time arrows already get. This rule outranks the
+** hover/focus reveal above, so the arrows stay inert even once hover makes them visible — a
+** disabled year still shows why it cannot be stepped rather than silently offering nothing.
 */
 .wrapper
 	.content
