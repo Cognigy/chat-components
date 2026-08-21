@@ -266,10 +266,10 @@ describe("web_url button URL sanitization", () => {
 
 			const clickEvent = clickLinkAndGetEvent(screen.getByRole("link"));
 			expect(clickEvent.defaultPrevented).toBe(true);
-			expect(openSpy).toHaveBeenCalledWith("https://example.com/", "_blank");
+			expect(openSpy).toHaveBeenCalledWith("https://example.com/", "_blank", "noopener");
 		});
 
-		it("allows native navigation (no preventDefault, no window.open) for a javascript: URL when sanitization is disabled", async () => {
+		it("passes the raw URL through window.open (opt-out) when sanitization is disabled", async () => {
 			const openSpy = vi.spyOn(window, "open").mockImplementation(() => null);
 			await waitFor(() => {
 				render(
@@ -282,11 +282,13 @@ describe("web_url button URL sanitization", () => {
 			});
 
 			const clickEvent = clickLinkAndGetEvent(screen.getByRole("link"));
-			expect(clickEvent.defaultPrevented).toBe(false);
-			expect(openSpy).not.toHaveBeenCalled();
+			// preventDefault always runs (native nav killed); the opt-out passes the
+			// raw URL to window.open, which the browser blocks for javascript:.
+			expect(clickEvent.defaultPrevented).toBe(true);
+			expect(openSpy).toHaveBeenCalledWith("javascript:alert(1)", "_blank", "noopener");
 		});
 
-		it("allows native navigation for a safe URL when sanitization is disabled", async () => {
+		it("opens a safe URL in a new tab via window.open when sanitization is disabled", async () => {
 			const openSpy = vi.spyOn(window, "open").mockImplementation(() => null);
 			await waitFor(() => {
 				render(
@@ -299,7 +301,29 @@ describe("web_url button URL sanitization", () => {
 			});
 
 			const clickEvent = clickLinkAndGetEvent(screen.getByRole("link"));
-			expect(clickEvent.defaultPrevented).toBe(false);
+			expect(clickEvent.defaultPrevented).toBe(true);
+			expect(openSpy).toHaveBeenCalledWith("https://example.com/", "_blank", "noopener");
+		});
+
+		it("does not open a blank tab for a missing URL on the opt-out path", async () => {
+			const openSpy = vi.spyOn(window, "open").mockImplementation(() => null);
+			// An empty url renders <a href="">, which has no "link" role, so query
+			// the anchor from the DOM directly.
+			let container!: HTMLElement;
+			await waitFor(() => {
+				({ container } = render(
+					<Message
+						message={webUrlMessage("")}
+						action={() => {}}
+						config={sanitizeOffConfig}
+					/>,
+				));
+			});
+
+			const anchor = container.querySelector("a");
+			expect(anchor).not.toBeNull();
+			const clickEvent = clickLinkAndGetEvent(anchor!);
+			expect(clickEvent.defaultPrevented).toBe(true);
 			expect(openSpy).not.toHaveBeenCalled();
 		});
 
@@ -416,12 +440,14 @@ describe("web_url button URL sanitization", () => {
 			expect(screen.getByRole("link").textContent).toContain("Opens in new tab");
 		});
 
-		it("does not announce new tab for an untargeted web_url when sanitization is disabled", async () => {
+		it("announces new tab for an untargeted web_url when sanitization is disabled", async () => {
+			// Both modes navigate via window.open(_blank unless _self), so an
+			// untargeted URL opens a new tab in the opt-out path too.
 			await waitFor(() => {
 				render(<Message message={webUrlMessageWithTarget()} config={sanitizeOffConfig} />);
 			});
 
-			expect(screen.getByRole("link").textContent).not.toContain("Opens in new tab");
+			expect(screen.getByRole("link").textContent).toContain("Opens in new tab");
 		});
 
 		it("announces new tab for target=_blank when sanitization is disabled", async () => {
