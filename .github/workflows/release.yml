@@ -5,6 +5,18 @@ on:
         tags:
             - "v*"
 
+# `contents: write` is what `repos.createRelease()` needs. Using the built-in
+# GITHUB_TOKEN instead of a hand-managed PAT removes the yearly-expiry failure
+# mode that broke v0.78.0: the RELEASE_ACTION_TOKEN PAT expired ~1 year after it
+# was set, and the release step failed with "Bad credentials".
+#
+# A release created by GITHUB_TOKEN does NOT emit a `release: published` event,
+# so publish.yml deliberately triggers on the tag push itself rather than on the
+# release. Do not "fix" publish.yml back to `release: published` without also
+# reverting this token change, or publishing will silently stop.
+permissions:
+    contents: write
+
 jobs:
     release:
         name: "Release"
@@ -15,4 +27,4 @@ jobs:
             - name: "Create release"
               uses: "ergebnis/.github/actions/github/release/create@1.8.0"
               with:
-                  github-token: "${{ secrets.RELEASE_ACTION_TOKEN }}"
+                  github-token: "${{ secrets.GITHUB_TOKEN }}"
