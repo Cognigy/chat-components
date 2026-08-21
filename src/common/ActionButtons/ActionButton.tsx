@@ -158,10 +158,19 @@ const ActionButton: FC<ActionButtonProps> = props => {
 			// A disabled button must not navigate.
 			if (disabled) return;
 
-			// prevent no-ops from sending you to a blank page
-			if (url === "about:blank") return;
+			// prevent no-ops from sending you to a blank page — a neutralized URL,
+			// or a missing url on the opt-out path (which would open an empty tab).
+			if (!url || url === "about:blank") return;
 
-			window.open(url, isWebURLButtonTargetBlank ? "_blank" : "_self");
+			// window.open does not inherit the implicit noopener that browsers give
+			// <a target="_blank">, so sever window.opener on new-tab navigations to
+			// prevent reverse tabnabbing of the host page. Any target other than
+			// "_self" opens a new tab (mirrors the rendered anchor's target logic).
+			if (isWebURLButtonTargetBlank) {
+				window.open(url, "_blank", "noopener");
+			} else {
+				window.open(url, "_self");
+			}
 			return;
 		}
 

@@ -266,7 +266,7 @@ describe("web_url button URL sanitization", () => {
 
 			const clickEvent = clickLinkAndGetEvent(screen.getByRole("link"));
 			expect(clickEvent.defaultPrevented).toBe(true);
-			expect(openSpy).toHaveBeenCalledWith("https://example.com/", "_blank");
+			expect(openSpy).toHaveBeenCalledWith("https://example.com/", "_blank", "noopener");
 		});
 
 		it("passes the raw URL through window.open (opt-out) when sanitization is disabled", async () => {
@@ -285,7 +285,7 @@ describe("web_url button URL sanitization", () => {
 			// preventDefault always runs (native nav killed); the opt-out passes the
 			// raw URL to window.open, which the browser blocks for javascript:.
 			expect(clickEvent.defaultPrevented).toBe(true);
-			expect(openSpy).toHaveBeenCalledWith("javascript:alert(1)", "_blank");
+			expect(openSpy).toHaveBeenCalledWith("javascript:alert(1)", "_blank", "noopener");
 		});
 
 		it("opens a safe URL in a new tab via window.open when sanitization is disabled", async () => {
@@ -302,7 +302,29 @@ describe("web_url button URL sanitization", () => {
 
 			const clickEvent = clickLinkAndGetEvent(screen.getByRole("link"));
 			expect(clickEvent.defaultPrevented).toBe(true);
-			expect(openSpy).toHaveBeenCalledWith("https://example.com/", "_blank");
+			expect(openSpy).toHaveBeenCalledWith("https://example.com/", "_blank", "noopener");
+		});
+
+		it("does not open a blank tab for a missing URL on the opt-out path", async () => {
+			const openSpy = vi.spyOn(window, "open").mockImplementation(() => null);
+			// An empty url renders <a href="">, which has no "link" role, so query
+			// the anchor from the DOM directly.
+			let container!: HTMLElement;
+			await waitFor(() => {
+				({ container } = render(
+					<Message
+						message={webUrlMessage("")}
+						action={() => {}}
+						config={sanitizeOffConfig}
+					/>,
+				));
+			});
+
+			const anchor = container.querySelector("a");
+			expect(anchor).not.toBeNull();
+			const clickEvent = clickLinkAndGetEvent(anchor!);
+			expect(clickEvent.defaultPrevented).toBe(true);
+			expect(openSpy).not.toHaveBeenCalled();
 		});
 
 		it("opens a safe URL in the same tab (_self) when the button target is _self", async () => {
