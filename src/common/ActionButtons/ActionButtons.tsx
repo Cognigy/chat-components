@@ -114,10 +114,17 @@ export const ActionButtons: FC<ActionButtonsProps> = props => {
 
 	const Component = buttons.length > 1 ? "ul" : "div";
 
+	// aria-labelledby is only reliably honored on elements with an exposed
+	// role (CGY-3281). The multi-button <ul> has the implicit `list` role; the
+	// single-button <div> gets role="group" so its label is announced. Without
+	// a label, the <div> stays roleless and carries no aria-labelledby.
+	const singleButtonRole = Component === "div" && templateTextId ? "group" : undefined;
+
 	return (
 		<Component
 			className={classnames(className, classes.buttons, containerClassName)}
 			style={containerStyle || {}}
+			role={singleButtonRole}
 			aria-labelledby={templateTextId}
 			data-testid="action-buttons"
 		>

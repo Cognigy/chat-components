@@ -69,6 +69,26 @@ export const quickRepliesBotMessage: IMessage = {
 	},
 } as unknown as IMessage;
 
+// Quick replies with NO accompanying text (CGY-3281 issue 1): the buttons
+// container must not reference a text bubble that never renders, so it must
+// carry no aria-labelledby here.
+export const quickRepliesNoTextBotMessage: IMessage = {
+	source: "bot",
+	data: {
+		_cognigy: {
+			_webchat: {
+				message: {
+					text: "",
+					quick_replies: [
+						{ title: "Yes", payload: "yes", content_type: "text" },
+						{ title: "No", payload: "no", content_type: "text" },
+					],
+				},
+			},
+		},
+	},
+} as unknown as IMessage;
+
 // ----- Default Preview payloads -----
 // Replicate the `_defaultPreview` cases from test/demo.tsx so the matcher's
 // `enableDefaultPreview` branch is exercised. Both fixtures ship a contrasting
