@@ -187,18 +187,56 @@ describe("normalize preserves the accessibility contract", () => {
 	});
 });
 
+// Version-aware skip for INTENTIONAL structural divergence (procedure in
+// docs/accessibility.md, "ARIA is API"). The skip only applies while the
+// installed baseline predates the release that ships the change, so the cases
+// re-enable themselves once that version is on npm `latest`.
+//
+// CGY-3277 (ships in 0.80.0): the multi-slide gallery renders its own
+// pagination element (`.gallery-pagination`) after the prev/next buttons
+// instead of letting Swiper auto-inject it before them, so keyboard focus
+// order matches the visual order (WCAG 2.4.3): slides → prev/next → dots.
+// Covered by test/GalleryA11y.spec.tsx; release notes carry an
+// "Accessibility changes" entry so Webchat re-runs its cypress-axe suite.
+// TODO: delete this block once the baseline is >= 0.80.0 (it is dead code then).
+const INTENTIONALLY_DIVERGING_PRE_0_80 = new Set([
+	"bot gallery (generic template)",
+	"demo: gallery",
+]);
+const [baselineMajor, baselineMinor] = baselineVersion.split(".").map(Number);
+const baselineIsPre080 = baselineMajor === 0 && baselineMinor < 80;
+const partitionByDivergence = <T extends { name: string }>(cases: T[]) => ({
+	active: cases.filter(c => !(baselineIsPre080 && INTENTIONALLY_DIVERGING_PRE_0_80.has(c.name))),
+	skipped: cases.filter(c => baselineIsPre080 && INTENTIONALLY_DIVERGING_PRE_0_80.has(c.name)),
+});
+
 describe(`DOM compatibility: branch vs @cognigy/chat-components@${baselineVersion}`, () => {
+	const core = partitionByDivergence(coreCases);
+	const demo = partitionByDivergence(demoCases);
+
 	describe("core source fixtures", () => {
-		it.each(coreCases)(
+		it.each(core.active)(
 			"$name — <Message> matches published release DOM",
 			({ message, config, prevMessage }) => assertSameDom(message, config, prevMessage),
 		);
+		if (core.skipped.length > 0) {
+			it.skip.each(core.skipped)(
+				`$name — intentionally diverges from ${baselineVersion} (CGY-3277 gallery focus order)`,
+				() => {},
+			);
+		}
 	});
 
 	describe("demo-page message tabs", () => {
-		it.each(demoCases)(
+		it.each(demo.active)(
 			"$name — matches published release DOM",
 			({ message, config, prevMessage }) => assertSameDom(message, config, prevMessage),
 		);
+		if (demo.skipped.length > 0) {
+			it.skip.each(demo.skipped)(
+				`$name — intentionally diverges from ${baselineVersion} (CGY-3277 gallery focus order)`,
+				() => {},
+			);
+		}
 	});
 });
