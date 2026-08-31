@@ -42,8 +42,9 @@ describe("Gallery carousel focus order (WCAG 2.4.3, CGY-3277)", () => {
 		// The custom pagination element must still be adopted by Swiper's
 		// Pagination module (bullets rendered inside it, clickable modifier).
 		const pagination = container.querySelector(".gallery-pagination");
-		expect(pagination?.classList.contains("swiper-pagination-clickable")).toBe(true);
-		expect(pagination?.querySelectorAll(".swiper-pagination-bullet").length).toBeGreaterThan(0);
+		expect(pagination).not.toBeNull();
+		expect(pagination!.classList.contains("swiper-pagination-clickable")).toBe(true);
+		expect(pagination!.querySelectorAll(".swiper-pagination-bullet").length).toBeGreaterThan(0);
 
 		// Swiper's A11y module names the nav buttons (checked by the axe gate too).
 		expect(getByLabelText("Previous slide")).toBeInTheDocument();

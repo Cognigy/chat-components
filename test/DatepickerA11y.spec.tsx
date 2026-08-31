@@ -226,7 +226,11 @@ describe("DatePicker Accessibility (W3C APG grid pattern)", () => {
 		expect((document.activeElement as HTMLElement).classList.contains("flatpickr-day")).toBe(
 			true,
 		);
-		expect(after.getDate()).toBe(before.getDate()); // same day-of-month
+		// Same day-of-month, except flatpickr clamps to the last day when the
+		// next month is shorter (e.g. PageDown from Aug 31 lands on Sep 30 —
+		// asserting the raw day made this test fail on month-end run dates).
+		const daysInNextMonth = new Date(before.getFullYear(), before.getMonth() + 2, 0).getDate();
+		expect(after.getDate()).toBe(Math.min(before.getDate(), daysInNextMonth));
 		// Month advanced by one (wrapping year at December).
 		expect(
 			(after.getFullYear() - before.getFullYear()) * 12 +
@@ -249,12 +253,21 @@ describe("DatePicker Accessibility (W3C APG grid pattern)", () => {
 		pressKey("PageDown", true); // Shift+PageDown -> next year
 		const next = dateOf(document.activeElement)!;
 		expect(next.getFullYear()).toBe(before.getFullYear() + 1);
-		expect(next.getDate()).toBe(before.getDate());
+		// Same clamp caveat as PageDown above: Feb 29 lands on Feb 28 in a
+		// non-leap year.
+		const daysInMonthNextYear = new Date(
+			before.getFullYear() + 1,
+			before.getMonth() + 1,
+			0,
+		).getDate();
+		expect(next.getDate()).toBe(Math.min(before.getDate(), daysInMonthNextYear));
 
 		pressKey("PageUp", true); // Shift+PageUp -> back a year
 		const back = dateOf(document.activeElement)!;
 		expect(back.getFullYear()).toBe(before.getFullYear());
-		expect(back.getDate()).toBe(before.getDate());
+		// The clamped day always exists in the original month, so going back
+		// preserves it (Feb 29 → Feb 28 → Feb 28, not back to 29).
+		expect(back.getDate()).toBe(next.getDate());
 	});
 
 	it("Issue E - arrow off the grid edge moves to the sequential adjacent-month day", async () => {
