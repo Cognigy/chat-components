@@ -208,9 +208,19 @@ const INTENTIONALLY_DIVERGING_PRE_0_80 = new Set<string>([
 	"demo: xApp button (quick reply)",
 	"demo: xApp button (template)",
 ]);
+// Compares release triplets only: tolerates a leading "v" and ignores any
+// prerelease/build suffix (a "0.80.0-beta.1" baseline published to npm
+// `latest` counts as 0.80.0 — betas of the fix version carry the change).
+// Non-numeric segments compare as 0 rather than poisoning the result as NaN.
 const semverLt = (a: string, b: string): boolean => {
-	const pa = a.split(".").map(Number);
-	const pb = b.split(".").map(Number);
+	const parse = (version: string) =>
+		version
+			.replace(/^v/, "")
+			.split(/[-+]/)[0]
+			.split(".")
+			.map(segment => (Number.isFinite(Number(segment)) ? Number(segment) : 0));
+	const pa = parse(a);
+	const pb = parse(b);
 	for (let i = 0; i < 3; i++) {
 		if ((pa[i] ?? 0) !== (pb[i] ?? 0)) return (pa[i] ?? 0) < (pb[i] ?? 0);
 	}
