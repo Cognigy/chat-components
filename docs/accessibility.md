@@ -157,7 +157,7 @@ Reference implementation: [`test/DatepickerA11y.spec.tsx`](../test/DatepickerA11
 | `expectSingleTabStop(root, selector)` | The roving-tabindex invariant: exactly one `tabindex="0"`, the rest `-1`                                                                                  |
 | `runAxe` / `expectNoA11yViolations`   | axe scan of a specific interaction state                                                                                                                  |
 
-Backlog candidates without a spec yet: Gallery/swiper, Lightbox, Audio controls, AdaptiveCards actions.
+Interaction specs shipped so far (CGY-30265): [`test/DatepickerA11y.spec.tsx`](../test/DatepickerA11y.spec.tsx) (APG grid), [`test/LightboxA11y.spec.tsx`](../test/LightboxA11y.spec.tsx) (APG dialog: trigger keys, focus in/trap/return, Esc), [`test/GalleryA11y.spec.tsx`](../test/GalleryA11y.spec.tsx) (APG carousel: named controls, slide labels, reachability across navigation, default_action links), [`test/VideoA11y.spec.tsx`](../test/VideoA11y.spec.tsx) (preview play button semantics + Enter/Space), [`test/ListA11y.spec.tsx`](../test/ListA11y.spec.tsx) (clickable rows as keyboard-operable links), [`test/TextWithButtonsA11y.spec.tsx`](../test/TextWithButtonsA11y.spec.tsx) (button group naming, tab order, disabled state, xApp overlay), [`test/AdaptiveCardsA11y.spec.tsx`](../test/AdaptiveCardsA11y.spec.tsx) (card actions, ShowCard inputs, submit/OpenUrl routing) and [`test/FileA11y.spec.tsx`](../test/FileA11y.spec.tsx) (attachment links). Audio's keyboard/focus coverage (options menu Esc/arrow-wrap/focus return, volume slider semantics) lives in [`test/Audio.spec.tsx`](../test/Audio.spec.tsx).
 
 ## Running everything locally
 
@@ -197,6 +197,6 @@ Automated gates catch a lot but not everything. Before merging non-trivial compo
 ## Follow-ups / backlog
 
 - **AB#144248 — flatpickr calendar DOM restructure**: give the calendar grid proper `role="row"` structure and an accessible name for flatpickr's original readonly input. Removes all three allowlist entries (which will then fail as stale — by design).
-- **Interaction A11y specs** for Gallery/swiper, Lightbox, Audio controls, and AdaptiveCards actions (pattern: `test/DatepickerA11y.spec.tsx`).
+- **Gallery card `default_action` keyboard reachability**: `GalleryItem`'s content block renders `role="link"` with an Enter handler but **no `tabindex`**, so keyboard users cannot reach it (ListItem's equivalent sets `tabindex="0"`). Fixing it adds a focusable to the rendered DOM — follow the intentional-ARIA-change procedure (dom-compat skip + release notes). `test/GalleryA11y.spec.tsx` documents current behavior without asserting reachability.
 - **Branch protection** (repo admin): mark **Accessibility lint (jsx-a11y)** and **Accessibility axe (WCAG 2.2 AA)** as required checks on `main`.
 - **Webchat-side verification**: Webchat's `cy.checkA11yCompliance()` tag list should include `wcag22aa` and drop `wcag22a` — that tag does not exist in axe-core, so it currently adds nothing. Verify and fix in the Webchat repo.

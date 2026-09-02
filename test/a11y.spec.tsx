@@ -36,6 +36,7 @@ import datepickerSingleDate from "./fixtures/datepicker/singleDate.json";
 import imageDownloadableFixture from "./fixtures/image-downloadable.json";
 import galleryFixture from "./fixtures/gallery.json";
 import audioFixture from "./fixtures/audio.json";
+import adaptiveCardsFixture from "./fixtures/adaptiveCards.json";
 
 /**
  * Pre-existing, ticketed violations. Keyed by case name; each entry names
@@ -154,6 +155,20 @@ describe("Accessibility (WCAG 2.2 AA): interaction states", () => {
 		fireEvent.click(screen.getByLabelText("Next slide"));
 
 		await expectA11yCompliant("stateful: gallery after slide navigation", container);
+	});
+
+	it("adaptive card with expanded ShowCard — no axe violations", async () => {
+		// Fixture [0]'s Action.ShowCard reveals labelled inputs + a Submit
+		// action that exist only after activation — the collapsed-card sweep
+		// case never sees them.
+		const { container } = render(
+			<Message message={asBot((adaptiveCardsFixture as unknown as object[])[0])} />,
+		);
+
+		fireEvent.click(screen.getByRole("button", { name: "Set visit date" }));
+		await screen.findByLabelText(/Planned visit time/);
+
+		await expectA11yCompliant("stateful: adaptive card expanded ShowCard", container);
 	});
 
 	it("audio player with open More-options menu — no axe violations", async () => {
