@@ -17,6 +17,7 @@
 import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import { describe, it, expect, vi, afterEach } from "vitest";
 import Message from "src/messages/Message";
+import type { IWebchatConfig } from "src/messages/types";
 import { asBot } from "./fixtures/message-cases";
 import adaptiveCardsFixture from "./fixtures/adaptiveCards.json";
 import { getTabbables } from "./a11y-utils";
@@ -99,6 +100,27 @@ describe("Adaptive Cards Accessibility (actions)", () => {
 		fireEvent.click(screen.getByRole("link", { name: "Learn more" }));
 
 		expect(openSpy).not.toHaveBeenCalled();
+	});
+
+	it("Action.OpenUrl passes the raw URL through when sanitization is disabled (opt-out)", () => {
+		const openSpy = vi.spyOn(window, "open").mockImplementation(() => null);
+		render(
+			<Message
+				message={dangerousOpenUrlMessage()}
+				action={vi.fn()}
+				config={
+					{
+						settings: { layout: { disableUrlButtonSanitization: true } },
+					} as IWebchatConfig
+				}
+			/>,
+		);
+
+		fireEvent.click(screen.getByRole("link", { name: "Learn more" }));
+
+		// The opt-out passes the raw URL to window.open, which the browser
+		// blocks for javascript: — matching the ActionButtons opt-out contract.
+		expect(openSpy).toHaveBeenCalledWith("javascript:alert(1)", "_blank", "noopener");
 	});
 
 	it("actions do nothing when the conversation has ended", async () => {

@@ -90,11 +90,16 @@ export const AdaptiveCards = () => {
 
 				case "Action.OpenUrl": {
 					//@ts-ignore
-					const url = sanitizeUrl(action._propertyBag?.url);
+					const rawUrl = action._propertyBag?.url;
+					// Honor the same sanitization opt-out as ActionButtons/List/Gallery.
+					const url = config?.settings?.layout?.disableUrlButtonSanitization
+						? rawUrl
+						: sanitizeUrl(rawUrl);
 
-					// prevent no-ops from sending you to a blank page — a missing
-					// or dangerous URL (sanitizeUrl neutralizes both to about:blank)
-					if (url === "about:blank") return;
+					// prevent no-ops from sending you to a blank page — a missing URL
+					// (on the opt-out path) or a dangerous one neutralized to
+					// about:blank by sanitizeUrl
+					if (!url || url === "about:blank") return;
 
 					// window.open does not inherit the implicit noopener that browsers
 					// give <a target="_blank">, so sever window.opener to prevent
@@ -105,7 +110,7 @@ export const AdaptiveCards = () => {
 				}
 			}
 		},
-		[onSendMessage, shouldBeDisabled],
+		[onSendMessage, shouldBeDisabled, config?.settings?.layout?.disableUrlButtonSanitization],
 	);
 
 	return (
