@@ -21,6 +21,7 @@ import {
 	engagementTextMessage,
 	richBotMessage,
 	quickRepliesBotMessage,
+	quickRepliesNoTextBotMessage,
 	defaultPreviewQuickReplies,
 	defaultPreviewText,
 	xAppQuickReply,
@@ -131,6 +132,7 @@ export const coreCases: Case[] = [
 	{ name: "engagement message", message: engagementTextMessage, config: engagementConfig },
 	{ name: "bot gallery (generic template)", message: richBotMessage },
 	{ name: "bot quick replies", message: quickRepliesBotMessage },
+	{ name: "bot quick replies (no text)", message: quickRepliesNoTextBotMessage },
 ];
 
 // Demo-page coverage. One case per demo tab where the tab renders via
