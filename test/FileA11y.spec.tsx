@@ -29,7 +29,9 @@ describe("File Accessibility (attachment links)", () => {
 		const { container } = render(<Message message={asBot(fileFixture)} />);
 
 		const previews = Array.from(
-			container.querySelectorAll<HTMLImageElement>(".webchat-media-template-image-container img"),
+			container.querySelectorAll<HTMLImageElement>(
+				".webchat-media-template-image-container img",
+			),
 		);
 		expect(previews).toHaveLength(3);
 		previews.forEach(img => {

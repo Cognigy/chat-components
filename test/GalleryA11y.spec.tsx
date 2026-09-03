@@ -136,7 +136,11 @@ describe("Gallery Accessibility (W3C APG carousel pattern)", () => {
 											image_url: "https://placewaifu.com/image/300/300",
 											image_alt_text: "a cat",
 											buttons: [
-												{ type: "postback", payload: "p1", title: "Pick me" },
+												{
+													type: "postback",
+													payload: "p1",
+													title: "Pick me",
+												},
 											],
 										},
 									],
