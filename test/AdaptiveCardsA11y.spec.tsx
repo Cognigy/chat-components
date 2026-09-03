@@ -6,8 +6,9 @@
  * press buttons. This spec covers the interactive contract of the rendered
  * card: actions are native named controls in the tab order, Action.ShowCard
  * reveals labelled inputs, Action.Submit routes through the message
- * `action`, and Action.OpenUrl opens a new tab. The axe scan of the
- * expanded ShowCard state lives in the gate (test/a11y.spec.tsx).
+ * `action`, and Action.OpenUrl opens its sanitized URL in a new tab with
+ * noopener (dangerous URLs are neutralized, matching List/Gallery). The axe
+ * scan of the expanded ShowCard state lives in the gate (test/a11y.spec.tsx).
  *
  * NOTE: adaptivecards sets text via `element.innerText`, which jsdom maps
  * onto textContent through the shim in test/setup.js — accessible names
@@ -23,6 +24,13 @@ import { getTabbables } from "./a11y-utils";
 // Fixture [0]: card with an Action.ShowCard ("Set visit date" -> date +
 // comment inputs + Submit "OK") and an Action.OpenUrl ("Learn more").
 const showCardMessage = () => asBot((adaptiveCardsFixture as unknown as object[])[0]);
+
+// Same card with the Action.OpenUrl URL swapped for a dangerous scheme.
+const dangerousOpenUrlMessage = () => {
+	const raw = JSON.parse(JSON.stringify((adaptiveCardsFixture as unknown as object[])[0]));
+	raw.data._cognigy._webchat.adaptiveCard.actions[1].url = "javascript:alert(1)";
+	return asBot(raw);
+};
 
 afterEach(() => {
 	vi.restoreAllMocks();
@@ -71,7 +79,7 @@ describe("Adaptive Cards Accessibility (actions)", () => {
 		await waitFor(() => expect(action).toHaveBeenCalled());
 	});
 
-	it("Action.OpenUrl is exposed as a link and opens its URL in a new tab", () => {
+	it("Action.OpenUrl is exposed as a link and opens its URL in a new tab with noopener", () => {
 		const openSpy = vi.spyOn(window, "open").mockImplementation(() => null);
 		render(<Message message={showCardMessage()} action={vi.fn()} />);
 
@@ -80,7 +88,17 @@ describe("Adaptive Cards Accessibility (actions)", () => {
 		expect(openSpy).toHaveBeenCalledWith(
 			"https://www.youtube.com/watch?v=dQw4w9WgXcQ",
 			"_blank",
+			"noopener",
 		);
+	});
+
+	it("Action.OpenUrl with a dangerous URL does not navigate", () => {
+		const openSpy = vi.spyOn(window, "open").mockImplementation(() => null);
+		render(<Message message={dangerousOpenUrlMessage()} action={vi.fn()} />);
+
+		fireEvent.click(screen.getByRole("link", { name: "Learn more" }));
+
+		expect(openSpy).not.toHaveBeenCalled();
 	});
 
 	it("actions do nothing when the conversation has ended", async () => {

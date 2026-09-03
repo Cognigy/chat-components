@@ -1,5 +1,6 @@
 import { useCallback } from "react";
 import classnames from "classnames";
+import { sanitizeUrl } from "@braintree/sanitize-url";
 
 import AdaptiveCard from "./components/Adaptivecard";
 import { useMessageContext } from "../hooks";
@@ -89,8 +90,16 @@ export const AdaptiveCards = () => {
 
 				case "Action.OpenUrl": {
 					//@ts-ignore
-					const url = action._propertyBag?.url;
-					window.open(url, "_blank");
+					const url = sanitizeUrl(action._propertyBag?.url);
+
+					// prevent no-ops from sending you to a blank page — a missing
+					// or dangerous URL (sanitizeUrl neutralizes both to about:blank)
+					if (url === "about:blank") return;
+
+					// window.open does not inherit the implicit noopener that browsers
+					// give <a target="_blank">, so sever window.opener to prevent
+					// reverse tabnabbing of the host page.
+					window.open(url, "_blank", "noopener");
 
 					return;
 				}
