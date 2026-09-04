@@ -70,7 +70,7 @@ const baselineVersion: string = JSON.parse(
 // The shared <Message> case corpus. The same tables drive the a11y gate
 // (test/a11y.spec.tsx) — a new message type added there is automatically
 // covered by both gates. See test/fixtures/message-cases.ts.
-import { coreCases, demoCases } from "./fixtures/message-cases";
+import { coreCases, demoCases, type Case } from "./fixtures/message-cases";
 
 import type { IMessage } from "@cognigy/socket-client";
 
@@ -187,18 +187,83 @@ describe("normalize preserves the accessibility contract", () => {
 	});
 });
 
+// Version-aware skip for INTENTIONAL structural divergence (procedure in
+// docs/accessibility.md, "ARIA is API"). The skip only applies while the
+// installed baseline predates the release that ships the change, so the cases
+// re-enable themselves once that version is on npm `latest`.
+//
+// Cases whose DOM intentionally diverges from releases before 0.80.0:
+//
+// CGY-3277 (gallery focus order): the multi-slide gallery renders its own
+// pagination element (`.gallery-pagination`) after the prev/next buttons
+// instead of letting Swiper auto-inject it before them, so keyboard focus
+// order matches the visual order (WCAG 2.4.3): slides → prev/next → dots.
+// Affects "bot gallery (generic template)" and "demo: gallery". Covered by
+// test/GalleryA11y.spec.tsx; release notes carry an "Accessibility changes"
+// entry so Webchat re-runs its cypress-axe suite.
+//
+// CGY-3281 (Action Buttons grouping):
+//   - a single-button container with an associated text/title now renders
+//     role="group" so its aria-labelledby is exposed reliably — affects
+//     "demo: gallery" (one card has a single button + title), "demo: default
+//     preview (quick replies)" and both xApp cases (single button + text);
+//   - a buttons container whose message has no text no longer emits a broken
+//     aria-labelledby reference — affects the new "bot quick replies (no
+//     text)" case (the baseline still renders the dangling reference).
+//
+// All of these stay in the shared corpus, so the a11y gate keeps scanning
+// them. Once 0.80.0 ships to npm latest, install-dom-compat-baseline resolves
+// to it, the condition turns false, and the cases re-enable themselves.
+// TODO(CGY-3277, CGY-3281): delete this block once 0.80.0 is on npm latest.
+const INTENTIONALLY_DIVERGING_PRE_0_80 = new Set<string>([
+	"bot gallery (generic template)",
+	"bot quick replies (no text)",
+	"demo: gallery",
+	"demo: default preview (quick replies)",
+	"demo: xApp button (quick reply)",
+	"demo: xApp button (template)",
+]);
+// Compares release triplets only: tolerates a leading "v" and ignores any
+// prerelease/build suffix (a "0.80.0-beta.1" baseline published to npm
+// `latest` counts as 0.80.0 — betas of the fix version carry the change).
+// Non-numeric segments compare as 0 rather than poisoning the result as NaN.
+const semverLt = (a: string, b: string): boolean => {
+	const parse = (version: string) =>
+		version
+			.replace(/^v/, "")
+			.split(/[-+]/)[0]
+			.split(".")
+			.map(segment => (Number.isFinite(Number(segment)) ? Number(segment) : 0));
+	const pa = parse(a);
+	const pb = parse(b);
+	for (let i = 0; i < 3; i++) {
+		if ((pa[i] ?? 0) !== (pb[i] ?? 0)) return (pa[i] ?? 0) < (pb[i] ?? 0);
+	}
+	return false;
+};
+const isSkipped = (c: Case) =>
+	semverLt(baselineVersion, "0.80.0") && INTENTIONALLY_DIVERGING_PRE_0_80.has(c.name);
+
 describe(`DOM compatibility: branch vs @cognigy/chat-components@${baselineVersion}`, () => {
 	describe("core source fixtures", () => {
-		it.each(coreCases)(
+		it.each(coreCases.filter(c => !isSkipped(c)))(
 			"$name — <Message> matches published release DOM",
 			({ message, config, prevMessage }) => assertSameDom(message, config, prevMessage),
+		);
+		it.skip.each(coreCases.filter(isSkipped))(
+			"$name — skipped: intentional DOM change pending 0.80.0 publish (CGY-3277, CGY-3281)",
+			() => {},
 		);
 	});
 
 	describe("demo-page message tabs", () => {
-		it.each(demoCases)(
+		it.each(demoCases.filter(c => !isSkipped(c)))(
 			"$name — matches published release DOM",
 			({ message, config, prevMessage }) => assertSameDom(message, config, prevMessage),
+		);
+		it.skip.each(demoCases.filter(isSkipped))(
+			"$name — skipped: intentional DOM change pending 0.80.0 publish (CGY-3277, CGY-3281)",
+			() => {},
 		);
 	});
 });

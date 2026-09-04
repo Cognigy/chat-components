@@ -73,6 +73,73 @@ describe("Action Buttons", () => {
 		expect(webUrlLink).toBeInTheDocument();
 	});
 
+	// CGY-3281: aria-labelledby must only appear when the referenced text
+	// exists in the DOM, and only on an element with an exposed role (the
+	// multi-button <ul> is a list; a single-button <div> gets role="group").
+	describe("buttons container grouping and labelling (CGY-3281)", () => {
+		const quickRepliesMessage = (text: string, titles: string[]) =>
+			({
+				source: "bot",
+				data: {
+					_cognigy: {
+						_webchat: {
+							message: {
+								text,
+								quick_replies: titles.map(title => ({
+									title,
+									payload: title,
+									content_type: "text",
+								})),
+							},
+						},
+					},
+				},
+			}) as unknown as IMessage;
+
+		it("labels the multi-button list with the existing text element", async () => {
+			await waitFor(() => {
+				render(<Message message={quickRepliesMessage("Pick one", ["Yes", "No"])} />);
+			});
+
+			const container = screen.getByTestId("action-buttons");
+			expect(container.tagName).toBe("UL");
+			const labelledBy = container.getAttribute("aria-labelledby");
+			expect(labelledBy).toBeTruthy();
+			expect(document.getElementById(labelledBy!)).toHaveTextContent("Pick one");
+		});
+
+		it("gives a labelled single-button container role=group with a valid reference", async () => {
+			await waitFor(() => {
+				render(<Message message={quickRepliesMessage("Pick one", ["Yes"])} />);
+			});
+
+			const container = screen.getByTestId("action-buttons");
+			expect(container.tagName).toBe("DIV");
+			expect(container).toHaveAttribute("role", "group");
+			const labelledBy = container.getAttribute("aria-labelledby");
+			expect(labelledBy).toBeTruthy();
+			expect(document.getElementById(labelledBy!)).toHaveTextContent("Pick one");
+		});
+
+		it("omits aria-labelledby when the message has no text (multiple buttons)", async () => {
+			await waitFor(() => {
+				render(<Message message={quickRepliesMessage("", ["Yes", "No"])} />);
+			});
+
+			expect(screen.getByTestId("action-buttons")).not.toHaveAttribute("aria-labelledby");
+		});
+
+		it("omits aria-labelledby and role when the message has no text (single button)", async () => {
+			await waitFor(() => {
+				render(<Message message={quickRepliesMessage("", ["Yes"])} />);
+			});
+
+			const container = screen.getByTestId("action-buttons");
+			expect(container).not.toHaveAttribute("aria-labelledby");
+			expect(container).not.toHaveAttribute("role");
+		});
+	});
+
 	describe("buttons with HTML lang attributes in titles", () => {
 		const langMessage = {
 			text: null,

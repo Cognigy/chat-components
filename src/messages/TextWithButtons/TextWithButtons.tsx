@@ -143,7 +143,7 @@ const TextWithButtons: FC = (props: ITextWithButtonsProps) => {
 					showUrlIcon
 					config={config}
 					onEmitAnalytics={onEmitAnalytics}
-					templateTextId={webchatButtonTemplateTextId}
+					templateTextId={text ? webchatButtonTemplateTextId : undefined}
 					openXAppOverlay={openXAppOverlay}
 				/>
 			)}

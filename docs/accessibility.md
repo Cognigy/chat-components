@@ -135,9 +135,9 @@ Assistive-technology behavior in every consumer depends on this library's render
 
 - dom-compat's `normalize()` **deliberately preserves** `aria-*`/`role`/`alt`/`tabindex`; only generated id _values_ inside them are masked. A guard test ("normalize preserves the accessibility contract") makes it impossible to weaken this silently.
 - **Intentional ARIA change procedure:**
-    1. Add the affected case names to a **version-aware skip** in `test/dom-compat.spec.tsx` — see `INTENTIONALLY_DIVERGING_PRE_0_77`: the skip only applies while the installed baseline is older than the release that ships the change, so the cases re-enable themselves once that version is on npm `latest`. Include a TODO to delete the block.
+    1. Add the affected case names to a **version-aware skip** in `test/dom-compat.spec.tsx` — see `INTENTIONALLY_DIVERGING_PRE_0_80`: the skip only applies while the installed baseline is older than the release that ships the change, so the cases re-enable themselves once that version is on npm `latest`. Include a TODO to delete the block.
     2. Add an **"Accessibility changes"** entry to the GitHub release notes of the version that ships it, so Webchat re-runs its cypress-axe suite (and screen-reader spot checks) when it bumps the pinned dependency.
-- Example from this branch: `ListItem` images without `image_alt_text` now render `aria-hidden="true"` instead of an unnamed `role="img"` (axe rule `role-img-alt`); the `"demo: list"` case is skipped against baselines < 0.77.0.
+- Example: a single-button `ActionButtons` container with an associated text/title renders `role="group"` since 0.80.0 so its `aria-labelledby` is exposed reliably, and a container whose message has no text carries no `aria-labelledby` at all (CGY-3281); the affected cases are skipped against baselines < 0.80.0.
 
 ## Keyboard & interaction specs
 
