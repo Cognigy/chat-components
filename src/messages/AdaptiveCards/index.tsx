@@ -1,5 +1,6 @@
 import { useCallback } from "react";
 import classnames from "classnames";
+import { sanitizeUrl } from "@braintree/sanitize-url";
 
 import AdaptiveCard from "./components/Adaptivecard";
 import { useMessageContext } from "../hooks";
@@ -89,14 +90,27 @@ export const AdaptiveCards = () => {
 
 				case "Action.OpenUrl": {
 					//@ts-ignore
-					const url = action._propertyBag?.url;
-					window.open(url, "_blank");
+					const rawUrl = action._propertyBag?.url;
+					// Honor the same sanitization opt-out as ActionButtons/List/Gallery.
+					const url = config?.settings?.layout?.disableUrlButtonSanitization
+						? rawUrl
+						: sanitizeUrl(rawUrl);
+
+					// prevent no-ops from sending you to a blank page — a missing URL
+					// (on the opt-out path) or a dangerous one neutralized to
+					// about:blank by sanitizeUrl
+					if (!url || url === "about:blank") return;
+
+					// window.open does not inherit the implicit noopener that browsers
+					// give <a target="_blank">, so sever window.opener to prevent
+					// reverse tabnabbing of the host page.
+					window.open(url, "_blank", "noopener");
 
 					return;
 				}
 			}
 		},
-		[onSendMessage, shouldBeDisabled],
+		[onSendMessage, shouldBeDisabled, config?.settings?.layout?.disableUrlButtonSanitization],
 	);
 
 	return (
