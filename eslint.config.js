@@ -20,9 +20,11 @@ import { componentMapping } from "./eslint.a11y.config.js";
  */
 export default [
 	// Ignore patterns. dist-demo is the built demo bundle (npm run build:demo)
-	// — generated output, same as dist.
+	// — generated output, same as dist. .claude/worktrees/** holds nested
+	// Claude Code git worktrees (full checkouts of this repo); see the matching
+	// entry in eslint.a11y.config.js.
 	{
-		ignores: ["dist", "dist-demo"],
+		ignores: ["dist", "dist-demo", ".claude/worktrees/**"],
 	},
 
 	// Base JS recommended rules (apply to all files)
