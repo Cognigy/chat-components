@@ -11,8 +11,14 @@ jobs:
         runs-on: ubuntu-latest
 
         strategy:
+            # Report every Node version's result, so one failing line does not
+            # mask whether the others are green.
+            fail-fast: false
             matrix:
-                node-version: [22.x]
+                # Must cover every Node line permitted by `engines.node`
+                # (>=22.1.0), otherwise "supported" and "tested" drift apart and
+                # developers on newer Node hit failures CI never sees.
+                node-version: [22.x, 24.x, 26.x]
 
         steps:
             - uses: actions/checkout@v4
