@@ -187,8 +187,22 @@ describe("normalize preserves the accessibility contract", () => {
 	});
 });
 
-// Cases whose DOM intentionally diverges from releases before 0.80.0
-// (CGY-3281, Action Buttons grouping):
+// Version-aware skip for INTENTIONAL structural divergence (procedure in
+// docs/accessibility.md, "ARIA is API"). The skip only applies while the
+// installed baseline predates the release that ships the change, so the cases
+// re-enable themselves once that version is on npm `latest`.
+//
+// Cases whose DOM intentionally diverges from releases before 0.80.0:
+//
+// CGY-3277 (gallery focus order): the multi-slide gallery renders its own
+// pagination element (`.gallery-pagination`) after the prev/next buttons
+// instead of letting Swiper auto-inject it before them, so keyboard focus
+// order matches the visual order (WCAG 2.4.3): slides → prev/next → dots.
+// Affects "bot gallery (generic template)" and "demo: gallery". Covered by
+// test/GalleryA11y.spec.tsx; release notes carry an "Accessibility changes"
+// entry so Webchat re-runs its cypress-axe suite.
+//
+// CGY-3281 (Action Buttons grouping):
 //   - a single-button container with an associated text/title now renders
 //     role="group" so its aria-labelledby is exposed reliably — affects
 //     "demo: gallery" (one card has a single button + title), "demo: default
@@ -196,12 +210,13 @@ describe("normalize preserves the accessibility contract", () => {
 //   - a buttons container whose message has no text no longer emits a broken
 //     aria-labelledby reference — affects the new "bot quick replies (no
 //     text)" case (the baseline still renders the dangling reference).
+//
 // All of these stay in the shared corpus, so the a11y gate keeps scanning
-// them. The skip is version-aware — once 0.80.0 ships to npm latest,
-// install-dom-compat-baseline resolves to it, the condition turns false,
-// and the cases re-enable themselves.
-// TODO(CGY-3281): delete this block once 0.80.0 is on npm latest.
+// them. Once 0.80.0 ships to npm latest, install-dom-compat-baseline resolves
+// to it, the condition turns false, and the cases re-enable themselves.
+// TODO(CGY-3277, CGY-3281): delete this block once 0.80.0 is on npm latest.
 const INTENTIONALLY_DIVERGING_PRE_0_80 = new Set<string>([
+	"bot gallery (generic template)",
 	"bot quick replies (no text)",
 	"demo: gallery",
 	"demo: default preview (quick replies)",
@@ -236,7 +251,7 @@ describe(`DOM compatibility: branch vs @cognigy/chat-components@${baselineVersio
 			({ message, config, prevMessage }) => assertSameDom(message, config, prevMessage),
 		);
 		it.skip.each(coreCases.filter(isSkipped))(
-			"$name — skipped: intentional DOM change pending 0.80.0 publish (CGY-3281)",
+			"$name — skipped: intentional DOM change pending 0.80.0 publish (CGY-3277, CGY-3281)",
 			() => {},
 		);
 	});
@@ -247,7 +262,7 @@ describe(`DOM compatibility: branch vs @cognigy/chat-components@${baselineVersio
 			({ message, config, prevMessage }) => assertSameDom(message, config, prevMessage),
 		);
 		it.skip.each(demoCases.filter(isSkipped))(
-			"$name — skipped: intentional DOM change pending 0.80.0 publish (CGY-3281)",
+			"$name — skipped: intentional DOM change pending 0.80.0 publish (CGY-3277, CGY-3281)",
 			() => {},
 		);
 	});

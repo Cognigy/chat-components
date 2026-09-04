@@ -98,7 +98,7 @@ const Gallery: FC = () => {
 			spaceBetween={8}
 			slidesPerView="auto"
 			navigation={{ prevEl: ".gallery-button-prev", nextEl: ".gallery-button-next" }}
-			pagination={{ clickable: true }}
+			pagination={{ clickable: true, el: ".gallery-pagination" }}
 			className={classnames("webchat-carousel-template-root", classes.wrapper)}
 			data-testid="gallery-message"
 			a11y={{ slideLabelMessage }}
@@ -114,6 +114,11 @@ const Gallery: FC = () => {
 			<button className="gallery-button-next">
 				<ArrowNavIcon />
 			</button>
+			{/* Rendered here (instead of Swiper's auto-injected element) so the
+			    clickable pagination dots follow the prev/next buttons in the DOM,
+			    keeping the tab order aligned with the visual order (WCAG 2.4.3):
+			    slides → prev/next → dots. */}
+			<div className="gallery-pagination swiper-pagination" />
 		</Swiper>
 	);
 };
