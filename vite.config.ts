@@ -35,6 +35,12 @@ export default defineConfig({
 		reporters: process.env.GITHUB_ACTIONS
 			? ["default", new GithubActionsReporter()]
 			: "default",
+		coverage: {
+			provider: "v8",
+			reporter: ["lcovonly", "text-summary"],
+			reportOnFailure: true,
+			include: ["src/**/*.{ts,tsx}"],
+		},
 	},
 	build: {
 		target: "es2020",
