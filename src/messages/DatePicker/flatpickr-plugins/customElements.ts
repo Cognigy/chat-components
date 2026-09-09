@@ -17,8 +17,10 @@ export interface Config {
  *   week column (`.flatpickr-weekwrapper`: a "Wk" columnheader + one `role="rowheader"` per week,
  *   referenced by each day cell's `aria-describedby`)
  * - the weekday header is a `role="row"` of `role="columnheader"` cells
- * - each day cell's `aria-label` carries the whole context in one string: weekday, date, and any
- *   of today / start of range / end of range / selected (words from customTranslations.ariaLabels)
+ * - each day cell's `aria-label` is "<weekday>, <month> <day>, <year>" (the flat cells cannot
+ *   inherit the weekday from the column header) plus "start of range" / "end of range" in range
+ *   mode (ARIA has no state for range endpoints); selection and today are exposed as states only
+ *   (`aria-selected`, flatpickr's `aria-current="date"`), never repeated in the name (APG)
  * - the AM/PM toggle is a `role="button"` operable with Enter/Space whose new value is announced
  * - day cells are flat `role="gridcell"` elements with `aria-rowindex`/`aria-colindex` (NOT
  *   physical `role="row"` wrappers, which would break flatpickr's native arrow navigation that
@@ -410,7 +412,7 @@ function customElements(pluginConfig: Config): Plugin {
 				cell.setAttribute("aria-rowindex", String(rowIndex));
 				cell.setAttribute("aria-colindex", String((i % GRID_COLS) + 1 + colOffset()));
 				// With week numbers, describe each day by its row's week-number header so the
-				// screen reader speaks e.g. "… September 9, 2026, today. Week 37".
+				// screen reader speaks e.g. "Wednesday, September 9, 2026. Week 37".
 				const weekHeader = hasWeekNumbers()
 					? fp?.weekNumbers?.querySelector<HTMLElement>(`[aria-rowindex="${rowIndex}"]`)
 					: null;
@@ -428,11 +430,11 @@ function customElements(pluginConfig: Config): Plugin {
 			return cell.classList.contains("selected") || cell.classList.contains("inRange");
 		}
 
-		// Reflect a day cell's state for assistive tech: aria-selected plus a spoken label that
-		// carries the whole context in ONE string (CGY-30560), e.g.
-		// "Thursday, June 25, 2026, today, selected" / "Thursday, June 11, 2026, start of range,
-		// selected". NVDA reads the cell's name reliably on focus (see syncRovingTabindex), whereas
-		// separately exposed states were dropped or spoken detached from the date.
+		// Reflect a day cell's state for assistive tech (CGY-30560): `aria-selected` for every
+		// selected day (range interior included), and the spoken label from getDayLabel(). Today
+		// keeps flatpickr's `aria-current="date"`. Following the APG datepicker example, the
+		// selected/today STATES are not repeated inside the name — screen readers already speak
+		// aria-selected / aria-current, so words in the name would be announced twice.
 		function syncDayCellState(cell: HTMLElement) {
 			if (isSelectedCell(cell)) {
 				cell.setAttribute("aria-selected", "true");
@@ -668,24 +670,24 @@ function customElements(pluginConfig: Config): Plugin {
 			return (cell as unknown as { dateObj?: Date }).dateObj;
 		}
 
-		// Spoken label for a day cell: weekday + date, then every applicable state, e.g.
-		// "Thursday, June 12, 2026" / "Thursday, June 25, 2026, today, selected" /
-		// "Sunday, June 14, 2026, end of range, selected". Uses the cell's own date so
-		// prev/next-month overflow cells announce their real month (not the visible month).
-		// State words come from customTranslations.ariaLabels with English fallbacks.
+		// Spoken label for a day cell, e.g. "Thursday, June 12, 2026". The weekday is part of the
+		// name because the flat cells (no role="row" level) cannot reliably inherit it from the
+		// column header the way the APG table example does. In range mode the endpoints add
+		// "start of range" / "end of range" — ARIA has no state for range boundaries, so the name
+		// is the only channel. Selected/today are NOT repeated here (they are states). Uses the
+		// cell's own date so prev/next-month overflow cells announce their real month. Words come
+		// from customTranslations.ariaLabels with English fallbacks.
 		function getDayLabel(cell: HTMLElement, date: Date): string {
 			const labels = customTranslations?.ariaLabels;
 			const weekday = fp.l10n.weekdays.longhand[date.getDay()];
 			const month = fp.l10n.months.longhand[date.getMonth()];
 			const parts = [`${weekday}, ${month} ${date.getDate()}, ${date.getFullYear()}`];
-			if (cell.classList.contains("today")) parts.push(labels?.datePickerToday || "today");
 			if (cell.classList.contains("startRange")) {
 				parts.push(labels?.datePickerRangeStart || "start of range");
 			}
 			if (cell.classList.contains("endRange")) {
 				parts.push(labels?.datePickerRangeEnd || "end of range");
 			}
-			if (isSelectedCell(cell)) parts.push(labels?.datePickerSelected || "selected");
 			return parts.join(", ");
 		}
 
@@ -1010,8 +1012,9 @@ function customElements(pluginConfig: Config): Plugin {
 					dayElem.setAttribute("role", "gridcell");
 					// Roving tabindex default: not focusable until promoted by setActiveDay().
 					dayElem.setAttribute("tabindex", "-1");
-					// aria-selected + spoken label, e.g. "Thursday, June 25, 2026, today, selected".
-					// flatpickr's own aria-current="date" on today's cell is kept as-is.
+					// aria-selected + spoken label, e.g. "Thursday, June 25, 2026" (weekday + date,
+					// range endpoints add "start/end of range"). flatpickr's own aria-current="date"
+					// on today's cell is kept as-is.
 					syncDayCellState(dayElem);
 				},
 				handleWeekNumbers,

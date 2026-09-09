@@ -71,10 +71,10 @@ describe("Message Datepicker", () => {
 		const input = screen.getByTestId("datepicker-message").querySelector(".flatpickr-input");
 		expect(input).toHaveValue("");
 
-		// click today cell in calendar (day cells use a spoken label with weekday + state, e.g.
-		// "Tuesday, June 23, 2026, today")
+		// click today cell in calendar (day cells use a spoken label with weekday, e.g.
+		// "Tuesday, June 23, 2026")
 		const todaySpoken = moment().locale("en").format("dddd, MMMM D, YYYY");
-		const todayCell = getByLabelText(`${todaySpoken}, today`);
+		const todayCell = getByLabelText(todaySpoken);
 		expect(todayCell).toBeInTheDocument();
 		fireEvent.click(todayCell);
 
@@ -116,9 +116,9 @@ describe("Message Datepicker", () => {
 			.querySelector(".flatpickr-time");
 		expect(timeContainer).not.toBeInTheDocument();
 
-		// tomorrow date is selected by default (day cells use a spoken label with weekday + state)
+		// tomorrow date is selected by default (day cells use a spoken label with weekday)
 		const tomorrowSpoken = moment().add(1, "days").locale("en").format("dddd, MMMM D, YYYY");
-		const tomorrowCell = getByLabelText(`${tomorrowSpoken}, selected`);
+		const tomorrowCell = getByLabelText(tomorrowSpoken);
 		expect(tomorrowCell).toHaveClass("selected");
 		const tomorrow = moment().add(1, "days").locale("en").format("MM/DD/YYYY");
 		const input = screen.getByTestId("datepicker-message").querySelector(".flatpickr-input");

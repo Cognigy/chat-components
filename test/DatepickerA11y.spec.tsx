@@ -66,8 +66,8 @@ const pressKey = (key: string, shiftKey = false) => {
 };
 const focusedLabel = () => (document.activeElement as HTMLElement)?.getAttribute("aria-label");
 
-// Spoken day label: "<Weekday>, <Month> <D>, <YYYY>", optionally followed by ", <state>" parts
-// (today / start of range / end of range / selected) — CGY-30560.
+// Spoken day label: "<Weekday>, <Month> <D>, <YYYY>", optionally followed by ", start of range" /
+// ", end of range" in range mode (CGY-30560). Selected/today are states, not words in the name.
 const DATE_LABEL = /^[A-Za-z]+, [A-Za-z]+ \d{1,2}, \d{4}(, |$)/;
 // English long weekday for a date (the fixtures use the "en" flatpickr locale).
 const weekdayOf = (date: Date) =>
@@ -439,12 +439,12 @@ describe("DatePicker Accessibility (W3C APG grid pattern)", () => {
 	});
 });
 
-describe("CGY-30560 - day cells announce weekday, today, selected and range state", () => {
+describe("CGY-30560 - day cells expose weekday, today, selected and range state", () => {
 	const messageSingleDate = singleDate as unknown as IMessage;
 	const messageMultiple = multipleDates as unknown as IMessage;
 	const messageRange = rangeDates as unknown as IMessage;
 
-	it("every day label starts with its weekday; today's cell says 'today' and is aria-current", async () => {
+	it("every day label starts with its weekday; today is exposed via aria-current, not in the name", async () => {
 		const { getByTestId, findByRole } = render(<Message message={messageSingleDate} />);
 		const root = await openDialog(findByRole, getByTestId);
 
@@ -454,20 +454,23 @@ describe("CGY-30560 - day cells announce weekday, today, selected and range stat
 			expect(label.startsWith(`${weekdayOf(dateOf(cell)!)}, `)).toBe(true);
 		});
 
-		// The calendar opens on the current month, so today is always in view.
+		// The calendar opens on the current month, so today is always in view. Today is a STATE
+		// (aria-current, as in the APG example) — the name must not repeat it, or screen readers
+		// that speak aria-current would announce it twice.
 		const today = root.querySelector<HTMLElement>(".dayContainer .flatpickr-day.today")!;
 		expect(today).toHaveAttribute("aria-current", "date");
-		expect(today.getAttribute("aria-label")).toMatch(/, today$/);
+		expect(today.getAttribute("aria-label")).toMatch(/^[A-Za-z]+, [A-Za-z]+ \d{1,2}, \d{4}$/);
 
-		// An ordinary, unselected day carries no state words at all.
-		const plain = getInMonthCells(root).find(
-			c => !c.classList.contains("today") && !c.classList.contains("selected"),
-		)!;
-		expect(plain.getAttribute("aria-label")).not.toMatch(/today|selected|range/);
-		expect(plain).not.toHaveAttribute("aria-selected");
+		// No day carries state words in its name outside range mode.
+		getInMonthCells(root).forEach(cell => {
+			expect(cell.getAttribute("aria-label")).not.toMatch(/today|selected|range/i);
+		});
+		expect(root.querySelector(".dayContainer .flatpickr-day.today")).not.toHaveAttribute(
+			"aria-selected",
+		);
 	});
 
-	it("multiple mode: each selected day is aria-selected and announced as 'selected'", async () => {
+	it("multiple mode: each selected day is aria-selected; the state is not repeated in the name", async () => {
 		const { getByTestId, findByRole } = render(<Message message={messageMultiple} />);
 		const root = await openDialog(findByRole, getByTestId);
 
@@ -484,14 +487,15 @@ describe("CGY-30560 - day cells announce weekday, today, selected and range stat
 		expect(selected).toHaveLength(2);
 		selected.forEach(cell => {
 			expect(cell).toHaveAttribute("aria-selected", "true");
-			expect(cell.getAttribute("aria-label")).toMatch(DATE_LABEL);
-			expect(cell.getAttribute("aria-label")).toMatch(/, selected$/);
+			// Name = weekday + date only; "selected" is conveyed by aria-selected (APG).
+			expect(cell.getAttribute("aria-label")).toMatch(
+				/^[A-Za-z]+, [A-Za-z]+ \d{1,2}, \d{4}$/,
+			);
 		});
 
-		// Day 2, between them, is not selected and says so (by saying nothing).
+		// Day 2, between them, is not selected.
 		const between = getInMonthCells(root)[1];
 		expect(between).not.toHaveAttribute("aria-selected");
-		expect(between.getAttribute("aria-label")).not.toMatch(/selected/);
 	});
 
 	it("range mode: endpoints announce start/end of range; days between are selected", async () => {
@@ -508,10 +512,16 @@ describe("CGY-30560 - day cells announce weekday, today, selected and range stat
 
 		const start = root.querySelector<HTMLElement>(".dayContainer .flatpickr-day.startRange")!;
 		const end = root.querySelector<HTMLElement>(".dayContainer .flatpickr-day.endRange")!;
+		// Endpoints: aria-selected state + the boundary word in the name (ARIA has no state for
+		// range endpoints). "selected" itself is not repeated in the name.
 		expect(start).toHaveAttribute("aria-selected", "true");
-		expect(start.getAttribute("aria-label")).toMatch(/, start of range, selected$/);
+		expect(start.getAttribute("aria-label")).toMatch(
+			/^[A-Za-z]+, [A-Za-z]+ \d{1,2}, \d{4}, start of range$/,
+		);
 		expect(end).toHaveAttribute("aria-selected", "true");
-		expect(end.getAttribute("aria-label")).toMatch(/, end of range, selected$/);
+		expect(end.getAttribute("aria-label")).toMatch(
+			/^[A-Za-z]+, [A-Za-z]+ \d{1,2}, \d{4}, end of range$/,
+		);
 		expect(ymd(dateOf(end)!)).toBe(ymd(addDays(dateOf(start)!, 3)));
 
 		// Inner range days (2 and 3) are selected too, without a boundary word.
@@ -519,8 +529,9 @@ describe("CGY-30560 - day cells announce weekday, today, selected and range stat
 		expect(inner.length).toBeGreaterThanOrEqual(2);
 		inner.forEach(cell => {
 			expect(cell).toHaveAttribute("aria-selected", "true");
-			expect(cell.getAttribute("aria-label")).toMatch(/, selected$/);
-			expect(cell.getAttribute("aria-label")).not.toMatch(/range/);
+			expect(cell.getAttribute("aria-label")).toMatch(
+				/^[A-Za-z]+, [A-Za-z]+ \d{1,2}, \d{4}$/,
+			);
 		});
 	});
 });
