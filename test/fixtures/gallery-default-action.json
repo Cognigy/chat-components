@@ -1,0 +1,43 @@
+{
+	"text": null,
+	"data": {
+		"_cognigy": {
+			"_webchat": {
+				"message": {
+					"attachment": {
+						"type": "template",
+						"payload": {
+							"template_type": "generic",
+							"elements": [
+								{
+									"title": "Card with default_action",
+									"subtitle": "The content block is a link — click or Tab to it and press Enter",
+									"image_url": "https://placewaifu.com/image/300/300",
+									"image_alt_text": "a cat",
+									"buttons": [],
+									"default_action": {
+										"type": "web_url",
+										"url": "https://example.com"
+									}
+								},
+								{
+									"title": "Link card with a button",
+									"subtitle": "Both the card and its button are tab stops",
+									"image_url": "https://placewaifu.com/image/300/300",
+									"image_alt_text": "a cat",
+									"buttons": [
+										{ "type": "postback", "payload": "p1", "title": "Pick me" }
+									],
+									"default_action": {
+										"type": "web_url",
+										"url": "https://example.com/details"
+									}
+								}
+							]
+						}
+					}
+				}
+			}
+		}
+	}
+}

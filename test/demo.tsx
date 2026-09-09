@@ -13,6 +13,7 @@ import { IWebchatConfig, MessageSender } from "../src/messages/types.ts";
 import listMessage from "test/fixtures/list.json";
 import gallery from "test/fixtures/gallery.json";
 import galleryMissingImage from "test/fixtures/gallery-missing-image.json";
+import galleryDefaultAction from "test/fixtures/gallery-default-action.json";
 import imageDownloadable from "test/fixtures/image-downloadable.json";
 import imageDownloadableNoAlt from "test/fixtures/image-downloadable-no-alt.json";
 import image from "test/fixtures/image.json";
@@ -320,6 +321,24 @@ const screens: TScreen[] = [
 			{
 				message: {
 					...galleryMissingImage,
+					timestamp: "1701163314138",
+					source: "bot",
+				} as IMessage,
+				prevMessage: {
+					source: "bot",
+					timestamp: "1701163314138",
+				},
+			},
+			{
+				message: {
+					text: "Next gallery's cards have a default_action URL (CGY-37634: the card content block is a link you can Tab to and open with Enter)",
+					source: "bot",
+					timestamp: "1701163314138",
+				},
+			},
+			{
+				message: {
+					...galleryDefaultAction,
 					timestamp: "1701163314138",
 					source: "bot",
 				} as IMessage,

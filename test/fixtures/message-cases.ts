@@ -51,6 +51,7 @@ import fileFixture from "./file.json";
 import listFixture from "./list.json";
 import galleryFixture from "./gallery.json";
 import galleryMissingImageFixture from "./gallery-missing-image.json";
+import galleryDefaultActionFixture from "./gallery-default-action.json";
 import galleryNullButtonsFixture from "./gallery-with-null-buttons.json";
 import actionButtonsFixture from "./action-buttons.json";
 import adaptiveCardsFixture from "./adaptiveCards.json";
@@ -170,6 +171,9 @@ export const demoCases: Case[] = [
 	// readable (CGY-37634); jsdom never fires the img error, so this only
 	// pins the non-broken DOM.
 	{ name: "demo: gallery (missing image)", message: asBot(galleryMissingImageFixture) },
+	// Cards with a default_action URL render their content block as a
+	// keyboard-reachable role="link" (tabindex="0" since CGY-37634).
+	{ name: "demo: gallery (default_action link)", message: asBot(galleryDefaultActionFixture) },
 	{ name: "demo: quick replies / buttons", message: asBot(actionButtonsFixture) },
 	// Datepicker variants (closed calendar — open state is non-deterministic)
 	{ name: "demo: datepicker single date", message: asBot(datepickerSingleDate) },

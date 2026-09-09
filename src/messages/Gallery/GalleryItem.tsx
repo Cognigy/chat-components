@@ -107,6 +107,10 @@ const GalleryItem: FC<GallerySlideProps> = props => {
 					onClick={handleClick}
 					onKeyDown={handleKeyDown}
 					role={default_action?.url ? "link" : undefined}
+					// A role="link" block must be in the tab sequence, or keyboard
+					// users have no path to what mouse users can click (WCAG 2.1.1).
+					// Mirrors ListItem; CGY-37634.
+					tabIndex={default_action?.url ? 0 : undefined}
 					id={contentId}
 					aria-describedby={default_action?.url && subtitle ? subtitleId : undefined}
 					aria-labelledby={default_action?.url && hasTitle ? titleId : undefined}

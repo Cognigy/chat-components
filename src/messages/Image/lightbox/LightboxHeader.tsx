@@ -8,6 +8,7 @@ const LightboxHeader: FC = () => {
 	const { url, altText, onClose } = useImageMessageContext();
 	const { config } = useMessageContext();
 	const firstButton = useRef<HTMLButtonElement>(null);
+	const lastButton = useRef<HTMLButtonElement>(null);
 
 	useEffect(() => {
 		setTimeout(() => {
@@ -19,14 +20,25 @@ const LightboxHeader: FC = () => {
 		window.open(url, "_blank");
 	};
 
+	// The two header buttons are the dialog's only tab stops, so the focus
+	// trap (APG modal dialog) is a two-way wrap between them: Shift+Tab from
+	// the first (Download) lands on the last (Close), Tab from the last lands
+	// on the first. Previously only the Tab-from-Close direction wrapped, so
+	// Shift+Tab escaped into the page behind the lightbox (CGY-37634).
 	const handleKeyDownload = (event: KeyboardEvent) => {
+		if (event.key === "Tab" && event.shiftKey) {
+			lastButton.current?.focus();
+			event.preventDefault();
+			return;
+		}
 		event.key === "Enter" && handleDownload();
 	};
 
 	const handleKeyClose = (event: KeyboardEvent) => {
-		if (event.key === "Tab" || event.shiftKey) {
+		if (event.key === "Tab" && !event.shiftKey) {
 			firstButton.current?.focus();
 			event.preventDefault();
+			return;
 		}
 		event.code === "Enter" && onClose && onClose();
 	};
@@ -52,6 +64,7 @@ const LightboxHeader: FC = () => {
 					<DownloadIcon />
 				</button>
 				<button
+					ref={lastButton}
 					onClick={onClose}
 					onKeyDown={handleKeyClose}
 					aria-label={closeFullsizeImageModalLabel}

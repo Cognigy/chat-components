@@ -135,7 +135,7 @@ Assistive-technology behavior in every consumer depends on this library's render
 
 - dom-compat's `normalize()` **deliberately preserves** `aria-*`/`role`/`alt`/`tabindex`; only generated id _values_ inside them are masked. A guard test ("normalize preserves the accessibility contract") makes it impossible to weaken this silently.
 - **Intentional ARIA change procedure:**
-    1. Add the affected case names to a **version-aware skip** in `test/dom-compat.spec.tsx` — see `INTENTIONALLY_DIVERGING_PRE_0_80`: the skip only applies while the installed baseline is older than the release that ships the change, so the cases re-enable themselves once that version is on npm `latest`. Include a TODO to delete the block.
+    1. Add the affected case names to a **version-aware skip** in `test/dom-compat.spec.tsx` — see `INTENTIONALLY_DIVERGING_PRE_0_81`: the skip only applies while the installed baseline is older than the release that ships the change, so the cases re-enable themselves once that version is on npm `latest`. Include a TODO to delete the block.
     2. Add an **"Accessibility changes"** entry to the GitHub release notes of the version that ships it, so Webchat re-runs its cypress-axe suite (and screen-reader spot checks) when it bumps the pinned dependency.
 - Example: a single-button `ActionButtons` container with an associated text/title renders `role="group"` since 0.80.0 so its `aria-labelledby` is exposed reliably, and a container whose message has no text carries no `aria-labelledby` at all (CGY-3281); the affected cases are skipped against baselines < 0.80.0.
 
@@ -197,6 +197,5 @@ Automated gates catch a lot but not everything. Before merging non-trivial compo
 ## Follow-ups / backlog
 
 - **AB#144248 — flatpickr calendar DOM restructure**: give the calendar grid proper `role="row"` structure and an accessible name for flatpickr's original readonly input. Removes all three allowlist entries (which will then fail as stale — by design).
-- **Gallery card `default_action` keyboard reachability**: `GalleryItem`'s content block renders `role="link"` with an Enter handler but **no `tabindex`**, so keyboard users cannot reach it (ListItem's equivalent sets `tabindex="0"`). Fixing it adds a focusable to the rendered DOM — follow the intentional-ARIA-change procedure (dom-compat skip + release notes). `test/GalleryA11y.spec.tsx` documents current behavior without asserting reachability.
 - **Branch protection** (repo admin): mark **Accessibility lint (jsx-a11y)** and **Accessibility axe (WCAG 2.2 AA)** as required checks on `main`.
 - **Webchat-side verification**: Webchat's `cy.checkA11yCompliance()` tag list should include `wcag22aa` and drop `wcag22a` — that tag does not exist in axe-core, so it currently adds nothing. Verify and fix in the Webchat repo.

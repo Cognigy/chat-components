@@ -100,6 +100,33 @@ describe("Image lightbox Accessibility (W3C APG dialog pattern)", () => {
 		expect(download).toHaveFocus();
 	});
 
+	it("Shift+Tab from the download button wraps to the close button (focus trap, CGY-37634)", async () => {
+		renderDownloadableImage();
+		await openLightbox();
+
+		const download = screen.getByRole("button", { name: "Download full-size image" });
+		const close = screen.getByRole("button", { name: "Close full-size image viewer" });
+		download.focus();
+		fireEvent.keyDown(download, { key: "Tab", code: "Tab", keyCode: 9, shiftKey: true });
+
+		// Previously only Tab-from-Close wrapped; Shift+Tab escaped the dialog.
+		expect(close).toHaveFocus();
+	});
+
+	it("a shifted non-Tab key on the close button does not move focus", async () => {
+		renderDownloadableImage();
+		await openLightbox();
+
+		const close = screen.getByRole("button", { name: "Close full-size image viewer" });
+		close.focus();
+		// The old wrap condition was `key === "Tab" || shiftKey`, so any shifted
+		// key yanked focus to the download button.
+		fireEvent.keyDown(close, { key: "A", code: "KeyA", keyCode: 65, shiftKey: true });
+
+		expect(close).toHaveFocus();
+		expect(screen.getByRole("dialog")).toBeInTheDocument();
+	});
+
 	it("Escape closes the dialog and returns focus to the trigger", async () => {
 		renderDownloadableImage();
 		const { trigger } = await openLightbox();

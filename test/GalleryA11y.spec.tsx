@@ -169,9 +169,15 @@ describe("Gallery Accessibility (W3C APG carousel pattern)", () => {
 	});
 
 	it("card with default_action exposes link semantics with an opens-in-new-tab announcement", () => {
-		render(<Message message={galleryCardWithLink("https://example.com")} />);
+		const { container } = render(
+			<Message message={galleryCardWithLink("https://example.com")} />,
+		);
 
 		const link = screen.getByRole("link");
+		// The link block must be a tab stop — it renders role="link" with an
+		// Enter handler, and a mouse user can click it (WCAG 2.1.1, CGY-37634).
+		expect(link).toHaveAttribute("tabindex", "0");
+		expect(getTabbables(container)).toContain(link);
 		// aria-labelledby points at the visible card title; aria-describedby at
 		// the subtitle — the link announces as the card, not as a bare URL.
 		const titleId = link.getAttribute("aria-labelledby");
@@ -192,6 +198,18 @@ describe("Gallery Accessibility (W3C APG carousel pattern)", () => {
 		// sanitizeUrl normalizes safe URLs (trailing slash) — the call goes
 		// through the sanitized value.
 		expect(openSpy).toHaveBeenCalledWith("https://example.com/");
+	});
+
+	it("card without a default_action URL is not a tab stop and has no link role", () => {
+		const { container } = render(<Message message={asBot(galleryFixture)} />);
+
+		// gallery.json cards have buttons but no default_action — the content
+		// blocks must stay plain containers, so only the buttons/chrome are
+		// tabbable.
+		expect(screen.queryByRole("link")).not.toBeInTheDocument();
+		const contentBlocks = container.querySelectorAll(".webchat-carousel-template-content");
+		expect(contentBlocks.length).toBeGreaterThan(0);
+		contentBlocks.forEach(block => expect(block).not.toHaveAttribute("tabindex"));
 	});
 
 	it("Enter on a card whose default_action URL is dangerous does not navigate", () => {
