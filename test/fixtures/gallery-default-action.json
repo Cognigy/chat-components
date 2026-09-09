@@ -10,19 +10,8 @@
 							"template_type": "generic",
 							"elements": [
 								{
-									"title": "Card with default_action",
-									"subtitle": "The content block is a link — click or Tab to it and press Enter",
-									"image_url": "https://placewaifu.com/image/300/300",
-									"image_alt_text": "a cat",
-									"buttons": [],
-									"default_action": {
-										"type": "web_url",
-										"url": "https://example.com"
-									}
-								},
-								{
-									"title": "Link card with a button",
-									"subtitle": "Both the card and its button are tab stops",
+									"title": "Card with default_action (CGY-37634)",
+									"subtitle": "The text is a link, the button is a separate tab stop",
 									"image_url": "https://placewaifu.com/image/300/300",
 									"image_alt_text": "a cat",
 									"buttons": [
@@ -30,7 +19,34 @@
 									],
 									"default_action": {
 										"type": "web_url",
-										"url": "https://example.com/details"
+										"url": "https://example.com"
+									}
+								},
+								{
+									"title": "Link card without buttons",
+									"subtitle": "The whole text block is the link",
+									"image_url": "https://placewaifu.com/image/300/300",
+									"image_alt_text": "a cat",
+									"buttons": [],
+									"default_action": {
+										"type": "web_url",
+										"url": "https://example.com/plain"
+									}
+								},
+								{
+									"title": "Link card without subtitle",
+									"image_url": "https://placewaifu.com/image/300/300",
+									"image_alt_text": "a cat",
+									"buttons": [
+										{
+											"type": "postback",
+											"payload": "p2",
+											"title": "Pick me too"
+										}
+									],
+									"default_action": {
+										"type": "web_url",
+										"url": "https://example.com/image-link"
 									}
 								}
 							]

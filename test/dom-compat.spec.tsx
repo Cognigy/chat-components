@@ -197,7 +197,7 @@ describe("normalize preserves the accessibility contract", () => {
 // CGY-37634 (gallery default_action keyboard reachability): a card whose
 // default_action carries a URL renders its content block as role="link"; it
 // now also gets tabindex="0" so keyboard users can reach what mouse users can
-// click (WCAG 2.1.1). Affects "demo: gallery (default_action link)" — the only
+// click (WCAG 2.1.1). Affects "gallery card variant: default_action link" — the only
 // corpus case with a default_action URL. Covered by test/GalleryA11y.spec.tsx;
 // release notes carry an "Accessibility changes" entry so Webchat re-runs its
 // cypress-axe suite.
@@ -208,7 +208,9 @@ describe("normalize preserves the accessibility contract", () => {
 // under a different version number, update FIX_VERSION to match.
 // TODO(CGY-37634): delete this block once 0.81.0 is on npm latest.
 const FIX_VERSION = "0.81.0";
-const INTENTIONALLY_DIVERGING_PRE_0_81 = new Set<string>(["demo: gallery (default_action link)"]);
+const INTENTIONALLY_DIVERGING_PRE_0_81 = new Set<string>([
+	"gallery card variant: default_action link",
+]);
 // Compares release triplets only: tolerates a leading "v" and ignores any
 // prerelease/build suffix (a "0.80.0-beta.1" baseline published to npm
 // `latest` counts as 0.80.0 — betas of the fix version carry the change).

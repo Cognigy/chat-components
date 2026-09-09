@@ -85,10 +85,43 @@ const GalleryItem: FC<GallerySlideProps> = props => {
 			id={titleId}
 		/>
 	);
+	const subtitleElement = subtitle && (
+		<Typography
+			variant="body-regular"
+			dangerouslySetInnerHTML={{ __html: subtitleHtml }}
+			id={subtitleId}
+			className="webchat-carousel-template-subtitle"
+		/>
+	);
+
+	// Where the default_action link lives (CGY-37634). Legacy Webchat and
+	// ListItem make the card's *text* the link and keep the buttons outside it:
+	// a link must not contain interactive descendants (HTML content model;
+	// screen readers expose nested buttons inconsistently), and with the
+	// buttons inside, Enter on a button bubbled to the link's handler and
+	// opened the URL as well. When the content block has no text to wrap
+	// (overlay title, no subtitle) the image + title area is the link instead,
+	// so the target is always visible and keyboard-reachable.
+	const hasBlockText = !!subtitle || (titleBelowImage && hasTitle);
+	const linkTarget = default_action?.url ? (hasBlockText ? "text" : "top") : null;
+	const linkProps = linkTarget
+		? {
+				role: "link" as const,
+				tabIndex: 0,
+				onClick: handleClick,
+				onKeyDown: handleKeyDown,
+				"aria-labelledby": hasTitle ? titleId : undefined,
+				"aria-describedby": subtitle ? subtitleId : undefined,
+				"aria-label": `${titleHtml}. ${opensInNewTab}`,
+			}
+		: {};
 
 	return (
 		<div className={classnames("webchat-carousel-template-frame", classes.slideItem)}>
-			<div className={classnames(classes.top, showContentBlock && classes.hasExtraInfo)}>
+			<div
+				className={classnames(classes.top, showContentBlock && classes.hasExtraInfo)}
+				{...(linkTarget === "top" ? linkProps : {})}
+			>
 				{!titleBelowImage && hasTitle && titleElement}
 				{isImageBroken ? (
 					<span className={classes.brokenImage} />
@@ -104,26 +137,21 @@ const GalleryItem: FC<GallerySlideProps> = props => {
 			{showContentBlock && (
 				<div
 					className={classnames("webchat-carousel-template-content", classes.bottom)}
-					onClick={handleClick}
-					onKeyDown={handleKeyDown}
-					role={default_action?.url ? "link" : undefined}
-					// A role="link" block must be in the tab sequence, or keyboard
-					// users have no path to what mouse users can click (WCAG 2.1.1).
-					// Mirrors ListItem; CGY-37634.
-					tabIndex={default_action?.url ? 0 : undefined}
 					id={contentId}
-					aria-describedby={default_action?.url && subtitle ? subtitleId : undefined}
-					aria-labelledby={default_action?.url && hasTitle ? titleId : undefined}
-					aria-label={default_action?.url ? `${titleHtml}. ${opensInNewTab}` : undefined}
 				>
-					{titleBelowImage && hasTitle && titleElement}
-					{subtitle && (
-						<Typography
-							variant="body-regular"
-							dangerouslySetInnerHTML={{ __html: subtitleHtml }}
-							id={subtitleId}
-							className="webchat-carousel-template-subtitle"
-						/>
+					{linkTarget === "text" ? (
+						<div
+							className={classnames("webchat-carousel-template-link", classes.link)}
+							{...linkProps}
+						>
+							{titleBelowImage && hasTitle && titleElement}
+							{subtitleElement}
+						</div>
+					) : (
+						<>
+							{titleBelowImage && hasTitle && titleElement}
+							{subtitleElement}
+						</>
 					)}
 					{buttons && buttons?.length > 0 && (
 						<ActionButtons

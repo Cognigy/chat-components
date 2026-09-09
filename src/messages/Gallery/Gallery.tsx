@@ -26,16 +26,23 @@ const Gallery: FC = () => {
 	useEffect(() => {
 		const chatHistory = document.getElementById("webchatChatHistoryWrapperLiveLogPanel");
 
+		// The default_action link is no longer the content block itself but an
+		// element inside the card (the text wrapper, or the image area when the
+		// block has no text) — look it up from the card frame (CGY-37634).
 		const firstCardContent = document.getElementById(`${carouselContentId}-0`);
-		const firstButton = firstCardContent?.getElementsByTagName("button")?.[0];
+		const firstCard = firstCardContent?.closest<HTMLElement>(
+			".webchat-carousel-template-frame",
+		);
+		const firstLink = firstCard?.querySelector<HTMLElement>('[role="link"]');
+		const firstButton = firstCard?.getElementsByTagName("button")?.[0];
 
 		if (!config?.settings?.widgetSettings?.enableAutoFocus) return;
 
 		if (!chatHistory?.contains(document.activeElement)) return;
 
-		if (firstCardContent?.getAttribute("role") === "link") {
+		if (firstLink) {
 			setTimeout(() => {
-				firstCardContent?.focus();
+				firstLink.focus();
 			}, 200);
 		} else if (firstButton) {
 			setTimeout(() => {

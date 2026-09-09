@@ -14,8 +14,39 @@ import listMessage from "test/fixtures/list.json";
 import gallery from "test/fixtures/gallery.json";
 import galleryMissingImage from "test/fixtures/gallery-missing-image.json";
 import galleryDefaultAction from "test/fixtures/gallery-default-action.json";
+
+// The Gallery tab renders ONE carousel: gallery.json's cards plus one extra
+// card per accessibility fix, taken from the fixtures that feed the axe and
+// dom-compat gates (test/fixtures/message-cases.ts). Don't add cards to
+// gallery.json itself — it pins the "demo: gallery" DOM contract.
+const galleryCards = (fixture: unknown) =>
+	(fixture as IMessage).data._cognigy._webchat.message.attachment.payload.elements as unknown[];
+const galleryDemo = {
+	...gallery,
+	data: {
+		_cognigy: {
+			_webchat: {
+				message: {
+					attachment: {
+						type: "template",
+						payload: {
+							template_type: "generic",
+							elements: [
+								...galleryCards(gallery),
+								// CGY-37634: image_url "" → grey placeholder with a dark title
+								...galleryCards(galleryMissingImage).slice(-1),
+								// CGY-37634: default_action URL → keyboard-reachable link card
+								// whose button is a sibling of the link, not nested in it
+								...galleryCards(galleryDefaultAction).slice(0, 1),
+							],
+						},
+					},
+				},
+			},
+		},
+	},
+};
 import imageDownloadable from "test/fixtures/image-downloadable.json";
-import imageDownloadableNoAlt from "test/fixtures/image-downloadable-no-alt.json";
 import image from "test/fixtures/image.json";
 import imageBroken from "test/fixtures/imageBroken.json";
 import video from "test/fixtures/video.json";
@@ -266,24 +297,6 @@ const screens: TScreen[] = [
 			{ message: imageDownloadable as IMessage },
 			{
 				message: {
-					text: 'Next one is a downloadable image without alt text (CGY-37634: the lightbox img must still render alt="")',
-					source: "bot",
-					timestamp: "1701163314138",
-				},
-			},
-			{
-				message: {
-					...imageDownloadableNoAlt,
-					timestamp: "1701163314138",
-					source: "bot",
-				} as IMessage,
-				prevMessage: {
-					source: "bot",
-					timestamp: "1701163314138",
-				},
-			},
-			{
-				message: {
 					text: "Next one is a broken image",
 					source: "bot",
 					timestamp: "1701163314138",
@@ -309,45 +322,7 @@ const screens: TScreen[] = [
 	{
 		title: "Gallery",
 		anchor: "gallery",
-		messages: [
-			{ message: gallery as IMessage },
-			{
-				message: {
-					text: "Next gallery's third card has no image (CGY-37634: dark title on the grey placeholder, 24px pagination targets)",
-					source: "bot",
-					timestamp: "1701163314138",
-				},
-			},
-			{
-				message: {
-					...galleryMissingImage,
-					timestamp: "1701163314138",
-					source: "bot",
-				} as IMessage,
-				prevMessage: {
-					source: "bot",
-					timestamp: "1701163314138",
-				},
-			},
-			{
-				message: {
-					text: "Next gallery's cards have a default_action URL (CGY-37634: the card content block is a link you can Tab to and open with Enter)",
-					source: "bot",
-					timestamp: "1701163314138",
-				},
-			},
-			{
-				message: {
-					...galleryDefaultAction,
-					timestamp: "1701163314138",
-					source: "bot",
-				} as IMessage,
-				prevMessage: {
-					source: "bot",
-					timestamp: "1701163314138",
-				},
-			},
-		],
+		messages: [{ message: galleryDemo as IMessage }],
 	},
 	{
 		title: "Datepicker",

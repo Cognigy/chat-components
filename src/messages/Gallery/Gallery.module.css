@@ -83,6 +83,24 @@
 	width: 100%;
 }
 
+/*
+** default_action link (CGY-37634): wraps the card text inside the content
+** block (keeping the block's column gap), or sits on the image area when the
+** block has no text. Buttons are never inside it.
+*/
+.slideItem .link {
+	display: flex;
+	flex-direction: column;
+	gap: 8px;
+}
+.slideItem [role="link"] {
+	cursor: pointer;
+}
+.slideItem [role="link"]:focus-visible {
+	outline: 2px solid var(--cc-primary-color-focus);
+	outline-offset: 2px;
+}
+
 /* 
 ** SWIPER MAIN
 ** The following styles are a porting from the original swiper/css and related modules.

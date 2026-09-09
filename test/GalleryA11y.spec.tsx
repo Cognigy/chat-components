@@ -26,8 +26,12 @@ const slideButtons = (root: ParentNode) =>
 	Array.from(root.querySelectorAll<HTMLElement>("button.webchat-carousel-template-button"));
 
 // Single-card generic template whose card carries a default_action URL —
-// the shape that renders the card content block as a role="link".
-const galleryCardWithLink = (url: string): IMessage =>
+// the shape that renders a role="link" for the card (CGY-37634: the link
+// wraps the card text and never contains the card's buttons).
+const galleryCardWithLink = (
+	url: string,
+	{ subtitle = "Card subtitle", buttons = [] }: { subtitle?: string; buttons?: unknown[] } = {},
+): IMessage =>
 	asBot({
 		data: {
 			_cognigy: {
@@ -40,10 +44,10 @@ const galleryCardWithLink = (url: string): IMessage =>
 								elements: [
 									{
 										title: "Card with link",
-										subtitle: "Card subtitle",
+										subtitle,
 										image_url: "https://placewaifu.com/image/300/300",
 										image_alt_text: "a cat",
-										buttons: [],
+										buttons,
 										default_action: { type: "web_url", url },
 									},
 								],
@@ -186,6 +190,55 @@ describe("Gallery Accessibility (W3C APG carousel pattern)", () => {
 		const subtitleId = link.getAttribute("aria-describedby");
 		expect(document.getElementById(subtitleId as string)).toHaveTextContent("Card subtitle");
 		expect(link.getAttribute("aria-label")).toContain("Opens in new tab");
+	});
+
+	it("card buttons are siblings of the default_action link, never nested inside it", () => {
+		const openSpy = vi.spyOn(window, "open").mockImplementation(() => null);
+		const { container } = render(
+			<Message
+				message={galleryCardWithLink("https://example.com", {
+					buttons: [{ type: "postback", payload: "p1", title: "Pick me" }],
+				})}
+				action={vi.fn()}
+			/>,
+		);
+
+		const link = screen.getByRole("link");
+		const button = screen.getByRole("button", { name: "Pick me" });
+		// A link must not contain interactive descendants (HTML content model);
+		// both remain separate tab stops in DOM order: link text, then button.
+		expect(link.contains(button)).toBe(false);
+		expect(link.querySelector("button")).toBeNull();
+		const tabbables = getTabbables(container);
+		expect(tabbables.indexOf(link)).toBeGreaterThanOrEqual(0);
+		expect(tabbables.indexOf(button)).toBe(tabbables.indexOf(link) + 1);
+
+		// Enter on the button used to bubble to the card's Enter handler and
+		// open the default_action URL as well.
+		button.focus();
+		fireEvent.keyDown(button, { key: "Enter", code: "Enter", keyCode: 13 });
+		expect(openSpy).not.toHaveBeenCalled();
+	});
+
+	it("card with default_action but no text below the image makes the image area the link", () => {
+		render(
+			<Message
+				message={galleryCardWithLink("https://example.com", {
+					subtitle: "",
+					buttons: [{ type: "postback", payload: "p1", title: "Pick me" }],
+				})}
+			/>,
+		);
+
+		const link = screen.getByRole("link");
+		// Nothing in the content block to wrap (overlay title, no subtitle), so
+		// the link is the image + title area — a visible, focusable target that
+		// still excludes the button.
+		expect(link.querySelector("img")).not.toBeNull();
+		expect(link.querySelector("h4")).toHaveTextContent("Card with link");
+		expect(link.querySelector("button")).toBeNull();
+		expect(link).toHaveAttribute("tabindex", "0");
+		expect(link).toHaveAccessibleName("Card with link");
 	});
 
 	it("Enter on a card's default_action link opens the (sanitized) URL", () => {

@@ -166,14 +166,19 @@ export const demoCases: Case[] = [
 	{ name: "demo: list", message: asBot(listFixture) },
 	{ name: "demo: gallery", message: asBot(galleryFixture) },
 	{ name: "demo: gallery (null buttons)", message: asBot(galleryNullButtonsFixture) },
-	// Third card has image_url: "" (Webchat's cypress gallery.json shape) — in a
-	// real browser it renders the grey placeholder whose title must stay
-	// readable (CGY-37634); jsdom never fires the img error, so this only
-	// pins the non-broken DOM.
-	{ name: "demo: gallery (missing image)", message: asBot(galleryMissingImageFixture) },
-	// Cards with a default_action URL render their content block as a
-	// keyboard-reachable role="link" (tabindex="0" since CGY-37634).
-	{ name: "demo: gallery (default_action link)", message: asBot(galleryDefaultActionFixture) },
+	// Gallery card variants (CGY-37634). The demo's Gallery tab appends these
+	// fixtures' cards to gallery.json's carousel (see test/demo.tsx).
+	//   - missing image: last card has image_url "" (Webchat's cypress
+	//     gallery.json shape). In a real browser it renders the grey
+	//     placeholder whose title must stay readable; jsdom never fires the
+	//     img error, so this only pins the non-broken DOM.
+	//   - default_action link: a card with a default_action URL renders its
+	//     content block as a keyboard-reachable role="link" (tabindex="0").
+	{ name: "gallery card variant: missing image", message: asBot(galleryMissingImageFixture) },
+	{
+		name: "gallery card variant: default_action link",
+		message: asBot(galleryDefaultActionFixture),
+	},
 	{ name: "demo: quick replies / buttons", message: asBot(actionButtonsFixture) },
 	// Datepicker variants (closed calendar — open state is non-deterministic)
 	{ name: "demo: datepicker single date", message: asBot(datepickerSingleDate) },
