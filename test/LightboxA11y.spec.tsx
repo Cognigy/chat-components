@@ -13,6 +13,7 @@ import { describe, it, expect, vi, afterEach } from "vitest";
 import Message from "src/messages/Message";
 import { asBot } from "./fixtures/message-cases";
 import imageDownloadableFixture from "./fixtures/image-downloadable.json";
+import imageDownloadableNoAltFixture from "./fixtures/image-downloadable-no-alt.json";
 import imageFixture from "./fixtures/image.json";
 import { getTabbables } from "./a11y-utils";
 
@@ -141,5 +142,15 @@ describe("Image lightbox Accessibility (W3C APG dialog pattern)", () => {
 		// explicit (empty) alt so it is not announced by its URL.
 		const img = document.querySelector("[data-test='image-lightbox']");
 		expect(img).toHaveAttribute("alt");
+	});
+
+	it('full-size image renders alt="" when the message carries no alt text (CGY-37634)', async () => {
+		// `altText` is undefined here; React would drop the attribute entirely,
+		// leaving the image to be announced by its URL (WCAG 1.1.1).
+		render(<Message message={asBot(imageDownloadableNoAltFixture)} />);
+		await openLightbox();
+
+		const img = document.querySelector("[data-test='image-lightbox']");
+		expect(img).toHaveAttribute("alt", "");
 	});
 });

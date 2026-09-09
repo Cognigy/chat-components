@@ -41,6 +41,7 @@ import {
 // and the branch both apply the same default, so the comparison still holds.
 import imageFixture from "./image.json";
 import imageDownloadableFixture from "./image-downloadable.json";
+import imageDownloadableNoAltFixture from "./image-downloadable-no-alt.json";
 import imageBrokenFixture from "./imageBroken.json";
 import videoFixture from "./video.json";
 import videoYoutubeFixture from "./videoYoutube.json";
@@ -146,6 +147,13 @@ export const demoCases: Case[] = [
 	// Multimedia
 	{ name: "demo: image", message: asBot(imageFixture) },
 	{ name: "demo: image downloadable", message: asBot(imageDownloadableFixture) },
+	// No `altText` at all (Webchat's cypress downloadableImage.json shape) —
+	// the `image-downloadable` fixture sets altText: "", which hid the
+	// missing-alt lightbox bug (CGY-37634) from the jsdom gate.
+	{
+		name: "demo: image downloadable (no alt text)",
+		message: asBot(imageDownloadableNoAltFixture),
+	},
 	{ name: "demo: image broken", message: asBot(imageBrokenFixture) },
 	{ name: "demo: video", message: asBot(videoFixture) },
 	{ name: "demo: video (YouTube)", message: asBot(videoYoutubeFixture) },
