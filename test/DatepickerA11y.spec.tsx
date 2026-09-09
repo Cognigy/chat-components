@@ -2,6 +2,9 @@ import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import { it, describe, expect } from "vitest";
 import Message from "src/messages/Message";
 import singleDate from "test/fixtures/datepicker/singleDate.json";
+import multipleDates from "test/fixtures/datepicker/multiple.json";
+import rangeDates from "test/fixtures/datepicker/range.json";
+import weekNumbers from "test/fixtures/datepicker/weekNumbers.json";
 import { IMessage } from "@cognigy/socket-client";
 
 const openDialog = async (
@@ -39,6 +42,7 @@ const addDays = (from: Date, days: number) => {
 const KEY_CODES: Record<string, number> = {
 	Tab: 9,
 	Enter: 13,
+	" ": 32,
 	End: 35,
 	Home: 36,
 	ArrowLeft: 37,
@@ -61,6 +65,39 @@ const pressKey = (key: string, shiftKey = false) => {
 	);
 };
 const focusedLabel = () => (document.activeElement as HTMLElement)?.getAttribute("aria-label");
+
+// Spoken day label: "<Weekday>, <Month> <D>, <YYYY>", optionally followed by ", <state>" parts
+// (today / start of range / end of range / selected) — CGY-30560.
+const DATE_LABEL = /^[A-Za-z]+, [A-Za-z]+ \d{1,2}, \d{4}(, |$)/;
+// English long weekday for a date (the fixtures use the "en" flatpickr locale).
+const weekdayOf = (date: Date) =>
+	new Intl.DateTimeFormat("en-US", { weekday: "long" }).format(date);
+// In-month day cells of the visible grid (prev/next-month overflow cells excluded).
+const getInMonthCells = (root: HTMLElement) =>
+	getDayCells(root).filter(
+		c => !c.classList.contains("prevMonthDay") && !c.classList.contains("nextMonthDay"),
+	);
+// Make `cell` the roving-focus target and focus it.
+const focusCell = (cell: HTMLElement) => {
+	cell.setAttribute("tabindex", "0");
+	cell.focus();
+};
+// Select the focused day with Enter (fireEvent so React's onChange state update flushes in act()).
+const selectFocusedDay = () =>
+	fireEvent.keyDown(document.activeElement as HTMLElement, { key: "Enter", keyCode: 13 });
+// Select, then wait until roving focus has landed on the just-selected day in the rebuilt grid
+// and its aria-label has been restored after the focus-time name toggle (see `flush` below).
+const selectFocusedDayAndSettle = async () => {
+	selectFocusedDay();
+	await waitFor(() => expect(focusedLabel()).toMatch(DATE_LABEL));
+};
+// The AM/PM toggle's value: its text nodes only (the appended arrow icons are ignored).
+const amPmValue = (amPm: HTMLElement) =>
+	Array.from(amPm.childNodes)
+		.filter(n => n.nodeType === Node.TEXT_NODE)
+		.map(n => n.textContent)
+		.join("")
+		.trim();
 
 // The suite runs on real timers, and several accessibility behaviors are async:
 //  - the focused cell's aria-label is toggled (blanked, then restored on the next tick) so NVDA
@@ -158,11 +195,9 @@ describe("DatePicker Accessibility (W3C APG grid pattern)", () => {
 		const { getByTestId, findByRole } = render(<Message message={messageSingleDate} />);
 		const root = await openDialog(findByRole, getByTestId);
 
-		// First in-month day announces a spoken date, e.g. "June 1, 2026".
-		const firstInMonth = root.querySelector<HTMLElement>(
-			".dayContainer .flatpickr-day:not(.prevMonthDay):not(.nextMonthDay)",
-		);
-		expect(firstInMonth?.getAttribute("aria-label")).toMatch(/^[A-Za-z]+ \d{1,2}, \d{4}$/);
+		// First in-month day announces a spoken date, e.g. "Monday, June 1, 2026".
+		const firstInMonth = getInMonthCells(root)[0];
+		expect(firstInMonth.getAttribute("aria-label")).toMatch(DATE_LABEL);
 	});
 
 	it("Issue E - arrow keys move roving focus one day at a time (single step)", async () => {
@@ -194,7 +229,7 @@ describe("DatePicker Accessibility (W3C APG grid pattern)", () => {
 		expect(root.querySelectorAll('.flatpickr-day[tabindex="0"]')).toHaveLength(1);
 
 		// The focused cell still ends up announcing its date (aria-label restored after toggle).
-		await waitFor(() => expect(focusedLabel()).toMatch(/^[A-Za-z]+ \d{1,2}, \d{4}$/));
+		await waitFor(() => expect(focusedLabel()).toMatch(DATE_LABEL));
 	});
 
 	it("Issue E - Home/End move within the focused week", async () => {
@@ -401,5 +436,235 @@ describe("DatePicker Accessibility (W3C APG grid pattern)", () => {
 
 		// The date is announced via the cell-name toggle only; the live region must not repeat it.
 		expect(liveWrites).not.toContain(dateLabel);
+	});
+});
+
+describe("CGY-30560 - day cells announce weekday, today, selected and range state", () => {
+	const messageSingleDate = singleDate as unknown as IMessage;
+	const messageMultiple = multipleDates as unknown as IMessage;
+	const messageRange = rangeDates as unknown as IMessage;
+
+	it("every day label starts with its weekday; today's cell says 'today' and is aria-current", async () => {
+		const { getByTestId, findByRole } = render(<Message message={messageSingleDate} />);
+		const root = await openDialog(findByRole, getByTestId);
+
+		getInMonthCells(root).forEach(cell => {
+			const label = cell.getAttribute("aria-label") || "";
+			expect(label).toMatch(DATE_LABEL);
+			expect(label.startsWith(`${weekdayOf(dateOf(cell)!)}, `)).toBe(true);
+		});
+
+		// The calendar opens on the current month, so today is always in view.
+		const today = root.querySelector<HTMLElement>(".dayContainer .flatpickr-day.today")!;
+		expect(today).toHaveAttribute("aria-current", "date");
+		expect(today.getAttribute("aria-label")).toMatch(/, today$/);
+
+		// An ordinary, unselected day carries no state words at all.
+		const plain = getInMonthCells(root).find(
+			c => !c.classList.contains("today") && !c.classList.contains("selected"),
+		)!;
+		expect(plain.getAttribute("aria-label")).not.toMatch(/today|selected|range/);
+		expect(plain).not.toHaveAttribute("aria-selected");
+	});
+
+	it("multiple mode: each selected day is aria-selected and announced as 'selected'", async () => {
+		const { getByTestId, findByRole } = render(<Message message={messageMultiple} />);
+		const root = await openDialog(findByRole, getByTestId);
+
+		// Select day 1, then day 3 of the month (ArrowRight twice from the refocused day 1).
+		focusCell(getInMonthCells(root)[0]);
+		await selectFocusedDayAndSettle();
+		pressKey("ArrowRight");
+		pressKey("ArrowRight");
+		await selectFocusedDayAndSettle();
+
+		const selected = root.querySelectorAll<HTMLElement>(
+			".dayContainer .flatpickr-day.selected",
+		);
+		expect(selected).toHaveLength(2);
+		selected.forEach(cell => {
+			expect(cell).toHaveAttribute("aria-selected", "true");
+			expect(cell.getAttribute("aria-label")).toMatch(DATE_LABEL);
+			expect(cell.getAttribute("aria-label")).toMatch(/, selected$/);
+		});
+
+		// Day 2, between them, is not selected and says so (by saying nothing).
+		const between = getInMonthCells(root)[1];
+		expect(between).not.toHaveAttribute("aria-selected");
+		expect(between.getAttribute("aria-label")).not.toMatch(/selected/);
+	});
+
+	it("range mode: endpoints announce start/end of range; days between are selected", async () => {
+		const { getByTestId, findByRole } = render(<Message message={messageRange} />);
+		const root = await openDialog(findByRole, getByTestId);
+
+		// Range: day 1 -> day 4 of the month.
+		focusCell(getInMonthCells(root)[0]);
+		await selectFocusedDayAndSettle();
+		pressKey("ArrowRight");
+		pressKey("ArrowRight");
+		pressKey("ArrowRight");
+		await selectFocusedDayAndSettle();
+
+		const start = root.querySelector<HTMLElement>(".dayContainer .flatpickr-day.startRange")!;
+		const end = root.querySelector<HTMLElement>(".dayContainer .flatpickr-day.endRange")!;
+		expect(start).toHaveAttribute("aria-selected", "true");
+		expect(start.getAttribute("aria-label")).toMatch(/, start of range, selected$/);
+		expect(end).toHaveAttribute("aria-selected", "true");
+		expect(end.getAttribute("aria-label")).toMatch(/, end of range, selected$/);
+		expect(ymd(dateOf(end)!)).toBe(ymd(addDays(dateOf(start)!, 3)));
+
+		// Inner range days (2 and 3) are selected too, without a boundary word.
+		const inner = root.querySelectorAll<HTMLElement>(".dayContainer .flatpickr-day.inRange");
+		expect(inner.length).toBeGreaterThanOrEqual(2);
+		inner.forEach(cell => {
+			expect(cell).toHaveAttribute("aria-selected", "true");
+			expect(cell.getAttribute("aria-label")).toMatch(/, selected$/);
+			expect(cell.getAttribute("aria-label")).not.toMatch(/range/);
+		});
+	});
+});
+
+describe("CGY-30560 - week numbers are part of the calendar grid", () => {
+	const messageWeeks = weekNumbers as unknown as IMessage;
+
+	it("the grid owns the week column: 8 columns, 'Week' header, rowheaders, shifted weekdays", async () => {
+		const { getByTestId, findByRole } = render(<Message message={messageWeeks} />);
+		const root = await openDialog(findByRole, getByTestId);
+
+		// With week numbers the grid is the innerContainer (it wraps week column + day grid).
+		const grid = root.querySelector(".flatpickr-innerContainer");
+		expect(grid).toHaveAttribute("role", "grid");
+		expect(grid).toHaveAttribute("aria-colcount", "8");
+		expect(grid).toHaveAttribute("aria-rowcount", "7");
+		expect(grid?.getAttribute("aria-label")).toBe("Calendar");
+		expect(root.querySelector(".flatpickr-rContainer")).not.toHaveAttribute("role");
+
+		// "Wk" header is column 1 of the header row, claimed via aria-owns, spoken as "Week".
+		const weekHeader = root.querySelector<HTMLElement>(
+			".flatpickr-weekwrapper .flatpickr-weekday",
+		)!;
+		expect(weekHeader).toHaveAttribute("role", "columnheader");
+		expect(weekHeader).toHaveAttribute("aria-colindex", "1");
+		expect(weekHeader).toHaveAttribute("aria-label", "Week");
+		expect(weekHeader).toHaveAttribute("abbr", "Wk");
+		expect(weekHeader.id).not.toBe("");
+		expect(root.querySelector(".flatpickr-weekdays")).toHaveAttribute(
+			"aria-owns",
+			weekHeader.id,
+		);
+
+		// Weekday headers shift to columns 2-8.
+		const weekdays = root.querySelectorAll(".flatpickr-weekdaycontainer .flatpickr-weekday");
+		expect(weekdays).toHaveLength(7);
+		weekdays.forEach((weekday, i) => {
+			expect(weekday).toHaveAttribute("role", "columnheader");
+			expect(weekday).toHaveAttribute("aria-colindex", String(i + 2));
+		});
+
+		// One rowheader per week row (rows 2-7), named "Week N".
+		expect(root.querySelector(".flatpickr-weeks")).toHaveAttribute("role", "rowgroup");
+		const weekCells = root.querySelectorAll<HTMLElement>(".flatpickr-weeks .flatpickr-day");
+		expect(weekCells).toHaveLength(6);
+		weekCells.forEach((cell, i) => {
+			expect(cell).toHaveAttribute("role", "rowheader");
+			expect(cell).toHaveAttribute("aria-rowindex", String(i + 2));
+			expect(cell).toHaveAttribute("aria-colindex", "1");
+			expect(cell.getAttribute("aria-label")).toBe(`Week ${cell.textContent?.trim()}`);
+			expect(cell.id).not.toBe("");
+		});
+
+		// Day cells sit in columns 2-8 and are described by their row's week number.
+		const days = getDayCells(root);
+		expect(days).toHaveLength(42);
+		days.forEach((day, i) => {
+			expect(day).toHaveAttribute("aria-colindex", String((i % 7) + 2));
+			expect(day).toHaveAttribute("aria-describedby", weekCells[Math.floor(i / 7)].id);
+		});
+	});
+
+	it("week numbers stay wired to the day cells after a month change (grid rebuild)", async () => {
+		const { getByTestId, findByRole } = render(<Message message={messageWeeks} />);
+		const root = await openDialog(findByRole, getByTestId);
+
+		const firstWeekBefore = root.querySelector(".flatpickr-weeks .flatpickr-day")?.textContent;
+		fireEvent.click(root.querySelector(".flatpickr-next-month") as Element);
+
+		await waitFor(() =>
+			expect(root.querySelector(".flatpickr-weeks .flatpickr-day")?.textContent).not.toBe(
+				firstWeekBefore,
+			),
+		);
+		getDayCells(root).forEach(day => {
+			const header = document.getElementById(day.getAttribute("aria-describedby") || "");
+			expect(header).toHaveAttribute("role", "rowheader");
+			expect(header).toHaveAttribute("aria-rowindex", day.getAttribute("aria-rowindex"));
+			expect(header?.getAttribute("aria-label")).toMatch(/^Week \d{1,2}$/);
+		});
+	});
+});
+
+describe("CGY-30559 - AM/PM toggle", () => {
+	const messageSingleDate = singleDate as unknown as IMessage;
+
+	it("is a keyboard-operable button: Enter and Space toggle the value and keep focus on it", async () => {
+		const { getByTestId, findByRole } = render(<Message message={messageSingleDate} />);
+		const root = await openDialog(findByRole, getByTestId);
+
+		const amPm = root.querySelector<HTMLElement>(".flatpickr-am-pm")!;
+		expect(amPm).toHaveAttribute("role", "button");
+		expect(amPm).toHaveAttribute("tabindex", "0");
+		const initial = amPmValue(amPm);
+		expect(["AM", "PM"]).toContain(initial);
+		const other = initial === "AM" ? "PM" : "AM";
+
+		amPm.focus();
+		fireEvent.keyDown(amPm, { key: "Enter", keyCode: 13 });
+		expect(amPmValue(amPm)).toBe(other);
+		// flatpickr's own Enter handler would have moved focus to its hidden input; ours keeps it.
+		expect(document.activeElement).toBe(amPm);
+
+		fireEvent.keyDown(amPm, { key: " ", keyCode: 32 });
+		expect(amPmValue(amPm)).toBe(initial);
+		expect(document.activeElement).toBe(amPm);
+		// The dialog is still open (Enter did not trigger flatpickr's close path).
+		expect(root.querySelector('[role="dialog"]')).toBeInTheDocument();
+	});
+
+	it("announces the new value through the live region after activation", async () => {
+		const { getByTestId, findByRole } = render(<Message message={messageSingleDate} />);
+		const root = await openDialog(findByRole, getByTestId);
+
+		const amPm = root.querySelector<HTMLElement>(".flatpickr-am-pm")!;
+		const liveRegion = root.querySelector("[aria-live]") as HTMLElement;
+		const initial = amPmValue(amPm);
+		const other = initial === "AM" ? "PM" : "AM";
+
+		amPm.focus();
+		fireEvent.keyDown(amPm, { key: "Enter", keyCode: 13 });
+		await waitFor(() => expect(liveRegion.textContent).toBe(other));
+
+		// flatpickr's native ArrowUp toggle is announced too.
+		fireEvent.keyDown(amPm, { key: "ArrowUp", keyCode: 38 });
+		await waitFor(() => expect(liveRegion.textContent).toBe(initial));
+	});
+
+	it("selecting a day does not announce AM/PM (programmatic re-apply of the same value)", async () => {
+		const { getByTestId, findByRole } = render(<Message message={messageSingleDate} />);
+		const root = await openDialog(findByRole, getByTestId);
+
+		const liveRegion = root.querySelector("[aria-live]") as HTMLElement;
+		const liveWrites: (string | null)[] = [];
+		const observer = new MutationObserver(() => liveWrites.push(liveRegion.textContent));
+		observer.observe(liveRegion, { childList: true, characterData: true, subtree: true });
+
+		activeDay(root)!.focus();
+		pressKey("ArrowRight");
+		await selectFocusedDayAndSettle();
+		await flush();
+		observer.disconnect();
+
+		expect(liveWrites).not.toContain("AM");
+		expect(liveWrites).not.toContain("PM");
 	});
 });
