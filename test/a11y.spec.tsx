@@ -44,27 +44,21 @@ import adaptiveCardsFixture from "./fixtures/adaptiveCards.json";
  * temporarily tolerated. Empty is the goal state.
  */
 const knownViolations: Record<string, { rule: string; ticket: string; note: string }[]> = {
-	// The flatpickr calendar's ARIA grid (reworked in AB#118957) renders
-	// role="grid"/"rowgroup" containers whose children are gridcells with
-	// no role="row" level in between, and keeps flatpickr's original
-	// readonly <input class="flatpickr-input"> without an accessible name.
-	// Fixing both means restructuring the calendar DOM (dom-compat skips +
-	// screen-reader retest), tracked as a follow-up under AB#144248.
+	// The flatpickr calendar's day cells must stay flat DOM children of
+	// `.dayContainer` (flatpickr's arrow navigation and range hover index
+	// them by position), so the role="row" level is provided by hidden row
+	// elements that claim their cells via aria-owns (CGY-30560). Browsers give
+	// aria-owns precedence over DOM parentage, so the accessibility tree is
+	// grid > rowgroup > row > gridcell — but axe's aria-required-children
+	// check does not model that precedence: it walks from the rowgroup through
+	// the presentation-role `.dayContainer` and still counts the gridcells as
+	// the rowgroup's own children (see getOwnedRoles in axe-core). Tooling
+	// limitation, not markup debt; aria-required-parent and label were cleared.
 	"stateful: datepicker open dialog": [
 		{
 			rule: "aria-required-children",
 			ticket: "AB#144248",
-			note: "flatpickr grid/rowgroup lack role=row children — calendar DOM restructure needed",
-		},
-		{
-			rule: "aria-required-parent",
-			ticket: "AB#144248",
-			note: "flatpickr day cells (role=gridcell) render outside role=row parents — same restructure",
-		},
-		{
-			rule: "label",
-			ticket: "AB#144248",
-			note: "flatpickr's original readonly input has no accessible name — needs aria-label via flatpickr config",
+			note: "axe ignores aria-owns precedence: cells owned by the hidden role=row elements are still counted under the rowgroup",
 		},
 	],
 };

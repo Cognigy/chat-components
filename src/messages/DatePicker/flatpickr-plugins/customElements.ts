@@ -24,7 +24,8 @@ export interface Config {
  * - the AM/PM toggle is a `role="button"` operable with Enter/Space whose new value is announced
  * - day cells are flat `role="gridcell"` elements with `aria-rowindex`/`aria-colindex` (NOT
  *   physical `role="row"` wrappers, which would break flatpickr's native arrow navigation that
- *   indexes the day cells as direct children of `.dayContainer`)
+ *   indexes the day cells as direct children of `.dayContainer`); the `role="row"` level is
+ *   provided by six visually-hidden row elements that claim their cells via `aria-owns`
  * - focus uses a roving tabindex: exactly one day is `tabindex="0"`, the rest `-1`
  * - flatpickr owns in-month arrow navigation; this plugin adds Home/End, PageUp/PageDown, and
  *   sequential cross-month arrow movement, and announces the focused date to screen readers
@@ -297,6 +298,7 @@ function customElements(pluginConfig: Config): Plugin {
 			`webchat-datepicker-${instanceId}-week-${rowIndex}`;
 		const weekNumberLabel = () =>
 			customTranslations?.ariaLabels?.datePickerWeekNumber || "Week";
+		const dayCellId = (index: number) => `webchat-datepicker-${instanceId}-day-${index}`;
 
 		// Apply the grid structure roles (role="grid" / "columnheader").
 		// Day cells keep their position semantics via aria-rowindex/aria-colindex applied
@@ -378,7 +380,9 @@ function customElements(pluginConfig: Config): Plugin {
 		// with the focused date — a row header alone is not announced in focus mode (CGY-30560).
 		function syncWeekNumbers() {
 			if (!hasWeekNumbers() || !fp?.weekNumbers) return;
-			fp.weekNumbers.setAttribute("role", "rowgroup");
+			// The week cells are claimed by the role="row" elements (syncGridRows) via aria-owns,
+			// so their DOM container is not a rowgroup of its own.
+			fp.weekNumbers.setAttribute("role", "presentation");
 			const weekCells = Array.from(
 				fp.weekNumbers.querySelectorAll<HTMLElement>(":scope > .flatpickr-day"),
 			);
@@ -401,12 +405,15 @@ function customElements(pluginConfig: Config): Plugin {
 			const dayContainer = fp?.calendarContainer?.querySelector<HTMLElement>(".dayContainer");
 			if (!dayContainer) return;
 
-			dayContainer.setAttribute("role", "rowgroup");
+			// The day cells are claimed by the role="row" elements (syncGridRows) via aria-owns;
+			// their DOM container is layout only.
+			dayContainer.setAttribute("role", "presentation");
 
 			const dayCells = Array.from(
 				dayContainer.querySelectorAll<HTMLElement>(":scope > .flatpickr-day"),
 			);
 			dayCells.forEach((cell, i) => {
+				cell.id = dayCellId(i);
 				// Day rows start at grid row 2 (row 1 is the weekday header).
 				const rowIndex = Math.floor(i / GRID_COLS) + 2;
 				cell.setAttribute("aria-rowindex", String(rowIndex));
@@ -422,6 +429,57 @@ function customElements(pluginConfig: Config): Plugin {
 					cell.removeAttribute("aria-describedby");
 				}
 			});
+		}
+
+		// Give the grid its role="row" level WITHOUT moving any day cell in the DOM. flatpickr's
+		// arrow navigation indexes `.flatpickr-days.children[0]` (the `.dayContainer`) and its
+		// direct `.flatpickr-day` children, so physical row wrappers would break it. Instead, six
+		// empty `role="row"` elements are appended AFTER `.dayContainer` inside `.flatpickr-days`
+		// (which becomes the rowgroup) and each claims its 7 cells — plus the week-number
+		// rowheader when enabled — through aria-owns. Assistive tech then sees the accessibility
+		// tree grid > rowgroup > row > gridcell that the APG grid pattern requires, while
+		// flatpickr keeps its flat DOM. The rows are visually hidden (never display:none, which
+		// would drop them from the accessibility tree) and absolutely positioned so the flex
+		// layout of `.flatpickr-days` is unaffected. flatpickr clears `.flatpickr-days` on every
+		// buildDays, so this runs after each rebuild (idempotent: existing rows are reused, and the
+		// one-off appends only re-trigger the day-grid observer once).
+		function syncGridRows() {
+			const daysContainer =
+				fp?.calendarContainer?.querySelector<HTMLElement>(".flatpickr-days");
+			const dayContainer =
+				daysContainer?.querySelector<HTMLElement>(":scope > .dayContainer");
+			if (!daysContainer || !dayContainer) return;
+			daysContainer.setAttribute("role", "rowgroup");
+
+			const dayCells = Array.from(
+				dayContainer.querySelectorAll<HTMLElement>(":scope > .flatpickr-day"),
+			);
+			const rowCount = Math.ceil(dayCells.length / GRID_COLS);
+			for (let r = 0; r < rowCount; r++) {
+				// Day rows start at grid row 2 (row 1 is the weekday header).
+				const rowIndex = r + 2;
+				let row = daysContainer.querySelector<HTMLElement>(
+					`:scope > [data-grid-row="${rowIndex}"]`,
+				);
+				if (!row) {
+					row = document.createElement("div");
+					row.dataset.gridRow = String(rowIndex);
+					row.setAttribute("role", "row");
+					row.style.position = "absolute";
+					row.style.width = "1px";
+					row.style.height = "1px";
+					row.style.overflow = "hidden";
+					row.style.clip = "rect(0, 0, 0, 0)";
+					daysContainer.appendChild(row);
+				}
+				row.setAttribute("aria-rowindex", String(rowIndex));
+				const owned = dayCells.slice(r * GRID_COLS, (r + 1) * GRID_COLS).map(c => c.id);
+				const weekHeader = hasWeekNumbers()
+					? fp?.weekNumbers?.querySelector<HTMLElement>(`[aria-rowindex="${rowIndex}"]`)
+					: null;
+				if (weekHeader?.id) owned.unshift(weekHeader.id);
+				row.setAttribute("aria-owns", owned.join(" "));
+			}
 		}
 
 		// Selection state of a day cell. In range mode flatpickr marks only the two endpoints
@@ -463,6 +521,7 @@ function customElements(pluginConfig: Config): Plugin {
 		function refreshGridAfterRebuild() {
 			syncWeekNumbers();
 			applyDayGridIndices();
+			syncGridRows();
 			syncAllDayCells();
 			restoreRovingDay();
 		}
@@ -476,8 +535,9 @@ function customElements(pluginConfig: Config): Plugin {
 			if (!daysContainer || daysContainer.dataset.gridObserved === "true") return;
 			daysContainer.dataset.gridObserved = "true";
 
-			// The refresh only sets attributes (never moves nodes), so it never re-triggers the
-			// observer's childList watch.
+			// The refresh sets attributes and (re)creates the six role="row" elements after a
+			// rebuild; that append re-triggers this observer exactly once more, and the second pass
+			// finds the rows already present and changes no nodes, so it settles immediately.
 			const observer = new MutationObserver(() => refreshGridAfterRebuild());
 			observer.observe(daysContainer, { childList: true, subtree: true });
 			observers.push(observer);
@@ -593,6 +653,16 @@ function customElements(pluginConfig: Config): Plugin {
 
 				yearInput.setAttribute("tabindex", "0");
 			}
+		}
+
+		// flatpickr's readonly value input (`.flatpickr-input`) is display:none in the rendered
+		// widget, but it still needs an accessible name for environments where the stylesheet is
+		// not applied (the jsdom axe gate) and for any AT that does expose it.
+		function setValueInputAlly() {
+			fp?.input?.setAttribute(
+				"aria-label",
+				customTranslations?.ariaLabels?.datePickerSelectedDate || "Selected date",
+			);
 		}
 
 		// Set necessary attributes to time picker fields for accessibility
@@ -976,6 +1046,7 @@ function customElements(pluginConfig: Config): Plugin {
 				upsertTimeArrows,
 				buildTimeArrows,
 				setDateSelectAlly,
+				setValueInputAlly,
 				setTimeAlly,
 				setMonthSelectAlly,
 				setYearSelectAlly,

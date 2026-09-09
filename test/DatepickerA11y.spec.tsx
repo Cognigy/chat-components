@@ -155,8 +155,10 @@ describe("DatePicker Accessibility (W3C APG grid pattern)", () => {
 		const { getByTestId, findByRole } = render(<Message message={messageSingleDate} />);
 		const root = await openDialog(findByRole, getByTestId);
 
+		// `.flatpickr-days` is the rowgroup; the `.dayContainer` flatpickr rebuilds is layout only.
+		expect(root.querySelector(".flatpickr-days")).toHaveAttribute("role", "rowgroup");
 		const dayContainer = root.querySelector(".dayContainer");
-		expect(dayContainer).toHaveAttribute("role", "rowgroup");
+		expect(dayContainer).toHaveAttribute("role", "presentation");
 
 		// Day cells are flat direct children (NOT wrapped in physical role="row" elements), so
 		// flatpickr's native arrow navigation can index them; grid position is conveyed via
@@ -170,6 +172,47 @@ describe("DatePicker Accessibility (W3C APG grid pattern)", () => {
 			// Day rows start at grid row 2 (row 1 is the weekday header).
 			expect(day).toHaveAttribute("aria-rowindex", String(Math.floor(i / 7) + 2));
 			expect(day).toHaveAttribute("aria-colindex", String((i % 7) + 1));
+		});
+	});
+
+	it("Issue C - six role=row elements claim the cells via aria-owns (row level without DOM moves)", async () => {
+		const { getByTestId, findByRole } = render(<Message message={messageSingleDate} />);
+		const root = await openDialog(findByRole, getByTestId);
+
+		// The row level lives in visually-hidden row elements appended after `.dayContainer`
+		// (flatpickr indexes `.flatpickr-days.children[0]`), each owning its 7 cells by id, so the
+		// accessibility tree is grid > rowgroup > row > gridcell while the DOM stays flat.
+		const daysContainer = root.querySelector(".flatpickr-days")!;
+		expect(daysContainer.firstElementChild).toHaveClass("dayContainer");
+		const rows = Array.from(
+			daysContainer.querySelectorAll<HTMLElement>(':scope > [role="row"]'),
+		);
+		expect(rows).toHaveLength(6);
+		const days = getDayCells(root);
+		rows.forEach((row, r) => {
+			expect(row).toHaveAttribute("aria-rowindex", String(r + 2));
+			const owned = row.getAttribute("aria-owns")!.split(" ");
+			expect(owned).toEqual(days.slice(r * 7, r * 7 + 7).map(d => d.id));
+			owned.forEach(id =>
+				expect(document.getElementById(id)).toHaveAttribute("role", "gridcell"),
+			);
+			// Visually hidden, never display:none (that would drop the row from the a11y tree).
+			expect(row.style.display).not.toBe("none");
+		});
+		// Every cell is owned by exactly one row.
+		expect(new Set(rows.flatMap(r => r.getAttribute("aria-owns")!.split(" "))).size).toBe(42);
+
+		// Rows are rebuilt with the grid on a month change and still own the new cells.
+		fireEvent.click(root.querySelector(".flatpickr-next-month") as Element);
+		await waitFor(() => {
+			const rowsAfter = daysContainer.querySelectorAll(':scope > [role="row"]');
+			expect(rowsAfter).toHaveLength(6);
+			const daysAfter = getDayCells(root);
+			rowsAfter.forEach((row, r) =>
+				expect(row.getAttribute("aria-owns")!.split(" ")).toEqual(
+					daysAfter.slice(r * 7, r * 7 + 7).map(d => d.id),
+				),
+			);
 		});
 	});
 
@@ -573,9 +616,13 @@ describe("CGY-30560 - week numbers are part of the calendar grid", () => {
 			expect(weekday).toHaveAttribute("aria-colindex", String(i + 2));
 		});
 
-		// One rowheader per week row (rows 2-7), named "Week N".
-		expect(root.querySelector(".flatpickr-weeks")).toHaveAttribute("role", "rowgroup");
+		// One rowheader per week row (rows 2-7), named "Week N"; each is the first element its
+		// role="row" owns (the DOM container is layout only).
+		expect(root.querySelector(".flatpickr-weeks")).toHaveAttribute("role", "presentation");
 		const weekCells = root.querySelectorAll<HTMLElement>(".flatpickr-weeks .flatpickr-day");
+		root.querySelectorAll('.flatpickr-days > [role="row"]').forEach((row, r) => {
+			expect(row.getAttribute("aria-owns")!.split(" ")[0]).toBe(weekCells[r].id);
+		});
 		expect(weekCells).toHaveLength(6);
 		weekCells.forEach((cell, i) => {
 			expect(cell).toHaveAttribute("role", "rowheader");
