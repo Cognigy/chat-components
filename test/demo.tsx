@@ -12,7 +12,9 @@ import { IWebchatConfig, MessageSender } from "../src/messages/types.ts";
 //fixtures
 import listMessage from "test/fixtures/list.json";
 import gallery from "test/fixtures/gallery.json";
+import galleryMissingImage from "test/fixtures/gallery-missing-image.json";
 import imageDownloadable from "test/fixtures/image-downloadable.json";
+import imageDownloadableNoAlt from "test/fixtures/image-downloadable-no-alt.json";
 import image from "test/fixtures/image.json";
 import imageBroken from "test/fixtures/imageBroken.json";
 import video from "test/fixtures/video.json";
@@ -263,6 +265,24 @@ const screens: TScreen[] = [
 			{ message: imageDownloadable as IMessage },
 			{
 				message: {
+					text: 'Next one is a downloadable image without alt text (CGY-37634: the lightbox img must still render alt="")',
+					source: "bot",
+					timestamp: "1701163314138",
+				},
+			},
+			{
+				message: {
+					...imageDownloadableNoAlt,
+					timestamp: "1701163314138",
+					source: "bot",
+				} as IMessage,
+				prevMessage: {
+					source: "bot",
+					timestamp: "1701163314138",
+				},
+			},
+			{
+				message: {
 					text: "Next one is a broken image",
 					source: "bot",
 					timestamp: "1701163314138",
@@ -288,7 +308,27 @@ const screens: TScreen[] = [
 	{
 		title: "Gallery",
 		anchor: "gallery",
-		messages: [{ message: gallery as IMessage }],
+		messages: [
+			{ message: gallery as IMessage },
+			{
+				message: {
+					text: "Next gallery's third card has no image (CGY-37634: dark title on the grey placeholder, 24px pagination targets)",
+					source: "bot",
+					timestamp: "1701163314138",
+				},
+			},
+			{
+				message: {
+					...galleryMissingImage,
+					timestamp: "1701163314138",
+					source: "bot",
+				} as IMessage,
+				prevMessage: {
+					source: "bot",
+					timestamp: "1701163314138",
+				},
+			},
+		],
 	},
 	{
 		title: "Datepicker",
