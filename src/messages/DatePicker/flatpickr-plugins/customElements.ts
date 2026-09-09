@@ -692,16 +692,15 @@ function customElements(pluginConfig: Config): Plugin {
 		}
 
 		// AM/PM control (CGY-30559). flatpickr renders a span whose text it swaps on click, on
-		// ArrowUp/ArrowDown (direction ignored) and on the A/P keys. Visually it is a spinner like
-		// the hour and minute fields next to it (which are native number inputs = spinbuttons):
-		// AM sits above PM, and upsertTimeArrows disables the arrow that cannot move. So it is
-		// exposed as an APG spinbutton — name "AM/PM", the value in aria-valuetext — rather than a
-		// button: (1) screen readers announce spinbutton value changes natively (the ticket: the
-		// new value was never announced), (2) NVDA/JAWS auto-enter focus mode for spinbuttons, so
-		// the arrow keys reach the page (on a role="button" they drive the virtual cursor), and
-		// (3) the keys match the arrows: ArrowUp/Home -> AM, ArrowDown/End -> PM, no-op at the end.
-		// Enter/Space keep toggling (flatpickr's own Enter handler on time fields ran
-		// focusAndClose() instead, so the control was not activatable from the keyboard).
+		// ArrowUp/ArrowDown (direction ignored) and on the A/P keys; its Enter handler for time
+		// fields runs focusAndClose() (focuses the hidden input) and does not toggle. Visually the
+		// control is a spinner like the hour and minute fields next to it (native number inputs,
+		// i.e. spinbuttons): AM sits above PM, and upsertTimeArrows disables the arrow that cannot
+		// move. It is therefore exposed as an APG spinbutton — name "AM/PM", value in
+		// aria-valuetext: (1) screen readers announce a focused spinbutton's value change natively,
+		// (2) NVDA/JAWS auto-enter focus mode for spinbuttons, so the arrow keys reach the page (on
+		// a role="button" they drive the virtual cursor), and (3) the keys match the arrows:
+		// ArrowUp/Home -> AM, ArrowDown/End -> PM, no-op at the end; Enter/Space toggle.
 		function setAmPmAlly() {
 			const amPm = fp?.amPM;
 			if (!amPm || amPm.dataset.a11yBound === "true") return;
@@ -839,8 +838,8 @@ function customElements(pluginConfig: Config): Plugin {
 		//
 		// IMPORTANT: flatpickr implements Arrow-key navigation natively (focusOnDay /
 		// getNextAvailableDay), including disabled-day skipping. We let flatpickr own arrow moves
-		// that stay WITHIN the visible month — handling them ourselves previously ran two handlers
-		// in parallel that fought over focus. We only take over an arrow when the move crosses a
+		// that stay WITHIN the visible month — handling them here as well would run two handlers
+		// in parallel that fight over focus. We only take over an arrow when the move crosses a
 		// month boundary, because flatpickr there jumps to the "first available day" of the new
 		// grid (non-sequential, confusing for screen-reader users) instead of the sequential
 		// next/previous calendar day. We also add the keys flatpickr lacks: Home / End (within the

@@ -52,8 +52,8 @@ const knownViolations: Record<string, { rule: string; ticket: string; note: stri
 	// grid > rowgroup > row > gridcell — but axe's aria-required-children
 	// check does not model that precedence: it walks from the rowgroup through
 	// the presentation-role `.dayContainer` and still counts the gridcells as
-	// the rowgroup's own children (see getOwnedRoles in axe-core). Tooling
-	// limitation, not markup debt; aria-required-parent and label were cleared.
+	// the rowgroup's own children (see getOwnedRoles in axe-core). This entry
+	// documents that tooling limitation, not markup debt.
 	"stateful: datepicker open dialog": [
 		{
 			rule: "aria-required-children",
