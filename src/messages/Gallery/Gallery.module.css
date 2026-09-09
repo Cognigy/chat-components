@@ -241,6 +241,11 @@ article :global(.swiper).wrapper :global(.swiper-pagination-bullet)::before {
 	border-radius: 50%;
 	background-color: var(--cc-black-50);
 }
+/* Declared before the focus rules (and lower in specificity) so a focused
+   active bullet always shows the focus colour, not the active black. */
+article :global(.swiper).wrapper :global(.swiper-pagination-bullet-active)::before {
+	background-color: black;
+}
 article :global(.swiper).wrapper :global(.swiper-pagination-bullet):focus {
 	outline: none;
 }
@@ -265,9 +270,6 @@ article :global(.swiper).wrapper :global(.swiper-pagination-clickable .swiper-pa
 }
 article :global(.swiper).wrapper :global(.swiper-pagination-bullet:only-child) {
 	display: none !important;
-}
-article :global(.swiper).wrapper :global(.swiper-pagination-bullet-active)::before {
-	background-color: black;
 }
 article
 	:global(.swiper).wrapper
