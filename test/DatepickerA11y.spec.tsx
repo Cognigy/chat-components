@@ -662,60 +662,90 @@ describe("CGY-30560 - week numbers are part of the calendar grid", () => {
 	});
 });
 
-describe("CGY-30559 - AM/PM toggle", () => {
+describe("CGY-30559 - AM/PM control (APG spinbutton)", () => {
 	const messageSingleDate = singleDate as unknown as IMessage;
 
-	it("is a keyboard-operable button: Enter and Space toggle the value and keep focus on it", async () => {
+	const openAmPm = async () => {
 		const { getByTestId, findByRole } = render(<Message message={messageSingleDate} />);
 		const root = await openDialog(findByRole, getByTestId);
-
 		const amPm = root.querySelector<HTMLElement>(".flatpickr-am-pm")!;
-		expect(amPm).toHaveAttribute("role", "button");
+		return { root, amPm };
+	};
+	const key = (el: HTMLElement, k: string, keyCode: number) =>
+		fireEvent.keyDown(el, { key: k, keyCode });
+
+	it("is a named spinbutton whose value is the visible AM/PM text", async () => {
+		const { amPm } = await openAmPm();
+
+		expect(amPm).toHaveAttribute("role", "spinbutton");
 		expect(amPm).toHaveAttribute("tabindex", "0");
+		expect(amPm).toHaveAttribute("aria-label", "AM/PM");
+		expect(amPm).toHaveAttribute("aria-valuemin", "0");
+		expect(amPm).toHaveAttribute("aria-valuemax", "1");
+		const value = amPmValue(amPm);
+		expect(["AM", "PM"]).toContain(value);
+		expect(amPm).toHaveAttribute("aria-valuetext", value);
+		expect(amPm).toHaveAttribute("aria-valuenow", value === "AM" ? "1" : "0");
+	});
+
+	it("ArrowUp/Home go to AM and ArrowDown/End to PM, matching the arrows; no-op at the end", async () => {
+		const { amPm } = await openAmPm();
+		amPm.focus();
+
+		key(amPm, "ArrowUp", 38);
+		expect(amPmValue(amPm)).toBe("AM");
+		expect(amPm).toHaveAttribute("aria-valuetext", "AM");
+		expect(amPm).toHaveAttribute("aria-valuenow", "1");
+		key(amPm, "ArrowUp", 38); // already at the top: stays AM (flatpickr's own toggle is stopped)
+		expect(amPmValue(amPm)).toBe("AM");
+
+		key(amPm, "ArrowDown", 40);
+		expect(amPmValue(amPm)).toBe("PM");
+		expect(amPm).toHaveAttribute("aria-valuetext", "PM");
+		expect(amPm).toHaveAttribute("aria-valuenow", "0");
+		key(amPm, "ArrowDown", 40); // already at the bottom: stays PM
+		expect(amPmValue(amPm)).toBe("PM");
+
+		key(amPm, "Home", 36);
+		expect(amPmValue(amPm)).toBe("AM");
+		key(amPm, "End", 35);
+		expect(amPmValue(amPm)).toBe("PM");
+
+		expect(document.activeElement).toBe(amPm);
+	});
+
+	it("Enter and Space toggle the value and keep focus on it (dialog stays open)", async () => {
+		const { root, amPm } = await openAmPm();
 		const initial = amPmValue(amPm);
-		expect(["AM", "PM"]).toContain(initial);
 		const other = initial === "AM" ? "PM" : "AM";
 
 		amPm.focus();
-		fireEvent.keyDown(amPm, { key: "Enter", keyCode: 13 });
+		key(amPm, "Enter", 13);
 		expect(amPmValue(amPm)).toBe(other);
+		expect(amPm).toHaveAttribute("aria-valuetext", other);
 		// flatpickr's own Enter handler would have moved focus to its hidden input; ours keeps it.
 		expect(document.activeElement).toBe(amPm);
 
-		fireEvent.keyDown(amPm, { key: " ", keyCode: 32 });
+		key(amPm, " ", 32);
 		expect(amPmValue(amPm)).toBe(initial);
 		expect(document.activeElement).toBe(amPm);
-		// The dialog is still open (Enter did not trigger flatpickr's close path).
 		expect(root.querySelector('[role="dialog"]')).toBeInTheDocument();
 	});
 
-	it("announces the new value through the live region after activation", async () => {
-		const { getByTestId, findByRole } = render(<Message message={messageSingleDate} />);
-		const root = await openDialog(findByRole, getByTestId);
-
-		const amPm = root.querySelector<HTMLElement>(".flatpickr-am-pm")!;
-		const liveRegion = root.querySelector("[aria-live]") as HTMLElement;
-		const initial = amPmValue(amPm);
-		const other = initial === "AM" ? "PM" : "AM";
-
-		amPm.focus();
-		fireEvent.keyDown(amPm, { key: "Enter", keyCode: 13 });
-		await waitFor(() => expect(liveRegion.textContent).toBe(other));
-
-		// flatpickr's native ArrowUp toggle is announced too.
-		fireEvent.keyDown(amPm, { key: "ArrowUp", keyCode: 38 });
-		await waitFor(() => expect(liveRegion.textContent).toBe(initial));
-	});
-
-	it("selecting a day does not announce AM/PM (programmatic re-apply of the same value)", async () => {
-		const { getByTestId, findByRole } = render(<Message message={messageSingleDate} />);
-		const root = await openDialog(findByRole, getByTestId);
-
+	it("value changes are exposed on the spinbutton only — the live region is not written (no double announce)", async () => {
+		const { root, amPm } = await openAmPm();
 		const liveRegion = root.querySelector("[aria-live]") as HTMLElement;
 		const liveWrites: (string | null)[] = [];
 		const observer = new MutationObserver(() => liveWrites.push(liveRegion.textContent));
 		observer.observe(liveRegion, { childList: true, characterData: true, subtree: true });
 
+		amPm.focus();
+		key(amPm, "Enter", 13);
+		key(amPm, "ArrowDown", 40);
+		await flush();
+		await flush();
+
+		// Selecting a day re-applies the same AM/PM text programmatically: also silent.
 		activeDay(root)!.focus();
 		pressKey("ArrowRight");
 		await selectFocusedDayAndSettle();
@@ -724,5 +754,6 @@ describe("CGY-30559 - AM/PM toggle", () => {
 
 		expect(liveWrites).not.toContain("AM");
 		expect(liveWrites).not.toContain("PM");
+		expect(amPm).toHaveAttribute("aria-valuetext", amPmValue(amPm));
 	});
 });

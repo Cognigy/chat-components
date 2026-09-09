@@ -21,7 +21,8 @@ export interface Config {
  *   inherit the weekday from the column header) plus "start of range" / "end of range" in range
  *   mode (ARIA has no state for range endpoints); selection and today are exposed as states only
  *   (`aria-selected`, flatpickr's `aria-current="date"`), never repeated in the name (APG)
- * - the AM/PM toggle is a `role="button"` operable with Enter/Space whose new value is announced
+ * - the AM/PM control is a `role="spinbutton"` ("AM/PM", value in `aria-valuetext`): ArrowUp/Home
+ *   -> AM, ArrowDown/End -> PM (matching the arrows), Enter/Space toggle
  * - day cells are flat `role="gridcell"` elements with `aria-rowindex`/`aria-colindex` (NOT
  *   physical `role="row"` wrappers, which would break flatpickr's native arrow navigation that
  *   indexes the day cells as direct children of `.dayContainer`); the `role="row"` level is
@@ -675,13 +676,13 @@ function customElements(pluginConfig: Config): Plugin {
 				const minutesField =
 					fp?.timeContainer?.getElementsByClassName("flatpickr-minute")?.[0];
 				minutesField?.setAttribute("tabIndex", "0");
+				// The AM/PM control's role, name, value and keys are set up in setAmPmAlly().
 				const amPmField = fp?.timeContainer?.getElementsByClassName("flatpickr-am-pm")?.[0];
 				amPmField?.setAttribute("tabIndex", "0");
-				amPmField?.setAttribute("role", "button");
 			}
 		}
 
-		// Current AM/PM value: the text node(s) of the toggle, ignoring the arrow icons we append.
+		// Current AM/PM value: the text node(s) of the control, ignoring the arrow icons we append.
 		function getAmPmValue(): string {
 			return Array.from(fp?.amPM?.childNodes || [])
 				.filter(node => node.nodeType === Node.TEXT_NODE)
@@ -690,40 +691,74 @@ function customElements(pluginConfig: Config): Plugin {
 				.trim();
 		}
 
-		// AM/PM toggle (CGY-30559). flatpickr renders it as a span whose text it swaps on click,
-		// ArrowUp/ArrowDown and the A/P keys; setTimeAlly exposes it as role="button". Two gaps:
-		// (1) Enter/Space did nothing — flatpickr's Enter handler for time fields runs
-		//     focusAndClose() (focus its hidden input) instead of toggling — so the button contract
-		//     was broken for keyboard users;
-		// (2) the swapped text is a silent name change on the focused element, so the new value was
-		//     never announced. Announce it through the calendar's live region.
+		// AM/PM control (CGY-30559). flatpickr renders a span whose text it swaps on click, on
+		// ArrowUp/ArrowDown (direction ignored) and on the A/P keys. Visually it is a spinner like
+		// the hour and minute fields next to it (which are native number inputs = spinbuttons):
+		// AM sits above PM, and upsertTimeArrows disables the arrow that cannot move. So it is
+		// exposed as an APG spinbutton — name "AM/PM", the value in aria-valuetext — rather than a
+		// button: (1) screen readers announce spinbutton value changes natively (the ticket: the
+		// new value was never announced), (2) NVDA/JAWS auto-enter focus mode for spinbuttons, so
+		// the arrow keys reach the page (on a role="button" they drive the virtual cursor), and
+		// (3) the keys match the arrows: ArrowUp/Home -> AM, ArrowDown/End -> PM, no-op at the end.
+		// Enter/Space keep toggling (flatpickr's own Enter handler on time fields ran
+		// focusAndClose() instead, so the control was not activatable from the keyboard).
 		function setAmPmAlly() {
 			const amPm = fp?.amPM;
 			if (!amPm || amPm.dataset.a11yBound === "true") return;
 			amPm.dataset.a11yBound = "true";
 
-			amPm.addEventListener("keydown", (event: KeyboardEvent) => {
-				if (event.key !== "Enter" && event.key !== " " && event.key !== "Spacebar") return;
-				event.preventDefault();
-				// Stop flatpickr's keydown (bound on the calendar container) from running
-				// focusAndClose(); the dialog's Tab/Escape handling is unaffected by these keys.
-				event.stopPropagation();
-				// Route through flatpickr's own click handler so the toggle, the hour math and
-				// onValueUpdate all behave exactly as for a mouse click.
+			const [am, pm] = fp.l10n.amPM;
+			amPm.setAttribute("role", "spinbutton");
+			amPm.setAttribute(
+				"aria-label",
+				customTranslations?.ariaLabels?.datePickerAmPm || "AM/PM",
+			);
+			// AM is the top of the spinner (ArrowUp reaches it), so AM is the max value.
+			amPm.setAttribute("aria-valuemin", "0");
+			amPm.setAttribute("aria-valuemax", "1");
+			const syncValue = () => {
+				const value = getAmPmValue();
+				if (!value) return;
+				amPm.setAttribute("aria-valuenow", value === am ? "1" : "0");
+				amPm.setAttribute("aria-valuetext", value);
+			};
+			syncValue();
+
+			// flatpickr's click handler toggles the value (and updates hours / onValueUpdate);
+			// route every keyboard change through it so all paths behave like a mouse click. The
+			// value attributes are synced right away (the observer below covers the other paths).
+			const toggle = () => {
 				amPm.click();
+				syncValue();
+			};
+			const setTo = (target: string) => {
+				if (getAmPmValue() !== target) toggle();
+			};
+			amPm.addEventListener("keydown", (event: KeyboardEvent) => {
+				const actions: Record<string, () => void> = {
+					ArrowUp: () => setTo(am),
+					Home: () => setTo(am),
+					ArrowDown: () => setTo(pm),
+					End: () => setTo(pm),
+					Enter: toggle,
+					" ": toggle,
+					Spacebar: toggle,
+				};
+				const action = actions[event.key];
+				if (!action) return;
+				event.preventDefault();
+				// Stop flatpickr's keydown (bound on the calendar container): its ArrowUp/ArrowDown
+				// would toggle a second time (direction-agnostic) and its Enter runs focusAndClose().
+				// The dialog's Tab/Escape handling is unaffected by these keys.
+				event.stopPropagation();
+				action();
 			});
 
-			// flatpickr assigns textContent to swap the value (replacing the child nodes), so a
-			// childList observer sees every toggle. Only announce real changes, and only while the
-			// user is operating the time fields — selecting a day re-applies the same value
-			// programmatically and must stay silent.
-			let lastValue = getAmPmValue();
-			const observer = new MutationObserver(() => {
-				const value = getAmPmValue();
-				if (!value || value === lastValue) return;
-				lastValue = value;
-				if (fp.timeContainer?.contains(document.activeElement)) announce(value);
-			});
+			// flatpickr assigns textContent to swap the value (replacing the child nodes) on every
+			// path (click, A/P keys, hour rollover, date selection), so a childList observer keeps
+			// aria-valuenow/aria-valuetext in sync. No live-region announcement: assistive tech
+			// announces a focused spinbutton's value change itself, and a duplicate would be spoken.
+			const observer = new MutationObserver(syncValue);
 			observer.observe(amPm, { childList: true, characterData: true, subtree: true });
 			observers.push(observer);
 		}
