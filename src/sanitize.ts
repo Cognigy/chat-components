@@ -357,12 +357,13 @@ export const sanitizeHTMLWithConfig = (
 	}
 
 	let configToUse = config;
-	if (customAllowedHtmlTags) {
+	if (Array.isArray(customAllowedHtmlTags)) {
 		// Strip dangerous tags and non-string entries from the tenant-supplied list
 		// before passing to DOMPurify (defence-in-depth; mirrors the filter applied
 		// in config-reducer.ts in the webchat host so both consumers stay in sync).
-		const list = Array.isArray(customAllowedHtmlTags) ? customAllowedHtmlTags : [];
-		const safeTags = list.filter(
+		// Non-array values (e.g. a plain string passed by mistake) fall through to
+		// the default config rather than producing an empty ALLOWED_TAGS list.
+		const safeTags = customAllowedHtmlTags.filter(
 			(tag): tag is string =>
 				typeof tag === "string" && !ALWAYS_BLOCKED_TAGS.has(tag.toLowerCase().trim()),
 		);
