@@ -188,6 +188,22 @@ describe("sanitizeHTMLWithConfig", () => {
 			expect(result).toContain("<span>safe</span>");
 		});
 
+		test("strips noframes from custom allowed list", () => {
+			const input = "<noframes>fallback</noframes><p>safe</p>";
+			const result = sanitizeHTMLWithConfig(input, ["noframes", "p"]);
+			expect(result).not.toContain("noframes");
+			expect(result).toContain("<p>safe</p>");
+		});
+
+		test("strips structural tags (body, head, html) from custom allowed list", () => {
+			for (const tag of ["body", "head", "html"]) {
+				const input = `<${tag}>content</${tag}><span>safe</span>`;
+				const result = sanitizeHTMLWithConfig(input, [tag, "span"]);
+				expect(result).not.toMatch(new RegExp(`<${tag}[\\s>/]`, "i"));
+				expect(result).toContain("<span>safe</span>");
+			}
+		});
+
 		test("trims whitespace from tag names in custom list", () => {
 			const input = "<iframe>malicious</iframe><b>safe</b>";
 			// " iframe " with surrounding spaces should still be blocked

@@ -227,6 +227,7 @@ export const allowedHtmlAttributes = [
 
 // Hard deny-list applied to tenant-supplied customAllowedHtmlTags before the list
 // is passed to DOMPurify. These tags cannot be re-enabled via tenant configuration.
+// Must stay in sync with the tags removed from allowedHtmlTags above.
 export const ALWAYS_BLOCKED_TAGS = new Set([
 	"script",
 	"iframe",
@@ -235,11 +236,15 @@ export const ALWAYS_BLOCKED_TAGS = new Set([
 	"applet",
 	"frame",
 	"frameset",
+	"noframes",
 	"meta",
 	"base",
 	"link",
 	"style",
 	"form",
+	"body",
+	"head",
+	"html",
 ]);
 
 const config: Config = {
