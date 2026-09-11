@@ -1,18 +1,49 @@
-import { FC, useEffect } from "react";
+import { FC, useEffect, useRef } from "react";
 import { useImageMessageContext } from "../hooks";
 import classes from "./Lightbox.module.css";
 import LightboxHeader from "./LightboxHeader";
 import { useMessageContext } from "src/messages/hooks";
+import { getFocusableElements } from "src/utils";
 
 const Lightbox: FC = () => {
 	const { url, altText, onClose } = useImageMessageContext();
 	const { config } = useMessageContext();
+	const dialogRef = useRef<HTMLDivElement>(null);
+
+	// Window-level keyboard handling for the modal (APG modal dialog pattern):
+	// Escape closes; Tab / Shift+Tab cycle through the dialog's focusable
+	// elements and never leave it. The trap lives on the window rather than on
+	// the buttons or the dialog element so it also covers focus resting on
+	// nothing: clicking the full-size image moves focus to <body>, and since
+	// the dialog is rendered inline in the message, an untrapped Tab from
+	// there lands in the page behind the lightbox.
 	useEffect(() => {
-		const close = (event: KeyboardEvent) => {
-			event.code === "Escape" && onClose && onClose();
+		const handleKeyDown = (event: KeyboardEvent) => {
+			if (event.key === "Escape" || event.code === "Escape") {
+				onClose && onClose();
+				return;
+			}
+			if (event.key !== "Tab" || !dialogRef.current) return;
+
+			const { firstFocusable, lastFocusable } = getFocusableElements(dialogRef.current);
+			if (!firstFocusable || !lastFocusable) return;
+
+			const active = document.activeElement;
+			const focusInsideDialog = !!active && dialogRef.current.contains(active);
+
+			if (!focusInsideDialog) {
+				event.preventDefault();
+				(event.shiftKey ? lastFocusable : firstFocusable).focus();
+			} else if (event.shiftKey && active === firstFocusable) {
+				event.preventDefault();
+				lastFocusable.focus();
+			} else if (!event.shiftKey && active === lastFocusable) {
+				event.preventDefault();
+				firstFocusable.focus();
+			}
 		};
-		window.addEventListener("keydown", close);
-		return () => window.removeEventListener("keydown", close);
+		window.addEventListener("keydown", handleKeyDown);
+		return () => window.removeEventListener("keydown", handleKeyDown);
 	}, [onClose]);
 
 	const handleOnClickBackdrop = (event: React.MouseEvent<HTMLElement>) => {
@@ -33,7 +64,13 @@ const Lightbox: FC = () => {
 		"Full-size image viewer";
 
 	return (
-		<div role="dialog" aria-label={lightboxLabel} className={classes.wrapper}>
+		<div
+			ref={dialogRef}
+			role="dialog"
+			aria-modal="true"
+			aria-label={lightboxLabel}
+			className={classes.wrapper}
+		>
 			{/* eslint-disable-next-line jsx-a11y/click-events-have-key-events, jsx-a11y/no-static-element-interactions -- click-to-close
 			    backdrop is a pointer convenience; the keyboard path exists: the window-level
 			    Escape listener above closes the dialog and LightboxHeader renders a focusable

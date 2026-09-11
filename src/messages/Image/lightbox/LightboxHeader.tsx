@@ -1,4 +1,4 @@
-import { FC, KeyboardEvent, useEffect, useRef } from "react";
+import { FC, useEffect, useRef } from "react";
 import { useImageMessageContext } from "../hooks";
 import classes from "./Lightbox.module.css";
 import { CloseIcon, DownloadIcon } from "src/assets/svg";
@@ -7,40 +7,21 @@ import { useMessageContext } from "src/messages/hooks";
 const LightboxHeader: FC = () => {
 	const { url, altText, onClose } = useImageMessageContext();
 	const { config } = useMessageContext();
-	const firstButton = useRef<HTMLButtonElement>(null);
-	const lastButton = useRef<HTMLButtonElement>(null);
+	const downloadButton = useRef<HTMLButtonElement>(null);
 
+	// Focus moves into the dialog on open (APG modal dialog). The focus trap
+	// itself lives in Lightbox.tsx at window level, so these are plain native
+	// buttons: Enter/Space activation is the browser's synthesized click. A
+	// keydown handler that also calls the action fires it twice on Enter
+	// (keydown plus the click), i.e. two download tabs.
 	useEffect(() => {
 		setTimeout(() => {
-			firstButton.current?.focus();
+			downloadButton.current?.focus();
 		}, 100);
 	}, []);
 
 	const handleDownload = () => {
 		window.open(url, "_blank");
-	};
-
-	// The two header buttons are the dialog's only tab stops, so the focus
-	// trap (APG modal dialog) is a two-way wrap between them: Shift+Tab from
-	// the first (Download) lands on the last (Close), Tab from the last lands
-	// on the first. Previously only the Tab-from-Close direction wrapped, so
-	// Shift+Tab escaped into the page behind the lightbox (CGY-37634).
-	const handleKeyDownload = (event: KeyboardEvent) => {
-		if (event.key === "Tab" && event.shiftKey) {
-			lastButton.current?.focus();
-			event.preventDefault();
-			return;
-		}
-		event.key === "Enter" && handleDownload();
-	};
-
-	const handleKeyClose = (event: KeyboardEvent) => {
-		if (event.key === "Tab" && !event.shiftKey) {
-			firstButton.current?.focus();
-			event.preventDefault();
-			return;
-		}
-		event.code === "Enter" && onClose && onClose();
 	};
 
 	const downloadFullsizeImageLabel =
@@ -55,18 +36,15 @@ const LightboxHeader: FC = () => {
 			<div className={classes.caption}>{altText}</div>
 			<div className={classes.iconsGroup}>
 				<button
-					ref={firstButton}
+					ref={downloadButton}
 					onClick={handleDownload}
-					onKeyDown={handleKeyDownload}
 					aria-label={downloadFullsizeImageLabel}
 					className={classes.icon}
 				>
 					<DownloadIcon />
 				</button>
 				<button
-					ref={lastButton}
 					onClick={onClose}
-					onKeyDown={handleKeyClose}
 					aria-label={closeFullsizeImageModalLabel}
 					className={classes.icon}
 				>

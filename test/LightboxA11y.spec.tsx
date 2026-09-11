@@ -61,6 +61,16 @@ describe("Image lightbox Accessibility (W3C APG dialog pattern)", () => {
 		expect(dialog).toHaveAccessibleName("Full-size image viewer");
 	});
 
+	it('dialog is modal (aria-modal="true") so AT virtual cursors stay inside it', async () => {
+		renderDownloadableImage();
+		const { dialog } = await openLightbox();
+
+		// The Tab trap alone does not stop a screen reader's browse mode from
+		// reading the page behind the lightbox; aria-modal does (APG modal
+		// dialog, verified with NVDA).
+		expect(dialog).toHaveAttribute("aria-modal", "true");
+	});
+
 	it("Space on the trigger also opens the dialog", async () => {
 		renderDownloadableImage();
 
@@ -109,8 +119,34 @@ describe("Image lightbox Accessibility (W3C APG dialog pattern)", () => {
 		download.focus();
 		fireEvent.keyDown(download, { key: "Tab", code: "Tab", keyCode: 9, shiftKey: true });
 
-		// Previously only Tab-from-Close wrapped; Shift+Tab escaped the dialog.
+		// The wrap must hold in both directions, not only Tab-from-Close.
 		expect(close).toHaveFocus();
+	});
+
+	it("Tab with focus resting outside the dialog (after clicking the image) re-enters at the first control", async () => {
+		renderDownloadableImage();
+		const { dialog } = await openLightbox();
+
+		// Clicking the full-size image drops focus to <body>; the dialog is
+		// rendered inline in the message, so the trap must also catch a Tab
+		// that starts outside the dialog's controls.
+		fireEvent.click(dialog.querySelector("[data-test='image-lightbox']")!);
+		(document.activeElement as HTMLElement | null)?.blur();
+		expect(dialog.contains(document.activeElement)).toBe(false);
+
+		fireEvent.keyDown(document.body, { key: "Tab", code: "Tab", keyCode: 9 });
+		expect(screen.getByRole("button", { name: "Download full-size image" })).toHaveFocus();
+	});
+
+	it("Shift+Tab with focus resting outside the dialog re-enters at the last control", async () => {
+		renderDownloadableImage();
+		const { dialog } = await openLightbox();
+
+		(document.activeElement as HTMLElement | null)?.blur();
+		expect(dialog.contains(document.activeElement)).toBe(false);
+
+		fireEvent.keyDown(document.body, { key: "Tab", code: "Tab", keyCode: 9, shiftKey: true });
+		expect(screen.getByRole("button", { name: "Close full-size image viewer" })).toHaveFocus();
 	});
 
 	it("a shifted non-Tab key on the close button does not move focus", async () => {
@@ -119,8 +155,7 @@ describe("Image lightbox Accessibility (W3C APG dialog pattern)", () => {
 
 		const close = screen.getByRole("button", { name: "Close full-size image viewer" });
 		close.focus();
-		// The old wrap condition was `key === "Tab" || shiftKey`, so any shifted
-		// key yanked focus to the download button.
+		// Only Tab may move focus; a shifted letter is not a trap event.
 		fireEvent.keyDown(close, { key: "A", code: "KeyA", keyCode: 65, shiftKey: true });
 
 		expect(close).toHaveFocus();
@@ -137,27 +172,37 @@ describe("Image lightbox Accessibility (W3C APG dialog pattern)", () => {
 		expect(trigger).toHaveFocus();
 	});
 
-	it("Enter on the close button closes the dialog and returns focus to the trigger", async () => {
+	// The header controls are native <button>s, so Enter/Space activation is
+	// the browser's own click synthesis (which jsdom's fireEvent.keyDown does
+	// not emulate). The specs therefore assert on the click path, plus that
+	// an Enter keydown does not fire the action a second time.
+	it("activating the close button closes the dialog and returns focus to the trigger", async () => {
 		renderDownloadableImage();
 		const { trigger } = await openLightbox();
 
 		const close = screen.getByRole("button", { name: "Close full-size image viewer" });
+		expect(close.tagName).toBe("BUTTON");
 		close.focus();
-		fireEvent.keyDown(close, { key: "Enter", code: "Enter", keyCode: 13 });
+		fireEvent.click(close);
 
 		await waitFor(() => expect(screen.queryByRole("dialog")).not.toBeInTheDocument());
 		expect(trigger).toHaveFocus();
 	});
 
-	it("Enter on the download button opens the full-size image in a new tab", async () => {
+	it("activating the download button opens the full-size image in a new tab exactly once", async () => {
 		const openSpy = vi.spyOn(window, "open").mockImplementation(() => null);
 		renderDownloadableImage();
 		await openLightbox();
 
 		const download = screen.getByRole("button", { name: "Download full-size image" });
+		expect(download.tagName).toBe("BUTTON");
 		download.focus();
+		// Enter on a native button: the browser fires keydown and then a click.
+		// Only the click may open the URL, otherwise two tabs open.
 		fireEvent.keyDown(download, { key: "Enter", code: "Enter", keyCode: 13 });
+		fireEvent.click(download);
 
+		expect(openSpy).toHaveBeenCalledTimes(1);
 		expect(openSpy).toHaveBeenCalledWith(IMAGE_URL, "_blank");
 	});
 
