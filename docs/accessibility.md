@@ -137,7 +137,8 @@ Assistive-technology behavior in every consumer depends on this library's render
 - **Intentional ARIA change procedure:**
     1. Add the affected case names to a **version-aware skip** in `test/dom-compat.spec.tsx` — see `INTENTIONALLY_DIVERGING_PRE_0_81`: the skip only applies while the installed baseline is older than the release that ships the change, so the cases re-enable themselves once that version is on npm `latest`. Include a TODO to delete the block.
     2. Add an **"Accessibility changes"** entry to the GitHub release notes of the version that ships it, so Webchat re-runs its cypress-axe suite (and screen-reader spot checks) when it bumps the pinned dependency.
-- Example: a single-button `ActionButtons` container with an associated text/title renders `role="group"` since 0.80.0 so its `aria-labelledby` is exposed reliably, and a container whose message has no text carries no `aria-labelledby` at all (CGY-3281); the affected cases are skipped against baselines < 0.80.0.
+- Example: a gallery card with a `default_action` URL exposes its `role="link"` on an inner `.webchat-carousel-template-link` wrapper (or on the image area when the content block has no text) with `tabindex="0"`, and its buttons are siblings of the link rather than nested inside it (CGY-37634); the affected case is skipped against baselines < 0.81.0. Once that version is on npm `latest` the block is deleted, not kept.
+- A guard test in `test/dom-compat.spec.tsx` pins `FIX_VERSION` to the release: while the skip block exists, `package.json` must equal either the installed baseline or `FIX_VERSION`, so a bump PR to a different number fails loudly instead of leaving the case skipped forever. Cut the release as `FIX_VERSION` or update it in the same PR.
 
 ## Keyboard & interaction specs
 
