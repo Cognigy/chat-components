@@ -204,6 +204,8 @@ export const htmlToPlainText = (html: string | undefined): string => {
 		const doc = new DOMParser().parseFromString(html, "text/html");
 		return (doc.body?.textContent ?? "").trim();
 	}
+	// No-DOM fallback (never hit in the browser): tags are stripped, entities
+	// are left encoded.
 	return html.replace(/<[^>]*>/g, "").trim();
 };
 

@@ -53,8 +53,8 @@ const GalleryItem: FC<GallerySlideProps> = props => {
 	// (e.g. "<script>…</script>") is truthy but sanitizes to "", and rendering
 	// on that basis produces a blank <h4>/<p>, an empty content block beneath
 	// the image and — for a default_action card — an invisible, focusable link.
-	const hasTitle = !!titleHtml;
-	const hasSubtitle = !!subtitleHtml;
+	const hasTitle = !!titleHtml.trim();
+	const hasSubtitle = !!subtitleHtml.trim();
 	const hasButtons = !!buttons && buttons.length > 0;
 	const hasExtraInfo = hasSubtitle || hasButtons;
 
@@ -73,8 +73,8 @@ const GalleryItem: FC<GallerySlideProps> = props => {
 		config?.settings.customTranslations?.ariaLabels?.opensInNewTab ?? "Opens in new tab";
 
 	// The default_action URL as opened on activation; "" when the card has
-	// none. sanitizeUrl maps dangerous schemes to "about:blank", which is a
-	// no-op rather than a navigation to a blank page.
+	// none. sanitizeUrl maps dangerous schemes to "about:blank"; such a card
+	// renders no link at all rather than a tab stop that does nothing.
 	const linkUrl = default_action?.url
 		? config?.settings?.layout?.disableUrlButtonSanitization
 			? default_action.url
@@ -124,7 +124,8 @@ const GalleryItem: FC<GallerySlideProps> = props => {
 	// block has no text to wrap (overlay title, no subtitle) the image + title
 	// area is the link, so the target is always visible and keyboard-reachable.
 	const hasBlockText = hasSubtitle || (titleBelowImage && hasTitle);
-	const linkTarget = default_action?.url ? (hasBlockText ? "text" : "top") : null;
+	const linkTarget =
+		linkUrl && linkUrl !== "about:blank" ? (hasBlockText ? "text" : "top") : null;
 
 	// Accessible name of the link, as plain text (an aria-label built from the
 	// sanitized HTML announces literal tags). Falls back through the card's

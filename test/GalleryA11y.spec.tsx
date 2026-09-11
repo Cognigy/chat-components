@@ -314,21 +314,19 @@ describe("Gallery Accessibility (W3C APG carousel pattern)", () => {
 		expect(screen.getByRole("link")).toHaveAccessibleName("example.com. Opens in new tab");
 	});
 
-	it("card with no text, no alt and a non-http URL keeps only the new-tab hint as its name", () => {
-		render(
-			<Message
-				message={galleryCardWithLink("javascript:alert(1)", {
-					title: "",
-					subtitle: "",
-					image_alt_text: "",
-				})}
-			/>,
+	it("card whose default_action URL is rejected by sanitization renders no link", () => {
+		const openSpy = vi.spyOn(window, "open").mockImplementation(() => null);
+		const { container } = render(
+			<Message message={galleryCardWithLink("javascript:alert(1)")} />,
 		);
 
-		// Sanitization turns the URL into about:blank (activation is a no-op),
-		// so there is no host to name; the name must still be non-empty and
-		// must not start with a stray separator.
-		expect(screen.getByRole("link")).toHaveAccessibleName("Opens in new tab");
+		// sanitizeUrl maps the URL to about:blank. A role="link" tab stop that
+		// does nothing on activation is a dead control (WCAG 4.1.2), so the
+		// card renders as if it had no default_action.
+		expect(screen.queryByRole("link")).not.toBeInTheDocument();
+		expect(getTabbables(container)).toHaveLength(0);
+		fireEvent.click(container.querySelector(".webchat-carousel-template-content")!);
+		expect(openSpy).not.toHaveBeenCalled();
 	});
 
 	it("subtitle-only card is named by its subtitle, which is then not also its description", () => {
@@ -349,26 +347,25 @@ describe("Gallery Accessibility (W3C APG carousel pattern)", () => {
 		expect(link.querySelector(".webchat-carousel-template-subtitle")).not.toBeNull();
 	});
 
-	it("a subtitle that sanitizes to empty renders no invisible link and no content block", () => {
-		const { container } = render(
-			<Message
-				message={galleryCardWithLink("https://example.com", {
-					subtitle: "<script>alert(1)</script>",
-				})}
-			/>,
-		);
+	it.each(["<script>alert(1)</script>", "   "])(
+		"a subtitle that sanitizes to empty or whitespace (%j) renders no invisible link and no content block",
+		subtitle => {
+			const { container } = render(
+				<Message message={galleryCardWithLink("https://example.com", { subtitle })} />,
+			);
 
-		// The raw subtitle is truthy but strips to "". A guard on the raw value
-		// yields a zero-height, empty, focusable text link plus a dangling
-		// aria-describedby (WCAG 2.4.7 / 2.4.3); like the title guard, the card
-		// must behave as if it had no subtitle, so the image area is the link.
-		expect(container.querySelector(".webchat-carousel-template-content")).toBeNull();
-		expect(container.querySelector(".webchat-carousel-template-subtitle")).toBeNull();
-		const link = screen.getByRole("link");
-		expect(link.querySelector("img")).not.toBeNull();
-		expect(link).not.toHaveAttribute("aria-describedby");
-		expect(link).toHaveAccessibleName("Card with link. Opens in new tab");
-	});
+			// The raw subtitle is truthy but strips to "". A guard on the raw value
+			// yields a zero-height, empty, focusable text link plus a dangling
+			// aria-describedby (WCAG 2.4.7 / 2.4.3); like the title guard, the card
+			// must behave as if it had no subtitle, so the image area is the link.
+			expect(container.querySelector(".webchat-carousel-template-content")).toBeNull();
+			expect(container.querySelector(".webchat-carousel-template-subtitle")).toBeNull();
+			const link = screen.getByRole("link");
+			expect(link.querySelector("img")).not.toBeNull();
+			expect(link).not.toHaveAttribute("aria-describedby");
+			expect(link).toHaveAccessibleName("Card with link. Opens in new tab");
+		},
+	);
 
 	it("Enter on a card's default_action link opens the (sanitized) URL", () => {
 		const openSpy = vi.spyOn(window, "open").mockImplementation(() => null);
@@ -503,16 +500,6 @@ describe("Gallery Accessibility (W3C APG carousel pattern)", () => {
 		} finally {
 			chatLog.remove();
 		}
-	});
-
-	it("Enter on a card whose default_action URL is dangerous does not navigate", () => {
-		const openSpy = vi.spyOn(window, "open").mockImplementation(() => null);
-		render(<Message message={galleryCardWithLink("javascript:alert(1)")} />);
-
-		const link = screen.getByRole("link");
-		fireEvent.keyDown(link, { key: "Enter", code: "Enter", keyCode: 13 });
-
-		expect(openSpy).not.toHaveBeenCalled();
 	});
 });
 
