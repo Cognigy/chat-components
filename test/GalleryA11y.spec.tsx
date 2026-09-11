@@ -118,15 +118,23 @@ describe("Gallery Accessibility (W3C APG carousel pattern)", () => {
 		expect(firstSlide?.getAttribute("aria-label")).toBe("Karte: 1 von 8");
 	});
 
-	it("removes swiper's default aria-live so the gallery cannot fight the chat log's live region", async () => {
-		const { container } = render(
-			<Message message={asBot(galleryFixture)} data-message-id="gallery-live-region-test" />,
-		);
+	// Message ids are consumer-supplied and interpolated into an attribute
+	// selector in two Gallery effects; unescaped quotes/backslashes made
+	// querySelector throw, aborting the effect.
+	const MESSAGE_IDS = ["gallery-test", 'id"with"quotes', "id\\with\\backslashes"];
 
-		const wrapper = container.querySelector(".swiper-wrapper");
-		expect(wrapper).toBeInTheDocument();
-		await waitFor(() => expect(wrapper).not.toHaveAttribute("aria-live"));
-	});
+	it.each(MESSAGE_IDS)(
+		"removes swiper's default aria-live so the gallery cannot fight the chat log's live region (id %j)",
+		async dataMessageId => {
+			const { container } = render(
+				<Message message={asBot(galleryFixture)} data-message-id={dataMessageId} />,
+			);
+
+			const wrapper = container.querySelector(".swiper-wrapper");
+			expect(wrapper).toBeInTheDocument();
+			await waitFor(() => expect(wrapper).not.toHaveAttribute("aria-live"));
+		},
+	);
 
 	it("slide action buttons stay keyboard-reachable after navigating to the next slide", () => {
 		const { container } = render(<Message message={asBot(galleryFixture)} action={vi.fn()} />);
@@ -314,21 +322,19 @@ describe("Gallery Accessibility (W3C APG carousel pattern)", () => {
 		expect(screen.getByRole("link")).toHaveAccessibleName("example.com. Opens in new tab");
 	});
 
-	it("card with no text, no alt and a non-http URL keeps only the new-tab hint as its name", () => {
-		render(
-			<Message
-				message={galleryCardWithLink("javascript:alert(1)", {
-					title: "",
-					subtitle: "",
-					image_alt_text: "",
-				})}
-			/>,
+	it("card whose default_action URL is rejected by sanitization renders no link", () => {
+		const openSpy = vi.spyOn(window, "open").mockImplementation(() => null);
+		const { container } = render(
+			<Message message={galleryCardWithLink("javascript:alert(1)")} />,
 		);
 
-		// Sanitization turns the URL into about:blank (activation is a no-op),
-		// so there is no host to name; the name must still be non-empty and
-		// must not start with a stray separator.
-		expect(screen.getByRole("link")).toHaveAccessibleName("Opens in new tab");
+		// sanitizeUrl maps the URL to about:blank. A role="link" tab stop that
+		// does nothing on activation is a dead control (WCAG 4.1.2), so the
+		// card renders as if it had no default_action.
+		expect(screen.queryByRole("link")).not.toBeInTheDocument();
+		expect(getTabbables(container)).toHaveLength(0);
+		fireEvent.click(container.querySelector(".webchat-carousel-template-content")!);
+		expect(openSpy).not.toHaveBeenCalled();
 	});
 
 	it("subtitle-only card is named by its subtitle, which is then not also its description", () => {
@@ -349,26 +355,25 @@ describe("Gallery Accessibility (W3C APG carousel pattern)", () => {
 		expect(link.querySelector(".webchat-carousel-template-subtitle")).not.toBeNull();
 	});
 
-	it("a subtitle that sanitizes to empty renders no invisible link and no content block", () => {
-		const { container } = render(
-			<Message
-				message={galleryCardWithLink("https://example.com", {
-					subtitle: "<script>alert(1)</script>",
-				})}
-			/>,
-		);
+	it.each(["<script>alert(1)</script>", "   "])(
+		"a subtitle that sanitizes to empty or whitespace (%j) renders no invisible link and no content block",
+		subtitle => {
+			const { container } = render(
+				<Message message={galleryCardWithLink("https://example.com", { subtitle })} />,
+			);
 
-		// The raw subtitle is truthy but strips to "". A guard on the raw value
-		// yields a zero-height, empty, focusable text link plus a dangling
-		// aria-describedby (WCAG 2.4.7 / 2.4.3); like the title guard, the card
-		// must behave as if it had no subtitle, so the image area is the link.
-		expect(container.querySelector(".webchat-carousel-template-content")).toBeNull();
-		expect(container.querySelector(".webchat-carousel-template-subtitle")).toBeNull();
-		const link = screen.getByRole("link");
-		expect(link.querySelector("img")).not.toBeNull();
-		expect(link).not.toHaveAttribute("aria-describedby");
-		expect(link).toHaveAccessibleName("Card with link. Opens in new tab");
-	});
+			// The raw subtitle is truthy but strips to "". A guard on the raw value
+			// yields a zero-height, empty, focusable text link plus a dangling
+			// aria-describedby (WCAG 2.4.7 / 2.4.3); like the title guard, the card
+			// must behave as if it had no subtitle, so the image area is the link.
+			expect(container.querySelector(".webchat-carousel-template-content")).toBeNull();
+			expect(container.querySelector(".webchat-carousel-template-subtitle")).toBeNull();
+			const link = screen.getByRole("link");
+			expect(link.querySelector("img")).not.toBeNull();
+			expect(link).not.toHaveAttribute("aria-describedby");
+			expect(link).toHaveAccessibleName("Card with link. Opens in new tab");
+		},
+	);
 
 	it("Enter on a card's default_action link opens the (sanitized) URL", () => {
 		const openSpy = vi.spyOn(window, "open").mockImplementation(() => null);
@@ -381,6 +386,42 @@ describe("Gallery Accessibility (W3C APG carousel pattern)", () => {
 		// through the sanitized value.
 		expect(openSpy).toHaveBeenCalledWith("https://example.com/");
 	});
+
+	it.each([
+		['<a href="https://inner.example/">inner</a>', "a[href]"],
+		["<button>inner</button>", "button"],
+		['<input type="checkbox">', "input"],
+	])(
+		"activating a nested %s inside the card text does not also open the card URL",
+		(markup, selector) => {
+			const openSpy = vi.spyOn(window, "open").mockImplementation(() => null);
+			render(
+				<Message
+					message={galleryCardWithLink("https://example.com", {
+						subtitle: `See ${markup} for details`,
+					})}
+				/>,
+			);
+
+			const cardLink = screen.getByRole("link", { name: /Card with link/ });
+			const inner = cardLink.querySelector<HTMLElement>(selector)!;
+			expect(inner).not.toBeNull();
+			// jsdom has no navigation; keep an anchor's own default from logging.
+			inner.addEventListener("click", event => event.preventDefault());
+
+			// Enter/click on the inner anchor bubble to the card link's handlers
+			// and must be ignored: one activation, one action (WCAG 4.1.2).
+			inner.focus();
+			fireEvent.keyDown(inner, { key: "Enter", code: "Enter", keyCode: 13 });
+			fireEvent.click(inner);
+			expect(openSpy).not.toHaveBeenCalled();
+
+			// A click on the wrapper's plain text (the <p>) is still a card
+			// activation, so the guard must not require target === currentTarget.
+			fireEvent.click(cardLink.querySelector(".webchat-carousel-template-subtitle")!);
+			expect(openSpy).toHaveBeenCalledWith("https://example.com/");
+		},
+	);
 
 	it("honors disableUrlButtonSanitization: the default_action URL opens as authored", () => {
 		const openSpy = vi.spyOn(window, "open").mockImplementation(() => null);
@@ -408,42 +449,45 @@ describe("Gallery Accessibility (W3C APG carousel pattern)", () => {
 		contentBlocks.forEach(block => expect(block).not.toHaveAttribute("tabindex"));
 	});
 
-	it("autofocus lands on the image-area link of a title-only default_action card", async () => {
-		// Gallery's enableAutoFocus effect only fires when focus is already in
-		// the chat log, and it must find the first card via the message root: a
-		// card with an overlay title and no subtitle/buttons has no content
-		// block, so a lookup by content id cannot find its link.
-		const chatLog = document.createElement("div");
-		chatLog.id = "webchatChatHistoryWrapperLiveLogPanel";
-		const previous = document.createElement("button");
-		chatLog.appendChild(previous);
-		// Mount the message in its own node so React's root does not disturb
-		// the focused sibling.
-		const mount = document.createElement("div");
-		chatLog.appendChild(mount);
-		document.body.appendChild(chatLog);
-		previous.focus();
-		const config = {
-			settings: { widgetSettings: { enableAutoFocus: true } },
-		} as unknown as React.ComponentProps<typeof Message>["config"];
+	it.each(MESSAGE_IDS)(
+		"autofocus lands on the image-area link of a title-only default_action card (id %j)",
+		async dataMessageId => {
+			// Gallery's enableAutoFocus effect only fires when focus is already in
+			// the chat log, and it must find the first card via the message root: a
+			// card with an overlay title and no subtitle/buttons has no content
+			// block, so a lookup by content id cannot find its link.
+			const chatLog = document.createElement("div");
+			chatLog.id = "webchatChatHistoryWrapperLiveLogPanel";
+			const previous = document.createElement("button");
+			chatLog.appendChild(previous);
+			// Mount the message in its own node so React's root does not disturb
+			// the focused sibling.
+			const mount = document.createElement("div");
+			chatLog.appendChild(mount);
+			document.body.appendChild(chatLog);
+			previous.focus();
+			const config = {
+				settings: { widgetSettings: { enableAutoFocus: true } },
+			} as unknown as React.ComponentProps<typeof Message>["config"];
 
-		try {
-			render(
-				<Message
-					message={galleryCardWithLink("https://example.com", { subtitle: "" })}
-					config={config}
-					data-message-id="gallery-autofocus-test"
-				/>,
-				{ container: mount },
-			);
+			try {
+				render(
+					<Message
+						message={galleryCardWithLink("https://example.com", { subtitle: "" })}
+						config={config}
+						data-message-id={dataMessageId}
+					/>,
+					{ container: mount },
+				);
 
-			const link = screen.getByRole("link");
-			expect(link.querySelector("img")).not.toBeNull();
-			await waitFor(() => expect(link).toHaveFocus(), { timeout: 1000 });
-		} finally {
-			chatLog.remove();
-		}
-	});
+				const link = screen.getByRole("link");
+				expect(link.querySelector("img")).not.toBeNull();
+				await waitFor(() => expect(link).toHaveFocus(), { timeout: 1000 });
+			} finally {
+				chatLog.remove();
+			}
+		},
+	);
 
 	it("autofocus without a message id falls back to the content-id lookup", async () => {
 		// Consumers that render <Message> without data-message-id still get
@@ -475,16 +519,6 @@ describe("Gallery Accessibility (W3C APG carousel pattern)", () => {
 		} finally {
 			chatLog.remove();
 		}
-	});
-
-	it("Enter on a card whose default_action URL is dangerous does not navigate", () => {
-		const openSpy = vi.spyOn(window, "open").mockImplementation(() => null);
-		render(<Message message={galleryCardWithLink("javascript:alert(1)")} />);
-
-		const link = screen.getByRole("link");
-		fireEvent.keyDown(link, { key: "Enter", code: "Enter", keyCode: 13 });
-
-		expect(openSpy).not.toHaveBeenCalled();
 	});
 });
 

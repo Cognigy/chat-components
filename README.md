@@ -39,6 +39,9 @@ It will bump the version in `package.json`, commit it and create a git tag.
 
 Push the changes to the GitHub and create a PR.
 
+If the bump fails the dom-compat "FIX_VERSION" guard test, the skip block in
+`test/dom-compat.spec.tsx` expects a different release number — see `docs/accessibility.md`.
+
 **After the PR is merged:**
 
 `git push --tags`

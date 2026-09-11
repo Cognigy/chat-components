@@ -32,8 +32,11 @@ const Gallery: FC = () => {
 		// root: a card with an overlay title and no subtitle/buttons renders no
 		// content block, so the content id cannot locate it; the content-id
 		// lookup is the fallback when there is no message id.
+		// The id is consumer-supplied: escape quotes for the attribute selector.
 		const messageRoot = dataMessageId
-			? document.querySelector(`[data-message-id="${dataMessageId}"]`)
+			? document.querySelector(
+					`[data-message-id="${dataMessageId.replace(/["\\]/g, "\\$&")}"]`,
+				)
 			: null;
 		const firstCard =
 			messageRoot?.querySelector<HTMLElement>(".webchat-carousel-template-frame") ??
@@ -61,7 +64,11 @@ const Gallery: FC = () => {
 	// Remove the default `aria-live="polite"` attribute added by React-Swiper to the `.swiper-wrapper`.
 	// This ensures that the gallery message does not interfere with other live region announcements.
 	useEffect(() => {
-		const galleryMessage = document.querySelector(`[data-message-id="${dataMessageId}"]`);
+		const galleryMessage = dataMessageId
+			? document.querySelector(
+					`[data-message-id="${dataMessageId.replace(/["\\]/g, "\\$&")}"]`,
+				)
+			: null;
 		const swiperWrapper = galleryMessage?.querySelector(".swiper-wrapper");
 		if (swiperWrapper) {
 			swiperWrapper.removeAttribute("aria-live");

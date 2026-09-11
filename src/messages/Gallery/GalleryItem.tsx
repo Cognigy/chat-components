@@ -1,5 +1,5 @@
 import { IWebchatAttachmentElement } from "@cognigy/socket-client";
-import { FC, KeyboardEvent, ReactNode, useState } from "react";
+import { FC, KeyboardEvent, ReactNode, SyntheticEvent, useState } from "react";
 import classes from "./Gallery.module.css";
 import buttonClasses from "src/common/Buttons/Buttons.module.css";
 import { useMessageContext, useRandomId } from "../hooks";
@@ -25,6 +25,9 @@ const getHostname = (url: string): string => {
 		return "";
 	}
 };
+
+// Interactive descendants the sanitizer can let through inside card text.
+const NESTED_CONTROL_SELECTOR = "a[href], button, input, select, textarea, summary";
 
 const GalleryItem: FC<GallerySlideProps> = props => {
 	const { slide, contentId } = props;
@@ -53,8 +56,8 @@ const GalleryItem: FC<GallerySlideProps> = props => {
 	// (e.g. "<script>…</script>") is truthy but sanitizes to "", and rendering
 	// on that basis produces a blank <h4>/<p>, an empty content block beneath
 	// the image and — for a default_action card — an invisible, focusable link.
-	const hasTitle = !!titleHtml;
-	const hasSubtitle = !!subtitleHtml;
+	const hasTitle = !!titleHtml.trim();
+	const hasSubtitle = !!subtitleHtml.trim();
 	const hasButtons = !!buttons && buttons.length > 0;
 	const hasExtraInfo = hasSubtitle || hasButtons;
 
@@ -73,22 +76,29 @@ const GalleryItem: FC<GallerySlideProps> = props => {
 		config?.settings.customTranslations?.ariaLabels?.opensInNewTab ?? "Opens in new tab";
 
 	// The default_action URL as opened on activation; "" when the card has
-	// none. sanitizeUrl maps dangerous schemes to "about:blank", which is a
-	// no-op rather than a navigation to a blank page.
+	// none. sanitizeUrl maps dangerous schemes to "about:blank"; such a card
+	// renders no link at all rather than a tab stop that does nothing.
 	const linkUrl = default_action?.url
 		? config?.settings?.layout?.disableUrlButtonSanitization
 			? default_action.url
 			: sanitizeUrl(default_action.url)
 		: "";
 
-	const handleClick = () => {
+	const handleClick = (event: SyntheticEvent) => {
+		// The card text is sanitized HTML and may contain its own controls
+		// (<a href>, <button>, form fields are allowed tags); activating one
+		// bubbles here and must not also open the default_action URL (WCAG
+		// 4.1.2). A click on the text itself (target is the <p>/<h4>) still
+		// activates the link.
+		const target = event.target as Element;
+		if (target !== event.currentTarget && target.closest(NESTED_CONTROL_SELECTOR)) return;
 		if (!linkUrl || linkUrl === "about:blank") return;
 		window.open(linkUrl);
 	};
 
 	const handleKeyDown = (event: KeyboardEvent) => {
 		if (default_action && event.key === "Enter") {
-			handleClick();
+			handleClick(event);
 		}
 	};
 
@@ -118,7 +128,8 @@ const GalleryItem: FC<GallerySlideProps> = props => {
 	// block has no text to wrap (overlay title, no subtitle) the image + title
 	// area is the link, so the target is always visible and keyboard-reachable.
 	const hasBlockText = hasSubtitle || (titleBelowImage && hasTitle);
-	const linkTarget = default_action?.url ? (hasBlockText ? "text" : "top") : null;
+	const linkTarget =
+		linkUrl && linkUrl !== "about:blank" ? (hasBlockText ? "text" : "top") : null;
 
 	// Accessible name of the link, as plain text (an aria-label built from the
 	// sanitized HTML announces literal tags). Falls back through the card's
