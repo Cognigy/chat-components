@@ -5,7 +5,9 @@ import singleDate from "test/fixtures/datepicker/singleDate.json";
 import multipleDates from "test/fixtures/datepicker/multiple.json";
 import rangeDates from "test/fixtures/datepicker/range.json";
 import weekNumbers from "test/fixtures/datepicker/weekNumbers.json";
+import localeDe from "test/fixtures/datepicker/localeDe.json";
 import { IMessage } from "@cognigy/socket-client";
+import { pressKey, expectSingleTabStop } from "./a11y-utils";
 
 const openDialog = async (
 	findByRole: (role: string) => Promise<HTMLElement>,
@@ -37,38 +39,18 @@ const addDays = (from: Date, days: number) => {
 	return date;
 };
 
-// Dispatch a keydown carrying a real keyCode. Flatpickr's native arrow navigation reads
-// e.keyCode, so arrow tests must set it (Testing Library's keyDown leaves keyCode at 0).
-const KEY_CODES: Record<string, number> = {
-	Tab: 9,
-	Enter: 13,
-	" ": 32,
-	End: 35,
-	Home: 36,
-	ArrowLeft: 37,
-	ArrowUp: 38,
-	ArrowRight: 39,
-	ArrowDown: 40,
-	PageUp: 33,
-	PageDown: 34,
-};
-const pressKey = (key: string, shiftKey = false) => {
-	const el = document.activeElement as HTMLElement;
-	el.dispatchEvent(
-		new KeyboardEvent("keydown", {
-			key,
-			keyCode: KEY_CODES[key],
-			shiftKey,
-			bubbles: true,
-			cancelable: true,
-		} as KeyboardEventInit),
-	);
-};
+// Keys are dispatched with `pressKey` from test/a11y-utils.ts (real keyCode — flatpickr's native
+// arrow navigation reads e.keyCode, which Testing Library leaves at 0).
 const focusedLabel = () => (document.activeElement as HTMLElement)?.getAttribute("aria-label");
 
 // Spoken day label: "<Weekday>, <Month> <D>, <YYYY>", optionally followed by ", start of range" /
-// ", end of range" in range mode (CGY-30560). Selected/today are states, not words in the name.
+// ", end of range" in range mode (CGY-30560). Selected/today are states (aria-selected,
+// aria-current="date"), not words in the name.
 const DATE_LABEL = /^[A-Za-z]+, [A-Za-z]+ \d{1,2}, \d{4}(, |$)/;
+// A day label with no range word.
+const PLAIN_DATE_LABEL = /^[A-Za-z]+, [A-Za-z]+ \d{1,2}, \d{4}$/;
+const RANGE_START_LABEL = /^[A-Za-z]+, [A-Za-z]+ \d{1,2}, \d{4}, start of range$/;
+const RANGE_END_LABEL = /^[A-Za-z]+, [A-Za-z]+ \d{1,2}, \d{4}, end of range$/;
 // English long weekday for a date (the fixtures use the "en" flatpickr locale).
 const weekdayOf = (date: Date) =>
 	new Intl.DateTimeFormat("en-US", { weekday: "long" }).format(date);
@@ -137,11 +119,22 @@ describe("DatePicker Accessibility (W3C APG grid pattern)", () => {
 		expect(grid?.getAttribute("aria-description")).toContain("arrow keys");
 		expect(grid).toHaveAttribute("aria-colcount", "7");
 		expect(grid).toHaveAttribute("aria-rowcount", "7"); // 1 weekday header row + 6 week rows
+		// The grid's own wrapper is layout only.
+		expect(root.querySelector(".flatpickr-innerContainer")).toHaveAttribute(
+			"role",
+			"presentation",
+		);
 
-		// Weekday headers are columnheaders (aria-colindex 1-7) within the header row.
+		// Weekday headers are columnheaders (aria-colindex 1-7) within the header row; flatpickr's
+		// flex wrapper between the row and its headers is presentational, so the row directly
+		// owns the columnheaders (ARIA required owned elements).
 		const weekdayRow = root.querySelector(".flatpickr-weekdays");
 		expect(weekdayRow).toHaveAttribute("role", "row");
 		expect(weekdayRow).toHaveAttribute("aria-rowindex", "1");
+		expect(weekdayRow?.querySelector(".flatpickr-weekdaycontainer")).toHaveAttribute(
+			"role",
+			"presentation",
+		);
 		const weekdays = root.querySelectorAll(".flatpickr-weekday");
 		expect(weekdays.length).toBeGreaterThan(0);
 		weekdays.forEach((weekday, i) => {
@@ -220,10 +213,9 @@ describe("DatePicker Accessibility (W3C APG grid pattern)", () => {
 		const { getByTestId, findByRole } = render(<Message message={messageSingleDate} />);
 		const root = await openDialog(findByRole, getByTestId);
 
+		expectSingleTabStop(root, ".flatpickr-day");
 		const days = Array.from(root.querySelectorAll<HTMLElement>(".flatpickr-day"));
-		const focusable = days.filter(d => d.getAttribute("tabindex") === "0");
-		expect(focusable).toHaveLength(1);
-		days.filter(d => d !== focusable[0]).forEach(d =>
+		days.filter(d => d.getAttribute("tabindex") !== "0").forEach(d =>
 			expect(d).toHaveAttribute("tabindex", "-1"),
 		);
 
@@ -399,7 +391,7 @@ describe("DatePicker Accessibility (W3C APG grid pattern)", () => {
 		const selected = root.querySelector<HTMLElement>(".flatpickr-day.selected");
 		expect(selected).toHaveAttribute("aria-selected", "true");
 		await waitFor(() => expect(selected).toHaveAttribute("tabindex", "0"));
-		expect(root.querySelectorAll('.flatpickr-day[tabindex="0"]')).toHaveLength(1);
+		expectSingleTabStop(root, ".flatpickr-day");
 	});
 
 	it("Issue F - opening the dialog moves focus to its (focusable) heading", async () => {
@@ -412,6 +404,13 @@ describe("DatePicker Accessibility (W3C APG grid pattern)", () => {
 		expect(heading).toBeInTheDocument();
 		expect(heading).toHaveAttribute("tabindex", "-1");
 		expect(document.activeElement).toBe(heading);
+
+		// flatpickr's readonly value input (display:none in the widget) borrows the same heading
+		// as its accessible name, so the axe `label` rule passes without a translation key.
+		expect(dialog.querySelector(".flatpickr-input")).toHaveAttribute(
+			"aria-labelledby",
+			headingId,
+		);
 	});
 
 	it("Issue G - Shift+Tab from a day is not hijacked to flatpickr's hidden input", async () => {
@@ -502,18 +501,43 @@ describe("CGY-30560 - day cells expose weekday, today, selected and range state"
 		// that speak aria-current would announce it twice.
 		const today = root.querySelector<HTMLElement>(".dayContainer .flatpickr-day.today")!;
 		expect(today).toHaveAttribute("aria-current", "date");
-		expect(today.getAttribute("aria-label")).toMatch(/^[A-Za-z]+, [A-Za-z]+ \d{1,2}, \d{4}$/);
+		expect(today.getAttribute("aria-label")).toMatch(PLAIN_DATE_LABEL);
 
-		// No day carries state words in its name outside range mode.
+		// Nothing is selected yet (no default date): no day carries state words in its name.
 		getInMonthCells(root).forEach(cell => {
 			expect(cell.getAttribute("aria-label")).not.toMatch(/today|selected|range/i);
+			expect(cell).not.toHaveAttribute("aria-selected");
 		});
-		expect(root.querySelector(".dayContainer .flatpickr-day.today")).not.toHaveAttribute(
-			"aria-selected",
-		);
 	});
 
-	it("multiple mode: each selected day is aria-selected; the state is not repeated in the name", async () => {
+	it("single mode: the selected day is aria-selected (state only, not in the name); moving the selection moves it", async () => {
+		const { getByTestId, findByRole } = render(<Message message={messageSingleDate} />);
+		const root = await openDialog(findByRole, getByTestId);
+
+		focusCell(getInMonthCells(root)[0]);
+		await selectFocusedDayAndSettle();
+		const first = getInMonthCells(root)[0];
+		// Selection is a STATE (APG datepicker example). Known: NVDA does not speak it on focus
+		// when the focused cell is the only selected cell of the table (nvaccess/nvda#8879), so
+		// this is silent in NVDA in single mode; JAWS/VoiceOver speak it.
+		expect(first).toHaveAttribute("aria-selected", "true");
+		expect(first.getAttribute("aria-label")).toMatch(PLAIN_DATE_LABEL);
+		expect(focusedLabel()).toMatch(PLAIN_DATE_LABEL);
+
+		// Select the next day: the old selection loses the state.
+		pressKey("ArrowRight");
+		await selectFocusedDayAndSettle();
+		const second = getInMonthCells(root)[1];
+		expect(second).toHaveAttribute("aria-selected", "true");
+		expect(second.getAttribute("aria-label")).toMatch(PLAIN_DATE_LABEL);
+		expect(getInMonthCells(root)[0]).not.toHaveAttribute("aria-selected");
+		expect(getInMonthCells(root)[0].getAttribute("aria-label")).toMatch(PLAIN_DATE_LABEL);
+		expect(
+			root.querySelectorAll('.dayContainer .flatpickr-day[aria-selected="true"]'),
+		).toHaveLength(1);
+	});
+
+	it("multiple mode: each selected day is aria-selected (not in the name); deselecting clears it", async () => {
 		const { getByTestId, findByRole } = render(<Message message={messageMultiple} />);
 		const root = await openDialog(findByRole, getByTestId);
 
@@ -530,18 +554,23 @@ describe("CGY-30560 - day cells expose weekday, today, selected and range state"
 		expect(selected).toHaveLength(2);
 		selected.forEach(cell => {
 			expect(cell).toHaveAttribute("aria-selected", "true");
-			// Name = weekday + date only; "selected" is conveyed by aria-selected (APG).
-			expect(cell.getAttribute("aria-label")).toMatch(
-				/^[A-Za-z]+, [A-Za-z]+ \d{1,2}, \d{4}$/,
-			);
+			expect(cell.getAttribute("aria-label")).toMatch(PLAIN_DATE_LABEL);
 		});
 
 		// Day 2, between them, is not selected.
 		const between = getInMonthCells(root)[1];
 		expect(between).not.toHaveAttribute("aria-selected");
+		expect(between.getAttribute("aria-label")).toMatch(PLAIN_DATE_LABEL);
+
+		// Enter on a selected day deselects it (multiple mode toggles): the state goes.
+		await selectFocusedDayAndSettle();
+		const third = getInMonthCells(root)[2];
+		expect(third).not.toHaveClass("selected");
+		expect(third).not.toHaveAttribute("aria-selected");
+		expect(third.getAttribute("aria-label")).toMatch(PLAIN_DATE_LABEL);
 	});
 
-	it("range mode: endpoints announce start/end of range; days between are selected", async () => {
+	it("range mode: endpoints announce start/end of range; days between are aria-selected", async () => {
 		const { getByTestId, findByRole } = render(<Message message={messageRange} />);
 		const root = await openDialog(findByRole, getByTestId);
 
@@ -558,13 +587,9 @@ describe("CGY-30560 - day cells expose weekday, today, selected and range state"
 		// Endpoints: aria-selected state + the boundary word in the name (ARIA has no state for
 		// range endpoints). "selected" itself is not repeated in the name.
 		expect(start).toHaveAttribute("aria-selected", "true");
-		expect(start.getAttribute("aria-label")).toMatch(
-			/^[A-Za-z]+, [A-Za-z]+ \d{1,2}, \d{4}, start of range$/,
-		);
+		expect(start.getAttribute("aria-label")).toMatch(RANGE_START_LABEL);
 		expect(end).toHaveAttribute("aria-selected", "true");
-		expect(end.getAttribute("aria-label")).toMatch(
-			/^[A-Za-z]+, [A-Za-z]+ \d{1,2}, \d{4}, end of range$/,
-		);
+		expect(end.getAttribute("aria-label")).toMatch(RANGE_END_LABEL);
 		expect(ymd(dateOf(end)!)).toBe(ymd(addDays(dateOf(start)!, 3)));
 
 		// Inner range days (2 and 3) are selected too, without a boundary word.
@@ -572,9 +597,70 @@ describe("CGY-30560 - day cells expose weekday, today, selected and range state"
 		expect(inner.length).toBeGreaterThanOrEqual(2);
 		inner.forEach(cell => {
 			expect(cell).toHaveAttribute("aria-selected", "true");
-			expect(cell.getAttribute("aria-label")).toMatch(
-				/^[A-Za-z]+, [A-Za-z]+ \d{1,2}, \d{4}$/,
-			);
+			expect(cell.getAttribute("aria-label")).toMatch(PLAIN_DATE_LABEL);
+		});
+	});
+
+	it("range mode: the keyboard range PREVIEW (first endpoint chosen, arrowing) is exposed like the highlight it shows", async () => {
+		const { getByTestId, findByRole } = render(<Message message={messageRange} />);
+		const root = await openDialog(findByRole, getByTestId);
+
+		// Choose the first endpoint (day 1). flatpickr strips the range classes right after this
+		// selection, so the lone endpoint is a plain selected day.
+		focusCell(getInMonthCells(root)[0]);
+		await selectFocusedDayAndSettle();
+		expect(focusedLabel()).toMatch(PLAIN_DATE_LABEL);
+
+		// Arrow to day 4 WITHOUT committing. flatpickr previews the range on every arrow move
+		// (focusOnDayElem -> onMouseOver) purely via classes — no hook fires — and the preview is
+		// visually identical to a committed range, so names/states must follow the classes.
+		pressKey("ArrowRight");
+		pressKey("ArrowRight");
+		pressKey("ArrowRight");
+		const cells = getInMonthCells(root);
+		expect(cells[3]).toHaveClass("endRange");
+		expect(cells[3]).not.toHaveClass("selected");
+		await waitFor(() => expect(cells[3].getAttribute("aria-label")).toMatch(RANGE_END_LABEL));
+		expect(document.activeElement).toBe(cells[3]);
+		expect(cells[3]).toHaveAttribute("aria-selected", "true");
+		expect(cells[0]).toHaveAttribute("aria-selected", "true");
+		expect(cells[0].getAttribute("aria-label")).toMatch(RANGE_START_LABEL);
+		[cells[1], cells[2]].forEach(cell => {
+			expect(cell).toHaveClass("inRange");
+			expect(cell).toHaveAttribute("aria-selected", "true");
+			expect(cell.getAttribute("aria-label")).toMatch(PLAIN_DATE_LABEL);
+		});
+		expect(cells[4]).not.toHaveAttribute("aria-selected");
+
+		// Arrow back one day: day 4 leaves the preview, day 3 becomes its end.
+		pressKey("ArrowLeft");
+		await waitFor(() => expect(cells[2].getAttribute("aria-label")).toMatch(RANGE_END_LABEL));
+		expect(cells[3]).not.toHaveAttribute("aria-selected");
+		expect(cells[3].getAttribute("aria-label")).toMatch(PLAIN_DATE_LABEL);
+
+		// Committing keeps exactly what the preview announced.
+		await selectFocusedDayAndSettle();
+		expect(focusedLabel()).toMatch(RANGE_END_LABEL);
+		expect(getInMonthCells(root)[0].getAttribute("aria-label")).toMatch(RANGE_START_LABEL);
+		expect(getInMonthCells(root)[1].getAttribute("aria-label")).toMatch(PLAIN_DATE_LABEL);
+	});
+
+	it("day names follow the datepicker locale's word order (Intl), e.g. German", async () => {
+		const { getByTestId, findByRole } = render(
+			<Message message={localeDe as unknown as IMessage} />,
+		);
+		const root = await openDialog(findByRole, getByTestId);
+
+		getInMonthCells(root).forEach(cell => {
+			const expected = new Intl.DateTimeFormat("de", {
+				weekday: "long",
+				year: "numeric",
+				month: "long",
+				day: "numeric",
+			}).format(dateOf(cell)!);
+			// e.g. "Donnerstag, 12. Juni 2026" — not the English "<weekday>, <month> <day>, <year>".
+			expect(cell.getAttribute("aria-label")).toBe(expected);
+			expect(expected).toMatch(/^[A-Za-zäöü]+, \d{1,2}\. [A-Za-zä]+ \d{4}$/);
 		});
 	});
 });
@@ -592,29 +678,47 @@ describe("CGY-30560 - week numbers are part of the calendar grid", () => {
 		expect(grid).toHaveAttribute("aria-colcount", "8");
 		expect(grid).toHaveAttribute("aria-rowcount", "7");
 		expect(grid?.getAttribute("aria-label")).toBe("Calendar");
-		expect(root.querySelector(".flatpickr-rContainer")).not.toHaveAttribute("role");
-
-		// "Wk" header is column 1 of the header row, claimed via aria-owns, spoken as "Week".
-		const weekHeader = root.querySelector<HTMLElement>(
-			".flatpickr-weekwrapper .flatpickr-weekday",
-		)!;
-		expect(weekHeader).toHaveAttribute("role", "columnheader");
-		expect(weekHeader).toHaveAttribute("aria-colindex", "1");
-		expect(weekHeader).toHaveAttribute("aria-label", "Week");
-		expect(weekHeader).toHaveAttribute("abbr", "Wk");
-		expect(weekHeader.id).not.toBe("");
-		expect(root.querySelector(".flatpickr-weekdays")).toHaveAttribute(
-			"aria-owns",
-			weekHeader.id,
+		// The wrappers between the grid and its row/rowgroup/rowheaders are layout only, so the
+		// grid directly owns them in the accessibility tree (ARIA required owned elements).
+		expect(root.querySelector(".flatpickr-rContainer")).toHaveAttribute("role", "presentation");
+		expect(root.querySelector(".flatpickr-weekwrapper")).toHaveAttribute(
+			"role",
+			"presentation",
 		);
 
-		// Weekday headers shift to columns 2-8.
+		// The week column header is column 1 of the header row and its FIRST child, so the row
+		// reads "Week, Sun, …, Sat" (aria-owns would append it last). It is a visually hidden
+		// "Week"; flatpickr's visual "Wk" cell is hidden from assistive tech instead.
+		const weekdayRow = root.querySelector<HTMLElement>(".flatpickr-weekdays")!;
+		expect(weekdayRow).not.toHaveAttribute("aria-owns");
+		const weekHeader = weekdayRow.firstElementChild as HTMLElement;
+		expect(weekHeader).toHaveAttribute("role", "columnheader");
+		expect(weekHeader).toHaveAttribute("aria-colindex", "1");
+		expect(weekHeader.textContent).toBe("Week");
+		expect(weekHeader).toHaveAttribute("abbr", "Wk");
+		expect(weekHeader.id).not.toBe("");
+		expect(weekHeader).not.toHaveAttribute("aria-hidden");
+		expect(weekHeader.style.display).not.toBe("none");
+		const visualWk = root.querySelector<HTMLElement>(
+			".flatpickr-weekwrapper .flatpickr-weekday",
+		)!;
+		expect(visualWk.textContent?.trim()).toBe("Wk");
+		expect(visualWk).toHaveAttribute("aria-hidden", "true");
+		expect(visualWk).not.toHaveAttribute("role");
+
+		// Weekday headers shift to columns 2-8, and the header row's columnheaders appear in
+		// column order in the DOM (SC 1.3.2 meaningful sequence).
 		const weekdays = root.querySelectorAll(".flatpickr-weekdaycontainer .flatpickr-weekday");
 		expect(weekdays).toHaveLength(7);
 		weekdays.forEach((weekday, i) => {
 			expect(weekday).toHaveAttribute("role", "columnheader");
 			expect(weekday).toHaveAttribute("aria-colindex", String(i + 2));
 		});
+		expect(
+			Array.from(weekdayRow.querySelectorAll('[role="columnheader"]')).map(h =>
+				h.getAttribute("aria-colindex"),
+			),
+		).toEqual(["1", "2", "3", "4", "5", "6", "7", "8"]);
 
 		// One rowheader per week row (rows 2-7), named "Week N"; each is the first element its
 		// role="row" owns (the DOM container is layout only).
@@ -671,10 +775,7 @@ describe("CGY-30559 - AM/PM control (APG spinbutton)", () => {
 		const amPm = root.querySelector<HTMLElement>(".flatpickr-am-pm")!;
 		return { root, amPm };
 	};
-	const key = (el: HTMLElement, k: string, keyCode: number) =>
-		fireEvent.keyDown(el, { key: k, keyCode });
-
-	it("is a named spinbutton whose value is the visible AM/PM text", async () => {
+	it("is a named spinbutton whose value is the visible AM/PM text; no mouse-only title", async () => {
 		const { amPm } = await openAmPm();
 
 		expect(amPm).toHaveAttribute("role", "spinbutton");
@@ -686,29 +787,40 @@ describe("CGY-30559 - AM/PM control (APG spinbutton)", () => {
 		expect(["AM", "PM"]).toContain(value);
 		expect(amPm).toHaveAttribute("aria-valuetext", value);
 		expect(amPm).toHaveAttribute("aria-valuenow", value === "AM" ? "1" : "0");
+		// flatpickr's title="Click to toggle" would be read as the description of a control that
+		// is keyboard-operable; it is removed.
+		expect(amPm).not.toHaveAttribute("title");
 	});
 
-	it("ArrowUp/Home go to AM and ArrowDown/End to PM, matching the arrows; no-op at the end", async () => {
+	it("ArrowUp -> AM (max), ArrowDown -> PM (min); Home -> min (PM), End -> max (AM) per APG; no-op at the end", async () => {
 		const { amPm } = await openAmPm();
 		amPm.focus();
 
-		key(amPm, "ArrowUp", 38);
+		pressKey("ArrowUp");
 		expect(amPmValue(amPm)).toBe("AM");
 		expect(amPm).toHaveAttribute("aria-valuetext", "AM");
 		expect(amPm).toHaveAttribute("aria-valuenow", "1");
-		key(amPm, "ArrowUp", 38); // already at the top: stays AM (flatpickr's own toggle is stopped)
+		pressKey("ArrowUp"); // already at the top: stays AM (flatpickr's own toggle is stopped)
 		expect(amPmValue(amPm)).toBe("AM");
 
-		key(amPm, "ArrowDown", 40);
+		pressKey("ArrowDown");
 		expect(amPmValue(amPm)).toBe("PM");
 		expect(amPm).toHaveAttribute("aria-valuetext", "PM");
 		expect(amPm).toHaveAttribute("aria-valuenow", "0");
-		key(amPm, "ArrowDown", 40); // already at the bottom: stays PM
+		pressKey("ArrowDown"); // already at the bottom: stays PM
 		expect(amPmValue(amPm)).toBe("PM");
 
-		key(amPm, "Home", 36);
+		// APG spinbutton: Home = minimum value, End = maximum value — consistent with the declared
+		// aria-valuemin (0 = PM) / aria-valuemax (1 = AM), not the other way round.
+		pressKey("End");
 		expect(amPmValue(amPm)).toBe("AM");
-		key(amPm, "End", 35);
+		expect(amPm).toHaveAttribute("aria-valuenow", "1");
+		pressKey("End"); // already at the maximum
+		expect(amPmValue(amPm)).toBe("AM");
+		pressKey("Home");
+		expect(amPmValue(amPm)).toBe("PM");
+		expect(amPm).toHaveAttribute("aria-valuenow", "0");
+		pressKey("Home"); // already at the minimum
 		expect(amPmValue(amPm)).toBe("PM");
 
 		expect(document.activeElement).toBe(amPm);
@@ -720,16 +832,66 @@ describe("CGY-30559 - AM/PM control (APG spinbutton)", () => {
 		const other = initial === "AM" ? "PM" : "AM";
 
 		amPm.focus();
-		key(amPm, "Enter", 13);
+		pressKey("Enter");
 		expect(amPmValue(amPm)).toBe(other);
 		expect(amPm).toHaveAttribute("aria-valuetext", other);
 		// flatpickr's own Enter handler would have moved focus to its hidden input; ours keeps it.
 		expect(document.activeElement).toBe(amPm);
 
-		key(amPm, " ", 32);
+		pressKey(" ");
 		expect(amPmValue(amPm)).toBe(initial);
 		expect(document.activeElement).toBe(amPm);
 		expect(root.querySelector('[role="dialog"]')).toBeInTheDocument();
+	});
+
+	it("Escape from the AM/PM control still closes the dialog and returns focus to the trigger", async () => {
+		const { getByTestId, findByRole, queryByRole } = render(
+			<Message message={messageSingleDate} />,
+		);
+		const root = await openDialog(findByRole, getByTestId);
+		const amPm = root.querySelector<HTMLElement>(".flatpickr-am-pm")!;
+		amPm.focus();
+
+		// The spinbutton handler stops propagation for the keys it handles ONLY; Escape must still
+		// reach the dialog's keydown (APG dialog: Esc closes, focus returns to the trigger).
+		// fireEvent so React's state update flushes inside act().
+		fireEvent.keyDown(amPm, { key: "Escape", keyCode: 27 });
+		await waitFor(() => expect(queryByRole("dialog")).not.toBeInTheDocument());
+		expect(document.activeElement).toBe(getByTestId("button-open"));
+	});
+
+	it("Tab from the AM/PM control (last time field) is routed by the dialog trap, not flatpickr", async () => {
+		const { getByTestId, findByRole } = render(<Message message={messageSingleDate} />);
+		const root = await openDialog(findByRole, getByTestId);
+
+		// Select a day so the submit button (the next focusable after the time fields) is enabled.
+		activeDay(root)!.focus();
+		await selectFocusedDayAndSettle();
+
+		// flatpickr's own Tab handling for time fields calls .focus() on its readonly value input
+		// (`.flatpickr-input`). In the rendered widget that input is display:none, so the call is
+		// a no-op in a browser; jsdom has no layout and WOULD focus it, so emulate the browser.
+		const hiddenInput = root.querySelector<HTMLInputElement>(".flatpickr-input")!;
+		hiddenInput.focus = () => {};
+
+		const amPm = root.querySelector<HTMLElement>(".flatpickr-am-pm")!;
+		amPm.focus();
+		// The dialog's keydown treats the AM/PM control as the last time field and moves focus to
+		// the next focusable element (the submit button). jsdom does not perform native tab
+		// movement, so the programmatic move IS the observable result.
+		pressKey("Tab");
+		expect(document.activeElement).toBe(getByTestId("button-submit"));
+
+		// Shift+Tab from the first time field (hour) goes backwards to the previous focusable
+		// (the roving day), not to flatpickr's hidden input.
+		const hour = root.querySelector<HTMLElement>(".flatpickr-hour")!;
+		hour.focus();
+		pressKey("Tab", true);
+		expect((document.activeElement as HTMLElement).classList.contains("flatpickr-input")).toBe(
+			false,
+		);
+		expect(root.contains(document.activeElement)).toBe(true);
+		expect(document.activeElement).not.toBe(hour);
 	});
 
 	it("value changes are exposed on the spinbutton only — the live region is not written (no double announce)", async () => {
@@ -740,8 +902,8 @@ describe("CGY-30559 - AM/PM control (APG spinbutton)", () => {
 		observer.observe(liveRegion, { childList: true, characterData: true, subtree: true });
 
 		amPm.focus();
-		key(amPm, "Enter", 13);
-		key(amPm, "ArrowDown", 40);
+		pressKey("Enter");
+		pressKey("ArrowDown");
 		await flush();
 		await flush();
 

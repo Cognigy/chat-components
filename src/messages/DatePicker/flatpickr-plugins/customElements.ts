@@ -5,6 +5,12 @@ import { IWebchatSettings } from "src/messages/types";
 export interface Config {
 	arrowIcon: string;
 	customTranslations?: IWebchatSettings["customTranslations"];
+	/**
+	 * BCP 47 language tag (e.g. "en", "en-gb", "de") used to format the spoken day-cell names with
+	 * `Intl.DateTimeFormat`, so the word order follows the locale. Falls back to an English-order
+	 * composition from flatpickr's l10n when missing or unknown to the runtime.
+	 */
+	localeId?: string;
 }
 
 /**
@@ -14,15 +20,24 @@ export interface Config {
  * The calendar grid follows the W3C ARIA APG "Date Picker Dialog" pattern:
  * - `.flatpickr-rContainer` is the `role="grid"` (wraps the weekday header row and the day grid);
  *   with week numbers enabled the grid is `.flatpickr-innerContainer` instead, so it also owns the
- *   week column (`.flatpickr-weekwrapper`: a "Wk" columnheader + one `role="rowheader"` per week,
- *   referenced by each day cell's `aria-describedby`)
+ *   week column (`.flatpickr-weekwrapper`: one `role="rowheader"` per week, referenced by each day
+ *   cell's `aria-describedby`; its "Wk" header is mirrored by a visually hidden "Week"
+ *   columnheader that is the FIRST child of the weekday row, so the header row reads in column
+ *   order). Layout-only wrappers between the grid and its rows are `role="presentation"` so the
+ *   grid directly owns its row/rowgroup (ARIA required owned elements)
  * - the weekday header is a `role="row"` of `role="columnheader"` cells
- * - each day cell's `aria-label` is "<weekday>, <month> <day>, <year>" (the flat cells cannot
- *   inherit the weekday from the column header) plus "start of range" / "end of range" in range
- *   mode (ARIA has no state for range endpoints); selection and today are exposed as states only
- *   (`aria-selected`, flatpickr's `aria-current="date"`), never repeated in the name (APG)
- * - the AM/PM control is a `role="spinbutton"` ("AM/PM", value in `aria-valuetext`): ArrowUp/Home
- *   -> AM, ArrowDown/End -> PM (matching the arrows), Enter/Space toggle
+ * - each day cell's `aria-label` is the locale-formatted full date ("Thursday, June 12, 2026";
+ *   the flat cells cannot inherit the weekday from the column header) plus "start of range" /
+ *   "end of range" in range mode (ARIA has no state for range endpoints); selection and today are
+ *   exposed as states only (`aria-selected`, flatpickr's `aria-current="date"`), never repeated in
+ *   the name (APG). NVDA deliberately does not speak the selected state of a focused table cell
+ *   that is the only selected cell (nvaccess/nvda#8879), so in single mode NVDA users hear the
+ *   selection only through the visual/other channels — see getDayLabel. States and names mirror
+ *   flatpickr's visual highlight, including the keyboard/hover range preview after the first
+ *   endpoint (it looks identical to a committed range)
+ * - the AM/PM control is a `role="spinbutton"` ("AM/PM", value in `aria-valuetext`; AM is the
+ *   maximum, matching the visual spinner where ArrowUp reaches AM): ArrowUp -> AM, ArrowDown -> PM,
+ *   Home -> minimum (PM), End -> maximum (AM) per the APG spinbutton pattern, Enter/Space toggle
  * - day cells are flat `role="gridcell"` elements with `aria-rowindex`/`aria-colindex` (NOT
  *   physical `role="row"` wrappers, which would break flatpickr's native arrow navigation that
  *   indexes the day cells as direct children of `.dayContainer`); the `role="row"` level is
@@ -35,10 +50,22 @@ export interface Config {
 // cells reference via aria-describedby (several datepicker messages can share a page).
 let instanceSeq = 0;
 
+// Hide an element visually while keeping it in the accessibility tree (never display:none /
+// visibility:hidden / aria-hidden, which would drop it). Used for the live region, the hidden
+// role="row" elements and the week-number column header.
+function visuallyHide(element: HTMLElement) {
+	element.style.position = "absolute";
+	element.style.width = "1px";
+	element.style.height = "1px";
+	element.style.overflow = "hidden";
+	element.style.clip = "rect(0, 0, 0, 0)";
+	element.style.whiteSpace = "nowrap";
+}
+
 function customElements(pluginConfig: Config): Plugin {
 	// `fp` is the Flatpickr instance.
 	return function (fp: Instance) {
-		const { arrowIcon, customTranslations } = pluginConfig;
+		const { arrowIcon, customTranslations, localeId } = pluginConfig;
 		const instanceId = ++instanceSeq;
 
 		// Store event handlers for navigation buttons
@@ -68,12 +95,7 @@ function customElements(pluginConfig: Config): Plugin {
 			liveRegion.setAttribute("aria-live", "assertive");
 			liveRegion.setAttribute("aria-atomic", "true");
 			liveRegion.setAttribute("role", "alert");
-			liveRegion.style.position = "absolute";
-			liveRegion.style.width = "1px";
-			liveRegion.style.height = "1px";
-			liveRegion.style.overflow = "hidden";
-			liveRegion.style.clip = "rect(0, 0, 0, 0)";
-			liveRegion.style.whiteSpace = "nowrap";
+			visuallyHide(liveRegion);
 			fp.calendarContainer.appendChild(liveRegion);
 		}
 
@@ -339,17 +361,26 @@ function customElements(pluginConfig: Config): Plugin {
 				grid.setAttribute("aria-rowcount", "7");
 			}
 
-			// The other wrapper is just layout (focus lives on a day cell).
+			// The other wrapper is layout only (focus lives on a day cell): presentation, so the
+			// weekday row and the day rowgroup are DIRECT accessibility-tree children of the grid,
+			// as ARIA 1.2 §5.2.7 (required owned elements) requires of a grid. Same for the week
+			// wrapper, whose header/rowheaders are claimed elsewhere.
 			layoutWrapper?.removeAttribute("tabindex");
-			layoutWrapper?.removeAttribute("role");
 			layoutWrapper?.removeAttribute("aria-activedescendant");
+			layoutWrapper?.setAttribute("role", "presentation");
+			if (hasWeekNumbers()) fp?.weekWrapper?.setAttribute("role", "presentation");
 
 			// Weekday header is row 1 of the grid; each weekday is a columnheader.
-			const weekdayRow = fp?.calendarContainer?.querySelector(".flatpickr-weekdays");
+			const weekdayRow =
+				fp?.calendarContainer?.querySelector<HTMLElement>(".flatpickr-weekdays");
 			if (weekdayRow) {
 				weekdayRow.setAttribute("role", "row");
 				weekdayRow.setAttribute("aria-rowindex", "1");
 			}
+			// flatpickr's flex wrapper around the weekday spans is layout only.
+			weekdayRow
+				?.querySelector(".flatpickr-weekdaycontainer")
+				?.setAttribute("role", "presentation");
 			// Only the weekday spans inside the header row — the week-number column has its own
 			// `.flatpickr-weekday` ("Wk") header, handled below.
 			const weekdaySpans = fp?.calendarContainer?.querySelectorAll(
@@ -361,17 +392,31 @@ function customElements(pluginConfig: Config): Plugin {
 				span.setAttribute("aria-colindex", String((index % GRID_COLS) + 1 + colOffset()));
 			});
 
-			// Week-number column header ("Wk") is column 1 of the header row. It lives in the
-			// week wrapper, outside the weekday row's DOM subtree, so the row claims it through
-			// aria-owns; the spoken name is the full word ("Week"), the abbr keeps flatpickr's text.
-			const weekHeader = fp?.weekWrapper?.querySelector<HTMLElement>(".flatpickr-weekday");
-			if (weekHeader && weekdayRow) {
+			// Week-number column header is column 1 of the header row. flatpickr renders its "Wk"
+			// cell inside the week wrapper, outside the weekday row's DOM subtree. Claiming it with
+			// aria-owns would put it LAST in the row (aria-owns appends owned elements after the
+			// owner's DOM children), contradicting aria-colindex="1" and the visual order (SC
+			// 1.3.2). So the row gets a visually hidden columnheader "Week" as its first DOM child,
+			// and flatpickr's visual "Wk" cell is hidden from assistive tech (the hidden header
+			// carries its meaning).
+			const visualWeekHeader =
+				fp?.weekWrapper?.querySelector<HTMLElement>(".flatpickr-weekday");
+			if (visualWeekHeader && weekdayRow) {
+				visualWeekHeader.setAttribute("aria-hidden", "true");
+				let weekHeader = weekdayRow.querySelector<HTMLElement>(
+					":scope > [data-week-header]",
+				);
+				if (!weekHeader) {
+					weekHeader = document.createElement("span");
+					weekHeader.dataset.weekHeader = "true";
+					visuallyHide(weekHeader);
+					weekdayRow.prepend(weekHeader);
+				}
 				weekHeader.id = weekHeaderId(1);
 				weekHeader.setAttribute("role", "columnheader");
-				weekHeader.setAttribute("abbr", weekHeader.textContent?.trim() || "");
-				weekHeader.setAttribute("aria-label", weekNumberLabel());
+				weekHeader.setAttribute("abbr", visualWeekHeader.textContent?.trim() || "");
 				weekHeader.setAttribute("aria-colindex", "1");
-				weekdayRow.setAttribute("aria-owns", weekHeader.id);
+				weekHeader.textContent = weekNumberLabel();
 			}
 		}
 
@@ -466,11 +511,7 @@ function customElements(pluginConfig: Config): Plugin {
 					row = document.createElement("div");
 					row.dataset.gridRow = String(rowIndex);
 					row.setAttribute("role", "row");
-					row.style.position = "absolute";
-					row.style.width = "1px";
-					row.style.height = "1px";
-					row.style.overflow = "hidden";
-					row.style.clip = "rect(0, 0, 0, 0)";
+					visuallyHide(row);
 					daysContainer.appendChild(row);
 				}
 				row.setAttribute("aria-rowindex", String(rowIndex));
@@ -483,29 +524,72 @@ function customElements(pluginConfig: Config): Plugin {
 			}
 		}
 
-		// Selection state of a day cell. In range mode flatpickr marks only the two endpoints
-		// `.selected`; the days between them carry `.inRange` and are selected as well.
+		// Selection state of a day cell — mirrors flatpickr's visual highlight. In range mode
+		// flatpickr marks the committed endpoints `.selected` (+ `.startRange`/`.endRange`) and
+		// the days between `.inRange`; while only the first endpoint is chosen, arrowing/hovering
+		// previews the range with the same `.startRange`/`.inRange`/`.endRange` classes (no
+		// `.selected`), which looks identical to a committed range, so it is exposed identically.
 		function isSelectedCell(cell: HTMLElement): boolean {
-			return cell.classList.contains("selected") || cell.classList.contains("inRange");
+			return (
+				cell.classList.contains("selected") ||
+				cell.classList.contains("inRange") ||
+				cell.classList.contains("startRange") ||
+				cell.classList.contains("endRange")
+			);
 		}
 
+		// Cells whose accessible name is blanked for the focus-time re-announce (see
+		// syncRovingTabindex); their label is recomputed when the blank is lifted, so state syncs
+		// in between must not restore it early (that would collapse the blank -> name transition).
+		const pendingLabelRestore = new Set<HTMLElement>();
+
 		// Reflect a day cell's state for assistive tech (CGY-30560): `aria-selected` for every
-		// selected day (range interior included), and the spoken label from getDayLabel(). Today
-		// keeps flatpickr's `aria-current="date"`. Following the APG datepicker example, the
-		// selected/today STATES are not repeated inside the name — screen readers already speak
-		// aria-selected / aria-current, so words in the name would be announced twice.
+		// highlighted day and the spoken label from getDayLabel(). Today keeps flatpickr's
+		// `aria-current="date"` (spoken by NVDA as "current date"), never repeated in the name.
 		function syncDayCellState(cell: HTMLElement) {
 			if (isSelectedCell(cell)) {
 				cell.setAttribute("aria-selected", "true");
 			} else {
 				cell.removeAttribute("aria-selected");
 			}
+			if (pendingLabelRestore.has(cell)) return;
 			const date = cellDate(cell);
 			if (date) cell.setAttribute("aria-label", getDayLabel(cell, date));
 		}
 
 		function syncAllDayCells() {
 			getDayCells().forEach(syncDayCellState);
+		}
+
+		// flatpickr changes day-cell CLASSES without rebuilding the grid when it previews a range
+		// (onMouseOver on hover, and on every arrow move via focusOnDayElem, once the first
+		// endpoint is chosen) and when it strips the range classes after that first selection.
+		// Those paths fire no hook, so the states/names are kept in sync from the class changes.
+		function observeDayCellClasses() {
+			const daysContainer =
+				fp?.calendarContainer?.querySelector<HTMLElement>(".flatpickr-days");
+			if (!daysContainer || daysContainer.dataset.classObserved === "true") return;
+			daysContainer.dataset.classObserved = "true";
+
+			const observer = new MutationObserver(records => {
+				const touched = new Set<HTMLElement>();
+				records.forEach(record => {
+					const cell = record.target as HTMLElement;
+					if (
+						cell.classList?.contains("flatpickr-day") &&
+						cell.closest(".dayContainer")
+					) {
+						touched.add(cell);
+					}
+				});
+				touched.forEach(syncDayCellState);
+			});
+			observer.observe(daysContainer, {
+				attributes: true,
+				attributeFilter: ["class"],
+				subtree: true,
+			});
+			observers.push(observer);
 		}
 
 		// Keep exactly one focusable day after a rebuild, WITHOUT moving focus: preserve the
@@ -658,12 +742,14 @@ function customElements(pluginConfig: Config): Plugin {
 
 		// flatpickr's readonly value input (`.flatpickr-input`) is display:none in the rendered
 		// widget, but it still needs an accessible name for environments where the stylesheet is
-		// not applied (the jsdom axe gate) and for any AT that does expose it.
+		// not applied (the jsdom axe gate) and for any AT that does expose it. It is labelled by
+		// the dialog's heading (the calendar's own name, e.g. "Calendar" or the event name), which
+		// is what its value belongs to — no extra translation needed.
 		function setValueInputAlly() {
-			fp?.input?.setAttribute(
-				"aria-label",
-				customTranslations?.ariaLabels?.datePickerSelectedDate || "Selected date",
-			);
+			const headingId = fp?.calendarContainer
+				?.closest('[role="dialog"]')
+				?.getAttribute("aria-labelledby");
+			if (headingId) fp?.input?.setAttribute("aria-labelledby", headingId);
 		}
 
 		// Set necessary attributes to time picker fields for accessibility
@@ -699,8 +785,10 @@ function customElements(pluginConfig: Config): Plugin {
 		// move. It is therefore exposed as an APG spinbutton — name "AM/PM", value in
 		// aria-valuetext: (1) screen readers announce a focused spinbutton's value change natively,
 		// (2) NVDA/JAWS auto-enter focus mode for spinbuttons, so the arrow keys reach the page (on
-		// a role="button" they drive the virtual cursor), and (3) the keys match the arrows:
-		// ArrowUp/Home -> AM, ArrowDown/End -> PM, no-op at the end; Enter/Space toggle.
+		// a role="button" they drive the virtual cursor), and (3) the keys follow the APG
+		// spinbutton pattern over the declared range (AM = maximum, PM = minimum, matching the
+		// visual arrows): ArrowUp -> AM, ArrowDown -> PM, Home -> minimum (PM), End -> maximum
+		// (AM), each a no-op at its end; Enter/Space toggle.
 		function setAmPmAlly() {
 			const amPm = fp?.amPM;
 			if (!amPm || amPm.dataset.a11yBound === "true") return;
@@ -712,6 +800,9 @@ function customElements(pluginConfig: Config): Plugin {
 				"aria-label",
 				customTranslations?.ariaLabels?.datePickerAmPm || "AM/PM",
 			);
+			// flatpickr's title ("Click to toggle") would become the accessible description —
+			// mouse-only wording on a keyboard-operable control; the value/keys are exposed by role.
+			amPm.removeAttribute("title");
 			// AM is the top of the spinner (ArrowUp reaches it), so AM is the max value.
 			amPm.setAttribute("aria-valuemin", "0");
 			amPm.setAttribute("aria-valuemax", "1");
@@ -736,9 +827,10 @@ function customElements(pluginConfig: Config): Plugin {
 			amPm.addEventListener("keydown", (event: KeyboardEvent) => {
 				const actions: Record<string, () => void> = {
 					ArrowUp: () => setTo(am),
-					Home: () => setTo(am),
 					ArrowDown: () => setTo(pm),
-					End: () => setTo(pm),
+					// APG spinbutton: Home = minimum (aria-valuenow 0 = PM), End = maximum (1 = AM).
+					Home: () => setTo(pm),
+					End: () => setTo(am),
 					Enter: toggle,
 					" ": toggle,
 					Spacebar: toggle,
@@ -774,18 +866,45 @@ function customElements(pluginConfig: Config): Plugin {
 			return (cell as unknown as { dateObj?: Date }).dateObj;
 		}
 
+		// Locale-aware full-date formatter for the spoken day names ("Thursday, June 12, 2026" in
+		// English, "Donnerstag, 12. Juni 2026" in German). null when the runtime does not know the
+		// locale tag — the caller then composes an English-order fallback from flatpickr's l10n.
+		const dateFormatter: Intl.DateTimeFormat | null = (() => {
+			if (!localeId) return null;
+			try {
+				return new Intl.DateTimeFormat(localeId.replace("_", "-"), {
+					weekday: "long",
+					year: "numeric",
+					month: "long",
+					day: "numeric",
+				});
+			} catch {
+				return null;
+			}
+		})();
+
+		function formatSpokenDate(date: Date): string {
+			if (dateFormatter) return dateFormatter.format(date);
+			const weekday = fp.l10n.weekdays.longhand[date.getDay()];
+			const month = fp.l10n.months.longhand[date.getMonth()];
+			return `${weekday}, ${month} ${date.getDate()}, ${date.getFullYear()}`;
+		}
+
 		// Spoken label for a day cell, e.g. "Thursday, June 12, 2026". The weekday is part of the
-		// name because the flat cells (no role="row" level) cannot reliably inherit it from the
-		// column header the way the APG table example does. In range mode the endpoints add
-		// "start of range" / "end of range" — ARIA has no state for range boundaries, so the name
-		// is the only channel. Selected/today are NOT repeated here (they are states). Uses the
+		// name because the flat cells cannot reliably inherit it from the column header the way
+		// the APG table example does (it is also what a user hears FIRST on entering the grid,
+		// before any table context). In range mode the endpoints add "start of range" / "end of
+		// range" — ARIA has no state for range boundaries, so the name is the only channel.
+		// Selected and today are STATES (aria-selected, aria-current="date") and are not repeated
+		// in the name, per the APG datepicker example. Known consequence: NVDA (since 2018.4,
+		// nvaccess/nvda#8879) does not speak the selected state of a focused table cell when it is
+		// the only selected cell in the table — always the case in single mode — so NVDA users hear
+		// the selection only in multiple/range mode; JAWS and VoiceOver speak the state. Uses the
 		// cell's own date so prev/next-month overflow cells announce their real month. Words come
 		// from customTranslations.ariaLabels with English fallbacks.
 		function getDayLabel(cell: HTMLElement, date: Date): string {
 			const labels = customTranslations?.ariaLabels;
-			const weekday = fp.l10n.weekdays.longhand[date.getDay()];
-			const month = fp.l10n.months.longhand[date.getMonth()];
-			const parts = [`${weekday}, ${month} ${date.getDate()}, ${date.getFullYear()}`];
+			const parts = [formatSpokenDate(date)];
 			if (cell.classList.contains("startRange")) {
 				parts.push(labels?.datePickerRangeStart || "start of range");
 			}
@@ -1048,16 +1167,19 @@ function customElements(pluginConfig: Config): Plugin {
 				// The speech viewer shows NVDA reliably reads the grid context ("Calendar, table,
 				// Use arrow keys…") on every entry — that context is part of the focus event. The
 				// date is carried on the FOCUSED CELL's own accessible name; we toggle it (blank
-				// now, restore on the next tick) so NVDA sees a fresh name and re-reads the date as
+				// now, recompute on the next tick) so NVDA sees a fresh name and re-reads the date as
 				// part of that same reliable focus path, instead of via a live region (which NVDA
 				// dropped on re-entry). We do NOT also push to the live region here — that produced
-				// a duplicate announcement of the date.
-				const dateLabel = target.getAttribute("aria-label");
-				if (dateLabel) {
+				// a duplicate announcement of the date. The name is RECOMPUTED rather than restored
+				// from a copy: in range mode flatpickr changes the cell's range classes right after
+				// focusing it (focusOnDayElem -> onMouseOver), so a copy taken now would be stale.
+				if (target.getAttribute("aria-label") && !pendingLabelRestore.has(target)) {
+					pendingLabelRestore.add(target);
 					target.setAttribute("aria-label", "");
 					setTimeout(() => {
+						pendingLabelRestore.delete(target);
 						// Only restore if this cell is still in the DOM (not rebuilt by a month flip).
-						if (target.isConnected) target.setAttribute("aria-label", dateLabel);
+						if (target.isConnected) syncDayCellState(target);
 					}, 0);
 				}
 			});
@@ -1091,6 +1213,7 @@ function customElements(pluginConfig: Config): Plugin {
 				setAmPmAlly,
 				setGridKeyNavigation,
 				syncRovingTabindex,
+				observeDayCellClasses,
 				// Apply grid row roles + the initial roving-focus day, and keep them correct
 				// across every flatpickr rebuild. Does not steal focus — the dialog focuses its
 				// heading on open; the first Tab into the grid lands on the focusable day.
@@ -1118,7 +1241,7 @@ function customElements(pluginConfig: Config): Plugin {
 					// Roving tabindex default: not focusable until promoted by setActiveDay().
 					dayElem.setAttribute("tabindex", "-1");
 					// aria-selected + spoken label, e.g. "Thursday, June 25, 2026" (weekday + date,
-					// range endpoints add "start/end of range"). flatpickr's own aria-current="date"
+					// then "start/end of range" or "selected"). flatpickr's own aria-current="date"
 					// on today's cell is kept as-is.
 					syncDayCellState(dayElem);
 				},

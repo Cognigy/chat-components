@@ -106,6 +106,8 @@ const KEY_CODES: Record<string, number> = {
 	Enter: 13,
 	Escape: 27,
 	Space: 32,
+	// The DOM `key` value for the spacebar is " " — handlers compare against it (and "Spacebar").
+	" ": 32,
 	End: 35,
 	Home: 36,
 	ArrowLeft: 37,

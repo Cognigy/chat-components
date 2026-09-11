@@ -61,6 +61,7 @@ import datepickerWeeks from "./datepicker/weekNumbers.json";
 import datepickerNoTime from "./datepicker/noTime.json";
 import datepickerTimeOnly from "./datepicker/timeOnly.json";
 import datepickerDisableWeekends from "./datepicker/disableWeekends.json";
+import datepickerLocaleDe from "./datepicker/localeDe.json";
 
 import type { IMessage } from "@cognigy/socket-client";
 
@@ -166,6 +167,7 @@ export const demoCases: Case[] = [
 	{ name: "demo: datepicker no time", message: asBot(datepickerNoTime) },
 	{ name: "demo: datepicker time only", message: asBot(datepickerTimeOnly) },
 	{ name: "demo: datepicker disable weekends", message: asBot(datepickerDisableWeekends) },
+	{ name: "demo: datepicker German locale", message: asBot(datepickerLocaleDe) },
 	// Adaptive Cards — fixture is an array; cover all three indices since
 	// they exercise different card payload shapes.
 	{

@@ -30,6 +30,7 @@ import datePickerWeeks from "test/fixtures/datepicker/weekNumbers.json";
 import datePickerNoTime from "test/fixtures/datepicker/noTime.json";
 import datePickerTimeonly from "test/fixtures/datepicker/timeOnly.json";
 import datePickerDisableWeekends from "test/fixtures/datepicker/disableWeekends.json";
+import datePickerLocaleDe from "test/fixtures/datepicker/localeDe.json";
 
 import { IMessage } from "@cognigy/socket-client";
 import { ChatEvent, TypingIndicator, Typography } from "../src/index.ts";
@@ -302,6 +303,7 @@ const screens: TScreen[] = [
 			{ message: datePickerNoTime as IMessage },
 			{ message: datePickerTimeonly as IMessage },
 			{ message: datePickerDisableWeekends as IMessage },
+			{ message: datePickerLocaleDe as IMessage },
 		],
 	},
 	{
