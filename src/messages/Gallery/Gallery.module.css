@@ -60,6 +60,16 @@
 }
 
 /*
+** A card whose image is missing or failed to load shows the grey
+** `.brokenImage` placeholder instead. White text on it is 1.6:1, so the
+** overlaid title switches to dark text there (WCAG 1.4.3 Contrast Minimum,
+** CGY-37634).
+*/
+.slideItem .top:has(.brokenImage) h4 {
+	color: var(--cc-black-10);
+}
+
+/*
 ** Opt-in layout (galleryCardTitleBelowImage): the title moves into the content
 ** block beneath the image, so it shares the subtitle's flush margins/padding.
 */
@@ -73,6 +83,31 @@
 	width: 100%;
 }
 
+/*
+** default_action link (CGY-37634): wraps the card text inside the content
+** block (keeping the block's column gap), or sits on the image area when the
+** block has no text. Buttons are never inside it.
+*/
+.slideItem .link {
+	display: flex;
+	flex-direction: column;
+	gap: 8px;
+}
+.slideItem [role="link"] {
+	cursor: pointer;
+}
+.slideItem [role="link"]:focus-visible {
+	outline: 2px solid var(--cc-primary-color-focus);
+	outline-offset: 2px;
+}
+/* .slideItem is overflow:hidden and the image area fills it edge to edge, so
+   the focus ring is drawn inside the card; an outset ring there is clipped
+   away entirely (WCAG 2.4.7 Focus Visible). The text link sits inside the
+   content block's 8px padding, so its outset ring is never clipped. */
+.slideItem .top[role="link"]:focus-visible {
+	outline-offset: -2px;
+}
+
 /* 
 ** SWIPER MAIN
 ** The following styles are a porting from the original swiper/css and related modules.
@@ -84,7 +119,9 @@ article :global(.swiper).wrapper {
 	margin-right: -20px;
 	padding-left: 20px;
 	padding-right: 20px;
-	padding-bottom: 22px;
+	/* The pagination row is in normal flow below the slides (see
+	   .swiper-pagination); 2px clearance under it, matching the gap above it. */
+	padding-bottom: 2px;
 	padding-top: 0px;
 	position: relative;
 	overflow: hidden;
@@ -164,8 +201,15 @@ article :global(.swiper).wrapper :global(.swiper-button-disabled) {
 /*
 ** SWIPER NAVIGATION
 */
+/*
+** The pagination row is in normal flow beneath the slides. Bullets are fixed
+** 24px targets (WCAG 2.5.8) and wrap onto further rows when more than fit in
+** one; in flow, extra rows grow the gallery downwards rather than overlapping
+** the cards. A single row adds 28px: 2px gap + 24px row + 2px container
+** padding.
+*/
 article :global(.swiper).wrapper :global(.swiper-pagination) {
-	position: absolute;
+	position: relative;
 	text-align: center;
 	transition: 300ms opacity;
 	transform: translate3d(0, 0, 0);
@@ -180,24 +224,53 @@ article :global(.swiper).wrapper :global(.swiper-pagination.swiper-pagination-di
 }
 article :global(.swiper).wrapper :global(.swiper-horizontal > .swiper-pagination-bullets),
 article :global(.swiper).wrapper :global(.swiper-pagination-bullets.swiper-pagination-horizontal) {
-	bottom: 4px;
-	left: 0;
+	margin-top: 2px;
 	width: 100%;
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: center;
+	align-items: center;
 }
+/*
+** Each bullet is a 24×24px pointer/focus target (WCAG 2.5.8 Target Size
+** Minimum, CGY-37634). The visible 6px dot is drawn by ::before, so the look
+** is unchanged while the hit area grows around it; focus styling therefore
+** targets ::before too.
+*/
 article :global(.swiper).wrapper :global(.swiper-pagination-bullet) {
-	width: 6px;
-	height: 6px;
-	display: inline-block;
-	border-radius: 50%;
-	background: var(--cc-black-50);
+	/* Fixed-size flex item: the 24px target never shrinks when the row is
+	   full; overflowing bullets wrap (see .swiper-pagination). */
+	flex: 0 0 24px;
+	width: 24px;
+	height: 24px;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	/* No border-radius here: browsers clip pointer hit-testing to the rounded
+	   shape, which would shrink the target back below 24×24. */
+	background: transparent;
 	opacity: 1;
 }
+article :global(.swiper).wrapper :global(.swiper-pagination-bullet)::before {
+	content: "";
+	width: 6px;
+	height: 6px;
+	border-radius: 50%;
+	background-color: var(--cc-black-50);
+}
+/* Declared before the focus rules (and lower in specificity) so a focused
+   active bullet always shows the focus colour, not the active black. */
+article :global(.swiper).wrapper :global(.swiper-pagination-bullet-active)::before {
+	background-color: black;
+}
 article :global(.swiper).wrapper :global(.swiper-pagination-bullet):focus {
-	background-color: var(--cc-primary-color-focus);
-	box-shadow: 0 0 0 4px var(--cc-primary-color-opacity-10);
 	outline: none;
 }
-article :global(.swiper).wrapper :global(.swiper-pagination-bullet):focus-visible {
+article :global(.swiper).wrapper :global(.swiper-pagination-bullet):focus::before {
+	background-color: var(--cc-primary-color-focus);
+	box-shadow: 0 0 0 4px var(--cc-primary-color-opacity-10);
+}
+article :global(.swiper).wrapper :global(.swiper-pagination-bullet):focus-visible::before {
 	outline: 2px solid var(--cc-primary-color-focus);
 	outline-offset: 2px;
 }
@@ -215,15 +288,12 @@ article :global(.swiper).wrapper :global(.swiper-pagination-clickable .swiper-pa
 article :global(.swiper).wrapper :global(.swiper-pagination-bullet:only-child) {
 	display: none !important;
 }
-article :global(.swiper).wrapper :global(.swiper-pagination-bullet-active) {
-	opacity: 1;
-	background-color: black;
-}
 article
 	:global(.swiper).wrapper
 	:global(.swiper-horizontal > .swiper-pagination-bullets .swiper-pagination-bullet),
 article
 	:global(.swiper).wrapper
 	:global(.swiper-pagination-horizontal.swiper-pagination-bullets .swiper-pagination-bullet) {
-	margin: 0 4px;
+	/* Adjacent 24px targets touch but never overlap (WCAG 2.5.8). */
+	margin: 0;
 }

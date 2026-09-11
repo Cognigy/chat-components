@@ -41,6 +41,7 @@ import {
 // and the branch both apply the same default, so the comparison still holds.
 import imageFixture from "./image.json";
 import imageDownloadableFixture from "./image-downloadable.json";
+import imageDownloadableNoAltFixture from "./image-downloadable-no-alt.json";
 import imageBrokenFixture from "./imageBroken.json";
 import videoFixture from "./video.json";
 import videoYoutubeFixture from "./videoYoutube.json";
@@ -49,6 +50,8 @@ import audioFixture from "./audio.json";
 import fileFixture from "./file.json";
 import listFixture from "./list.json";
 import galleryFixture from "./gallery.json";
+import galleryMissingImageFixture from "./gallery-missing-image.json";
+import galleryDefaultActionFixture from "./gallery-default-action.json";
 import galleryNullButtonsFixture from "./gallery-with-null-buttons.json";
 import actionButtonsFixture from "./action-buttons.json";
 import adaptiveCardsFixture from "./adaptiveCards.json";
@@ -146,6 +149,13 @@ export const demoCases: Case[] = [
 	// Multimedia
 	{ name: "demo: image", message: asBot(imageFixture) },
 	{ name: "demo: image downloadable", message: asBot(imageDownloadableFixture) },
+	// No `altText` at all (Webchat's cypress downloadableImage.json shape) —
+	// the `image-downloadable` fixture sets altText: "", which hid the
+	// missing-alt lightbox bug (CGY-37634) from the jsdom gate.
+	{
+		name: "demo: image downloadable (no alt text)",
+		message: asBot(imageDownloadableNoAltFixture),
+	},
 	{ name: "demo: image broken", message: asBot(imageBrokenFixture) },
 	{ name: "demo: video", message: asBot(videoFixture) },
 	{ name: "demo: video (YouTube)", message: asBot(videoYoutubeFixture) },
@@ -156,6 +166,22 @@ export const demoCases: Case[] = [
 	{ name: "demo: list", message: asBot(listFixture) },
 	{ name: "demo: gallery", message: asBot(galleryFixture) },
 	{ name: "demo: gallery (null buttons)", message: asBot(galleryNullButtonsFixture) },
+	// Gallery card variants (CGY-37634). The demo's Gallery tab appends these
+	// fixtures' cards to gallery.json's carousel (see test/demo.tsx).
+	//   - missing image: last card has image_url "" (Webchat's cypress
+	//     gallery.json shape). In a real browser it renders the grey
+	//     placeholder whose title must stay readable; jsdom never fires the
+	//     img error, so this only pins the non-broken DOM.
+	//   - default_action link: cards with a default_action URL render a
+	//     keyboard-reachable role="link" (tabindex="0") around the card text,
+	//     or on the image area when the block has no text. The fixture covers
+	//     the name fallbacks (title → subtitle → image alt) and a subtitle that
+	//     sanitizes to "" (no empty block, no invisible tab stop).
+	{ name: "gallery card variant: missing image", message: asBot(galleryMissingImageFixture) },
+	{
+		name: "gallery card variant: default_action link",
+		message: asBot(galleryDefaultActionFixture),
+	},
 	{ name: "demo: quick replies / buttons", message: asBot(actionButtonsFixture) },
 	// Datepicker variants (closed calendar — open state is non-deterministic)
 	{ name: "demo: datepicker single date", message: asBot(datepickerSingleDate) },

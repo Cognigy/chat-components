@@ -71,6 +71,7 @@ const baselineVersion: string = JSON.parse(
 // (test/a11y.spec.tsx) — a new message type added there is automatically
 // covered by both gates. See test/fixtures/message-cases.ts.
 import { coreCases, demoCases, type Case } from "./fixtures/message-cases";
+import pkg from "../package.json";
 
 import type { IMessage } from "@cognigy/socket-client";
 
@@ -192,36 +193,26 @@ describe("normalize preserves the accessibility contract", () => {
 // installed baseline predates the release that ships the change, so the cases
 // re-enable themselves once that version is on npm `latest`.
 //
-// Cases whose DOM intentionally diverges from releases before 0.80.0:
+// Cases whose DOM intentionally diverges from releases before 0.81.0:
 //
-// CGY-3277 (gallery focus order): the multi-slide gallery renders its own
-// pagination element (`.gallery-pagination`) after the prev/next buttons
-// instead of letting Swiper auto-inject it before them, so keyboard focus
-// order matches the visual order (WCAG 2.4.3): slides → prev/next → dots.
-// Affects "bot gallery (generic template)" and "demo: gallery". Covered by
-// test/GalleryA11y.spec.tsx; release notes carry an "Accessibility changes"
-// entry so Webchat re-runs its cypress-axe suite.
+// CGY-37634 (gallery default_action keyboard reachability): a card whose
+// default_action carries a URL renders its content block as role="link"; it
+// now also gets tabindex="0" so keyboard users can reach what mouse users can
+// click (WCAG 2.1.1). Affects "gallery card variant: default_action link" — the only
+// corpus case with a default_action URL. Covered by test/GalleryA11y.spec.tsx;
+// release notes carry an "Accessibility changes" entry so Webchat re-runs its
+// cypress-axe suite.
 //
-// CGY-3281 (Action Buttons grouping):
-//   - a single-button container with an associated text/title now renders
-//     role="group" so its aria-labelledby is exposed reliably — affects
-//     "demo: gallery" (one card has a single button + title), "demo: default
-//     preview (quick replies)" and both xApp cases (single button + text);
-//   - a buttons container whose message has no text no longer emits a broken
-//     aria-labelledby reference — affects the new "bot quick replies (no
-//     text)" case (the baseline still renders the dangling reference).
-//
-// All of these stay in the shared corpus, so the a11y gate keeps scanning
-// them. Once 0.80.0 ships to npm latest, install-dom-compat-baseline resolves
-// to it, the condition turns false, and the cases re-enable themselves.
-// TODO(CGY-3277, CGY-3281): delete this block once 0.80.0 is on npm latest.
-const INTENTIONALLY_DIVERGING_PRE_0_80 = new Set<string>([
-	"bot gallery (generic template)",
-	"bot quick replies (no text)",
-	"demo: gallery",
-	"demo: default preview (quick replies)",
-	"demo: xApp button (quick reply)",
-	"demo: xApp button (template)",
+// The case stays in the shared corpus, so the a11y gate keeps scanning it.
+// Once 0.81.0 ships to npm latest, install-dom-compat-baseline resolves to it,
+// the condition turns false, and the case re-enables itself. Cut the release
+// that carries this change as 0.81.0 — or update FIX_VERSION to the version
+// it actually ships under (the "FIX_VERSION matches the release" guard below
+// fails the bump PR otherwise).
+// TODO(CGY-37634): delete this block once 0.81.0 is on npm latest.
+const FIX_VERSION = "0.81.0";
+const INTENTIONALLY_DIVERGING_PRE_0_81 = new Set<string>([
+	"gallery card variant: default_action link",
 ]);
 // Compares release triplets only: tolerates a leading "v" and ignores any
 // prerelease/build suffix (a "0.80.0-beta.1" baseline published to npm
@@ -242,7 +233,26 @@ const semverLt = (a: string, b: string): boolean => {
 	return false;
 };
 const isSkipped = (c: Case) =>
-	semverLt(baselineVersion, "0.80.0") && INTENTIONALLY_DIVERGING_PRE_0_80.has(c.name);
+	semverLt(baselineVersion, FIX_VERSION) && INTENTIONALLY_DIVERGING_PRE_0_81.has(c.name);
+
+// Release-version guard for the skip block. Nothing else ties FIX_VERSION to
+// the version that actually ships: package.json is bumped in a separate
+// release PR, and if that PR bumped to e.g. 0.80.1, semverLt("0.80.1",
+// "0.81.0") would stay true and the case would be skipped indefinitely — a
+// hole in the very contract this spec protects. While the block exists,
+// package.json must therefore be either the still-unreleased baseline (no
+// bump yet) or FIX_VERSION itself (the bump PR for the fix release). Any
+// other value means the fix is shipping under a different number (update
+// FIX_VERSION) or the block outlived its release (delete it).
+const releaseTriplet = (version: string) =>
+	version.replace(/^v/, "").split(/[-+]/)[0].split(".").slice(0, 3).join(".");
+describe("version-aware skip block hygiene (CGY-37634)", () => {
+	it(`package.json version (${pkg.version}) is the baseline (${baselineVersion}) or FIX_VERSION (${FIX_VERSION}) — otherwise update FIX_VERSION or delete the skip block`, () => {
+		expect([releaseTriplet(baselineVersion), releaseTriplet(FIX_VERSION)]).toContain(
+			releaseTriplet(pkg.version),
+		);
+	});
+});
 
 describe(`DOM compatibility: branch vs @cognigy/chat-components@${baselineVersion}`, () => {
 	describe("core source fixtures", () => {
@@ -251,7 +261,7 @@ describe(`DOM compatibility: branch vs @cognigy/chat-components@${baselineVersio
 			({ message, config, prevMessage }) => assertSameDom(message, config, prevMessage),
 		);
 		it.skip.each(coreCases.filter(isSkipped))(
-			"$name — skipped: intentional DOM change pending 0.80.0 publish (CGY-3277, CGY-3281)",
+			"$name — skipped: intentional DOM change pending 0.81.0 publish (CGY-37634)",
 			() => {},
 		);
 	});
@@ -262,7 +272,7 @@ describe(`DOM compatibility: branch vs @cognigy/chat-components@${baselineVersio
 			({ message, config, prevMessage }) => assertSameDom(message, config, prevMessage),
 		);
 		it.skip.each(demoCases.filter(isSkipped))(
-			"$name — skipped: intentional DOM change pending 0.80.0 publish (CGY-3277, CGY-3281)",
+			"$name — skipped: intentional DOM change pending 0.81.0 publish (CGY-37634)",
 			() => {},
 		);
 	});

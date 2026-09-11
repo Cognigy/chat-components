@@ -119,6 +119,29 @@ describe("Message Gallery", () => {
 		expect(container.querySelector(".webchat-carousel-template-content")).toBeNull();
 	});
 
+	it("does not render a blank subtitle or content block when the subtitle sanitizes to empty", () => {
+		const message = makeSingleCardMessage("Visible title") as unknown as {
+			data: {
+				_cognigy: {
+					_webchat: {
+						message: { attachment: { payload: { elements: { subtitle?: string }[] } } };
+					};
+				};
+			};
+		};
+		message.data._cognigy._webchat.message.attachment.payload.elements[0].subtitle =
+			stripToEmptyTitle;
+		const { container, getByTestId } = render(
+			<Message message={message as unknown as IMessage} />,
+		);
+
+		expect(getByTestId("gallery-message")).toBeInTheDocument();
+		// Same guard as the title: a raw subtitle that strips to "" must not
+		// force an empty <p> or an empty bordered content block.
+		expect(container.querySelector(".webchat-carousel-template-subtitle")).toBeNull();
+		expect(container.querySelector(".webchat-carousel-template-content")).toBeNull();
+	});
+
 	it("does not render an empty title or blank content block when the title sanitizes to empty (title-below-image layout)", () => {
 		const { container, getByTestId } = render(
 			<Message
