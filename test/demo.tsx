@@ -14,38 +14,6 @@ import listMessage from "test/fixtures/list.json";
 import gallery from "test/fixtures/gallery.json";
 import galleryMissingImage from "test/fixtures/gallery-missing-image.json";
 import galleryDefaultAction from "test/fixtures/gallery-default-action.json";
-
-// The Gallery tab renders ONE carousel: gallery.json's cards plus one extra
-// card per accessibility fix, taken from the fixtures that feed the axe and
-// dom-compat gates (test/fixtures/message-cases.ts). Don't add cards to
-// gallery.json itself — it pins the "demo: gallery" DOM contract.
-const galleryCards = (fixture: unknown) =>
-	(fixture as IMessage).data._cognigy._webchat.message.attachment.payload.elements as unknown[];
-const galleryDemo = {
-	...gallery,
-	data: {
-		_cognigy: {
-			_webchat: {
-				message: {
-					attachment: {
-						type: "template",
-						payload: {
-							template_type: "generic",
-							elements: [
-								...galleryCards(gallery),
-								// CGY-37634: image_url "" → grey placeholder with a dark title
-								...galleryCards(galleryMissingImage).slice(-1),
-								// CGY-37634: default_action URL → keyboard-reachable link card
-								// whose button is a sibling of the link, not nested in it
-								...galleryCards(galleryDefaultAction).slice(0, 1),
-							],
-						},
-					},
-				},
-			},
-		},
-	},
-};
 import imageDownloadable from "test/fixtures/image-downloadable.json";
 import image from "test/fixtures/image.json";
 import imageBroken from "test/fixtures/imageBroken.json";
@@ -67,6 +35,41 @@ import datePickerDisableWeekends from "test/fixtures/datepicker/disableWeekends.
 
 import { IMessage } from "@cognigy/socket-client";
 import { ChatEvent, TypingIndicator, Typography } from "../src/index.ts";
+
+// The Gallery tab renders ONE main carousel: gallery.json's cards plus the
+// accessibility-variant cards from the fixtures that feed the axe and
+// dom-compat gates (test/fixtures/message-cases.ts). Don't add cards to
+// gallery.json itself — it pins the "demo: gallery" DOM contract. Only the
+// `_webchat` payload is recomposed; `_default._gallery` is kept as-is.
+const galleryCards = (fixture: unknown) =>
+	(fixture as IMessage).data._cognigy._webchat.message.attachment.payload.elements as unknown[];
+const withGalleryCards = (base: unknown, cards: unknown[]) => ({
+	...(base as IMessage),
+	data: {
+		_cognigy: {
+			...(base as IMessage).data._cognigy,
+			_webchat: {
+				message: {
+					attachment: {
+						type: "template",
+						payload: { template_type: "generic", elements: cards },
+					},
+				},
+			},
+		},
+	},
+});
+const galleryDemo = withGalleryCards(gallery, [
+	...galleryCards(gallery),
+	// CGY-37634: image_url "" → grey placeholder with a dark title
+	...galleryCards(galleryMissingImage).slice(-1),
+	// CGY-37634: default_action cards — text link with a sibling button,
+	// text-only link, image-area link (no subtitle), title-less card named by
+	// its image alt, subtitle-named link, and a subtitle that sanitizes to ""
+	// (no empty content block / invisible tab stop). With these the carousel
+	// has 15 cards, so its 24px pagination bullets wrap onto a second row.
+	...galleryCards(galleryDefaultAction),
+]);
 
 const action: MessageSender = (text, data) =>
 	alert("Text: " + JSON.stringify(text, null, 2) + " Data: " + JSON.stringify(data, null, 2));

@@ -100,6 +100,13 @@
 	outline: 2px solid var(--cc-primary-color-focus);
 	outline-offset: 2px;
 }
+/* .slideItem is overflow:hidden and the image area fills it edge to edge, so
+   the focus ring is drawn inside the card; an outset ring there is clipped
+   away entirely (WCAG 2.4.7 Focus Visible). The text link sits inside the
+   content block's 8px padding, so its outset ring is never clipped. */
+.slideItem .top[role="link"]:focus-visible {
+	outline-offset: -2px;
+}
 
 /* 
 ** SWIPER MAIN
@@ -112,9 +119,9 @@ article :global(.swiper).wrapper {
 	margin-right: -20px;
 	padding-left: 20px;
 	padding-right: 20px;
-	/* Room for the 24px-tall pagination row (see .swiper-pagination-bullet)
-	   so its hit areas never overlap the cards above. */
-	padding-bottom: 28px;
+	/* The pagination row is in normal flow below the slides (see
+	   .swiper-pagination); 2px clearance under it, matching the gap above it. */
+	padding-bottom: 2px;
 	padding-top: 0px;
 	position: relative;
 	overflow: hidden;
@@ -194,8 +201,15 @@ article :global(.swiper).wrapper :global(.swiper-button-disabled) {
 /*
 ** SWIPER NAVIGATION
 */
+/*
+** The pagination row is in normal flow beneath the slides. Bullets are fixed
+** 24px targets (WCAG 2.5.8) and wrap onto further rows when more than fit in
+** one; in flow, extra rows grow the gallery downwards rather than overlapping
+** the cards. A single row adds 28px: 2px gap + 24px row + 2px container
+** padding.
+*/
 article :global(.swiper).wrapper :global(.swiper-pagination) {
-	position: absolute;
+	position: relative;
 	text-align: center;
 	transition: 300ms opacity;
 	transform: translate3d(0, 0, 0);
@@ -210,10 +224,10 @@ article :global(.swiper).wrapper :global(.swiper-pagination.swiper-pagination-di
 }
 article :global(.swiper).wrapper :global(.swiper-horizontal > .swiper-pagination-bullets),
 article :global(.swiper).wrapper :global(.swiper-pagination-bullets.swiper-pagination-horizontal) {
-	bottom: 2px;
-	left: 0;
+	margin-top: 2px;
 	width: 100%;
 	display: flex;
+	flex-wrap: wrap;
 	justify-content: center;
 	align-items: center;
 }
@@ -224,6 +238,9 @@ article :global(.swiper).wrapper :global(.swiper-pagination-bullets.swiper-pagin
 ** targets ::before too.
 */
 article :global(.swiper).wrapper :global(.swiper-pagination-bullet) {
+	/* Fixed-size flex item: the 24px target never shrinks when the row is
+	   full; overflowing bullets wrap (see .swiper-pagination). */
+	flex: 0 0 24px;
 	width: 24px;
 	height: 24px;
 	display: inline-flex;

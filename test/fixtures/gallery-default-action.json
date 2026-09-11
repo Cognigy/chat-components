@@ -15,7 +15,11 @@
 									"image_url": "https://placewaifu.com/image/300/300",
 									"image_alt_text": "a cat",
 									"buttons": [
-										{ "type": "postback", "payload": "p1", "title": "Pick me" }
+										{
+											"type": "postback",
+											"payload": "p1",
+											"title": "Pick me"
+										}
 									],
 									"default_action": {
 										"type": "web_url",
@@ -47,6 +51,42 @@
 									"default_action": {
 										"type": "web_url",
 										"url": "https://example.com/image-link"
+									}
+								},
+								{
+									"image_url": "https://placewaifu.com/image/300/300",
+									"image_alt_text": "Title-less card: the image alt names the link",
+									"buttons": [
+										{
+											"type": "postback",
+											"payload": "p3",
+											"title": "Pick me three"
+										}
+									],
+									"default_action": {
+										"type": "web_url",
+										"url": "https://example.com/no-title"
+									}
+								},
+								{
+									"subtitle": "No title: this subtitle names the link",
+									"image_url": "https://placewaifu.com/image/300/300",
+									"image_alt_text": "a cat",
+									"buttons": [],
+									"default_action": {
+										"type": "web_url",
+										"url": "https://example.com/subtitle-name"
+									}
+								},
+								{
+									"title": "Subtitle sanitizes to empty",
+									"subtitle": "<script>alert(1)</script>",
+									"image_url": "https://placewaifu.com/image/300/300",
+									"image_alt_text": "a cat",
+									"buttons": [],
+									"default_action": {
+										"type": "web_url",
+										"url": "https://example.com/empty-subtitle"
 									}
 								}
 							]

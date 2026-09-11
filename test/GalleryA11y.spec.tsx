@@ -30,7 +30,17 @@ const slideButtons = (root: ParentNode) =>
 // wraps the card text and never contains the card's buttons).
 const galleryCardWithLink = (
 	url: string,
-	{ subtitle = "Card subtitle", buttons = [] }: { subtitle?: string; buttons?: unknown[] } = {},
+	{
+		title = "Card with link",
+		subtitle = "Card subtitle",
+		image_alt_text = "a cat",
+		buttons = [],
+	}: {
+		title?: string;
+		subtitle?: string;
+		image_alt_text?: string;
+		buttons?: unknown[];
+	} = {},
 ): IMessage =>
 	asBot({
 		data: {
@@ -43,10 +53,10 @@ const galleryCardWithLink = (
 								template_type: "generic",
 								elements: [
 									{
-										title: "Card with link",
+										title,
 										subtitle,
 										image_url: "https://placewaifu.com/image/300/300",
-										image_alt_text: "a cat",
+										image_alt_text,
 										buttons,
 										default_action: { type: "web_url", url },
 									},
@@ -172,7 +182,7 @@ describe("Gallery Accessibility (W3C APG carousel pattern)", () => {
 		expect(getTabbables(container)).toContain(button);
 	});
 
-	it("card with default_action exposes link semantics with an opens-in-new-tab announcement", () => {
+	it("card with default_action is a tab stop whose accessible name is the title plus the new-tab hint", () => {
 		const { container } = render(
 			<Message message={galleryCardWithLink("https://example.com")} />,
 		);
@@ -182,14 +192,42 @@ describe("Gallery Accessibility (W3C APG carousel pattern)", () => {
 		// Enter handler, and a mouse user can click it (WCAG 2.1.1, CGY-37634).
 		expect(link).toHaveAttribute("tabindex", "0");
 		expect(getTabbables(container)).toContain(link);
-		// aria-labelledby points at the visible card title; aria-describedby at
-		// the subtitle — the link announces as the card, not as a bare URL.
-		const titleId = link.getAttribute("aria-labelledby");
-		expect(titleId).toBeTruthy();
-		expect(document.getElementById(titleId as string)).toHaveTextContent("Card with link");
-		const subtitleId = link.getAttribute("aria-describedby");
-		expect(document.getElementById(subtitleId as string)).toHaveTextContent("Card subtitle");
-		expect(link.getAttribute("aria-label")).toContain("Opens in new tab");
+		// The computed *name* (not just an attribute) must carry both the card
+		// title and the new-tab hint: aria-labelledby alongside aria-label wins
+		// the accessible-name computation and drops the hint. The subtitle is
+		// the description.
+		expect(link).toHaveAccessibleName("Card with link. Opens in new tab");
+		expect(link).toHaveAccessibleDescription("Card subtitle");
+		expect(link).not.toHaveAttribute("aria-labelledby");
+	});
+
+	it("the new-tab hint honors customTranslations.ariaLabels.opensInNewTab", () => {
+		const config = {
+			settings: {
+				customTranslations: { ariaLabels: { opensInNewTab: "Öffnet in neuem Tab" } },
+			},
+		} as unknown as React.ComponentProps<typeof Message>["config"];
+		render(<Message message={galleryCardWithLink("https://example.com")} config={config} />);
+
+		expect(screen.getByRole("link")).toHaveAccessibleName(
+			"Card with link. Öffnet in neuem Tab",
+		);
+	});
+
+	it("link name is plain text even when the title carries HTML", () => {
+		render(
+			<Message
+				message={galleryCardWithLink("https://example.com", {
+					title: "<b>Sale</b> &amp; <i>more</i>",
+				})}
+			/>,
+		);
+
+		const link = screen.getByRole("link");
+		// The visible title keeps its markup…
+		expect(document.querySelector(".webchat-carousel-template-title b")).not.toBeNull();
+		// …but aria-label must not announce literal tags or entities (4.1.2).
+		expect(link).toHaveAccessibleName("Sale & more. Opens in new tab");
 	});
 
 	it("card buttons are siblings of the default_action link, never nested inside it", () => {
@@ -238,7 +276,98 @@ describe("Gallery Accessibility (W3C APG carousel pattern)", () => {
 		expect(link.querySelector("h4")).toHaveTextContent("Card with link");
 		expect(link.querySelector("button")).toBeNull();
 		expect(link).toHaveAttribute("tabindex", "0");
-		expect(link).toHaveAccessibleName("Card with link");
+		expect(link).toHaveAccessibleName("Card with link. Opens in new tab");
+		// No subtitle → nothing to describe the link with (no dangling id ref).
+		expect(link).not.toHaveAttribute("aria-describedby");
+	});
+
+	it("title-less card falls back to the image alt text for the link name (WCAG 2.4.4)", () => {
+		render(
+			<Message
+				message={galleryCardWithLink("https://example.com", {
+					title: "",
+					subtitle: "",
+					buttons: [{ type: "postback", payload: "p1", title: "Pick me" }],
+				})}
+			/>,
+		);
+
+		// aria-label overrides the image's alt, so the alt must be folded into
+		// the label; a name of ". Opens in new tab" (stray period plus hint)
+		// has no link purpose (WCAG 2.4.4).
+		expect(screen.getByRole("link")).toHaveAccessibleName("a cat. Opens in new tab");
+	});
+
+	it("card with neither title nor image alt is named by the destination host", () => {
+		render(
+			<Message
+				message={galleryCardWithLink("https://example.com/some/path?q=1", {
+					title: "",
+					subtitle: "",
+					image_alt_text: "",
+				})}
+			/>,
+		);
+
+		// The destination is the only purpose-bearing information left; the
+		// role already conveys "link", so no generic label is added.
+		expect(screen.getByRole("link")).toHaveAccessibleName("example.com. Opens in new tab");
+	});
+
+	it("card with no text, no alt and a non-http URL keeps only the new-tab hint as its name", () => {
+		render(
+			<Message
+				message={galleryCardWithLink("javascript:alert(1)", {
+					title: "",
+					subtitle: "",
+					image_alt_text: "",
+				})}
+			/>,
+		);
+
+		// Sanitization turns the URL into about:blank (activation is a no-op),
+		// so there is no host to name; the name must still be non-empty and
+		// must not start with a stray separator.
+		expect(screen.getByRole("link")).toHaveAccessibleName("Opens in new tab");
+	});
+
+	it("subtitle-only card is named by its subtitle, which is then not also its description", () => {
+		render(
+			<Message
+				message={galleryCardWithLink("https://example.com", {
+					title: "",
+					subtitle: "Only a subtitle",
+				})}
+			/>,
+		);
+
+		const link = screen.getByRole("link");
+		// The subtitle is the link's only visible text (Label in Name, 2.5.3);
+		// repeating it as the description would announce it twice.
+		expect(link).toHaveAccessibleName("Only a subtitle. Opens in new tab");
+		expect(link).not.toHaveAttribute("aria-describedby");
+		expect(link.querySelector(".webchat-carousel-template-subtitle")).not.toBeNull();
+	});
+
+	it("a subtitle that sanitizes to empty renders no invisible link and no content block", () => {
+		const { container } = render(
+			<Message
+				message={galleryCardWithLink("https://example.com", {
+					subtitle: "<script>alert(1)</script>",
+				})}
+			/>,
+		);
+
+		// The raw subtitle is truthy but strips to "". A guard on the raw value
+		// yields a zero-height, empty, focusable text link plus a dangling
+		// aria-describedby (WCAG 2.4.7 / 2.4.3); like the title guard, the card
+		// must behave as if it had no subtitle, so the image area is the link.
+		expect(container.querySelector(".webchat-carousel-template-content")).toBeNull();
+		expect(container.querySelector(".webchat-carousel-template-subtitle")).toBeNull();
+		const link = screen.getByRole("link");
+		expect(link.querySelector("img")).not.toBeNull();
+		expect(link).not.toHaveAttribute("aria-describedby");
+		expect(link).toHaveAccessibleName("Card with link. Opens in new tab");
 	});
 
 	it("Enter on a card's default_action link opens the (sanitized) URL", () => {
@@ -253,6 +382,20 @@ describe("Gallery Accessibility (W3C APG carousel pattern)", () => {
 		expect(openSpy).toHaveBeenCalledWith("https://example.com/");
 	});
 
+	it("honors disableUrlButtonSanitization: the default_action URL opens as authored", () => {
+		const openSpy = vi.spyOn(window, "open").mockImplementation(() => null);
+		const config = {
+			settings: { layout: { disableUrlButtonSanitization: true } },
+		} as unknown as React.ComponentProps<typeof Message>["config"];
+		render(<Message message={galleryCardWithLink("https://example.com")} config={config} />);
+
+		fireEvent.click(screen.getByRole("link"));
+
+		// With sanitization enabled sanitizeUrl normalizes this to a trailing
+		// slash (see the Enter test); the opt-out passes the raw value through.
+		expect(openSpy).toHaveBeenCalledWith("https://example.com");
+	});
+
 	it("card without a default_action URL is not a tab stop and has no link role", () => {
 		const { container } = render(<Message message={asBot(galleryFixture)} />);
 
@@ -263,6 +406,75 @@ describe("Gallery Accessibility (W3C APG carousel pattern)", () => {
 		const contentBlocks = container.querySelectorAll(".webchat-carousel-template-content");
 		expect(contentBlocks.length).toBeGreaterThan(0);
 		contentBlocks.forEach(block => expect(block).not.toHaveAttribute("tabindex"));
+	});
+
+	it("autofocus lands on the image-area link of a title-only default_action card", async () => {
+		// Gallery's enableAutoFocus effect only fires when focus is already in
+		// the chat log, and it must find the first card via the message root: a
+		// card with an overlay title and no subtitle/buttons has no content
+		// block, so a lookup by content id cannot find its link.
+		const chatLog = document.createElement("div");
+		chatLog.id = "webchatChatHistoryWrapperLiveLogPanel";
+		const previous = document.createElement("button");
+		chatLog.appendChild(previous);
+		// Mount the message in its own node so React's root does not disturb
+		// the focused sibling.
+		const mount = document.createElement("div");
+		chatLog.appendChild(mount);
+		document.body.appendChild(chatLog);
+		previous.focus();
+		const config = {
+			settings: { widgetSettings: { enableAutoFocus: true } },
+		} as unknown as React.ComponentProps<typeof Message>["config"];
+
+		try {
+			render(
+				<Message
+					message={galleryCardWithLink("https://example.com", { subtitle: "" })}
+					config={config}
+					data-message-id="gallery-autofocus-test"
+				/>,
+				{ container: mount },
+			);
+
+			const link = screen.getByRole("link");
+			expect(link.querySelector("img")).not.toBeNull();
+			await waitFor(() => expect(link).toHaveFocus(), { timeout: 1000 });
+		} finally {
+			chatLog.remove();
+		}
+	});
+
+	it("autofocus without a message id falls back to the content-id lookup", async () => {
+		// Consumers that render <Message> without data-message-id still get
+		// autofocus for cards that have a content block: the first card is
+		// found through its content id instead of the message root.
+		const chatLog = document.createElement("div");
+		chatLog.id = "webchatChatHistoryWrapperLiveLogPanel";
+		const previous = document.createElement("button");
+		chatLog.appendChild(previous);
+		const mount = document.createElement("div");
+		chatLog.appendChild(mount);
+		document.body.appendChild(chatLog);
+		previous.focus();
+		const config = {
+			settings: { widgetSettings: { enableAutoFocus: true } },
+		} as unknown as React.ComponentProps<typeof Message>["config"];
+
+		try {
+			render(
+				<Message message={galleryCardWithLink("https://example.com")} config={config} />,
+				{
+					container: mount,
+				},
+			);
+
+			const link = screen.getByRole("link");
+			expect(link.closest(".webchat-carousel-template-content")).not.toBeNull();
+			await waitFor(() => expect(link).toHaveFocus(), { timeout: 1000 });
+		} finally {
+			chatLog.remove();
+		}
 	});
 
 	it("Enter on a card whose default_action URL is dangerous does not navigate", () => {

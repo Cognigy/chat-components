@@ -172,8 +172,11 @@ export const demoCases: Case[] = [
 	//     gallery.json shape). In a real browser it renders the grey
 	//     placeholder whose title must stay readable; jsdom never fires the
 	//     img error, so this only pins the non-broken DOM.
-	//   - default_action link: a card with a default_action URL renders its
-	//     content block as a keyboard-reachable role="link" (tabindex="0").
+	//   - default_action link: cards with a default_action URL render a
+	//     keyboard-reachable role="link" (tabindex="0") around the card text,
+	//     or on the image area when the block has no text. The fixture covers
+	//     the name fallbacks (title → subtitle → image alt) and a subtitle that
+	//     sanitizes to "" (no empty block, no invisible tab stop).
 	{ name: "gallery card variant: missing image", message: asBot(galleryMissingImageFixture) },
 	{
 		name: "gallery card variant: default_action link",
