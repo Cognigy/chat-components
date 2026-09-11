@@ -88,6 +88,17 @@
 										"type": "web_url",
 										"url": "https://example.com/empty-subtitle"
 									}
+								},
+								{
+									"title": "Subtitle with its own link",
+									"subtitle": "Details: <a href=\"https://inner.example/details\">inner link</a>",
+									"image_url": "https://placewaifu.com/image/300/300",
+									"image_alt_text": "a cat",
+									"buttons": [],
+									"default_action": {
+										"type": "web_url",
+										"url": "https://example.com/nested-anchor"
+									}
 								}
 							]
 						}

@@ -382,6 +382,34 @@ describe("Gallery Accessibility (W3C APG carousel pattern)", () => {
 		expect(openSpy).toHaveBeenCalledWith("https://example.com/");
 	});
 
+	it("activating an <a href> inside the card text does not also open the card URL", () => {
+		const openSpy = vi.spyOn(window, "open").mockImplementation(() => null);
+		render(
+			<Message
+				message={galleryCardWithLink("https://example.com", {
+					subtitle: 'See <a href="https://inner.example/">inner</a> for details',
+				})}
+			/>,
+		);
+
+		const cardLink = screen.getByRole("link", { name: /Card with link/ });
+		const inner = cardLink.querySelector<HTMLAnchorElement>("a[href]")!;
+		// jsdom has no navigation; keep the anchor's own default from logging.
+		inner.addEventListener("click", event => event.preventDefault());
+
+		// Enter/click on the inner anchor bubble to the card link's handlers
+		// and must be ignored: one activation, one action (WCAG 4.1.2).
+		inner.focus();
+		fireEvent.keyDown(inner, { key: "Enter", code: "Enter", keyCode: 13 });
+		fireEvent.click(inner);
+		expect(openSpy).not.toHaveBeenCalled();
+
+		// A click on the wrapper's plain text (the <p>) is still a card
+		// activation, so the guard must not require target === currentTarget.
+		fireEvent.click(cardLink.querySelector(".webchat-carousel-template-subtitle")!);
+		expect(openSpy).toHaveBeenCalledWith("https://example.com/");
+	});
+
 	it("honors disableUrlButtonSanitization: the default_action URL opens as authored", () => {
 		const openSpy = vi.spyOn(window, "open").mockImplementation(() => null);
 		const config = {

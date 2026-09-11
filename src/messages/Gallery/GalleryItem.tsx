@@ -1,5 +1,5 @@
 import { IWebchatAttachmentElement } from "@cognigy/socket-client";
-import { FC, KeyboardEvent, ReactNode, useState } from "react";
+import { FC, KeyboardEvent, ReactNode, SyntheticEvent, useState } from "react";
 import classes from "./Gallery.module.css";
 import buttonClasses from "src/common/Buttons/Buttons.module.css";
 import { useMessageContext, useRandomId } from "../hooks";
@@ -81,14 +81,20 @@ const GalleryItem: FC<GallerySlideProps> = props => {
 			: sanitizeUrl(default_action.url)
 		: "";
 
-	const handleClick = () => {
+	const handleClick = (event: SyntheticEvent) => {
+		// The card text is sanitized HTML and may contain its own <a href> or
+		// <button>; activating one bubbles here and must not also open the
+		// default_action URL (WCAG 4.1.2). A click on the text itself (target is
+		// the <p>/<h4>) still activates the link.
+		const target = event.target as Element;
+		if (target !== event.currentTarget && target.closest("a[href], button")) return;
 		if (!linkUrl || linkUrl === "about:blank") return;
 		window.open(linkUrl);
 	};
 
 	const handleKeyDown = (event: KeyboardEvent) => {
 		if (default_action && event.key === "Enter") {
-			handleClick();
+			handleClick(event);
 		}
 	};
 
