@@ -95,12 +95,14 @@ Vitest runs under jsdom — no layout, paint, or scroll metrics. The axe gate di
 Pre-existing, ticketed violations can be tolerated per **(case, rule)** in `knownViolations` in [`test/a11y.spec.tsx`](../test/a11y.spec.tsx):
 
 ```ts
-const knownViolations: Record<string, { rule: string; ticket: string; note: string }[]> = {
+const knownViolations: Record<string, KnownViolation[]> = {
 	"stateful: datepicker open dialog": [
 		{
 			rule: "aria-required-children",
+			// The ONLY nodes the rule may fire on — the same rule anywhere else in the state fails.
+			nodes: ['.flatpickr-rContainer[role="grid"]', '.flatpickr-days[role="rowgroup"]'],
 			ticket: "AB#144248",
-			note: "flatpickr grid/rowgroup lack role=row children — calendar DOM restructure needed",
+			note: "axe ignores aria-owns precedence: cells owned by the hidden role=row elements are still counted under their DOM ancestors (grid / rowgroup)",
 		},
 	],
 };
@@ -109,11 +111,12 @@ const knownViolations: Record<string, { rule: string; ticket: string; note: stri
 The semantics are **stale-proof in both directions**, so accessibility debt can only shrink:
 
 - A violation **not** on the list fails the gate.
+- Entries are **node-granular**: `nodes` lists the CSS selectors of the only elements the rule may fire on. The same rule firing on any other node in that state is a new regression and fails the gate.
 - An allowlisted violation that **stops firing also fails** the gate ("stale entry — remove it") — entries cannot silently outlive their bug. Remove the entry and close the ticket.
 - Every entry needs an Azure Boards ticket (`AB#…`). Empty is the goal state.
 - Adding an entry to mask a **new** regression is never acceptable — the allowlist exists only for pre-existing debt discovered when a gate tightened.
 
-Current entries: three for `"stateful: datepicker open dialog"` (flatpickr calendar internals: `aria-required-children`, `aria-required-parent`, `label`), all tracked under **AB#144248**.
+Current entries: `aria-required-children` for the two open-calendar states `"stateful: datepicker open dialog"` and `"stateful: datepicker week numbers open dialog"`, each limited to the grid element (`.flatpickr-rContainer` / `.flatpickr-innerContainer`) and the `.flatpickr-days` rowgroup, tracked under **AB#144248**. The flatpickr day cells must stay flat DOM children of `.dayContainer` (flatpickr indexes them by position for arrow navigation and range hover), so the `role="row"` level is supplied by hidden row elements that claim their cells (and, with week numbers, the week rowheaders) through `aria-owns`. Browsers give `aria-owns` precedence over DOM parentage, so the accessibility tree is `grid > rowgroup > row > gridcell`; axe's `aria-required-children` check does not model that precedence (`getOwnedRoles` in axe-core walks through the presentational wrappers and still counts the owned cells under their DOM ancestors). These entries document an **axe-core tooling limitation**, not markup debt — nobody should spend time "fixing" the markup for them; they leave when axe-core models `aria-owns` (or flatpickr's DOM can hold real rows).
 
 ## `eslint-disable jsx-a11y/*` requires a justification
 
@@ -197,6 +200,7 @@ Automated gates catch a lot but not everything. Before merging non-trivial compo
 
 ## Follow-ups / backlog
 
-- **AB#144248 — flatpickr calendar DOM restructure**: give the calendar grid proper `role="row"` structure and an accessible name for flatpickr's original readonly input. Removes all three allowlist entries (which will then fail as stale — by design).
+- **AB#144248 — axe-core `aria-owns` limitation (datepicker)**: the calendar grid now has a real `role="row"` level (via `aria-owns`) and flatpickr's readonly input has a name (CGY-30560); the remaining `aria-required-children` allowlist entries are an axe-core limitation (see above). Re-point the ticket at that limitation (ideally with an upstream axe-core issue link) so it is not mistaken for open markup debt.
+- **Datepicker month/year selector ids are not per-instance** (`webchat-monthSelector-datepicker`, `yearSelector-datepicker`): two open datepickers on one page produce duplicate ids, so the second picker's `<label for>` resolves to the first picker's control (SC 1.3.1 / 4.1.2). The `instanceId` scheme used for the row/week ids is the fix; the ids may be Webchat cypress selectors, so coordinate the rename. Same PR should drop the dangling `aria-labelledby="webchatDatePickerHeaderLabel"` on `.flatpickr-container` (no such element exists).
 - **Branch protection** (repo admin): mark **Accessibility lint (jsx-a11y)** and **Accessibility axe (WCAG 2.2 AA)** as required checks on `main`.
 - **Webchat-side verification**: Webchat's `cy.checkA11yCompliance()` tag list should include `wcag22aa` and drop `wcag22a` — that tag does not exist in axe-core, so it currently adds nothing. Verify and fix in the Webchat repo.

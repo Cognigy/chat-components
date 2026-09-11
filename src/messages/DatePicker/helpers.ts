@@ -110,7 +110,13 @@ export const getOptionsFromMessage = (
 		formatDate: !data.dateFormat
 			? (date: Date) => moment(date).locale(momentLocaleId).format(dateFormatLocalString)
 			: undefined,
-		plugins: [customElements({ arrowIcon, customTranslations: customTranslations || {} })],
+		plugins: [
+			customElements({
+				arrowIcon,
+				customTranslations: customTranslations || {},
+				localeId: momentLocaleId,
+			}),
+		],
 	};
 
 	const enable_disable =

@@ -33,6 +33,7 @@ import { coreCases, demoCases, a11yOnlyCases, asBot, type Case } from "./fixture
 import { runAxe, formatViolations } from "./a11y-utils";
 
 import datepickerSingleDate from "./fixtures/datepicker/singleDate.json";
+import datepickerWeekNumbers from "./fixtures/datepicker/weekNumbers.json";
 import imageDownloadableFixture from "./fixtures/image-downloadable.json";
 import imageDownloadableNoAltFixture from "./fixtures/image-downloadable-no-alt.json";
 import galleryFixture from "./fixtures/gallery.json";
@@ -41,31 +42,44 @@ import adaptiveCardsFixture from "./fixtures/adaptiveCards.json";
 
 /**
  * Pre-existing, ticketed violations. Keyed by case name; each entry names
- * the axe rule id, the Azure Boards ticket tracking the fix, and why it is
- * temporarily tolerated. Empty is the goal state.
+ * the axe rule id, the CSS selectors of the ONLY nodes the rule may fire on
+ * (a node outside that list is a new regression and fails the gate), the
+ * Azure Boards ticket tracking the fix, and why it is tolerated. Empty is
+ * the goal state.
  */
-const knownViolations: Record<string, { rule: string; ticket: string; note: string }[]> = {
-	// The flatpickr calendar's ARIA grid (reworked in AB#118957) renders
-	// role="grid"/"rowgroup" containers whose children are gridcells with
-	// no role="row" level in between, and keeps flatpickr's original
-	// readonly <input class="flatpickr-input"> without an accessible name.
-	// Fixing both means restructuring the calendar DOM (dom-compat skips +
-	// screen-reader retest), tracked as a follow-up under AB#144248.
+type KnownViolation = { rule: string; nodes: string[]; ticket: string; note: string };
+
+// The flatpickr calendar's day cells must stay flat DOM children of
+// `.dayContainer` (flatpickr's arrow navigation and range hover index them
+// by position), so the role="row" level is provided by hidden row elements
+// that claim their cells via aria-owns (CGY-30560). Browsers give aria-owns
+// precedence over DOM parentage, so the accessibility tree is
+// grid > rowgroup > row > gridcell — but axe's aria-required-children check
+// does not model that precedence: getOwnedRoles (axe-core) walks from the
+// grid/rowgroup through the presentation-role wrappers and still counts the
+// gridcells (and, with week numbers, the aria-owned rowheaders) as their DOM
+// ancestors' own children. This documents that tooling limitation, not
+// markup debt; the only way it leaves is an axe-core fix (or a flatpickr DOM
+// that can hold real rows).
+const AXE_ARIA_OWNS_LIMITATION = {
+	rule: "aria-required-children",
+	ticket: "AB#144248",
+	note: "axe ignores aria-owns precedence: cells owned by the hidden role=row elements are still counted under their DOM ancestors (grid / rowgroup)",
+};
+
+const knownViolations: Record<string, KnownViolation[]> = {
 	"stateful: datepicker open dialog": [
 		{
-			rule: "aria-required-children",
-			ticket: "AB#144248",
-			note: "flatpickr grid/rowgroup lack role=row children — calendar DOM restructure needed",
+			...AXE_ARIA_OWNS_LIMITATION,
+			nodes: ['.flatpickr-rContainer[role="grid"]', '.flatpickr-days[role="rowgroup"]'],
 		},
+	],
+	// With week numbers the grid moves up to `.flatpickr-innerContainer` (it
+	// owns the week column); the same double count applies there.
+	"stateful: datepicker week numbers open dialog": [
 		{
-			rule: "aria-required-parent",
-			ticket: "AB#144248",
-			note: "flatpickr day cells (role=gridcell) render outside role=row parents — same restructure",
-		},
-		{
-			rule: "label",
-			ticket: "AB#144248",
-			note: "flatpickr's original readonly input has no accessible name — needs aria-label via flatpickr config",
+			...AXE_ARIA_OWNS_LIMITATION,
+			nodes: ['.flatpickr-innerContainer[role="grid"]', '.flatpickr-days[role="rowgroup"]'],
 		},
 	],
 };
@@ -76,7 +90,9 @@ const knownViolations: Record<string, { rule: string; ticket: string; note: stri
  */
 async function expectA11yCompliant(caseName: string, container: Element) {
 	const allowed = knownViolations[caseName] ?? [];
-	const violations = await runAxe(container);
+	// elementRef: the allowlist is node-granular, so each violating node is
+	// matched against the entry's selectors.
+	const violations = await runAxe(container, { elementRef: true });
 
 	const firedRules = new Set(violations.map(violation => violation.id));
 	const stale = allowed.filter(entry => !firedRules.has(entry.rule));
@@ -87,16 +103,25 @@ async function expectA11yCompliant(caseName: string, container: Element) {
 	).toEqual([]);
 
 	const allowedRules = new Set(allowed.map(entry => entry.rule));
-	const tolerated = violations.filter(violation => allowedRules.has(violation.id));
-	for (const violation of tolerated) {
-		const entry = allowed.find(e => e.rule === violation.id);
+	const unexpected = violations.filter(violation => !allowedRules.has(violation.id));
+	for (const violation of violations.filter(violation => allowedRules.has(violation.id))) {
+		const entry = allowed.find(e => e.rule === violation.id)!;
+		// Only the listed nodes are tolerated; the same rule firing anywhere
+		// else in the scanned state is a new regression.
+		const strayNodes = violation.nodes.filter(
+			node => !entry.nodes.some(selector => node.element?.matches(selector)),
+		);
+		if (strayNodes.length > 0) {
+			unexpected.push({ ...violation, nodes: strayNodes });
+			continue;
+		}
 		console.warn(
-			`[a11y] tolerated known violation in "${caseName}": ${violation.id} — ` +
-				`${entry?.ticket}: ${entry?.note}`,
+			`[a11y] tolerated known violation in "${caseName}": ${violation.id} on ` +
+				`${violation.nodes.map(node => node.target.join(" ")).join(", ")} — ` +
+				`${entry.ticket}: ${entry.note}`,
 		);
 	}
 
-	const unexpected = violations.filter(violation => !allowedRules.has(violation.id));
 	if (unexpected.length > 0) {
 		throw new Error(
 			`WCAG 2.2 A/AA violations in "${caseName}" ` +
@@ -135,6 +160,22 @@ describe("Accessibility (WCAG 2.2 AA): interaction states", () => {
 
 		await expectA11yCompliant(
 			"stateful: datepicker open dialog",
+			screen.getByTestId("datepicker-message"),
+		);
+	});
+
+	it("datepicker (week numbers) with open calendar dialog — no axe violations", async () => {
+		// The week column exists only in this configuration: the grid moves up
+		// to `.flatpickr-innerContainer` (aria-colcount 8), the header row gets
+		// the "Week" columnheader and every week number is an aria-owned
+		// rowheader — none of which the single-date dialog scan above sees.
+		render(<Message message={asBot(datepickerWeekNumbers)} />);
+
+		fireEvent.click(screen.getByTestId("button-open"));
+		await screen.findByRole("dialog");
+
+		await expectA11yCompliant(
+			"stateful: datepicker week numbers open dialog",
 			screen.getByTestId("datepicker-message"),
 		);
 	});
