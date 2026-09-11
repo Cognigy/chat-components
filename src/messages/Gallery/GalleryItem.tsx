@@ -26,6 +26,9 @@ const getHostname = (url: string): string => {
 	}
 };
 
+// Interactive descendants the sanitizer can let through inside card text.
+const NESTED_CONTROL_SELECTOR = "a[href], button, input, select, textarea, summary";
+
 const GalleryItem: FC<GallerySlideProps> = props => {
 	const { slide, contentId } = props;
 	const { title, subtitle, image_url, image_alt_text, buttons, default_action } = slide;
@@ -82,12 +85,13 @@ const GalleryItem: FC<GallerySlideProps> = props => {
 		: "";
 
 	const handleClick = (event: SyntheticEvent) => {
-		// The card text is sanitized HTML and may contain its own <a href> or
-		// <button>; activating one bubbles here and must not also open the
-		// default_action URL (WCAG 4.1.2). A click on the text itself (target is
-		// the <p>/<h4>) still activates the link.
+		// The card text is sanitized HTML and may contain its own controls
+		// (<a href>, <button>, form fields are allowed tags); activating one
+		// bubbles here and must not also open the default_action URL (WCAG
+		// 4.1.2). A click on the text itself (target is the <p>/<h4>) still
+		// activates the link.
 		const target = event.target as Element;
-		if (target !== event.currentTarget && target.closest("a[href], button")) return;
+		if (target !== event.currentTarget && target.closest(NESTED_CONTROL_SELECTOR)) return;
 		if (!linkUrl || linkUrl === "about:blank") return;
 		window.open(linkUrl);
 	};
