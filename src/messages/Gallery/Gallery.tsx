@@ -26,23 +26,37 @@ const Gallery: FC = () => {
 	useEffect(() => {
 		const chatHistory = document.getElementById("webchatChatHistoryWrapperLiveLogPanel");
 
-		const firstCardContent = document.getElementById(`${carouselContentId}-0`);
-		const firstButton = firstCardContent?.getElementsByTagName("button")?.[0];
+		// The default_action link is an element inside the card (the text
+		// wrapper, or the image area when the block has no text), so it is
+		// looked up from the card frame. The frame is found via the message
+		// root: a card with an overlay title and no subtitle/buttons renders no
+		// content block, so the content id cannot locate it; the content-id
+		// lookup is the fallback when there is no message id.
+		const messageRoot = dataMessageId
+			? document.querySelector(`[data-message-id="${dataMessageId}"]`)
+			: null;
+		const firstCard =
+			messageRoot?.querySelector<HTMLElement>(".webchat-carousel-template-frame") ??
+			document
+				.getElementById(`${carouselContentId}-0`)
+				?.closest<HTMLElement>(".webchat-carousel-template-frame");
+		const firstLink = firstCard?.querySelector<HTMLElement>('[role="link"]');
+		const firstButton = firstCard?.getElementsByTagName("button")?.[0];
 
 		if (!config?.settings?.widgetSettings?.enableAutoFocus) return;
 
 		if (!chatHistory?.contains(document.activeElement)) return;
 
-		if (firstCardContent?.getAttribute("role") === "link") {
+		if (firstLink) {
 			setTimeout(() => {
-				firstCardContent?.focus();
+				firstLink.focus();
 			}, 200);
 		} else if (firstButton) {
 			setTimeout(() => {
 				firstButton?.focus();
 			}, 200);
 		}
-	}, [carouselContentId, config?.settings?.widgetSettings?.enableAutoFocus]);
+	}, [carouselContentId, dataMessageId, config?.settings?.widgetSettings?.enableAutoFocus]);
 
 	// Remove the default `aria-live="polite"` attribute added by React-Swiper to the `.swiper-wrapper`.
 	// This ensures that the gallery message does not interfere with other live region announcements.

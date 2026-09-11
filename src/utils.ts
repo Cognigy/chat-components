@@ -190,6 +190,24 @@ export const replaceUrlsWithHTMLanchorElem = (text: string) => {
 };
 
 /**
+ * Plain text of an (already sanitized) HTML string, for use in ARIA attribute
+ * values: `aria-label="<b>Sale</b>. Opens in new tab"` would announce the
+ * literal tags. DOMParser is inert — no scripts run and no resources load —
+ * so it is safe even if a consumer disabled sanitization. Falls back to a
+ * tag strip where DOMParser is unavailable.
+ * @param html The HTML string.
+ * @returns Its text content, trimmed.
+ */
+export const htmlToPlainText = (html: string | undefined): string => {
+	if (!html) return "";
+	if (typeof DOMParser !== "undefined") {
+		const doc = new DOMParser().parseFromString(html, "text/html");
+		return (doc.body?.textContent ?? "").trim();
+	}
+	return html.replace(/<[^>]*>/g, "").trim();
+};
+
+/**
  * Utility function to get focusable elements and find the next or previous focusable element relative to the currently focused element.
  * @param element The container element to search for focusable elements.
  * @returns An object containing the first, last, all focusable elements, and the next/previous focusable elements.

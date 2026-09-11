@@ -35,6 +35,7 @@ import { runAxe, formatViolations } from "./a11y-utils";
 import datepickerSingleDate from "./fixtures/datepicker/singleDate.json";
 import datepickerWeekNumbers from "./fixtures/datepicker/weekNumbers.json";
 import imageDownloadableFixture from "./fixtures/image-downloadable.json";
+import imageDownloadableNoAltFixture from "./fixtures/image-downloadable-no-alt.json";
 import galleryFixture from "./fixtures/gallery.json";
 import audioFixture from "./fixtures/audio.json";
 import adaptiveCardsFixture from "./fixtures/adaptiveCards.json";
@@ -188,6 +189,18 @@ describe("Accessibility (WCAG 2.2 AA): interaction states", () => {
 		// The lightbox may render outside the message container — scan the
 		// whole body so portal output is included.
 		await expectA11yCompliant("stateful: image lightbox open", document.body);
+	});
+
+	it("image lightbox opened for a message with no alt text — no axe violations", async () => {
+		// Regression for CGY-37634: with `altText` undefined the full-size <img>
+		// rendered no alt attribute at all (axe image-alt, critical). The
+		// `image-downloadable` fixture's altText: "" never exercised this path.
+		render(<Message message={asBot(imageDownloadableNoAltFixture)} />);
+
+		fireEvent.click(screen.getByRole("button"));
+		await screen.findByLabelText("Full-size image viewer");
+
+		await expectA11yCompliant("stateful: image lightbox open (no alt text)", document.body);
 	});
 
 	it("gallery after navigating to the next slide — no axe violations", async () => {
