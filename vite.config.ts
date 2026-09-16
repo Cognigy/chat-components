@@ -20,13 +20,26 @@ export default defineConfig({
 		globals: true,
 		// Removed browser configuration due to unsupported headless preview provider error
 		setupFiles: ["./test/preSetup.js", "./test/setup.js"],
-		// The dom-compat spec is excluded from the default `npm test` run
-		// because it has preconditions (a production `dist/` build and the
-		// dynamically-installed `chat-components-baseline` alias) that only
-		// the dedicated dom-compat workflow / `npm run test:dom-compat`
-		// script arrange. vitest.dom-compat.config.ts narrows `include` to
-		// specifically that file for the dedicated run.
-		exclude: [...configDefaults.exclude, "test/dom-compat.spec.tsx"],
+		exclude: [
+			...configDefaults.exclude,
+			// The dom-compat spec is excluded from the default `npm test` run
+			// because it has preconditions (a production `dist/` build and the
+			// dynamically-installed `chat-components-baseline` alias) that only
+			// the dedicated dom-compat workflow / `npm run test:dom-compat`
+			// script arrange. vitest.dom-compat.config.ts narrows `include` to
+			// specifically that file for the dedicated run.
+			"test/dom-compat.spec.tsx",
+			// Nested Claude Code git worktrees (.claude/worktrees/<name>) are
+			// full checkouts of this repo, so their specs match Vitest's default
+			// `include` glob and get collected on top of the real suite — the
+			// root-anchored dom-compat pattern above doesn't cover their copy
+			// either. They also carry their own node_modules, so the duplicate
+			// React copy makes every collected rendering spec fail ("Cannot read
+			// properties of null (reading 'useContext')"). CI never hits this —
+			// fresh checkout, no nested worktrees — so exclude them to keep
+			// local runs matching CI.
+			"**/.claude/worktrees/**",
+		],
 		css: {
 			modules: {
 				classNameStrategy: "non-scoped",
