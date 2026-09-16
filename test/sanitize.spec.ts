@@ -379,11 +379,28 @@ describe("sanitizeHTMLWithConfig", () => {
 			const input =
 				'<iframe srcdoc="<h1>Title</h1><script>alert(1)</script><p>Safe paragraph</p>"></iframe>';
 			const result = sanitizeHTMLWithConfig(input, undefined);
-			expect(result).toContain("srcdoc");
-			expect(result).toContain("Title");
-			expect(result).toContain("Safe paragraph");
+
+			// The security contract holds under every DOMPurify version: no
+			// executable payload survives, however the srcdoc attribute is handled.
 			expect(result).not.toMatch(/<script/i);
 			expect(result).not.toContain("alert(1)");
+
+			// Whether the attribute survives at all is a DOMPurify implementation
+			// detail rather than part of our contract. Up to 3.3.1 the attribute is
+			// kept and `sanitizeSrcdocContent` scrubs the payload out of its value.
+			// From 3.3.2 on, DOMPurify drops any attribute whose value contains a
+			// raw-text end tag (`</script`, `</style`, `</iframe`, …) as mXSS
+			// hardening, so the whole `srcdoc` goes — safer, but the benign markup
+			// goes with it. Assert content preservation only in the branch where it
+			// is meaningful, matching the guard the payload-bearing tests above use.
+			if (result.includes("srcdoc")) {
+				expect(result).toContain("Title");
+				expect(result).toContain("Safe paragraph");
+			} else {
+				// Pin the strip-everything outcome so this branch cannot silently
+				// degrade into asserting nothing.
+				expect(result).toBe("<iframe></iframe>");
+			}
 		});
 
 		test("srcdoc sanitization result is stable (idempotent)", () => {
