@@ -2,24 +2,37 @@ import DOMPurify, { Config } from "dompurify";
 import { useMessageContext } from "src/messages/hooks";
 import { useCallback } from "react";
 
+// Tags removed from the previous allow-list to align with DOMPurify's secure defaults
+// (WCH-SI10-001 / FedRAMP hardening). Each tag enables a distinct attack vector:
+//   applet          — Java applet execution
+//   base            — rewrites all relative URLs on the host page
+//   body / html / head — structural document elements; no legitimate use in sanitised fragments
+//   embed           — loads arbitrary external content / plugins
+//   form            — posts user data to attacker-controlled URLs
+//   frame / frameset / noframes — clickjacking and legacy frame injection
+//   iframe          — inline HTML documents; srcdoc = direct XSS vector
+//   link            — loads external stylesheets
+//   meta            — HTTP redirects and CSP bypass via http-equiv
+//   object          — loads Flash, PDFs, and arbitrary external content
+//   style           — CSS injection and attribute-value exfiltration
+// These tags are blocked by default when no custom tag list is configured.
+// Tenants can supply a replacement list via widgetSettings.customAllowedHtmlTags,
+// but tags in ALWAYS_BLOCKED_TAGS are stripped from that list before it is applied.
 export const allowedHtmlTags = [
 	"a",
 	"abbr",
 	"acronym",
 	"address",
-	"applet",
 	"area",
 	"article",
 	"aside",
 	"audio",
 	"b",
-	"base",
 	"basefont",
 	"bdi",
 	"bdo",
 	"big",
 	"blockquote",
-	"body",
 	"br",
 	"button",
 	"canvas",
@@ -41,27 +54,20 @@ export const allowedHtmlTags = [
 	"dl",
 	"dt",
 	"em",
-	"embed",
 	"fieldset",
 	"figcaption",
 	"figure",
 	"font",
 	"footer",
-	"form",
-	"frame",
-	"frameset",
 	"h1",
 	"h2",
 	"h3",
 	"h4",
 	"h5",
 	"h6",
-	"head",
 	"header",
 	"hr",
-	"html",
 	"i",
-	"iframe",
 	"img",
 	"input",
 	"ins",
@@ -69,15 +75,11 @@ export const allowedHtmlTags = [
 	"label",
 	"legend",
 	"li",
-	"link",
 	"main",
 	"map",
 	"mark",
-	"meta",
 	"meter",
 	"nav",
-	"noframes",
-	"object",
 	"ol",
 	"optgroup",
 	"option",
@@ -100,7 +102,6 @@ export const allowedHtmlTags = [
 	"span",
 	"strike",
 	"strong",
-	"style",
 	"sub",
 	"summary",
 	"sup",
@@ -125,11 +126,16 @@ export const allowedHtmlTags = [
 	"wbr",
 ];
 
+// Attributes removed from the previous allow-list (WCH-SI10-001 / FedRAMP hardening):
+//   action / formaction — form submission to attacker-controlled URLs
+//   sandbox             — giving content control over its own sandbox policy
+//   srcdoc              — inline HTML document in an iframe (direct XSS vector; iframe itself is now blocked)
+//   style               — inline CSS injection and attribute-value exfiltration
+//   target              — controls navigation target (_blank without rel is risky)
 export const allowedHtmlAttributes = [
 	"accept",
 	"accept-charset",
 	"accesskey",
-	"action",
 	"align",
 	"alt",
 	"autocomplete",
@@ -161,7 +167,6 @@ export const allowedHtmlAttributes = [
 	"enctype",
 	"for",
 	"form",
-	"formaction",
 	"headers",
 	"height",
 	"hidden",
@@ -198,7 +203,6 @@ export const allowedHtmlAttributes = [
 	"reversed",
 	"rows",
 	"rowspan",
-	"sandbox",
 	"scope",
 	"selected",
 	"shape",
@@ -207,14 +211,11 @@ export const allowedHtmlAttributes = [
 	"span",
 	"spellcheck",
 	"src",
-	"srcdoc",
 	"srclang",
 	"srcset",
 	"start",
 	"step",
-	"style",
 	"tabindex",
-	"target",
 	"title",
 	"translate",
 	"type",
@@ -223,6 +224,28 @@ export const allowedHtmlAttributes = [
 	"width",
 	"wrap",
 ];
+
+// Hard deny-list applied to tenant-supplied customAllowedHtmlTags before the list
+// is passed to DOMPurify. These tags cannot be re-enabled via tenant configuration.
+// Must stay in sync with the tags removed from allowedHtmlTags above.
+export const ALWAYS_BLOCKED_TAGS = new Set([
+	"script",
+	"iframe",
+	"object",
+	"embed",
+	"applet",
+	"frame",
+	"frameset",
+	"noframes",
+	"meta",
+	"base",
+	"link",
+	"style",
+	"form",
+	"body",
+	"head",
+	"html",
+]);
 
 const config: Config = {
 	ALLOWED_TAGS: allowedHtmlTags,
@@ -271,6 +294,10 @@ const MAX_SANITIZATION_ITERATIONS = 10;
  * **Browser-only**: This function requires `document` to be available. In
  * non-browser environments (e.g., SSR) it returns the input unchanged (the
  * HTML has already been sanitized by DOMPurify before this post-processing).
+ *
+ * Note: `iframe` is no longer in the default ALLOWED_TAGS, so this function
+ * is effectively a no-op for the default config. It is retained as defence-in-depth
+ * in case `srcdoc` appears via other means.
  */
 const sanitizeSrcdocContent = (html: string, purifyConfig: Config): string => {
 	if (!html.includes("srcdoc")) return html;
@@ -334,9 +361,19 @@ export const sanitizeHTMLWithConfig = (
 		return text.replace(/</g, "&lt;").replace(/>/g, "&gt;");
 	}
 
-	const configToUse = customAllowedHtmlTags
-		? { ...config, ALLOWED_TAGS: customAllowedHtmlTags }
-		: config;
+	let configToUse = config;
+	if (Array.isArray(customAllowedHtmlTags)) {
+		// Strip dangerous tags and non-string entries from the tenant-supplied list
+		// before passing to DOMPurify (defence-in-depth; mirrors the filter applied
+		// in config-reducer.ts in the webchat host so both consumers stay in sync).
+		// Non-array values (e.g. a plain string passed by mistake) fall through to
+		// the default config rather than producing an empty ALLOWED_TAGS list.
+		const safeTags = customAllowedHtmlTags.filter(
+			(tag): tag is string =>
+				typeof tag === "string" && !ALWAYS_BLOCKED_TAGS.has(tag.toLowerCase().trim()),
+		);
+		configToUse = { ...config, ALLOWED_TAGS: safeTags };
+	}
 
 	// Iteratively sanitize until output stabilizes to prevent bypass attacks
 	// where nested/obfuscated tags like "<<b>i>" become valid HTML after one pass
