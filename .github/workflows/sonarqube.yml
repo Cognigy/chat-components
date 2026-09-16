@@ -18,12 +18,29 @@ jobs:
         name: "chat-components - SonarQube Analysis"
         runs-on: ubuntu-latest
         timeout-minutes: 15
+        if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository
         steps:
             - uses: actions/checkout@v6
               with:
                   fetch-depth: 0
+
+            - name: Set up Node
+              if: always()
+              uses: actions/setup-node@v3
+              with:
+                  node-version: "22.x"
+                  cache: "npm"
+
+            - name: Install dependencies
+              if: always()
+              run: npm ci --ignore-scripts
+
+            - name: Test coverage
+              if: always()
+              run: npm run coverage
+
             - uses: SonarSource/sonarqube-scan-action@v7
-              if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository
+              if: always() && hashFiles('coverage/lcov.info') != ''
               env:
                   SONAR_TOKEN: ${{ secrets.NICE_SONAR_TOKEN }}
                   SONAR_HOST_URL: ${{ vars.NICE_SONAR_HOST_URL }}
