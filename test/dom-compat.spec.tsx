@@ -278,7 +278,7 @@ describe(`DOM compatibility: branch vs @cognigy/chat-components@${baselineVersio
 			({ message, config, prevMessage }) => assertSameDom(message, config, prevMessage),
 		);
 		it.skip.each(coreCases.filter(isSkipped))(
-			"$name — skipped: intentional DOM change pending 0.81.0 publish (CGY-37634)",
+			"$name — skipped: intentional DOM change pending its fix version's npm-latest publish (see the version-aware skip blocks above)",
 			() => {},
 		);
 	});
@@ -289,7 +289,7 @@ describe(`DOM compatibility: branch vs @cognigy/chat-components@${baselineVersio
 			({ message, config, prevMessage }) => assertSameDom(message, config, prevMessage),
 		);
 		it.skip.each(demoCases.filter(isSkipped))(
-			"$name — skipped: intentional DOM change pending 0.81.0 publish (CGY-37634)",
+			"$name — skipped: intentional DOM change pending its fix version's npm-latest publish (see the version-aware skip blocks above)",
 			() => {},
 		);
 	});
