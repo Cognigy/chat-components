@@ -392,10 +392,10 @@ describe("Gallery Accessibility (W3C APG carousel pattern)", () => {
 		["<button>inner</button>", "button"],
 		['<input type="checkbox">', "input"],
 	])(
-		"activating a nested %s inside the card text does not also open the card URL",
+		"a nested %s in the card text is a sibling stop of the card link, never inside it (CGY-39786)",
 		(markup, selector) => {
 			const openSpy = vi.spyOn(window, "open").mockImplementation(() => null);
-			render(
+			const { container } = render(
 				<Message
 					message={galleryCardWithLink("https://example.com", {
 						subtitle: `See ${markup} for details`,
@@ -404,24 +404,50 @@ describe("Gallery Accessibility (W3C APG carousel pattern)", () => {
 			);
 
 			const cardLink = screen.getByRole("link", { name: /Card with link/ });
-			const inner = cardLink.querySelector<HTMLElement>(selector)!;
+			const inner = container.querySelector<HTMLElement>(
+				`.webchat-carousel-template-subtitle ${selector}`,
+			)!;
 			expect(inner).not.toBeNull();
+			// Text that carries its own control is not wrapped (a link must not
+			// contain interactive descendants; a link in a link is announced as
+			// two adjacent links on the same words). The link is the image area
+			// instead, and the subtitle keeps describing it.
+			expect(cardLink.querySelector("img")).not.toBeNull();
+			expect(cardLink.contains(inner)).toBe(false);
+			expect(cardLink.querySelector("a[href], button, input, select, textarea")).toBeNull();
+			expect(cardLink).toHaveAttribute(
+				"aria-describedby",
+				container.querySelector(".webchat-carousel-template-subtitle")!.id,
+			);
+			// One tab stop per destination, in DOM order: card link, then the control.
+			const tabbables = getTabbables(container);
+			expect(tabbables.indexOf(inner)).toBe(tabbables.indexOf(cardLink) + 1);
+
 			// jsdom has no navigation; keep an anchor's own default from logging.
 			inner.addEventListener("click", event => event.preventDefault());
-
-			// Enter/click on the inner anchor bubble to the card link's handlers
-			// and must be ignored: one activation, one action (WCAG 4.1.2).
 			inner.focus();
 			fireEvent.keyDown(inner, { key: "Enter", code: "Enter", keyCode: 13 });
 			fireEvent.click(inner);
 			expect(openSpy).not.toHaveBeenCalled();
 
-			// A click on the wrapper's plain text (the <p>) is still a card
-			// activation, so the guard must not require target === currentTarget.
-			fireEvent.click(cardLink.querySelector(".webchat-carousel-template-subtitle")!);
+			// The card link itself still opens the default_action URL.
+			fireEvent.keyDown(cardLink, { key: "Enter", code: "Enter", keyCode: 13 });
 			expect(openSpy).toHaveBeenCalledWith("https://example.com/");
 		},
 	);
+
+	it("card text without controls stays the link (the image-area fallback is only for text with controls)", () => {
+		render(
+			<Message
+				message={galleryCardWithLink("https://example.com", {
+					subtitle: "See <b>details</b> below",
+				})}
+			/>,
+		);
+		const cardLink = screen.getByRole("link", { name: /Card with link/ });
+		expect(cardLink.querySelector("img")).toBeNull();
+		expect(cardLink.querySelector(".webchat-carousel-template-subtitle")).not.toBeNull();
+	});
 
 	it("honors disableUrlButtonSanitization: the default_action URL opens as authored", () => {
 		const openSpy = vi.spyOn(window, "open").mockImplementation(() => null);

@@ -210,6 +210,33 @@ export const htmlToPlainText = (html: string | undefined): string => {
 };
 
 /**
+ * Interactive elements in the sanitizer's default allow-list (`allowedHtmlTags`
+ * in `src/sanitize.ts`), i.e. controls an author can place inside message
+ * text. Used to keep such controls out of a link wrapper and to ignore their
+ * activation bubbling to it.
+ */
+export const INTERACTIVE_CONTENT_SELECTOR = "a[href], button, input, select, textarea, summary";
+
+/**
+ * Whether an (already sanitized) HTML string contains an interactive element
+ * (see INTERACTIVE_CONTENT_SELECTOR). A link must not contain interactive
+ * descendants (HTML content model); a link nested in a link is exposed as two
+ * adjacent link stops (CGY-39786). Like htmlToPlainText this uses the inert
+ * DOMParser, with a tag-name fallback where it is unavailable.
+ * @param html The HTML string.
+ * @returns true when the markup contains an interactive element.
+ */
+export const htmlHasInteractiveContent = (html: string | undefined): boolean => {
+	if (!html) return false;
+	if (typeof DOMParser !== "undefined") {
+		const doc = new DOMParser().parseFromString(html, "text/html");
+		return !!doc.body?.querySelector(INTERACTIVE_CONTENT_SELECTOR);
+	}
+	// No-DOM fallback (never hit in the browser).
+	return /<(a|button|input|select|textarea|summary)[\s>]/i.test(html);
+};
+
+/**
  * Utility function to get focusable elements and find the next or previous focusable element relative to the currently focused element.
  * @param element The container element to search for focusable elements.
  * @returns An object containing the first, last, all focusable elements, and the next/previous focusable elements.
