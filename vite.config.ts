@@ -10,9 +10,20 @@ export default defineConfig({
 		react(),
 		// Stamp the injected <style> with the host page's CSP nonce, read from
 		// <meta property="csp-nonce" content="…"> in document.head, so the
-		// library's CSS still applies under a nonce-only style-src-elem. Pages
-		// without that meta tag are unaffected.
-		cssInjectedByJsPlugin({ useStrictCSP: true }),
+		// library's CSS still applies under a nonce-only style-src-elem. This is
+		// the plugin's default injection plus that nonce. Not its `useStrictCSP`
+		// option: that assigns the nonce unconditionally, so a page without the
+		// meta tag would get the string "undefined" as the nonce.
+		cssInjectedByJsPlugin({
+			injectCode: cssCode =>
+				"try{if(typeof document!='undefined'){" +
+				"var elementStyle=document.createElement('style');" +
+				"var nonce=document.head.querySelector('meta[property=csp-nonce]')?.getAttribute('content');" +
+				"if(nonce){elementStyle.nonce=nonce;}" +
+				`elementStyle.appendChild(document.createTextNode(${cssCode}));` +
+				"document.head.appendChild(elementStyle);" +
+				"}}catch(e){console.error('vite-plugin-css-injected-by-js',e);}",
+		}),
 		svgr(),
 		dts({
 			insertTypesEntry: true,
