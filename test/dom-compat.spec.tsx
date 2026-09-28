@@ -214,6 +214,19 @@ const FIX_VERSION = "0.81.0";
 const INTENTIONALLY_DIVERGING_PRE_0_81 = new Set<string>([
 	"gallery card variant: default_action link",
 ]);
+
+// Version-aware skip for INTENTIONAL structural divergence (CGY-38030): image/video/audio/file
+// attachments now prefer `downloadUrl` over the legacy `url` when both are present. The dedicated
+// "* download url" corpus cases set them to different values on purpose to prove the preference,
+// so their rendered `src`/`href` diverges from any published baseline older than this fix.
+// TODO(CGY-38030): delete this block once 0.82.0 is on npm latest.
+const FIX_VERSION_CGY_38030 = "0.82.0";
+const INTENTIONALLY_DIVERGING_PRE_0_82 = new Set<string>([
+	"demo: image download url",
+	"demo: video download url",
+	"demo: audio download url",
+	"demo: file download url",
+]);
 // Compares release triplets only: tolerates a leading "v" and ignores any
 // prerelease/build suffix (a "0.80.0-beta.1" baseline published to npm
 // `latest` counts as 0.80.0 — betas of the fix version carry the change).
@@ -233,7 +246,9 @@ const semverLt = (a: string, b: string): boolean => {
 	return false;
 };
 const isSkipped = (c: Case) =>
-	semverLt(baselineVersion, FIX_VERSION) && INTENTIONALLY_DIVERGING_PRE_0_81.has(c.name);
+	(semverLt(baselineVersion, FIX_VERSION) && INTENTIONALLY_DIVERGING_PRE_0_81.has(c.name)) ||
+	(semverLt(baselineVersion, FIX_VERSION_CGY_38030) &&
+		INTENTIONALLY_DIVERGING_PRE_0_82.has(c.name));
 
 // Release-version guard for the skip block. Nothing else ties FIX_VERSION to
 // the version that actually ships: package.json is bumped in a separate
@@ -246,11 +261,13 @@ const isSkipped = (c: Case) =>
 // FIX_VERSION) or the block outlived its release (delete it).
 const releaseTriplet = (version: string) =>
 	version.replace(/^v/, "").split(/[-+]/)[0].split(".").slice(0, 3).join(".");
-describe("version-aware skip block hygiene (CGY-37634)", () => {
-	it(`package.json version (${pkg.version}) is the baseline (${baselineVersion}) or FIX_VERSION (${FIX_VERSION}) — otherwise update FIX_VERSION or delete the skip block`, () => {
-		expect([releaseTriplet(baselineVersion), releaseTriplet(FIX_VERSION)]).toContain(
-			releaseTriplet(pkg.version),
-		);
+describe("version-aware skip block hygiene", () => {
+	it(`package.json version (${pkg.version}) is the baseline (${baselineVersion}) or a known FIX_VERSION (${FIX_VERSION} / ${FIX_VERSION_CGY_38030}) — otherwise update the relevant FIX_VERSION or delete its skip block`, () => {
+		expect([
+			releaseTriplet(baselineVersion),
+			releaseTriplet(FIX_VERSION),
+			releaseTriplet(FIX_VERSION_CGY_38030),
+		]).toContain(releaseTriplet(pkg.version));
 	});
 });
 

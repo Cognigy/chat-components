@@ -43,11 +43,15 @@ import imageFixture from "./image.json";
 import imageDownloadableFixture from "./image-downloadable.json";
 import imageDownloadableNoAltFixture from "./image-downloadable-no-alt.json";
 import imageBrokenFixture from "./imageBroken.json";
+import imageDownloadUrlFixture from "./image-download-url.json";
 import videoFixture from "./video.json";
 import videoYoutubeFixture from "./videoYoutube.json";
 import videoAltTextFixture from "./videoWithAltText.json";
+import videoDownloadUrlFixture from "./video-download-url.json";
 import audioFixture from "./audio.json";
+import audioDownloadUrlFixture from "./audio-download-url.json";
 import fileFixture from "./file.json";
+import fileDownloadUrlFixture from "./file-download-url.json";
 import listFixture from "./list.json";
 import galleryFixture from "./gallery.json";
 import galleryMissingImageFixture from "./gallery-missing-image.json";
@@ -158,11 +162,15 @@ export const demoCases: Case[] = [
 		message: asBot(imageDownloadableNoAltFixture),
 	},
 	{ name: "demo: image broken", message: asBot(imageBrokenFixture) },
+	{ name: "demo: image download url", message: asBot(imageDownloadUrlFixture) },
 	{ name: "demo: video", message: asBot(videoFixture) },
 	{ name: "demo: video (YouTube)", message: asBot(videoYoutubeFixture) },
 	{ name: "demo: video with alt text", message: asBot(videoAltTextFixture) },
+	{ name: "demo: video download url", message: asBot(videoDownloadUrlFixture) },
 	{ name: "demo: audio", message: asBot(audioFixture) },
+	{ name: "demo: audio download url", message: asBot(audioDownloadUrlFixture) },
 	{ name: "demo: file", message: asBot(fileFixture) },
+	{ name: "demo: file download url", message: asBot(fileDownloadUrlFixture) },
 	// Templates
 	{ name: "demo: list", message: asBot(listFixture) },
 	{ name: "demo: gallery", message: asBot(galleryFixture) },
