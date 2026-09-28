@@ -35,7 +35,7 @@ const Image: FC = () => {
 				setShowLightbox(false);
 				buttonRef.current?.focus(); // Restore focus after closing the lightbox
 			},
-			url: resolvedUrl,
+			url: resolvedUrl ?? "",
 			altText,
 			isDownloadable,
 			button,
