@@ -1,0 +1,24 @@
+{
+	"text": null,
+	"data": {
+		"_cognigy": {
+			"_default": {
+				"_image": {
+					"type": "image",
+					"imageUrl": "https://legacy.example.com/image.png"
+				}
+			},
+			"_webchat": {
+				"message": {
+					"attachment": {
+						"type": "image",
+						"payload": {
+							"url": "https://legacy.example.com/image.png",
+							"downloadUrl": "https://download.example.com/image.png"
+						}
+					}
+				}
+			}
+		}
+	}
+}

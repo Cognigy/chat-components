@@ -9,11 +9,13 @@ import { it, describe, expect } from "vitest";
 import Message from "src/messages/Message";
 import image from "test/fixtures/image.json";
 import imageDownloadable from "test/fixtures/image-downloadable.json";
+import imageDownloadUrl from "test/fixtures/image-download-url.json";
 import { IMessage } from "@cognigy/socket-client";
 
 describe("Message Image", () => {
 	const message = image as unknown as IMessage;
 	const messageDownloadable = imageDownloadable as unknown as IMessage;
+	const messageDownloadUrl = imageDownloadUrl as unknown as IMessage;
 
 	it("renders image message", async () => {
 		await waitFor(() => {
@@ -63,5 +65,14 @@ describe("Message Image", () => {
 		waitForElementToBeRemoved(screen.queryByLabelText("Full-size image viewer"));
 
 		fireEvent.click(screen.getByLabelText("Close full-size image viewer"));
+	});
+
+	it("prefers downloadUrl over url when both are present", async () => {
+		await waitFor(() => {
+			render(<Message message={messageDownloadUrl} />);
+		});
+
+		const img = screen.getByTestId("image-message").querySelector("img") as HTMLImageElement;
+		expect(img).toHaveAttribute("src", "https://download.example.com/image.png");
 	});
 });
