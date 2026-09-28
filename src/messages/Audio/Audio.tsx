@@ -5,14 +5,19 @@ import classnames from "classnames";
 import Controls from "./Controls";
 import { OnProgressProps } from "react-player/base";
 import { useLiveRegion, useMessageContext } from "src/messages/hooks";
-import { getChannelPayload } from "src/utils";
+import { getChannelPayload, resolveAttachmentUrl } from "src/utils";
 import { IWebchatAudioAttachment } from "@cognigy/socket-client";
 
 const Audio: FC = () => {
 	const { message, config } = useMessageContext();
 	const payload = getChannelPayload(message, config);
-	const { url, altText } =
-		(payload?.message?.attachment as IWebchatAudioAttachment)?.payload || {};
+	const { url, altText, downloadUrl } =
+		(
+			payload?.message?.attachment as IWebchatAudioAttachment & {
+				payload: { downloadUrl?: string };
+			}
+		)?.payload || {};
+	const resolvedUrl = resolveAttachmentUrl({ url, downloadUrl });
 
 	const playerRef = useRef<ReactPlayer | null>(null);
 	const [playing, setPlaying] = useState(false);
@@ -56,10 +61,10 @@ const Audio: FC = () => {
 	useLiveRegion({
 		messageType: "audio",
 		data: { hasTranscript: !!altText },
-		validation: () => !!url,
+		validation: () => !!resolvedUrl,
 	});
 
-	if (!url) return null;
+	if (!resolvedUrl) return null;
 
 	return (
 		<div
@@ -67,7 +72,7 @@ const Audio: FC = () => {
 			data-testid="audio-message"
 		>
 			<ReactPlayer
-				url={url}
+				url={resolvedUrl}
 				onReady={handleFocus}
 				ref={playerRef}
 				playing={playing}

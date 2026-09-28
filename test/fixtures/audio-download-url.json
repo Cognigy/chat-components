@@ -1,0 +1,25 @@
+{
+	"text": null,
+	"data": {
+		"_cognigy": {
+			"_default": {
+				"_audio": {
+					"type": "audio",
+					"audioUrl": "https://legacy.example.com/audio.mp3"
+				}
+			},
+			"_webchat": {
+				"message": {
+					"attachment": {
+						"type": "audio",
+						"payload": {
+							"url": "https://legacy.example.com/audio.mp3",
+							"downloadUrl": "https://download.example.com/audio.mp3",
+							"altText": "Soft happy tone instrumental music playing."
+						}
+					}
+				}
+			}
+		}
+	}
+}
