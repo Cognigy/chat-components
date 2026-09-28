@@ -3,13 +3,16 @@ import classes from "./File.module.css";
 import classnames from "classnames";
 import { IUploadFileAttachmentData } from "@cognigy/socket-client";
 import { useLiveRegion, useMessageContext } from "src/messages/hooks";
+import { resolveAttachmentUrl } from "src/utils";
 import { Typography } from "src/index";
 import { Text } from "src/messages";
 import { getFileExtension, getFileName, getSizeLabel, isImageAttachment } from "./helper";
 
 const File: FC = props => {
 	const { message } = useMessageContext();
-	const attachments = message.data?.attachments as IUploadFileAttachmentData[];
+	const attachments = message.data?.attachments as (IUploadFileAttachmentData & {
+		downloadUrl?: string;
+	})[];
 	const text = message.text;
 
 	useLiveRegion({
@@ -21,8 +24,8 @@ const File: FC = props => {
 	if (!attachments || attachments.length === 0) return null;
 
 	// sort attachments by file type, valid images first
-	const images: IUploadFileAttachmentData[] = [];
-	const nonImages: IUploadFileAttachmentData[] = [];
+	const images: (IUploadFileAttachmentData & { downloadUrl?: string })[] = [];
+	const nonImages: (IUploadFileAttachmentData & { downloadUrl?: string })[] = [];
 
 	attachments.forEach(attachment => {
 		if (isImageAttachment(attachment.mimeType)) {
@@ -42,18 +45,19 @@ const File: FC = props => {
 							"webchat-media-template-image-container",
 						)}
 					>
-						{images.map((attachment: IUploadFileAttachmentData, index: number) => {
-							const { fileName, size, url } = attachment;
+						{images.map((attachment, index: number) => {
+							const { fileName, size, url, downloadUrl } = attachment;
+							const resolvedUrl = resolveAttachmentUrl({ url, downloadUrl });
 
 							return (
 								<a
-									href={url}
+									href={resolvedUrl}
 									target="_blank"
 									style={{ textDecoration: "none" }}
 									key={index}
 								>
 									<img
-										src={url}
+										src={resolvedUrl}
 										alt={`${fileName} (${getSizeLabel(size)})`}
 										className={classnames(
 											attachments.length > 1
@@ -77,12 +81,13 @@ const File: FC = props => {
 							"webchat-media-template-files-container",
 						)}
 					>
-						{nonImages.map((attachment: IUploadFileAttachmentData, index: number) => {
-							const { fileName, size, url } = attachment;
+						{nonImages.map((attachment, index: number) => {
+							const { fileName, size, url, downloadUrl } = attachment;
+							const resolvedUrl = resolveAttachmentUrl({ url, downloadUrl });
 
 							return (
 								<a
-									href={url}
+									href={resolvedUrl}
 									target="_blank"
 									style={{ textDecoration: "none" }}
 									key={index}

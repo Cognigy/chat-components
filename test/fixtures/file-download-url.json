@@ -1,0 +1,33 @@
+{
+	"text": null,
+	"data": {
+		"attachments": [
+			{
+				"runtimeFileId": "download-url-pdf",
+				"mimeType": "application/pdf",
+				"size": 893,
+				"status": "scanned",
+				"url": "https://legacy.example.com/file.pdf",
+				"downloadUrl": "https://download.example.com/file.pdf",
+				"fileName": "sample.pdf"
+			},
+			{
+				"runtimeFileId": "download-url-image",
+				"mimeType": "image/png",
+				"size": 118256,
+				"status": "scanned",
+				"url": "https://legacy.example.com/image.png",
+				"downloadUrl": "https://download.example.com/image.png",
+				"fileName": "screenshot.png"
+			},
+			{
+				"runtimeFileId": "legacy-only-pdf",
+				"mimeType": "application/pdf",
+				"size": 500,
+				"status": "scanned",
+				"url": "https://legacy.example.com/legacy-only.pdf",
+				"fileName": "legacy-only.pdf"
+			}
+		]
+	}
+}
