@@ -125,6 +125,15 @@ export const allowedHtmlTags = [
 	"wbr",
 ];
 
+/**
+ * The default tag allowlist, frozen for consumers. `customAllowedHtmlTags`
+ * replaces the allowlist rather than extending it, so a consumer that wants
+ * the defaults minus a few tags derives its list from this one, e.g. an
+ * embedding page with a nonce-only `style-src-elem` dropping `style`:
+ * `defaultAllowedHtmlTags.filter(tag => tag !== "style")`.
+ */
+export const defaultAllowedHtmlTags: readonly string[] = Object.freeze([...allowedHtmlTags]);
+
 export const allowedHtmlAttributes = [
 	"accept",
 	"accept-charset",

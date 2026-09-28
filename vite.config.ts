@@ -8,7 +8,11 @@ import dts from "vite-plugin-dts";
 export default defineConfig({
 	plugins: [
 		react(),
-		cssInjectedByJsPlugin(),
+		// Stamp the injected <style> with the host page's CSP nonce, read from
+		// <meta property="csp-nonce" content="…"> in document.head, so the
+		// library's CSS still applies under a nonce-only style-src-elem. Pages
+		// without that meta tag are unaffected.
+		cssInjectedByJsPlugin({ useStrictCSP: true }),
 		svgr(),
 		dts({
 			insertTypesEntry: true,
