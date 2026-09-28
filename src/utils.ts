@@ -159,6 +159,13 @@ export const getBackgroundImage = (url: string) => {
 	return `url("${sanitized}")`;
 };
 
+export function resolveAttachmentUrl(attachment: {
+	url?: string;
+	downloadUrl?: string;
+}): string | undefined {
+	return attachment.downloadUrl ?? attachment.url;
+}
+
 export const getRandomId = (prefix = "") => {
 	const id = window?.crypto?.randomUUID?.() || Date.now();
 
