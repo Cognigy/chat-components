@@ -210,12 +210,31 @@ export const htmlToPlainText = (html: string | undefined): string => {
 };
 
 /**
- * Interactive elements in the sanitizer's default allow-list (`allowedHtmlTags`
- * in `src/sanitize.ts`), i.e. controls an author can place inside message
- * text. Used to keep such controls out of a link wrapper and to ignore their
- * activation bubbling to it.
+ * HTML "interactive content" (https://html.spec.whatwg.org/#interactive-content)
+ * plus the two attributes that make any element focusable, restricted to what
+ * the sanitizer's default allow-list (`allowedHtmlTags` / `allowedHtmlAttributes`
+ * in `src/sanitize.ts`) lets an author place inside message text. Used to keep
+ * such controls out of a link wrapper and to ignore their activation bubbling
+ * to it.
  */
-export const INTERACTIVE_CONTENT_SELECTOR = "a[href], button, input, select, textarea, summary";
+export const INTERACTIVE_CONTENT_SELECTOR = [
+	"a[href]",
+	"area[href]",
+	"audio[controls]",
+	"video[controls]",
+	"button",
+	"details",
+	"embed",
+	"iframe",
+	"img[usemap]",
+	"object[usemap]",
+	'input:not([type="hidden"])',
+	"label",
+	"select",
+	"textarea",
+	'[contenteditable]:not([contenteditable="false"])',
+	"[tabindex]",
+].join(", ");
 
 /**
  * Whether an (already sanitized) HTML string contains an interactive element
@@ -232,8 +251,11 @@ export const htmlHasInteractiveContent = (html: string | undefined): boolean => 
 		const doc = new DOMParser().parseFromString(html, "text/html");
 		return !!doc.body?.querySelector(INTERACTIVE_CONTENT_SELECTOR);
 	}
-	// No-DOM fallback (never hit in the browser).
-	return /<(a|button|input|select|textarea|summary)[\s>]/i.test(html);
+	// No-DOM fallback (never hit in the browser): tag names and the two
+	// focusability attributes, without the per-attribute conditions above.
+	return /<(a|area|audio|video|button|details|embed|iframe|img|object|input|label|select|textarea)[\s>]|\s(contenteditable|tabindex)=/i.test(
+		html,
+	);
 };
 
 /**

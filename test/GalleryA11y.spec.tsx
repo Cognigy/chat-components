@@ -16,6 +16,7 @@ import Message from "src/messages/Message";
 import { asBot } from "./fixtures/message-cases";
 import galleryFixture from "./fixtures/gallery.json";
 import { getTabbables } from "./a11y-utils";
+import { INTERACTIVE_CONTENT_SELECTOR } from "src/utils";
 import type { IMessage } from "@cognigy/socket-client";
 
 // Total action buttons across the fixture's 8 slides (2 + 0 + 1 + 0 + 2 + 0
@@ -391,6 +392,9 @@ describe("Gallery Accessibility (W3C APG carousel pattern)", () => {
 		['<a href="https://inner.example/">inner</a>', "a[href]"],
 		["<button>inner</button>", "button"],
 		['<input type="checkbox">', "input"],
+		['<audio controls src="https://inner.example/a.mp3"></audio>', "audio"],
+		['<span tabindex="0">inner</span>', "[tabindex]"],
+		['<span contenteditable="true">inner</span>', "[contenteditable]"],
 	])(
 		"a nested %s in the card text is a sibling stop of the card link, never inside it (CGY-39786)",
 		(markup, selector) => {
@@ -414,14 +418,21 @@ describe("Gallery Accessibility (W3C APG carousel pattern)", () => {
 			// instead, and the subtitle keeps describing it.
 			expect(cardLink.querySelector("img")).not.toBeNull();
 			expect(cardLink.contains(inner)).toBe(false);
-			expect(cardLink.querySelector("a[href], button, input, select, textarea")).toBeNull();
+			expect(cardLink.querySelector(INTERACTIVE_CONTENT_SELECTOR)).toBeNull();
 			expect(cardLink).toHaveAttribute(
 				"aria-describedby",
 				container.querySelector(".webchat-carousel-template-subtitle")!.id,
 			);
 			// One tab stop per destination, in DOM order: card link, then the control.
+			// (jsdom does not make media/contenteditable focusable, so the tab-order
+			// check applies where the helper sees the control as tabbable.)
+			expect(
+				cardLink.compareDocumentPosition(inner) & Node.DOCUMENT_POSITION_FOLLOWING,
+			).toBeTruthy();
 			const tabbables = getTabbables(container);
-			expect(tabbables.indexOf(inner)).toBe(tabbables.indexOf(cardLink) + 1);
+			if (tabbables.includes(inner)) {
+				expect(tabbables.indexOf(inner)).toBe(tabbables.indexOf(cardLink) + 1);
+			}
 
 			// jsdom has no navigation; keep an anchor's own default from logging.
 			inner.addEventListener("click", event => event.preventDefault());

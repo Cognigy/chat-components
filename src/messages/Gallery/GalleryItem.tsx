@@ -87,14 +87,16 @@ const GalleryItem: FC<GallerySlideProps> = props => {
 
 	const handleClick = (event: SyntheticEvent) => {
 		// The card text is sanitized HTML and may contain its own controls
-		// (<a href>, <button>, form fields are allowed tags). Block text with a
-		// control is not wrapped by the link (see linkTarget), but an overlay
-		// title inside the image-area link can still carry one; activating it
-		// bubbles here and must not also open the default_action URL (WCAG
-		// 4.1.2). A click on the text itself (target is the <p>/<h4>) still
-		// activates the link.
+		// (<a href>, <button>, form fields, media with controls, tabindex …).
+		// Block text with a control is not wrapped by the link (see linkTarget),
+		// but an overlay title inside the image-area link can still carry one;
+		// activating it bubbles here and must not also open the default_action
+		// URL (WCAG 4.1.2). The link itself has a tabindex and so matches the
+		// selector: a click on the text (target is the <p>/<h4>) resolves to the
+		// link and still activates it.
 		const target = event.target as Element;
-		if (target !== event.currentTarget && target.closest(INTERACTIVE_CONTENT_SELECTOR)) return;
+		const control = target.closest(INTERACTIVE_CONTENT_SELECTOR);
+		if (control && control !== event.currentTarget) return;
 		if (!linkUrl || linkUrl === "about:blank") return;
 		window.open(linkUrl);
 	};
