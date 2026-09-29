@@ -1,6 +1,6 @@
 import { render, screen } from "@testing-library/react";
 import { describe, test, expect } from "vitest";
-import { Message } from "src/index";
+import { Message, defaultAllowedHtmlTags } from "src/index";
 import { IWebchatConfig } from "src/messages/types";
 
 describe("Text Component", () => {
@@ -351,5 +351,62 @@ describe("Text Component", () => {
 			expect(heading).toBeInTheDocument();
 			expect(heading?.textContent).toBe("Test Heading");
 		});
+	});
+	describe("Consumers that drop the <style> tag", () => {
+		// An embedding page with a nonce-only style-src-elem (the Cognigy.AI
+		// Interaction Panel) drops `style` from the allowlist so no message
+		// <style> reaches its DOM. Inline style attributes must keep working.
+		const styledText =
+			'Hello <style>.x { color: red; }</style><span style="color: rgb(1, 2, 3)">styled</span>';
+
+		const renderText = (config?: IWebchatConfig, renderMarkdown = false) =>
+			render(
+				<Message
+					message={{ text: styledText, source: "bot" }}
+					config={
+						{
+							...config,
+							settings: {
+								...config?.settings,
+								behavior: { renderMarkdown },
+							},
+						} as IWebchatConfig
+					}
+				/>,
+			);
+
+		const withoutStyleTag = {
+			settings: {
+				widgetSettings: {
+					customAllowedHtmlTags: defaultAllowedHtmlTags.filter(tag => tag !== "style"),
+				},
+			},
+		} as IWebchatConfig;
+
+		test("exports the default allowlist frozen, including style", () => {
+			expect(Object.isFrozen(defaultAllowedHtmlTags)).toBe(true);
+			expect(defaultAllowedHtmlTags).toContain("style");
+			expect(defaultAllowedHtmlTags).toContain("span");
+		});
+
+		test("keeps <style> by default, so the deployed webchat is unchanged", () => {
+			const { container } = renderText();
+			expect(container.querySelector("style")).not.toBeNull();
+			expect(container.querySelector("span[style]")).not.toBeNull();
+		});
+
+		test.each([
+			["HTML", false],
+			["markdown", true],
+		])(
+			"strips <style> but keeps inline style attributes when rendering %s",
+			(_, renderMarkdown) => {
+				const { container } = renderText(withoutStyleTag, renderMarkdown);
+				expect(container.querySelector("style")).toBeNull();
+				expect(container.textContent).not.toContain("color: red");
+				expect(screen.getByText("styled").style.color).toBe("rgb(1, 2, 3)");
+				expect(container.textContent).toContain("Hello");
+			},
+		);
 	});
 });
