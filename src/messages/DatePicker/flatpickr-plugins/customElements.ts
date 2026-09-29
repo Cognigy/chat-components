@@ -757,11 +757,20 @@ function customElements(pluginConfig: Config): Plugin {
 			fp?.calendarContainer?.setAttribute("aria-labelledby", "webchatDatePickerHeaderLabel");
 
 			if (fp?.config?.enableTime) {
+				// flatpickr names the hour/minute inputs from its locale's hourAriaLabel /
+				// minuteAriaLabel, which most of its l10n files (e.g. de) leave in English. Let
+				// customTranslations override them (CGY-39786); the flatpickr value stays the
+				// fallback so the default DOM is unchanged.
+				const labels = customTranslations?.ariaLabels;
 				const hourField = fp?.timeContainer?.getElementsByClassName("flatpickr-hour")?.[0];
 				hourField?.setAttribute("tabIndex", "0");
+				if (labels?.datePickerHour)
+					hourField?.setAttribute("aria-label", labels.datePickerHour);
 				const minutesField =
 					fp?.timeContainer?.getElementsByClassName("flatpickr-minute")?.[0];
 				minutesField?.setAttribute("tabIndex", "0");
+				if (labels?.datePickerMinute)
+					minutesField?.setAttribute("aria-label", labels.datePickerMinute);
 				// The AM/PM control's role, name, value and keys are set up in setAmPmAlly().
 				const amPmField = fp?.timeContainer?.getElementsByClassName("flatpickr-am-pm")?.[0];
 				amPmField?.setAttribute("tabIndex", "0");

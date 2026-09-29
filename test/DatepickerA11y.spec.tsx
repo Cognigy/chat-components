@@ -7,6 +7,7 @@ import rangeDates from "test/fixtures/datepicker/range.json";
 import weekNumbers from "test/fixtures/datepicker/weekNumbers.json";
 import localeDe from "test/fixtures/datepicker/localeDe.json";
 import { IMessage } from "@cognigy/socket-client";
+import { IWebchatConfig } from "src/messages/types";
 import { pressKey, expectSingleTabStop } from "./a11y-utils";
 
 const openDialog = async (
@@ -917,5 +918,57 @@ describe("CGY-30559 - AM/PM control (APG spinbutton)", () => {
 		expect(liveWrites).not.toContain("AM");
 		expect(liveWrites).not.toContain("PM");
 		expect(amPm).toHaveAttribute("aria-valuetext", amPmValue(amPm));
+	});
+});
+
+describe("CGY-39786 - every library-added label and accessible name is translatable", () => {
+	const de = {
+		settings: {
+			customTranslations: {
+				datePickerMonthLabel: "Monat",
+				datePickerYearLabel: "Jahr",
+				ariaLabels: {
+					closeDatePicker: "Datumsauswahl schließen",
+					datePickerPreviousMonth: "Vorheriger Monat",
+					datePickerNextMonth: "Nächster Monat",
+					datePickerGridLabel: "Kalender",
+					datePickerGridDescription: "Mit den Pfeiltasten durch die Tage navigieren",
+					datePickerHour: "Stunde",
+					datePickerMinute: "Minute",
+				},
+			},
+		},
+	} as unknown as IWebchatConfig;
+
+	it("localized dialog: labels, month nav, close button and time fields use customTranslations", async () => {
+		const { getByTestId, findByRole } = render(
+			<Message message={localeDe as unknown as IMessage} config={de} />,
+		);
+		const root = await openDialog(findByRole, getByTestId);
+
+		expect(
+			root.querySelector('label[for="webchat-monthSelector-datepicker"]'),
+		).toHaveTextContent("Monat");
+		expect(root.querySelector('label[for="yearSelector-datepicker"]')).toHaveTextContent(
+			"Jahr",
+		);
+		expect(screen.getByRole("button", { name: "Vorheriger Monat" })).toBeInTheDocument();
+		expect(screen.getByRole("button", { name: "Nächster Monat" })).toBeInTheDocument();
+		expect(screen.getByRole("button", { name: "Datumsauswahl schließen" })).toBeInTheDocument();
+		expect(root.querySelector('[role="grid"]')).toHaveAttribute("aria-label", "Kalender");
+		// flatpickr's German l10n leaves hourAriaLabel/minuteAriaLabel in English; the library
+		// must let consumers override them so no English is left in a German dialog (3.1.2).
+		expect(root.querySelector(".flatpickr-hour")).toHaveAttribute("aria-label", "Stunde");
+		expect(root.querySelector(".flatpickr-minute")).toHaveAttribute("aria-label", "Minute");
+		expect(root.innerHTML).not.toMatch(/Previous month|Next month|Close date-picker|"Hour"/);
+	});
+
+	it("without translations the time fields keep flatpickr's names (DOM contract unchanged)", async () => {
+		const { getByTestId, findByRole } = render(
+			<Message message={singleDate as unknown as IMessage} />,
+		);
+		const root = await openDialog(findByRole, getByTestId);
+		expect(root.querySelector(".flatpickr-hour")).toHaveAttribute("aria-label", "Hour");
+		expect(root.querySelector(".flatpickr-minute")).toHaveAttribute("aria-label", "Minute");
 	});
 });

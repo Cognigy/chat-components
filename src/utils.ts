@@ -210,6 +210,55 @@ export const htmlToPlainText = (html: string | undefined): string => {
 };
 
 /**
+ * HTML "interactive content" (https://html.spec.whatwg.org/#interactive-content)
+ * plus the two attributes that make any element focusable, restricted to what
+ * the sanitizer's default allow-list (`allowedHtmlTags` / `allowedHtmlAttributes`
+ * in `src/sanitize.ts`) lets an author place inside message text. Used to keep
+ * such controls out of a link wrapper and to ignore their activation bubbling
+ * to it.
+ */
+export const INTERACTIVE_CONTENT_SELECTOR = [
+	"a[href]",
+	"area[href]",
+	"audio[controls]",
+	"video[controls]",
+	"button",
+	"details",
+	"embed",
+	"iframe",
+	"img[usemap]",
+	"object[usemap]",
+	'input:not([type="hidden"])',
+	"label",
+	"select",
+	"textarea",
+	'[contenteditable]:not([contenteditable="false"])',
+	"[tabindex]",
+].join(", ");
+
+/**
+ * Whether an (already sanitized) HTML string contains an interactive element
+ * (see INTERACTIVE_CONTENT_SELECTOR). A link must not contain interactive
+ * descendants (HTML content model); a link nested in a link is exposed as two
+ * adjacent link stops (CGY-39786). Like htmlToPlainText this uses the inert
+ * DOMParser, with a tag-name fallback where it is unavailable.
+ * @param html The HTML string.
+ * @returns true when the markup contains an interactive element.
+ */
+export const htmlHasInteractiveContent = (html: string | undefined): boolean => {
+	if (!html) return false;
+	if (typeof DOMParser !== "undefined") {
+		const doc = new DOMParser().parseFromString(html, "text/html");
+		return !!doc.body?.querySelector(INTERACTIVE_CONTENT_SELECTOR);
+	}
+	// No-DOM fallback (never hit in the browser): tag names and the two
+	// focusability attributes, without the per-attribute conditions above.
+	return /<(a|area|audio|video|button|details|embed|iframe|img|object|input|label|select|textarea)[\s>]|\s(contenteditable|tabindex)=/i.test(
+		html,
+	);
+};
+
+/**
  * Utility function to get focusable elements and find the next or previous focusable element relative to the currently focused element.
  * @param element The container element to search for focusable elements.
  * @returns An object containing the first, last, all focusable elements, and the next/previous focusable elements.

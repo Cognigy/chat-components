@@ -96,16 +96,37 @@
 .slideItem [role="link"] {
 	cursor: pointer;
 }
+/* Two-colour focus ring, as on the primary buttons: the primary outline plus a
+   4px contrast band, so the ring stays visible whatever the image or theme
+   colour behind it (WCAG 2.4.7 Focus Visible, 1.4.11 Non-text Contrast). */
 .slideItem [role="link"]:focus-visible {
 	outline: 2px solid var(--cc-primary-color-focus);
 	outline-offset: 2px;
+	box-shadow: 0 0 0 4px var(--cc-secondary-contrast-color);
 }
 /* .slideItem is overflow:hidden and the image area fills it edge to edge, so
    the focus ring is drawn inside the card; an outset ring there is clipped
-   away entirely (WCAG 2.4.7 Focus Visible). The text link sits inside the
-   content block's 8px padding, so its outset ring is never clipped. */
+   away entirely. The text link sits inside the content block's 8px padding,
+   so its outset ring is never clipped. The image-area ring is drawn by an
+   overlay pseudo-element: an inset box-shadow on the element itself would be
+   painted beneath the <img> that fills it, and the element's own outline is
+   painted beneath its positioned pseudo-element. The outline is kept but
+   transparent so forced-colors mode (which drops box-shadows and recolours
+   outlines) still shows a ring. */
 .slideItem .top[role="link"]:focus-visible {
+	outline-color: transparent;
 	outline-offset: -2px;
+	box-shadow: none;
+}
+.slideItem .top[role="link"]:focus-visible::after {
+	content: "";
+	position: absolute;
+	inset: 0;
+	border-radius: inherit;
+	box-shadow:
+		inset 0 0 0 2px var(--cc-primary-color-focus),
+		inset 0 0 0 4px var(--cc-secondary-contrast-color);
+	pointer-events: none;
 }
 
 /* 

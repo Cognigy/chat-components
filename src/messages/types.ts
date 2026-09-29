@@ -172,6 +172,8 @@ export interface IWebchatSettings {
 			datePickerRangeEnd?: string;
 			datePickerWeekNumber?: string;
 			datePickerAmPm?: string;
+			datePickerHour?: string;
+			datePickerMinute?: string;
 			actionButtonPositionText?: string;
 			buttonGroupLabel?: string;
 			slidesCountText?: string;
