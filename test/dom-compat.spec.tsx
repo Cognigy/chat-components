@@ -203,12 +203,21 @@ describe("normalize preserves the accessibility contract", () => {
 // image area instead (the pre-existing no-text shape). Affects the
 // "Subtitle with its own link" card of "gallery card variant: default_action
 // link" — the only corpus case with such a card. Covered by
-// test/GalleryA11y.spec.tsx; release notes carry an "Accessibility changes"
-// entry so Webchat re-runs its cypress-axe suite.
+// test/GalleryA11y.spec.tsx.
 //
-// The case stays in the shared corpus, so the a11y gate keeps scanning it.
+// CGY-39786 (adaptive card compact Input.ChoiceSet): the placeholder <option>
+// the adaptivecards renderer marks disabled + hidden is exposed by Chromium
+// but skipped by NVDA, which announced a two-choice set as "2 of 3". The
+// placeholder is now an ordinary selectable option with an empty value.
+// Affects "demo: adaptive cards [1]" — the only corpus card with a compact
+// choice set that has a placeholder. Covered by test/AdaptiveCardsA11y.spec.tsx.
+//
+// Release notes carry an "Accessibility changes" entry for both so Webchat
+// re-runs its cypress-axe suite.
+//
+// The cases stay in the shared corpus, so the a11y gate keeps scanning them.
 // Once 0.82.0 ships to npm latest, install-dom-compat-baseline resolves to it,
-// the condition turns false, and the case re-enables itself. Cut the release
+// the condition turns false, and the cases re-enable themselves. Cut the release
 // that carries this change as 0.82.0 — or update FIX_VERSION to the version
 // it actually ships under (the "FIX_VERSION matches the release" guard below
 // fails the bump PR otherwise).
@@ -216,6 +225,7 @@ describe("normalize preserves the accessibility contract", () => {
 const FIX_VERSION = "0.82.0";
 const INTENTIONALLY_DIVERGING_PRE_0_82 = new Set<string>([
 	"gallery card variant: default_action link",
+	"demo: adaptive cards [1]",
 ]);
 // Compares release triplets only: tolerates a leading "v" and ignores any
 // prerelease/build suffix (a "0.80.0-beta.1" baseline published to npm

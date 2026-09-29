@@ -136,3 +136,49 @@ describe("Adaptive Cards Accessibility (actions)", () => {
 		expect(action).not.toHaveBeenCalled();
 	});
 });
+
+// Fixture [1]: card with a compact Input.ChoiceSet ("Select Input", two
+// choices, placeholder "Placeholder text").
+const choiceSetMessage = (mutate?: (choiceSet: Record<string, unknown>) => void) => {
+	const raw = JSON.parse(JSON.stringify((adaptiveCardsFixture as unknown as object[])[1]));
+	const choiceSet = raw.data._cognigy._webchat.adaptiveCard.body.find(
+		(element: { type: string }) => element.type === "Input.ChoiceSet",
+	);
+	mutate?.(choiceSet);
+	return asBot(raw);
+};
+
+describe("CGY-39786 - compact Input.ChoiceSet placeholder is a real option", () => {
+	it("the placeholder option is selectable and still the selected, empty-value default", () => {
+		render(<Message message={choiceSetMessage()} action={vi.fn()} />);
+
+		const select = screen.getByRole("combobox", { name: "Select Input" }) as HTMLSelectElement;
+		const [placeholder, ...choices] = Array.from(select.options);
+		// The renderer emits the placeholder as disabled + hidden; Chromium exposes
+		// it anyway and NVDA counts it but skips it ("2 of 3"). As an ordinary
+		// option every announced position is reachable.
+		expect(placeholder).toHaveTextContent("Placeholder text");
+		expect(placeholder.disabled).toBe(false);
+		expect(placeholder.hidden).toBe(false);
+		expect(placeholder.selected).toBe(true);
+		expect(placeholder.value).toBe("");
+		expect(select.value).toBe("");
+		expect(choices.map(option => option.text)).toEqual(["Choice 1", "Choice 2"]);
+		expect(screen.getAllByRole("option")).toHaveLength(3);
+	});
+
+	it("a placeholder without text stays hidden (no blank row in the list)", () => {
+		render(
+			<Message
+				message={choiceSetMessage(choiceSet => delete choiceSet.placeholder)}
+				action={vi.fn()}
+			/>,
+		);
+
+		const select = screen.getByRole("combobox", { name: "Select Input" }) as HTMLSelectElement;
+		const placeholder = select.options[0];
+		expect(placeholder.text).toBe("");
+		expect(placeholder.disabled).toBe(true);
+		expect(placeholder.hidden).toBe(true);
+	});
+});

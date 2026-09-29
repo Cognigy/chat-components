@@ -77,6 +77,24 @@ const AdaptiveCard: FC<IAdaptiveCardProps> = props => {
 					if (heading.getAttribute("aria-level") === null)
 						heading.setAttribute("aria-level", "4");
 				});
+				// A compact Input.ChoiceSet is a native <select> whose placeholder is a
+				// first <option> that the renderer marks selected + disabled + hidden.
+				// Chromium still exposes that option to assistive technology while
+				// NVDA skips disabled options when arrowing, so a two-choice set is
+				// announced as "2 of 3" (CGY-39786; microsoft/AdaptiveCards#3822 fixed
+				// only the no-placeholder case). Make the placeholder an ordinary
+				// selectable option with an empty value, as USWDS / GOV.UK selects do:
+				// the closed control looks the same (it is still the selected option),
+				// re-selecting it clears the field, and required validation still sees
+				// "". A placeholder without text stays hidden (no blank row).
+				const placeholderOptions = targetRef.current.querySelectorAll<HTMLOptionElement>(
+					"select.ac-choiceSetInput-compact > option[disabled][hidden][value='']",
+				);
+				placeholderOptions.forEach(option => {
+					if (!option.text) return;
+					option.disabled = false;
+					option.hidden = false;
+				});
 				// Find element with class names ac-container ac-adaptiveCard and has some aria-label
 				const container = targetRef.current.querySelector(
 					".ac-container.ac-adaptiveCard[aria-label][tabindex='0']",
