@@ -39,7 +39,8 @@ export interface IWebchatSettings {
 		showInChat?: boolean;
 	};
 	widgetSettings?: {
-		/** Extra tags appended to the sanitizer allow-list (see `src/sanitize.ts`). */
+		/** Replaces the sanitizer's default tag allow-list entirely; only these tags
+		 *  survive sanitization (`sanitizeHTMLWithConfig` in `src/sanitize.ts`). */
 		customAllowedHtmlTags?: string[];
 		disableRenderURLsAsLinks?: boolean;
 		disableTextInputSanitization?: boolean;
