@@ -359,6 +359,7 @@ const screens: TScreen[] = [
 									"Mit den Pfeiltasten durch die Tage navigieren",
 								datePickerRangeStart: "Beginn des Zeitraums",
 								datePickerRangeEnd: "Ende des Zeitraums",
+								datePickerSelected: "ausgewählt",
 								datePickerWeekNumber: "Woche",
 								datePickerAmPm: "Vormittag/Nachmittag",
 								datePickerHour: "Stunde",

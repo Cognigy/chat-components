@@ -116,9 +116,10 @@ describe("Message Datepicker", () => {
 			.querySelector(".flatpickr-time");
 		expect(timeContainer).not.toBeInTheDocument();
 
-		// tomorrow date is selected by default (day cells use a spoken label with weekday)
+		// tomorrow date is selected by default (day cells use a spoken label with weekday; a
+		// selected day's name ends with the selected word, CGY-39786)
 		const tomorrowSpoken = moment().add(1, "days").locale("en").format("dddd, MMMM D, YYYY");
-		const tomorrowCell = getByLabelText(tomorrowSpoken);
+		const tomorrowCell = getByLabelText(`${tomorrowSpoken}, selected`);
 		expect(tomorrowCell).toHaveClass("selected");
 		const tomorrow = moment().add(1, "days").locale("en").format("MM/DD/YYYY");
 		const input = screen.getByTestId("datepicker-message").querySelector(".flatpickr-input");

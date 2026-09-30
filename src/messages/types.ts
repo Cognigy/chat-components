@@ -93,6 +93,8 @@ export interface IWebchatSettings {
 			datePickerGridDescription?: string;
 			datePickerRangeStart?: string;
 			datePickerRangeEnd?: string;
+			/** Appended to the name of every aria-selected day cell (default "selected"). */
+			datePickerSelected?: string;
 			datePickerWeekNumber?: string;
 			datePickerAmPm?: string;
 			datePickerHour?: string;
