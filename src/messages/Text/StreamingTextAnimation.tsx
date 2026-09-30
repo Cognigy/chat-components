@@ -6,6 +6,8 @@ import { IStreamingMessage } from "../types";
 interface StreamingTextAnimationProps {
 	content: string[]; // text chunks
 	onTextUpdate: (newText: string) => void;
+	onTypingTextUpdate?: (text: string) => void;
+	renderTypingText?: boolean;
 	onSetMessageAnimated?: (
 		messageId: string,
 		animationState: IStreamingMessage["animationState"],
@@ -38,6 +40,8 @@ const getTransitionTimeout = (text: string) => {
 const StreamingTextAnimation: FC<StreamingTextAnimationProps> = ({
 	content,
 	onTextUpdate,
+	onTypingTextUpdate,
+	renderTypingText = true,
 	onSetMessageAnimated,
 	messageId,
 	animationState,
@@ -50,6 +54,7 @@ const StreamingTextAnimation: FC<StreamingTextAnimationProps> = ({
 	const [animationComplete, setAnimationComplete] = useState(false);
 
 	const nodeRef = useRef(null);
+	const completedMessageId = useRef<string | null>(null);
 
 	/**
 	 * Whenever `content` changes, queue up any new chunks that haven't been animated yet.
@@ -57,7 +62,13 @@ const StreamingTextAnimation: FC<StreamingTextAnimationProps> = ({
 	useEffect(() => {
 		const startIndex = lastAnimatedIndex === null ? 0 : lastAnimatedIndex + 1;
 		if (startIndex < content.length) {
-			setAnimationQueue(content.slice(startIndex));
+			setAnimationQueue(previous => {
+				const next = content.slice(startIndex);
+				return previous.length === next.length &&
+					previous.every((chunk, index) => chunk === next[index])
+					? previous
+					: next;
+			});
 		}
 	}, [content, lastAnimatedIndex]);
 
@@ -91,6 +102,12 @@ const StreamingTextAnimation: FC<StreamingTextAnimationProps> = ({
 		return () => clearTimeout(timer);
 	}, [currentAnimatedText, typingProgress]);
 
+	useEffect(() => {
+		if (currentAnimatedText && typingProgress > 0) {
+			onTypingTextUpdate?.(currentAnimatedText.slice(0, typingProgress));
+		}
+	}, [currentAnimatedText, typingProgress, onTypingTextUpdate]);
+
 	/**
 	 * When the current animation is complete:
 	 *   1. Send the chunk up to `onTextUpdate`.
@@ -100,31 +117,47 @@ const StreamingTextAnimation: FC<StreamingTextAnimationProps> = ({
 		if (!animationComplete) return;
 
 		onTextUpdate(currentAnimatedText);
+		onTypingTextUpdate?.("");
 
 		// Reset & proceed to the next chunk
 		setCurrentAnimatedText("");
 		setAnimationQueue(prev => prev.slice(1));
 		setLastAnimatedIndex(prev => (prev === null ? 0 : prev + 1));
 		setAnimationComplete(false);
-
-		// If there are no more chunks after this one, and the message is finished, mark the message as fully animated unless it was exited
-		if (
-			animationQueue.length === 1 &&
-			finishReason &&
-			animationState !== "exited" &&
-			onSetMessageAnimated
-		) {
-			onSetMessageAnimated(messageId, "done");
-		}
 	}, [
 		animationComplete,
 		currentAnimatedText,
 		onTextUpdate,
-		animationQueue.length,
-		messageId,
-		onSetMessageAnimated,
-		animationState,
+		onTypingTextUpdate,
+	]);
+
+	useEffect(() => {
+		if (
+			!finishReason ||
+			animationState === "exited" ||
+			animationState === "done" ||
+			!onSetMessageAnimated ||
+			lastAnimatedIndex !== content.length - 1 ||
+			animationQueue.length > 0 ||
+			currentAnimatedText ||
+			animationComplete ||
+			completedMessageId.current === messageId
+		) {
+			return;
+		}
+
+		completedMessageId.current = messageId;
+		onSetMessageAnimated(messageId, "done");
+	}, [
 		finishReason,
+		animationState,
+		onSetMessageAnimated,
+		lastAnimatedIndex,
+		content.length,
+		animationQueue.length,
+		currentAnimatedText,
+		animationComplete,
+		messageId,
 	]);
 
 	//cleanup side effect on unmount set as fully animated
@@ -153,7 +186,7 @@ const StreamingTextAnimation: FC<StreamingTextAnimationProps> = ({
 			unmountOnExit
 		>
 			<span ref={nodeRef} className={classes.typingText}>
-				{currentAnimatedText.slice(0, typingProgress)}
+				{renderTypingText && currentAnimatedText.slice(0, typingProgress)}
 			</span>
 		</CSSTransition>
 	);

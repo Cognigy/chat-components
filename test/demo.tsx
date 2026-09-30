@@ -1,5 +1,5 @@
 // @ts-nocheck
-import React, { Dispatch, FC, SetStateAction, useState } from "react";
+import React, { Dispatch, FC, SetStateAction, useEffect, useState } from "react";
 import ReactDOM from "react-dom/client";
 
 import "./demo.css";
@@ -7,7 +7,7 @@ import "@fontsource/geist/400.css";
 import "@fontsource/geist/500.css";
 import "@fontsource/geist/600.css";
 import Message, { MessageProps } from "../src/messages/Message.tsx";
-import { IWebchatConfig, MessageSender } from "../src/messages/types.ts";
+import { IStreamingMessage, IWebchatConfig, MessageSender } from "../src/messages/types.ts";
 
 //fixtures
 import listMessage from "test/fixtures/list.json";
@@ -83,7 +83,119 @@ type TScreen = {
 	title: string;
 	anchor: string;
 	messages?: Array<Omit<MessageProps, "config"> & { config?: DeepPartial<IWebchatConfig> }>;
+	beforeMessages?: React.ReactNode[];
 	content?: React.ReactNode[];
+};
+
+const streamingMarkdownExamples = {
+	"Bold across chunks": "Here is **bold text that crosses several streamed chunks** followed by plain text.",
+	"Link while typing": "Read the [Markdown guide](https://example.com/guide) for more details.",
+	"HTML and inline code": "This is <b>important</b> and this is `inline code`.",
+	"Heading and list": "### Ingredients\n- First item\n- **Second item**\n- Third item",
+	"Literal punctuation": "The total is 5 * 3. A literal [label] and an escaped \\*asterisk\\* stay visible.",
+};
+
+const StreamingMarkdownRun: FC<{ text: string }> = ({ text }) => {
+	const characters = Array.from(text);
+	const chunks = Array.from({ length: Math.ceil(characters.length / 8) }, (_, index) =>
+		characters.slice(index * 8, (index + 1) * 8).join(""),
+	);
+	const [received, setReceived] = useState(chunks.slice(0, 1));
+	const [animationState, setAnimationState] = useState<"start" | "done">("start");
+	const onSetMessageAnimated = React.useCallback(
+		(_id: string, state: IStreamingMessage["animationState"]) => {
+			if (state === "done") setAnimationState("done");
+		},
+		[],
+	);
+
+	useEffect(() => {
+		const timers = chunks.slice(1).map((chunk, index) =>
+			window.setTimeout(() => setReceived(previous => [...previous, chunk]), (index + 1) * 250),
+		);
+		return () => timers.forEach(window.clearTimeout);
+	}, [text]);
+
+	return (
+		<>
+			<p role="status">
+				{animationState === "done" ? "Finished rendering" : "Receiving and rendering chunks"}
+			</p>
+			<Message
+				message={
+					{
+						id: "streaming-markdown-demo",
+						source: "bot",
+						text: received,
+						animationState,
+						finishReason: received.length === chunks.length ? "stop" : undefined,
+					} as unknown as IStreamingMessage
+				}
+				config={
+					{
+						settings: {
+							behavior: {
+								renderMarkdown: true,
+								progressiveMessageRendering: true,
+								collateStreamedOutputs: true,
+							},
+						},
+					} as IWebchatConfig
+				}
+				onSetMessageAnimated={onSetMessageAnimated}
+			/>
+		</>
+	);
+};
+
+const StreamingMarkdownLab: FC = () => {
+	const [example, setExample] = useState<keyof typeof streamingMarkdownExamples>(
+		"Bold across chunks",
+	);
+	const [draft, setDraft] = useState<string>(streamingMarkdownExamples[example]);
+	const [activeText, setActiveText] = useState(draft);
+	const [run, setRun] = useState(0);
+
+	return (
+		<div className="streamingMarkdownLab">
+			<p>
+				Each replay sends eight characters every 250 ms. Watch the message below while it
+				streams, then compare its finished rendering to the Markdown in the editor.
+			</p>
+			<label htmlFor="streaming-example">Example</label>
+			<select
+				id="streaming-example"
+				value={example}
+				onChange={event => {
+					const selected = event.target.value as keyof typeof streamingMarkdownExamples;
+					setExample(selected);
+					setDraft(streamingMarkdownExamples[selected]);
+				}}
+			>
+				{Object.keys(streamingMarkdownExamples).map(name => (
+					<option key={name}>{name}</option>
+				))}
+			</select>
+			<label htmlFor="streaming-markdown-input">Markdown to stream</label>
+			<textarea
+				id="streaming-markdown-input"
+				rows={4}
+				value={draft}
+				onChange={event => setDraft(event.target.value)}
+			/>
+			<button
+				type="button"
+				disabled={!draft}
+				onClick={() => {
+					setActiveText(draft);
+					setRun(previous => previous + 1);
+				}}
+			>
+				Replay streaming
+			</button>
+			<StreamingMarkdownRun key={run} text={activeText} />
+		</div>
+	);
 };
 
 const screens: TScreen[] = [
@@ -726,6 +838,12 @@ const screens: TScreen[] = [
 	{
 		title: "Streaming messages with markdown",
 		anchor: "streaming-messages",
+		beforeMessages: [
+			<StreamingMarkdownLab key="streaming-markdown-lab" />,
+			<h2 className="streamingExamplesHeading" key="streaming-examples-heading">
+				Existing message examples
+			</h2>,
+		],
 		messages: [
 			{
 				config: {
@@ -1219,7 +1337,7 @@ export const Menu = (props: MenuProps) => {
 				<ul>
 					{screens.map(({ title, anchor }) => (
 						<li key={anchor} className={anchor === currentScreen ? "current" : ""}>
-							<a href={`#${anchor}`} onPointerDown={() => setCurrentScreen(anchor)}>
+							<a href={`#${anchor}`} onClick={() => setCurrentScreen(anchor)}>
 								{title}
 							</a>
 						</li>
@@ -1287,6 +1405,7 @@ const MessageParams = (props: MessageParamsProps) => {
 
 interface ScreenProps {
 	messages: TScreen["messages"];
+	beforeMessages?: TScreen["beforeMessages"];
 	content?: TScreen["content"];
 }
 
@@ -1305,6 +1424,7 @@ const Screen: FC<ScreenProps> = props => {
 				className="chatRoot"
 				style={messageParams.c26 ? { backgroundColor: "#fff" } : undefined}
 			>
+				{props.beforeMessages}
 				{messages.map((message, index) => (
 					<Message
 						key={index}
@@ -1332,7 +1452,7 @@ const Demo = () => {
 
 		const hash = window.location.hash.replace("#", "");
 
-		return hash || CURRENT_PR;
+		return hash === "streaming-markdown-lab" ? "streaming-messages" : hash || CURRENT_PR;
 	});
 
 	const screen = screens.find(m => m.anchor === currentScreen);
@@ -1340,7 +1460,11 @@ const Demo = () => {
 	return (
 		<section>
 			<Menu currentScreen={currentScreen} setCurrentScreen={setCurrentScreen} />
-			<Screen messages={screen?.messages} content={screen?.content} />
+			<Screen
+				messages={screen?.messages}
+				beforeMessages={screen?.beforeMessages}
+				content={screen?.content}
+			/>
 		</section>
 	);
 };

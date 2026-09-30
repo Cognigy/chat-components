@@ -10,6 +10,7 @@ import StreamingTextAnimation from "./StreamingTextAnimation";
 import Markdown from "react-markdown";
 import rehypeRaw from "rehype-raw";
 import remarkGfm from "remark-gfm";
+import remend from "remend";
 
 interface TextProps {
 	content?: string | string[];
@@ -22,6 +23,20 @@ interface TextProps {
 	) => void;
 	ignoreLiveRegion?: boolean;
 }
+
+const completeStreamingMarkdown = (text: string) => {
+	// An unfinished link label, block marker, or bare delimiter cannot be
+	// resolved until more text arrives; leave the completed message untouched.
+	const withoutPendingSyntax = text
+		.replace(/(?<!\\)(!?)\[([^[\]]*)\]$/u, (_match, image: string, label: string) =>
+			image ? "" : label,
+		)
+		.replace(/(^|\n)[ \t]*(?:#{1,6}|[-+*]|>{1,3}|\d+[.)])[ \t]*$/u, "$1")
+		.replace(/(?<!\\)(?:\*+|_+|~+|`+|<)$/u, "")
+		.replace(/(?<!\\)(?:\\\\)*\\$/u, match => match.slice(0, -1));
+
+	return remend(withoutPendingSyntax, { linkMode: "text-only" });
+};
 
 const Text: FC<TextProps> = props => {
 	const { message, config } = useMessageContext();
@@ -58,6 +73,7 @@ const Text: FC<TextProps> = props => {
 
 	// Where we accumulate the typed text
 	const [displayedText, setDisplayedText] = useState("");
+	const [typingText, setTypingText] = useState("");
 
 	// If no streaming, just copy the entire text into `displayedText`
 	useEffect(() => {
@@ -80,13 +96,31 @@ const Text: FC<TextProps> = props => {
 		source === "user" && config?.settings?.widgetSettings?.disableTextInputSanitization;
 
 	// HTML sanitization as needed
-	const processedContent = ignoreSanitization ? enhancedURLsText : processHTML(enhancedURLsText);
+	const processedContent = useMemo(
+		() => (ignoreSanitization ? enhancedURLsText : processHTML(enhancedURLsText)),
+		[enhancedURLsText, ignoreSanitization, processHTML],
+	);
 
 	useLiveRegion({
 		messageType: "text",
 		data: { text: processedContent },
 		validation: () => !props.ignoreLiveRegion,
 	});
+
+	// Keep the live-region text based on completed chunks, but render the growing
+	// markdown prefix so formatting is visible while the current chunk is typed.
+	const streamingMarkdown =
+		renderMarkdown && isStreaming && shouldAnimate
+			? completeStreamingMarkdown(displayedText + typingText)
+			: undefined;
+	const markdownContent =
+		streamingMarkdown === undefined
+			? processedContent || displayedText
+			: processHTML(
+					config?.settings?.widgetSettings?.disableRenderURLsAsLinks
+						? streamingMarkdown
+						: replaceUrlsWithHTMLanchorElem(streamingMarkdown),
+				);
 
 	return (
 		<ChatBubble>
@@ -114,7 +148,7 @@ const Text: FC<TextProps> = props => {
 						),
 					}}
 				>
-					{processedContent || displayedText}
+					{markdownContent}
 				</Markdown>
 			) : (
 				<p
@@ -128,6 +162,8 @@ const Text: FC<TextProps> = props => {
 				<StreamingTextAnimation
 					content={Array.isArray(content) ? content : [content]}
 					onTextUpdate={chunk => setDisplayedText(prev => prev + chunk)}
+					onTypingTextUpdate={renderMarkdown ? setTypingText : undefined}
+					renderTypingText={!renderMarkdown}
 					onSetMessageAnimated={props.onSetMessageAnimated}
 					animationState={(message as IStreamingMessage)?.animationState}
 					messageId={message.id}
