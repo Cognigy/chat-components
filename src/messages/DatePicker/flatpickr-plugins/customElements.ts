@@ -28,13 +28,13 @@ export interface Config {
  * - the weekday header is a `role="row"` of `role="columnheader"` cells
  * - each day cell's `aria-label` is the locale-formatted full date ("Thursday, June 12, 2026";
  *   the flat cells cannot inherit the weekday from the column header) plus "start of range" /
- *   "end of range" in range mode (ARIA has no state for range endpoints); selection and today are
- *   exposed as states only (`aria-selected`, flatpickr's `aria-current="date"`), never repeated in
- *   the name (APG). NVDA deliberately does not speak the selected state of a focused table cell
- *   that is the only selected cell (nvaccess/nvda#8879), so in single mode NVDA users hear the
- *   selection only through the visual/other channels — see getDayLabel. States and names mirror
- *   flatpickr's visual highlight, including the keyboard/hover range preview after the first
- *   endpoint (it looks identical to a committed range)
+ *   "end of range" in range mode (ARIA has no state for range endpoints) and "selected" on every
+ *   highlighted day. Selection is ALSO exposed as the `aria-selected` state, but screen readers do
+ *   not reliably speak that state on a focused gridcell (NVDA never does when it is the only
+ *   selected cell, nvaccess/nvda#8879), so the word is repeated in the name (CGY-39786) — see
+ *   getDayLabel. Today stays a state only (flatpickr's `aria-current="date"`). States and names
+ *   mirror flatpickr's visual highlight, including the keyboard/hover range preview after the
+ *   first endpoint (it looks identical to a committed range)
  * - the AM/PM control is a `role="spinbutton"` ("AM/PM", value in `aria-valuetext`; AM is the
  *   maximum, matching the visual spinner where ArrowUp reaches AM): ArrowUp -> AM, ArrowDown -> PM,
  *   Home -> minimum (PM), End -> maximum (AM) per the APG spinbutton pattern, Enter/Space toggle
@@ -544,8 +544,9 @@ function customElements(pluginConfig: Config): Plugin {
 		const pendingLabelRestore = new Set<HTMLElement>();
 
 		// Reflect a day cell's state for assistive tech (CGY-30560): `aria-selected` for every
-		// highlighted day and the spoken label from getDayLabel(). Today keeps flatpickr's
-		// `aria-current="date"` (spoken by NVDA as "current date"), never repeated in the name.
+		// highlighted day and the spoken label from getDayLabel() (which repeats the selection as
+		// a word, CGY-39786). Today keeps flatpickr's `aria-current="date"` (spoken by NVDA as
+		// "current date"), never repeated in the name.
 		function syncDayCellState(cell: HTMLElement) {
 			if (isSelectedCell(cell)) {
 				cell.setAttribute("aria-selected", "true");
@@ -757,11 +758,20 @@ function customElements(pluginConfig: Config): Plugin {
 			fp?.calendarContainer?.setAttribute("aria-labelledby", "webchatDatePickerHeaderLabel");
 
 			if (fp?.config?.enableTime) {
+				// flatpickr names the hour/minute inputs from its locale's hourAriaLabel /
+				// minuteAriaLabel, which most of its l10n files (e.g. de) leave in English. Let
+				// customTranslations override them (CGY-39786); the flatpickr value stays the
+				// fallback so the default DOM is unchanged.
+				const labels = customTranslations?.ariaLabels;
 				const hourField = fp?.timeContainer?.getElementsByClassName("flatpickr-hour")?.[0];
 				hourField?.setAttribute("tabIndex", "0");
+				if (labels?.datePickerHour)
+					hourField?.setAttribute("aria-label", labels.datePickerHour);
 				const minutesField =
 					fp?.timeContainer?.getElementsByClassName("flatpickr-minute")?.[0];
 				minutesField?.setAttribute("tabIndex", "0");
+				if (labels?.datePickerMinute)
+					minutesField?.setAttribute("aria-label", labels.datePickerMinute);
 				// The AM/PM control's role, name, value and keys are set up in setAmPmAlly().
 				const amPmField = fp?.timeContainer?.getElementsByClassName("flatpickr-am-pm")?.[0];
 				amPmField?.setAttribute("tabIndex", "0");
@@ -895,11 +905,15 @@ function customElements(pluginConfig: Config): Plugin {
 		// the APG table example does (it is also what a user hears FIRST on entering the grid,
 		// before any table context). In range mode the endpoints add "start of range" / "end of
 		// range" — ARIA has no state for range boundaries, so the name is the only channel.
-		// Selected and today are STATES (aria-selected, aria-current="date") and are not repeated
-		// in the name, per the APG datepicker example. Known consequence: NVDA (since 2018.4,
-		// nvaccess/nvda#8879) does not speak the selected state of a focused table cell when it is
-		// the only selected cell in the table — always the case in single mode — so NVDA users hear
-		// the selection only in multiple/range mode; JAWS and VoiceOver speak the state. Uses the
+		// Every highlighted day (the same cells that carry aria-selected, see isSelectedCell) also
+		// ends with "selected" (CGY-39786). The APG datepicker example leaves selection to the
+		// aria-selected state alone, but in practice no screen reader reliably speaks that state on
+		// a focused gridcell: NVDA (since 2018.4, nvaccess/nvda#8879) never does when it is the only
+		// selected cell in the table — always the case in single mode — and JAWS/VoiceOver drop it
+		// depending on browser and verbosity, so users could not tell the chosen date from any
+		// other. The word comes AFTER the range boundary, so a range endpoint reads "…, start of
+		// range, selected". Where a screen reader does speak the state the word is heard twice,
+		// which is the accepted trade-off. Today stays a state only (aria-current="date"). Uses the
 		// cell's own date so prev/next-month overflow cells announce their real month. Words come
 		// from customTranslations.ariaLabels with English fallbacks.
 		function getDayLabel(cell: HTMLElement, date: Date): string {
@@ -910,6 +924,9 @@ function customElements(pluginConfig: Config): Plugin {
 			}
 			if (cell.classList.contains("endRange")) {
 				parts.push(labels?.datePickerRangeEnd || "end of range");
+			}
+			if (isSelectedCell(cell)) {
+				parts.push(labels?.datePickerSelected || "selected");
 			}
 			return parts.join(", ");
 		}

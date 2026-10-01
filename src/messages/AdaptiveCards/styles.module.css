@@ -194,9 +194,34 @@
 	border-color: red;
 }
 
+/* Chromium's native picker button is kept (it is a keyboard stop of its own after the
+ * mm/dd/yyyy segments) but its glyph is replaced by our SVG painted on the input at
+ * `right 12px center`. Centre the button on that icon (16px content + 4px padding = a 24px
+ * target, 2.5.8) so its focus ring wraps the icon instead of cutting across it (CGY-39786;
+ * 2.4.13 best practice).
+ *
+ * Chromium ignores :focus/:focus-visible on this pseudo-element, and the host input matches
+ * :focus only while a date/time segment has focus but :focus-within in both states, so
+ * `:focus-within:not(:focus)` is exactly "the picker button has focus". Firefox has no such
+ * pseudo-element or extra tab stop, so these rules are inert there. */
 .adaptivecard-wrapper [type="date"]::-webkit-calendar-picker-indicator,
 .adaptivecard-wrapper [type="time"]::-webkit-calendar-picker-indicator {
 	background: none;
+	box-sizing: content-box;
+	width: 16px;
+	height: 16px;
+	padding: 4px;
+	/* Pull the box 4px past the input's 12px right padding so it is centred on the icon. */
+	margin: 0 -4px 0 0;
+	align-self: center;
+	border-radius: 4px;
+	cursor: pointer;
+}
+
+.adaptivecard-wrapper [type="date"]:focus-within:not(:focus)::-webkit-calendar-picker-indicator,
+.adaptivecard-wrapper [type="time"]:focus-within:not(:focus)::-webkit-calendar-picker-indicator {
+	outline: 2px solid var(--cc-primary-color-focus);
+	outline-offset: 0;
 }
 
 .adaptivecard-wrapper [type="date"],

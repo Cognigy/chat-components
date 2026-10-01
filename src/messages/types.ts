@@ -5,178 +5,101 @@ import { MessageProps } from "src/messages/Message";
 export type MessagePasstroughProps = Pick<MessageProps, "message" | "action">;
 
 export type TSourceDirection = "incoming" | "outgoing";
-export type TSourceColor = "bot" | "user";
 
+/**
+ * The subset of the Webchat settings that the message renderers in this library
+ * read. Every key is optional: consumers pass their own, fuller settings object
+ * (Webchat's `IWebchatSettings` in `src/common/interfaces/webchat-config.ts` is
+ * the canonical definition of the whole surface) and TypeScript's structural
+ * typing accepts it as long as the keys declared here have compatible types.
+ *
+ * This is deliberately NOT a mirror of Webchat's interface. When a renderer starts
+ * reading a new setting, add the key here with its fallback documented at the
+ * read site, then expose it in Webchat's interface and `docs/embedding.md`.
+ */
 export interface IWebchatSettings {
-	// Settings that are also configurable via the Endpoint Editor in Cognigy.AI
-	layout: {
-		title: string;
-		logoUrl: string;
-		useOtherAgentLogo: boolean;
-		botAvatarName: string;
-		botLogoUrl: string;
-		agentAvatarName: string;
-		agentLogoUrl: string;
-		inputAutogrowMaxRows: number;
-		enableInputCollation: boolean;
-		inputCollationTimeout: number;
-		dynamicImageAspectRatio: boolean;
-		disableInputAutocomplete: boolean;
-		enableGenericHTMLStyling: boolean;
-		disableHtmlContentSanitization: boolean;
-		disableUrlButtonSanitization: boolean;
-		watermark: "default" | "custom" | "none";
-		watermarkText: string;
-		disableBotOutputBorder: boolean;
-		botOutputMaxWidthPercentage: number;
-		chatWindowWidth: number;
-		// Render a gallery card's title in the text block beneath the image instead of overlaying it on the image.
-		// Optional: absent/false = legacy overlay (default).
+	layout?: {
+		/** Disables DOMPurify sanitization of message HTML. */
+		disableHtmlContentSanitization?: boolean;
+		/** Disables sanitization of URL button targets. */
+		disableUrlButtonSanitization?: boolean;
+		dynamicImageAspectRatio?: boolean;
+		disableBotOutputBorder?: boolean;
+		botOutputMaxWidthPercentage?: number;
+		/** Renders a gallery card's title beneath the image instead of overlaying it. */
 		galleryCardTitleBelowImage?: boolean;
 	};
-	colors: {
-		primaryColor: string;
-		secondaryColor: string;
-		chatInterfaceColor: string;
-		botMessageColor: string;
-		userMessageColor: string;
-		textLinkColor: string;
+	behavior?: {
+		collateStreamedOutputs?: boolean;
+		progressiveMessageRendering?: boolean;
+		renderMarkdown?: boolean;
+		focusInputAfterPostback?: boolean;
 	};
-	behavior: {
-		collateStreamedOutputs: boolean;
-		progressiveMessageRendering: boolean;
-		enableAIAgentNotice: boolean;
-		AIAgentNoticeText: string;
-		enableTypingIndicator: boolean;
-		messageDelay: number;
-		inputPlaceholder: string;
-		enableSTT: boolean;
-		enableTTS: boolean;
-		focusInputAfterPostback: boolean;
-		enableConnectionStatusIndicator: boolean;
-		renderMarkdown: boolean;
+	teaserMessage?: {
+		showInChat?: boolean;
 	};
-	startBehavior: {
-		startBehavior: "none" | "button" | "injection";
-		getStartedPayload: string;
-		getStartedData: object;
-		getStartedText: string;
-		getStartedButtonText: string;
-	};
-	fileStorageSettings?: {
-		enabled?: boolean;
-		dropzoneText?: string;
-	};
-	businessHours: {
-		enabled: boolean;
-		mode: "inform" | "hide" | "disable";
-		text: string;
-		title: string;
-		timeZone: string;
-		times: {
-			startTime: string;
-			endTime: string;
-			weekDay: string;
-		}[];
-	};
-	unreadMessages: {
-		enableIndicator: boolean;
-		enableBadge: boolean;
-		enablePreview: boolean;
-		enableSound: boolean;
-		unreadMessageTitleText: string;
-		unreadMessageTitleTextPlural: string;
-	};
-	homeScreen: {
-		enabled: boolean;
-		welcomeText: string;
-		background: {
-			imageUrl: string;
-			color: string;
-		};
-		startConversationButtonText: string;
-		previousConversations: {
-			enabled: boolean;
-			buttonText: string;
-			title: string;
-		};
-		conversationStarters: {
-			enabled: boolean;
-			starters: {
-				type: "postback" | "web_url" | "phone_number";
-				title: string;
-				url?: string;
-				payload?: string;
-			}[];
+	widgetSettings?: {
+		/** Replaces the sanitizer's default tag allow-list entirely; only these tags
+		 *  survive sanitization (`sanitizeHTMLWithConfig` in `src/sanitize.ts`). */
+		customAllowedHtmlTags?: string[];
+		disableRenderURLsAsLinks?: boolean;
+		disableTextInputSanitization?: boolean;
+		enableAutoFocus?: boolean;
+		enableDefaultPreview?: boolean;
+		enableStrictMessengerSync?: boolean;
+		sourceDirectionMapping?: {
+			agent?: TSourceDirection;
+			bot?: TSourceDirection;
+			user?: TSourceDirection;
 		};
 	};
 	customTranslations?: {
-		network_error?: string;
-		no_network?: string;
-		reconnect?: string;
-		reconnecting?: string;
-		delete_all_conversations?: string;
-		delete_all_conversations_confirmation?: string;
-		delete_conversation?: string;
-		delete_conversation_confirmation?: string;
-		delete?: string;
-		delete_anyway?: string;
-		cancel?: string;
 		datePickerMonthLabel?: string;
 		datePickerYearLabel?: string;
+		/** Accessible names used by the renderers; each read site has an English fallback. */
 		ariaLabels?: {
-			scrollToBottom?: string;
-			closeDialog?: string;
-			togglePersistentMenu?: string;
-			addAttachment?: string;
-			messageToSend?: string;
-			speechToText?: string;
-			sendMessage?: string;
-			removeFileAttachment?: string;
-			closeWarning?: string;
-			goBack?: string;
-			deleteAllConversations?: string;
-			chatOptions?: string;
-			minimizeChat?: string;
-			closeChat?: string;
-			openChat?: string;
-			unreadMessages?: string;
-			unreadMessageSingularText?: string;
-			unreadMessagePluralText?: string;
-			closeTeaserMessage?: string;
-			thumbsUp?: string;
-			thumbsDown?: string;
-			openConversation?: string;
-			chatHistory?: string;
-			homeScreen?: string;
-			newMessagePreview?: string;
+			// Links and buttons
 			opensInNewTab?: string;
+			actionButtonPositionText?: string;
+			buttonGroupLabel?: string;
+			// Gallery / list live-region text
+			slidesCountText?: string;
+			slide?: string;
+			listItemGroupLabel?: string;
+			// Audio player
 			audioPlaybackProgress?: string;
+			audioTimeRemaining?: string;
 			pauseAudio?: string;
 			playAudio?: string;
 			muteAudio?: string;
 			unmuteAudio?: string;
 			audioVolume?: string;
-			playVideo?: string;
+			audioMoreOptions?: string;
+			audioPlaybackSpeed?: string;
+			audioNormalSpeed?: string;
 			downloadTranscript?: string;
-			closeDatePicker?: string;
+			// Video player
+			playVideo?: string;
+			// Image lightbox
 			viewImageInFullsize?: string;
 			fullSizeImageViewerTitle?: string;
 			downloadFullsizeImage?: string;
 			closeFullsizeImageModal?: string;
+			// Date picker
+			closeDatePicker?: string;
 			datePickerPreviousMonth?: string;
 			datePickerNextMonth?: string;
 			datePickerGridLabel?: string;
 			datePickerGridDescription?: string;
 			datePickerRangeStart?: string;
 			datePickerRangeEnd?: string;
+			/** Appended to the name of every aria-selected day cell (default "selected"). */
+			datePickerSelected?: string;
 			datePickerWeekNumber?: string;
 			datePickerAmPm?: string;
-			actionButtonPositionText?: string;
-			buttonGroupLabel?: string;
-			slidesCountText?: string;
-			slide?: string;
-			listItemGroupLabel?: string;
+			datePickerHour?: string;
+			datePickerMinute?: string;
+			// Live-region announcements per content type
 			imageContent?: {
 				downloadable?: string;
 				nonDownloadable?: string;
@@ -200,123 +123,6 @@ export interface IWebchatSettings {
 				bot?: string;
 				timestamp?: string;
 			};
-			audioTimeRemaining?: string;
-			audioMoreOptions?: string;
-			audioPlaybackSpeed?: string;
-			audioNormalSpeed?: string;
-		};
-	};
-	teaserMessage: {
-		text: string;
-		teaserMessageDelay: number;
-		showInChat: boolean;
-		conversationStarters: {
-			enabled: boolean;
-			starters: {
-				type: "postback" | "web_url" | "phone_number";
-				title: string;
-				url?: string;
-				payload?: string;
-			}[];
-		};
-	};
-	chatOptions: {
-		enabled: boolean;
-		title: string;
-		quickReplyOptions: {
-			enabled: boolean;
-			sectionTitle: string;
-			quickReplies: {
-				type: "postback" | "web_url" | "phone_number";
-				title: string;
-				url?: string;
-				payload?: string;
-			}[];
-		};
-		showTTSToggle: boolean;
-		activateTTSToggle: boolean;
-		labelTTSToggle: string;
-		rating: {
-			enabled: "no" | "once" | "always";
-			title: string;
-			commentPlaceholder: string;
-			submitButtonText: string;
-			eventBannerText: string;
-		};
-		footer: {
-			enabled: boolean;
-			items: {
-				title: string;
-				url: string;
-			}[];
-		};
-	};
-	privacyNotice: {
-		enabled: boolean;
-		title: string;
-		text: string;
-		submitButtonText: string;
-		urlText: string;
-		url: string;
-	};
-	fileAttachmentMaxSize: number;
-	maintenance: {
-		enabled: boolean;
-		mode: "inform" | "hide" | "disable";
-		text: string;
-		title: string;
-	};
-	demoWebchat: {
-		enabled: boolean;
-		backgroundImageUrl: string;
-		position: "centered" | "bottomRight";
-	};
-
-	// Settings related to the webchat browser embedding
-	// These settings are NOT configurable via the Endpoint Editor in Cognigy.AI
-	embeddingConfiguration: {
-		_endpointTokenUrl: string;
-		awaitEndpointConfig: boolean;
-		disableLocalStorage: boolean;
-		disablePersistentHistory: boolean;
-		useSessionStorage: boolean;
-		connectivity: {
-			enabled: boolean;
-			mode: string;
-			text: string;
-			timeout: number;
-			title: string;
-		};
-	};
-
-	// Additional Settings to configure the webchat widget behavior
-	// These settings are NOT configurable via the Endpoint Editor in Cognigy.AI
-	widgetSettings: {
-		disableDefaultReplyCompatiblityMode: boolean;
-		enableStrictMessengerSync: boolean;
-
-		disableHtmlInput: boolean;
-		disableInputAutofocus: boolean;
-		disableRenderURLsAsLinks: boolean;
-		disableTextInputSanitization: boolean;
-		disableToggleButton: boolean;
-		enableAutoFocus: boolean;
-		enableInjectionWithoutEmptyHistory: boolean;
-		enableFocusTrap: boolean;
-		enableDefaultPreview: boolean;
-		ignoreLineBreaks: boolean;
-		STTLanguage: string;
-		customAllowedHtmlTags: string[];
-
-		sourceDirectionMapping: {
-			agent: TSourceDirection;
-			bot: TSourceDirection;
-			user: TSourceDirection;
-		};
-		sourceColorMapping: {
-			agent: TSourceColor;
-			bot: TSourceColor;
-			user: TSourceColor;
 		};
 	};
 }

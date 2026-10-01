@@ -12,9 +12,14 @@ article .wrapper .flexImage {
 	border-top-right-radius: var(--cc-bubble-border-radius);
 }
 
+/* Two-colour focus ring, as on the primary buttons and gallery links: the
+   primary outline plus a 4px contrast band, so the ring stays visible whatever
+   the image behind it (WCAG 2.4.7 Focus Visible, 1.4.11 Non-text Contrast). */
 article .wrapper .fixedImage:focus-visible,
 article .wrapper .flexImage:focus-visible {
 	outline: 2px solid var(--cc-primary-color-focus);
+	outline-offset: 2px;
+	box-shadow: 0 0 0 4px var(--cc-secondary-contrast-color);
 }
 
 article .wrapper img {

@@ -8,7 +8,11 @@ import ActionButtons from "src/common/ActionButtons/ActionButtons";
 import { useSanitize } from "src/sanitize";
 import { sanitizeUrl } from "@braintree/sanitize-url";
 import { Typography } from "src/index";
-import { htmlToPlainText } from "src/utils";
+import {
+	htmlHasInteractiveContent,
+	htmlToPlainText,
+	INTERACTIVE_CONTENT_SELECTOR,
+} from "src/utils";
 
 export interface GallerySlideProps {
 	slide: IWebchatAttachmentElement;
@@ -25,9 +29,6 @@ const getHostname = (url: string): string => {
 		return "";
 	}
 };
-
-// Interactive descendants the sanitizer can let through inside card text.
-const NESTED_CONTROL_SELECTOR = "a[href], button, input, select, textarea, summary";
 
 const GalleryItem: FC<GallerySlideProps> = props => {
 	const { slide, contentId } = props;
@@ -86,12 +87,16 @@ const GalleryItem: FC<GallerySlideProps> = props => {
 
 	const handleClick = (event: SyntheticEvent) => {
 		// The card text is sanitized HTML and may contain its own controls
-		// (<a href>, <button>, form fields are allowed tags); activating one
-		// bubbles here and must not also open the default_action URL (WCAG
-		// 4.1.2). A click on the text itself (target is the <p>/<h4>) still
-		// activates the link.
+		// (<a href>, <button>, form fields, media with controls, tabindex …).
+		// Block text with a control is not wrapped by the link (see linkTarget),
+		// but an overlay title inside the image-area link can still carry one;
+		// activating it bubbles here and must not also open the default_action
+		// URL (WCAG 4.1.2). The link itself has a tabindex and so matches the
+		// selector: a click on the text (target is the <p>/<h4>) resolves to the
+		// link and still activates it.
 		const target = event.target as Element;
-		if (target !== event.currentTarget && target.closest(NESTED_CONTROL_SELECTOR)) return;
+		const control = target.closest(INTERACTIVE_CONTENT_SELECTOR);
+		if (control && control !== event.currentTarget) return;
 		if (!linkUrl || linkUrl === "about:blank") return;
 		window.open(linkUrl);
 	};
@@ -124,10 +129,18 @@ const GalleryItem: FC<GallerySlideProps> = props => {
 	// the link and the buttons stay outside it: a link must not contain
 	// interactive descendants (HTML content model; screen readers expose
 	// nested buttons inconsistently), and a button inside the link also
-	// bubbles Enter to the link's handler and opens the URL. When the content
-	// block has no text to wrap (overlay title, no subtitle) the image + title
-	// area is the link, so the target is always visible and keyboard-reachable.
-	const hasBlockText = hasSubtitle || (titleBelowImage && hasTitle);
+	// bubbles Enter to the link's handler and opens the URL. The same applies
+	// to controls an author wrote into the text itself (`<a href>` in a
+	// subtitle): wrapping that text would nest a link in a link, exposed as two
+	// adjacent link stops (CGY-39786), so such text is left unwrapped and the
+	// link moves to the image area. When the content block
+	// has no text to wrap (overlay title, no subtitle, or text with its own
+	// controls) the image + title area is the link, so the target is always
+	// visible and keyboard-reachable.
+	const blockTextHasControls =
+		htmlHasInteractiveContent(subtitleHtml) ||
+		(titleBelowImage && htmlHasInteractiveContent(titleHtml));
+	const hasBlockText = (hasSubtitle || (titleBelowImage && hasTitle)) && !blockTextHasControls;
 	const linkTarget =
 		linkUrl && linkUrl !== "about:blank" ? (hasBlockText ? "text" : "top") : null;
 

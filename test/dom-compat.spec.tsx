@@ -193,26 +193,39 @@ describe("normalize preserves the accessibility contract", () => {
 // installed baseline predates the release that ships the change, so the cases
 // re-enable themselves once that version is on npm `latest`.
 //
-// Cases whose DOM intentionally diverges from releases before 0.81.0:
+// Cases whose DOM intentionally diverges from releases before 0.82.0:
 //
-// CGY-37634 (gallery default_action keyboard reachability): a card whose
-// default_action carries a URL renders its content block as role="link"; it
-// now also gets tabindex="0" so keyboard users can reach what mouse users can
-// click (WCAG 2.1.1). Affects "gallery card variant: default_action link" — the only
-// corpus case with a default_action URL. Covered by test/GalleryA11y.spec.tsx;
-// release notes carry an "Accessibility changes" entry so Webchat re-runs its
-// cypress-axe suite.
+// CGY-39786 (gallery default_action link nested around an authored link): a
+// card whose subtitle (or below-image title) contains an interactive element
+// (`<a href>`, `<button>`, form field) no longer wraps that text in the
+// role="link" — a link must not contain interactive descendants, and the
+// nested pair was exposed as two adjacent link stops. The link moves to the
+// image area instead (the pre-existing no-text shape). Affects the
+// "Subtitle with its own link" card of "gallery card variant: default_action
+// link" — the only corpus case with such a card. Covered by
+// test/GalleryA11y.spec.tsx.
 //
-// The case stays in the shared corpus, so the a11y gate keeps scanning it.
-// Once 0.81.0 ships to npm latest, install-dom-compat-baseline resolves to it,
-// the condition turns false, and the case re-enables itself. Cut the release
-// that carries this change as 0.81.0 — or update FIX_VERSION to the version
+// CGY-39786 (adaptive card compact Input.ChoiceSet): the placeholder <option>
+// the adaptivecards renderer marks disabled + hidden is exposed by Chromium
+// but skipped by NVDA, which announced a two-choice set as "2 of 3". The
+// placeholder is now an ordinary selectable option with an empty value.
+// Affects "demo: adaptive cards [1]" — the only corpus card with a compact
+// choice set that has a placeholder. Covered by test/AdaptiveCardsA11y.spec.tsx.
+//
+// Release notes carry an "Accessibility changes" entry for both so Webchat
+// re-runs its cypress-axe suite.
+//
+// The cases stay in the shared corpus, so the a11y gate keeps scanning them.
+// Once 0.82.0 ships to npm latest, install-dom-compat-baseline resolves to it,
+// the condition turns false, and the cases re-enable themselves. Cut the release
+// that carries this change as 0.82.0 — or update FIX_VERSION to the version
 // it actually ships under (the "FIX_VERSION matches the release" guard below
 // fails the bump PR otherwise).
-// TODO(CGY-37634): delete this block once 0.81.0 is on npm latest.
-const FIX_VERSION = "0.81.0";
-const INTENTIONALLY_DIVERGING_PRE_0_81 = new Set<string>([
+// TODO(CGY-39786): delete this block once 0.82.0 is on npm latest.
+const FIX_VERSION = "0.82.0";
+const INTENTIONALLY_DIVERGING_PRE_0_82 = new Set<string>([
 	"gallery card variant: default_action link",
+	"demo: adaptive cards [1]",
 ]);
 
 // Version-aware skip for INTENTIONAL structural divergence (CGY-38030): image/video/audio/file
@@ -246,9 +259,7 @@ const semverLt = (a: string, b: string): boolean => {
 	return false;
 };
 const isSkipped = (c: Case) =>
-	(semverLt(baselineVersion, FIX_VERSION) && INTENTIONALLY_DIVERGING_PRE_0_81.has(c.name)) ||
-	(semverLt(baselineVersion, FIX_VERSION_CGY_38030) &&
-		INTENTIONALLY_DIVERGING_PRE_0_82.has(c.name));
+	semverLt(baselineVersion, FIX_VERSION) && INTENTIONALLY_DIVERGING_PRE_0_82.has(c.name);
 
 // Release-version guard for the skip block. Nothing else ties FIX_VERSION to
 // the version that actually ships: package.json is bumped in a separate
@@ -261,13 +272,11 @@ const isSkipped = (c: Case) =>
 // FIX_VERSION) or the block outlived its release (delete it).
 const releaseTriplet = (version: string) =>
 	version.replace(/^v/, "").split(/[-+]/)[0].split(".").slice(0, 3).join(".");
-describe("version-aware skip block hygiene", () => {
-	it(`package.json version (${pkg.version}) is the baseline (${baselineVersion}) or a known FIX_VERSION (${FIX_VERSION} / ${FIX_VERSION_CGY_38030}) — otherwise update the relevant FIX_VERSION or delete its skip block`, () => {
-		expect([
-			releaseTriplet(baselineVersion),
-			releaseTriplet(FIX_VERSION),
-			releaseTriplet(FIX_VERSION_CGY_38030),
-		]).toContain(releaseTriplet(pkg.version));
+describe("version-aware skip block hygiene (CGY-39786)", () => {
+	it(`package.json version (${pkg.version}) is the baseline (${baselineVersion}) or FIX_VERSION (${FIX_VERSION}) — otherwise update FIX_VERSION or delete the skip block`, () => {
+		expect([releaseTriplet(baselineVersion), releaseTriplet(FIX_VERSION)]).toContain(
+			releaseTriplet(pkg.version),
+		);
 	});
 });
 
@@ -278,7 +287,7 @@ describe(`DOM compatibility: branch vs @cognigy/chat-components@${baselineVersio
 			({ message, config, prevMessage }) => assertSameDom(message, config, prevMessage),
 		);
 		it.skip.each(coreCases.filter(isSkipped))(
-			"$name — skipped: intentional DOM change pending its fix version's npm-latest publish (see the version-aware skip blocks above)",
+			"$name — skipped: intentional DOM change pending 0.82.0 publish (CGY-39786)",
 			() => {},
 		);
 	});
@@ -289,7 +298,7 @@ describe(`DOM compatibility: branch vs @cognigy/chat-components@${baselineVersio
 			({ message, config, prevMessage }) => assertSameDom(message, config, prevMessage),
 		);
 		it.skip.each(demoCases.filter(isSkipped))(
-			"$name — skipped: intentional DOM change pending its fix version's npm-latest publish (see the version-aware skip blocks above)",
+			"$name — skipped: intentional DOM change pending 0.82.0 publish (CGY-39786)",
 			() => {},
 		);
 	});

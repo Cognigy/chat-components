@@ -340,7 +340,35 @@ const screens: TScreen[] = [
 			{ message: datePickerNoTime as IMessage },
 			{ message: datePickerTimeonly as IMessage },
 			{ message: datePickerDisableWeekends as IMessage },
-			{ message: datePickerLocaleDe as IMessage },
+			{
+				// German-localized datepicker: flatpickr's locale only covers month/weekday names and
+				// the week abbreviation. The labels and accessible names the library adds itself come
+				// from customTranslations, so a localized widget must translate them too (CGY-39786).
+				message: datePickerLocaleDe as IMessage,
+				config: {
+					settings: {
+						customTranslations: {
+							datePickerMonthLabel: "Monat",
+							datePickerYearLabel: "Jahr",
+							ariaLabels: {
+								closeDatePicker: "Datumsauswahl schließen",
+								datePickerPreviousMonth: "Vorheriger Monat",
+								datePickerNextMonth: "Nächster Monat",
+								datePickerGridLabel: "Kalender",
+								datePickerGridDescription:
+									"Mit den Pfeiltasten durch die Tage navigieren",
+								datePickerRangeStart: "Beginn des Zeitraums",
+								datePickerRangeEnd: "Ende des Zeitraums",
+								datePickerSelected: "ausgewählt",
+								datePickerWeekNumber: "Woche",
+								datePickerAmPm: "Vormittag/Nachmittag",
+								datePickerHour: "Stunde",
+								datePickerMinute: "Minute",
+							},
+						},
+					},
+				},
+			},
 		],
 	},
 	{
