@@ -24,16 +24,29 @@ interface TextProps {
 	ignoreLiveRegion?: boolean;
 }
 
+const stripTrailingMarkdownDelimiter = (text: string) => {
+	const delimiter = text.at(-1);
+	if (!delimiter || !"*_~`<".includes(delimiter)) return text;
+
+	let start = text.length - 1;
+	if (delimiter !== "<") {
+		while (start > 0 && text[start - 1] === delimiter) start--;
+	}
+	if (text[start - 1] === "\\") start++;
+
+	return text.slice(0, start);
+};
+
 const completeStreamingMarkdown = (text: string) => {
 	// An unfinished link label, block marker, or bare delimiter cannot be
 	// resolved until more text arrives; leave the completed message untouched.
-	const withoutPendingSyntax = text
-		.replace(/(?<!\\)(!?)\[([^[\]]*)\]$/u, (_match, image: string, label: string) =>
-			image ? "" : label,
-		)
-		.replace(/(^|\n)[ \t]*(?:#{1,6}|[-+*]|>{1,3}|\d+[.)])[ \t]*$/u, "$1")
-		.replace(/(?<!\\)(?:\*+|_+|~+|`+|<)$/u, "")
-		.replace(/(?<!\\)(?:\\\\)*\\$/u, match => match.slice(0, -1));
+	const withoutPendingSyntax = stripTrailingMarkdownDelimiter(
+		text
+			.replace(/(?<!\\)(!?)\[([^[\]]*)\]$/u, (_match, image: string, label: string) =>
+				image ? "" : label,
+			)
+			.replace(/(^|\n)[ \t]*(?:#{1,6}|[-+*]|>{1,3}|\d+[.)])[ \t]*$/u, "$1"),
+	).replace(/(?<!\\)(?:\\\\)*\\$/u, match => match.slice(0, -1));
 
 	return remend(withoutPendingSyntax, { linkMode: "text-only" });
 };

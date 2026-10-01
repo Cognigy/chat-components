@@ -429,6 +429,18 @@ describe("Text Component", () => {
 			}
 		});
 
+		test.each([
+			["Text ****", "Text"],
+			["Text \\***", "Text *"],
+			["Text \\*", "Text *"],
+		])("handles trailing delimiters in %s while still streaming", async (text, expected) => {
+			vi.useFakeTimers();
+			const { container } = renderStreamingText(text, true, undefined, undefined, false);
+
+			await advanceCharacters(text.length + 2);
+			expect(container.querySelector(".markdown")?.textContent).toBe(expected);
+		});
+
 		test("renders incomplete bold markup during typing and completes without duplicating text", async () => {
 			vi.useFakeTimers();
 			const onSetMessageAnimated = vi.fn();
