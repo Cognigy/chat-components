@@ -223,11 +223,6 @@ describe("normalize preserves the accessibility contract", () => {
 // fails the bump PR otherwise).
 // TODO(CGY-39786): delete this block once 0.82.0 is on npm latest.
 const FIX_VERSION = "0.82.0";
-const INTENTIONALLY_DIVERGING_PRE_0_82 = new Set<string>([
-	"gallery card variant: default_action link",
-	"demo: adaptive cards [1]",
-]);
-
 // Version-aware skip for INTENTIONAL structural divergence (CGY-38030): image/video/audio/file
 // attachments now prefer `downloadUrl` over the legacy `url` when both are present. The dedicated
 // "* download url" corpus cases set them to different values on purpose to prove the preference,
@@ -235,6 +230,8 @@ const INTENTIONALLY_DIVERGING_PRE_0_82 = new Set<string>([
 // TODO(CGY-38030): delete this block once 0.82.0 is on npm latest.
 const FIX_VERSION_CGY_38030 = "0.82.0";
 const INTENTIONALLY_DIVERGING_PRE_0_82 = new Set<string>([
+	"gallery card variant: default_action link",
+	"demo: adaptive cards [1]",
 	"demo: image download url",
 	"demo: video download url",
 	"demo: audio download url",
