@@ -423,7 +423,9 @@ describe("Text Component", () => {
 			for (let index = 0; index < text.length + 3; index++) {
 				await advanceCharacters(1);
 				const visible = container.querySelector(".markdown")?.textContent ?? "";
-				expect(visible, `visible text after ${index + 1} timer ticks`).not.toMatch(rawSyntax);
+				expect(visible, `visible text after ${index + 1} timer ticks`).not.toMatch(
+					rawSyntax,
+				);
 			}
 		});
 
@@ -530,7 +532,12 @@ describe("Text Component", () => {
 		test("handles delayed link chunks and waits for the last chunk before finishing", async () => {
 			vi.useFakeTimers();
 			const onSetMessageAnimated = vi.fn();
-			const chunks = ["Read the [Markdown", " guide](", "https://example.com/guide", ") done"];
+			const chunks = [
+				"Read the [Markdown",
+				" guide](",
+				"https://example.com/guide",
+				") done",
+			];
 			const { container, renderText } = renderStreamingText(
 				chunks.slice(0, 1),
 				true,
@@ -545,12 +552,16 @@ describe("Text Component", () => {
 
 			renderText(chunks.slice(0, 2), "start", false);
 			await advanceCharacters(35);
-			expect(container.querySelector(".markdown")?.textContent).toBe("Read the Markdown guide");
+			expect(container.querySelector(".markdown")?.textContent).toBe(
+				"Read the Markdown guide",
+			);
 			expect(container.querySelector("a")).toBeNull();
 
 			renderText(chunks.slice(0, 3), "start", false);
 			await advanceCharacters(85);
-			expect(container.querySelector(".markdown")?.textContent).toBe("Read the Markdown guide");
+			expect(container.querySelector(".markdown")?.textContent).toBe(
+				"Read the Markdown guide",
+			);
 			expect(onSetMessageAnimated).not.toHaveBeenCalledWith("streaming-text", "done");
 
 			renderText(chunks, "start", true);

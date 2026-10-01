@@ -111,9 +111,7 @@ const Text: FC<TextProps> = props => {
 	// markdown prefix so formatting is visible while the current chunk is typed.
 	const fullText = Array.isArray(content) ? content.join("") : content;
 	const finishedTyping =
-		!!(message as IStreamingMessage)?.finishReason &&
-		displayedText === fullText &&
-		!typingText;
+		!!(message as IStreamingMessage)?.finishReason && displayedText === fullText && !typingText;
 	const streamingMarkdown =
 		renderMarkdown && isStreaming && shouldAnimate && !finishedTyping
 			? completeStreamingMarkdown(displayedText + typingText)

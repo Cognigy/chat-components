@@ -88,11 +88,13 @@ type TScreen = {
 };
 
 const streamingMarkdownExamples = {
-	"Bold across chunks": "Here is **bold text that crosses several streamed chunks** followed by plain text.",
+	"Bold across chunks":
+		"Here is **bold text that crosses several streamed chunks** followed by plain text.",
 	"Link while typing": "Read the [Markdown guide](https://example.com/guide) for more details.",
 	"HTML and inline code": "This is <b>important</b> and this is `inline code`.",
 	"Heading and list": "### Ingredients\n- First item\n- **Second item**\n- Third item",
-	"Literal punctuation": "The total is 5 * 3. A literal [label] and an escaped \\*asterisk\\* stay visible.",
+	"Literal punctuation":
+		"The total is 5 * 3. A literal [label] and an escaped \\*asterisk\\* stay visible.",
 };
 
 const StreamingMarkdownRun: FC<{ text: string }> = ({ text }) => {
@@ -112,16 +114,23 @@ const StreamingMarkdownRun: FC<{ text: string }> = ({ text }) => {
 	);
 
 	useEffect(() => {
-		const timers = chunks.slice(1).map((chunk, index) =>
-			window.setTimeout(() => setReceived(previous => [...previous, chunk]), (index + 1) * 250),
-		);
+		const timers = chunks
+			.slice(1)
+			.map((chunk, index) =>
+				window.setTimeout(
+					() => setReceived(previous => [...previous, chunk]),
+					(index + 1) * 250,
+				),
+			);
 		return () => timers.forEach(window.clearTimeout);
 	}, [chunks]);
 
 	return (
 		<>
 			<p role="status">
-				{animationState === "done" ? "Finished rendering" : "Receiving and rendering chunks"}
+				{animationState === "done"
+					? "Finished rendering"
+					: "Receiving and rendering chunks"}
 			</p>
 			<Message
 				message={
@@ -151,9 +160,8 @@ const StreamingMarkdownRun: FC<{ text: string }> = ({ text }) => {
 };
 
 const StreamingMarkdownLab: FC = () => {
-	const [example, setExample] = useState<keyof typeof streamingMarkdownExamples>(
-		"Bold across chunks",
-	);
+	const [example, setExample] =
+		useState<keyof typeof streamingMarkdownExamples>("Bold across chunks");
 	const [draft, setDraft] = useState<string>(streamingMarkdownExamples[example]);
 	const [activeText, setActiveText] = useState(draft);
 	const [run, setRun] = useState(0);

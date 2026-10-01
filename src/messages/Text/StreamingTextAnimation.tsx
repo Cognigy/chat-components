@@ -144,12 +144,7 @@ const StreamingTextAnimation: FC<StreamingTextAnimationProps> = ({
 		setAnimationQueue(prev => prev.slice(1));
 		setLastAnimatedIndex(prev => (prev === null ? 0 : prev + 1));
 		setAnimationComplete(false);
-	}, [
-		animationComplete,
-		currentAnimatedText,
-		onTextUpdate,
-		onTypingTextUpdate,
-	]);
+	}, [animationComplete, currentAnimatedText, onTextUpdate, onTypingTextUpdate]);
 
 	useEffect(() => {
 		if (
