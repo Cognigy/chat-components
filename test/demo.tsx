@@ -1,5 +1,5 @@
 // @ts-nocheck
-import React, { Dispatch, FC, SetStateAction, useEffect, useState } from "react";
+import React, { Dispatch, FC, SetStateAction, useEffect, useMemo, useState } from "react";
 import ReactDOM from "react-dom/client";
 
 import "./demo.css";
@@ -96,10 +96,12 @@ const streamingMarkdownExamples = {
 };
 
 const StreamingMarkdownRun: FC<{ text: string }> = ({ text }) => {
-	const characters = Array.from(text);
-	const chunks = Array.from({ length: Math.ceil(characters.length / 8) }, (_, index) =>
-		characters.slice(index * 8, (index + 1) * 8).join(""),
-	);
+	const chunks = useMemo(() => {
+		const characters = Array.from(text);
+		return Array.from({ length: Math.ceil(characters.length / 8) }, (_, index) =>
+			characters.slice(index * 8, (index + 1) * 8).join(""),
+		);
+	}, [text]);
 	const [received, setReceived] = useState(chunks.slice(0, 1));
 	const [animationState, setAnimationState] = useState<"start" | "done">("start");
 	const onSetMessageAnimated = React.useCallback(
@@ -114,7 +116,7 @@ const StreamingMarkdownRun: FC<{ text: string }> = ({ text }) => {
 			window.setTimeout(() => setReceived(previous => [...previous, chunk]), (index + 1) * 250),
 		);
 		return () => timers.forEach(window.clearTimeout);
-	}, [text]);
+	}, [chunks]);
 
 	return (
 		<>

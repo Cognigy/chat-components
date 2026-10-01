@@ -109,8 +109,13 @@ const Text: FC<TextProps> = props => {
 
 	// Keep the live-region text based on completed chunks, but render the growing
 	// markdown prefix so formatting is visible while the current chunk is typed.
+	const fullText = Array.isArray(content) ? content.join("") : content;
+	const finishedTyping =
+		!!(message as IStreamingMessage)?.finishReason &&
+		displayedText === fullText &&
+		!typingText;
 	const streamingMarkdown =
-		renderMarkdown && isStreaming && shouldAnimate
+		renderMarkdown && isStreaming && shouldAnimate && !finishedTyping
 			? completeStreamingMarkdown(displayedText + typingText)
 			: undefined;
 	const markdownContent =

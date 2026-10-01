@@ -37,6 +37,8 @@ const getTransitionTimeout = (text: string) => {
 	return Math.max(500, totalDuration + 200);
 };
 
+const MARKDOWN_PREVIEW_INTERVAL = 50;
+
 const StreamingTextAnimation: FC<StreamingTextAnimationProps> = ({
 	content,
 	onTextUpdate,
@@ -55,6 +57,16 @@ const StreamingTextAnimation: FC<StreamingTextAnimationProps> = ({
 
 	const nodeRef = useRef(null);
 	const completedMessageId = useRef<string | null>(null);
+	const previewTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+	const latestTypingProgress = useRef(0);
+
+	useEffect(
+		() => () => {
+			if (previewTimer.current !== null) clearTimeout(previewTimer.current);
+			previewTimer.current = null;
+		},
+		[],
+	);
 
 	/**
 	 * Whenever `content` changes, queue up any new chunks that haven't been animated yet.
@@ -103,9 +115,15 @@ const StreamingTextAnimation: FC<StreamingTextAnimationProps> = ({
 	}, [currentAnimatedText, typingProgress]);
 
 	useEffect(() => {
-		if (currentAnimatedText && typingProgress > 0) {
-			onTypingTextUpdate?.(currentAnimatedText.slice(0, typingProgress));
-		}
+		if (!currentAnimatedText || typingProgress === 0 || !onTypingTextUpdate) return;
+
+		latestTypingProgress.current = typingProgress;
+		if (previewTimer.current !== null) return;
+
+		previewTimer.current = setTimeout(() => {
+			previewTimer.current = null;
+			onTypingTextUpdate(currentAnimatedText.slice(0, latestTypingProgress.current));
+		}, MARKDOWN_PREVIEW_INTERVAL);
 	}, [currentAnimatedText, typingProgress, onTypingTextUpdate]);
 
 	/**
@@ -116,6 +134,8 @@ const StreamingTextAnimation: FC<StreamingTextAnimationProps> = ({
 	useEffect(() => {
 		if (!animationComplete) return;
 
+		if (previewTimer.current !== null) clearTimeout(previewTimer.current);
+		previewTimer.current = null;
 		onTextUpdate(currentAnimatedText);
 		onTypingTextUpdate?.("");
 

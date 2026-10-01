@@ -2,6 +2,7 @@ import { act, render, screen } from "@testing-library/react";
 import { afterEach, describe, test, expect, vi } from "vitest";
 import { Message, defaultAllowedHtmlTags } from "src/index";
 import { IStreamingMessage, IWebchatConfig } from "src/messages/types";
+import StreamingTextAnimation from "src/messages/Text/StreamingTextAnimation";
 
 describe("Text Component", () => {
 	describe("Links", () => {
@@ -442,7 +443,7 @@ describe("Text Component", () => {
 			await advanceCharacters(1);
 			expect(container.querySelector(".markdown")?.textContent).toBe("");
 			await advanceCharacters(6);
-			expect(container.querySelector("strong")?.textContent).toBe("bold t");
+			expect(container.querySelector("strong")?.textContent).toMatch(/^bold/);
 			expect(container.textContent).not.toContain("**");
 			expect(onSetMessageAnimated).not.toHaveBeenCalledWith("streaming-text", "done");
 			expect(onSetLiveRegionText).not.toHaveBeenCalled();
@@ -510,7 +511,7 @@ describe("Text Component", () => {
 			await advanceCharacters(1);
 			expect(container.querySelector(".markdown")?.textContent).toBe("");
 			await advanceCharacters(13);
-			expect(container.querySelector(".markdown")?.textContent).toBe("helpful link");
+			expect(container.querySelector(".markdown")?.textContent).toMatch(/^helpful lin/);
 			expect(container.querySelector("a")).toBeNull();
 
 			await advanceCharacters(1);
@@ -610,7 +611,7 @@ describe("Text Component", () => {
 			await advanceCharacters(1);
 			expect(container.querySelector(".markdown")?.textContent).toBe("");
 			await advanceCharacters(3);
-			expect(container.querySelector("code")?.textContent).toBe("cod");
+			expect(container.querySelector("code")?.textContent).toMatch(/^c/);
 			expect(container.textContent).not.toContain("`");
 
 			await advanceCharacters(3);
@@ -640,7 +641,13 @@ describe("Text Component", () => {
 
 		test("shows literal punctuation and brackets once animation finishes", async () => {
 			vi.useFakeTimers();
-			const { container, renderText } = renderStreamingText("A * and [label]");
+			const { container, renderText } = renderStreamingText(
+				"A * and [label]",
+				true,
+				undefined,
+				undefined,
+				false,
+			);
 
 			await advanceCharacters(3);
 			expect(container.querySelector(".markdown")?.textContent).toBe("A");
@@ -648,8 +655,58 @@ describe("Text Component", () => {
 			await advanceCharacters(30);
 			expect(container.querySelector(".markdown")?.textContent).toBe("A * and label");
 
-			renderText("A * and [label]", "done");
+			renderText("A * and [label]", "start", true);
 			expect(container.querySelector(".markdown")?.textContent).toBe("A * and [label]");
+		});
+
+		test.each([
+			["without a completion callback", undefined],
+			["when the callback does not update animationState", vi.fn()],
+		])("restores literal final Markdown %s", async (_label, onSetMessageAnimated) => {
+			vi.useFakeTimers();
+			const chunks = ["A * and ", "[label]"];
+			const { container, renderText } = renderStreamingText(
+				chunks,
+				true,
+				onSetMessageAnimated,
+				undefined,
+				false,
+			);
+			await advanceCharacters(45);
+			expect(container.querySelector(".markdown")?.textContent).toBe("A * and label");
+
+			renderText(chunks, "start", true);
+			expect(container.querySelector(".markdown")?.textContent).toBe("A * and [label]");
+		});
+
+		test("batches partial Markdown previews and clears pending updates on completion", async () => {
+			vi.useFakeTimers();
+			const onTypingTextUpdate = vi.fn();
+			const onTextUpdate = vi.fn();
+			const text = "a".repeat(64);
+			const { unmount } = render(
+				<StreamingTextAnimation
+					content={[text]}
+					messageId="batched-preview"
+					animationState="start"
+					finishReason={undefined}
+					renderTypingText={false}
+					onTextUpdate={onTextUpdate}
+					onTypingTextUpdate={onTypingTextUpdate}
+				/>,
+			);
+
+			await advanceCharacters(10);
+			expect(onTypingTextUpdate.mock.calls.length).toBeLessThan(8);
+			expect(onTypingTextUpdate.mock.lastCall?.[0].length).toBeGreaterThan(5);
+
+			await advanceCharacters(60);
+			expect(onTextUpdate).toHaveBeenCalledWith(text);
+			expect(onTypingTextUpdate.mock.lastCall).toEqual([""]);
+			const updatesAfterCompletion = onTypingTextUpdate.mock.calls.length;
+			await advanceCharacters(10);
+			expect(onTypingTextUpdate).toHaveBeenCalledTimes(updatesAfterCompletion);
+			unmount();
 		});
 
 		test("does not expose a partial escaped delimiter", async () => {
