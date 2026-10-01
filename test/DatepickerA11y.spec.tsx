@@ -45,13 +45,16 @@ const addDays = (from: Date, days: number) => {
 const focusedLabel = () => (document.activeElement as HTMLElement)?.getAttribute("aria-label");
 
 // Spoken day label: "<Weekday>, <Month> <D>, <YYYY>", optionally followed by ", start of range" /
-// ", end of range" in range mode (CGY-30560). Selected/today are states (aria-selected,
-// aria-current="date"), not words in the name.
+// ", end of range" in range mode (CGY-30560), and ending with ", selected" on every aria-selected
+// day (CGY-39786 — no screen reader reliably speaks the aria-selected state of a focused
+// gridcell, so the state is repeated as a word). Today is a state only (aria-current="date").
 const DATE_LABEL = /^[A-Za-z]+, [A-Za-z]+ \d{1,2}, \d{4}(, |$)/;
-// A day label with no range word.
+// An unselected day: no state or range word.
 const PLAIN_DATE_LABEL = /^[A-Za-z]+, [A-Za-z]+ \d{1,2}, \d{4}$/;
-const RANGE_START_LABEL = /^[A-Za-z]+, [A-Za-z]+ \d{1,2}, \d{4}, start of range$/;
-const RANGE_END_LABEL = /^[A-Za-z]+, [A-Za-z]+ \d{1,2}, \d{4}, end of range$/;
+// A selected day that is not a range endpoint (single/multiple mode, or a day inside a range).
+const SELECTED_LABEL = /^[A-Za-z]+, [A-Za-z]+ \d{1,2}, \d{4}, selected$/;
+const RANGE_START_LABEL = /^[A-Za-z]+, [A-Za-z]+ \d{1,2}, \d{4}, start of range, selected$/;
+const RANGE_END_LABEL = /^[A-Za-z]+, [A-Za-z]+ \d{1,2}, \d{4}, end of range, selected$/;
 // English long weekday for a date (the fixtures use the "en" flatpickr locale).
 const weekdayOf = (date: Date) =>
 	new Intl.DateTimeFormat("en-US", { weekday: "long" }).format(date);
@@ -60,6 +63,14 @@ const getInMonthCells = (root: HTMLElement) =>
 	getDayCells(root).filter(
 		c => !c.classList.contains("prevMonthDay") && !c.classList.contains("nextMonthDay"),
 	);
+// The spoken name and the aria-selected state must never disagree: every cell that carries the
+// state ends with the selected word, and no other cell mentions it (CGY-39786).
+const expectNamesMatchSelectedState = (root: HTMLElement, word = "selected") => {
+	getDayCells(root).forEach(cell => {
+		const label = cell.getAttribute("aria-label") || "";
+		expect(label.endsWith(`, ${word}`)).toBe(cell.getAttribute("aria-selected") === "true");
+	});
+};
 // Make `cell` the roving-focus target and focus it.
 const focusCell = (cell: HTMLElement) => {
 	cell.setAttribute("tabindex", "0");
@@ -511,34 +522,37 @@ describe("CGY-30560 - day cells expose weekday, today, selected and range state"
 		});
 	});
 
-	it("single mode: the selected day is aria-selected (state only, not in the name); moving the selection moves it", async () => {
+	it("single mode: the selected day is aria-selected AND named 'selected'; moving the selection moves both", async () => {
 		const { getByTestId, findByRole } = render(<Message message={messageSingleDate} />);
 		const root = await openDialog(findByRole, getByTestId);
 
 		focusCell(getInMonthCells(root)[0]);
 		await selectFocusedDayAndSettle();
 		const first = getInMonthCells(root)[0];
-		// Selection is a STATE (APG datepicker example). Known: NVDA does not speak it on focus
-		// when the focused cell is the only selected cell of the table (nvaccess/nvda#8879), so
-		// this is silent in NVDA in single mode; JAWS/VoiceOver speak it.
+		// The APG example exposes selection as a state only, but NVDA does not speak aria-selected
+		// on focus when the focused cell is the only selected cell of the table
+		// (nvaccess/nvda#8879) — always the case in single mode — and JAWS/VoiceOver drop it
+		// depending on browser/verbosity. So the name repeats it (CGY-39786).
 		expect(first).toHaveAttribute("aria-selected", "true");
-		expect(first.getAttribute("aria-label")).toMatch(PLAIN_DATE_LABEL);
-		expect(focusedLabel()).toMatch(PLAIN_DATE_LABEL);
+		expect(first.getAttribute("aria-label")).toMatch(SELECTED_LABEL);
+		expect(focusedLabel()).toMatch(SELECTED_LABEL);
+		expectNamesMatchSelectedState(root);
 
-		// Select the next day: the old selection loses the state.
+		// Select the next day: the old selection loses the state and the word.
 		pressKey("ArrowRight");
 		await selectFocusedDayAndSettle();
 		const second = getInMonthCells(root)[1];
 		expect(second).toHaveAttribute("aria-selected", "true");
-		expect(second.getAttribute("aria-label")).toMatch(PLAIN_DATE_LABEL);
+		expect(second.getAttribute("aria-label")).toMatch(SELECTED_LABEL);
 		expect(getInMonthCells(root)[0]).not.toHaveAttribute("aria-selected");
 		expect(getInMonthCells(root)[0].getAttribute("aria-label")).toMatch(PLAIN_DATE_LABEL);
 		expect(
 			root.querySelectorAll('.dayContainer .flatpickr-day[aria-selected="true"]'),
 		).toHaveLength(1);
+		expectNamesMatchSelectedState(root);
 	});
 
-	it("multiple mode: each selected day is aria-selected (not in the name); deselecting clears it", async () => {
+	it("multiple mode: each selected day is aria-selected and named 'selected'; deselecting clears both", async () => {
 		const { getByTestId, findByRole } = render(<Message message={messageMultiple} />);
 		const root = await openDialog(findByRole, getByTestId);
 
@@ -555,8 +569,9 @@ describe("CGY-30560 - day cells expose weekday, today, selected and range state"
 		expect(selected).toHaveLength(2);
 		selected.forEach(cell => {
 			expect(cell).toHaveAttribute("aria-selected", "true");
-			expect(cell.getAttribute("aria-label")).toMatch(PLAIN_DATE_LABEL);
+			expect(cell.getAttribute("aria-label")).toMatch(SELECTED_LABEL);
 		});
+		expectNamesMatchSelectedState(root);
 
 		// Day 2, between them, is not selected.
 		const between = getInMonthCells(root)[1];
@@ -569,6 +584,7 @@ describe("CGY-30560 - day cells expose weekday, today, selected and range state"
 		expect(third).not.toHaveClass("selected");
 		expect(third).not.toHaveAttribute("aria-selected");
 		expect(third.getAttribute("aria-label")).toMatch(PLAIN_DATE_LABEL);
+		expectNamesMatchSelectedState(root);
 	});
 
 	it("range mode: endpoints announce start/end of range; days between are aria-selected", async () => {
@@ -586,7 +602,7 @@ describe("CGY-30560 - day cells expose weekday, today, selected and range state"
 		const start = root.querySelector<HTMLElement>(".dayContainer .flatpickr-day.startRange")!;
 		const end = root.querySelector<HTMLElement>(".dayContainer .flatpickr-day.endRange")!;
 		// Endpoints: aria-selected state + the boundary word in the name (ARIA has no state for
-		// range endpoints). "selected" itself is not repeated in the name.
+		// range endpoints), followed by the selected word like every other highlighted day.
 		expect(start).toHaveAttribute("aria-selected", "true");
 		expect(start.getAttribute("aria-label")).toMatch(RANGE_START_LABEL);
 		expect(end).toHaveAttribute("aria-selected", "true");
@@ -598,8 +614,9 @@ describe("CGY-30560 - day cells expose weekday, today, selected and range state"
 		expect(inner.length).toBeGreaterThanOrEqual(2);
 		inner.forEach(cell => {
 			expect(cell).toHaveAttribute("aria-selected", "true");
-			expect(cell.getAttribute("aria-label")).toMatch(PLAIN_DATE_LABEL);
+			expect(cell.getAttribute("aria-label")).toMatch(SELECTED_LABEL);
 		});
+		expectNamesMatchSelectedState(root);
 	});
 
 	it("range mode: the keyboard range PREVIEW (first endpoint chosen, arrowing) is exposed like the highlight it shows", async () => {
@@ -607,10 +624,10 @@ describe("CGY-30560 - day cells expose weekday, today, selected and range state"
 		const root = await openDialog(findByRole, getByTestId);
 
 		// Choose the first endpoint (day 1). flatpickr strips the range classes right after this
-		// selection, so the lone endpoint is a plain selected day.
+		// selection, so the lone endpoint is a plain selected day (no boundary word yet).
 		focusCell(getInMonthCells(root)[0]);
 		await selectFocusedDayAndSettle();
-		expect(focusedLabel()).toMatch(PLAIN_DATE_LABEL);
+		expect(focusedLabel()).toMatch(SELECTED_LABEL);
 
 		// Arrow to day 4 WITHOUT committing. flatpickr previews the range on every arrow move
 		// (focusOnDayElem -> onMouseOver) purely via classes — no hook fires — and the preview is
@@ -629,9 +646,11 @@ describe("CGY-30560 - day cells expose weekday, today, selected and range state"
 		[cells[1], cells[2]].forEach(cell => {
 			expect(cell).toHaveClass("inRange");
 			expect(cell).toHaveAttribute("aria-selected", "true");
-			expect(cell.getAttribute("aria-label")).toMatch(PLAIN_DATE_LABEL);
+			expect(cell.getAttribute("aria-label")).toMatch(SELECTED_LABEL);
 		});
 		expect(cells[4]).not.toHaveAttribute("aria-selected");
+		expect(cells[4].getAttribute("aria-label")).toMatch(PLAIN_DATE_LABEL);
+		expectNamesMatchSelectedState(root);
 
 		// Arrow back one day: day 4 leaves the preview, day 3 becomes its end.
 		pressKey("ArrowLeft");
@@ -643,7 +662,8 @@ describe("CGY-30560 - day cells expose weekday, today, selected and range state"
 		await selectFocusedDayAndSettle();
 		expect(focusedLabel()).toMatch(RANGE_END_LABEL);
 		expect(getInMonthCells(root)[0].getAttribute("aria-label")).toMatch(RANGE_START_LABEL);
-		expect(getInMonthCells(root)[1].getAttribute("aria-label")).toMatch(PLAIN_DATE_LABEL);
+		expect(getInMonthCells(root)[1].getAttribute("aria-label")).toMatch(SELECTED_LABEL);
+		expectNamesMatchSelectedState(root);
 	});
 
 	it("day names follow the datepicker locale's word order (Intl), e.g. German", async () => {
@@ -933,6 +953,7 @@ describe("CGY-39786 - every library-added label and accessible name is translata
 					datePickerNextMonth: "Nächster Monat",
 					datePickerGridLabel: "Kalender",
 					datePickerGridDescription: "Mit den Pfeiltasten durch die Tage navigieren",
+					datePickerSelected: "ausgewählt",
 					datePickerHour: "Stunde",
 					datePickerMinute: "Minute",
 				},
@@ -961,6 +982,29 @@ describe("CGY-39786 - every library-added label and accessible name is translata
 		expect(root.querySelector(".flatpickr-hour")).toHaveAttribute("aria-label", "Stunde");
 		expect(root.querySelector(".flatpickr-minute")).toHaveAttribute("aria-label", "Minute");
 		expect(root.innerHTML).not.toMatch(/Previous month|Next month|Close date-picker|"Hour"/);
+	});
+
+	it("the selected word in the day names is translatable (datePickerSelected)", async () => {
+		const { getByTestId, findByRole } = render(
+			<Message message={localeDe as unknown as IMessage} config={de} />,
+		);
+		const root = await openDialog(findByRole, getByTestId);
+
+		focusCell(getInMonthCells(root)[0]);
+		selectFocusedDay();
+		// e.g. "Donnerstag, 12. Juni 2026, ausgewählt" — the German fixture also proves the word
+		// follows the locale-ordered date, not the English composition.
+		await waitFor(() =>
+			expect(focusedLabel()).toMatch(
+				/^[A-Za-zäöü]+, \d{1,2}\. [A-Za-zä]+ \d{4}, ausgewählt$/,
+			),
+		);
+		expect(getInMonthCells(root)[0]).toHaveAttribute("aria-selected", "true");
+		expectNamesMatchSelectedState(root, "ausgewählt");
+		// No English fallback leaks into any day name.
+		getDayCells(root).forEach(cell => {
+			expect(cell.getAttribute("aria-label")).not.toMatch(/selected/i);
+		});
 	});
 
 	it("without translations the time fields keep flatpickr's names (DOM contract unchanged)", async () => {
