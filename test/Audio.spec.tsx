@@ -2,10 +2,12 @@ import { render, waitFor, fireEvent, act } from "@testing-library/react";
 import { it, describe, expect } from "vitest";
 import Message from "src/messages/Message";
 import audio from "test/fixtures/audio.json";
+import audioDownloadUrl from "test/fixtures/audio-download-url.json";
 import { IMessage } from "@cognigy/socket-client";
 
 describe("Message Audio", () => {
 	const message = audio as unknown as IMessage;
+	const messageDownloadUrl = audioDownloadUrl as unknown as IMessage;
 
 	it("renders audio message", async () => {
 		const { getByTestId } = render(<Message message={message} />);
@@ -82,6 +84,17 @@ describe("Message Audio", () => {
 
 		fireEvent.click(muteButton);
 		expect(slider.value).toBe("1");
+	});
+
+	it("prefers downloadUrl over url when both are present", async () => {
+		const { getByTestId } = render(<Message message={messageDownloadUrl} />);
+
+		await waitFor(() => {
+			expect(getByTestId("audio-message").querySelector("[data-url]")).toHaveAttribute(
+				"data-url",
+				"https://download.example.com/audio.mp3",
+			);
+		});
 	});
 
 	describe("Options menu", () => {

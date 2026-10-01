@@ -188,7 +188,7 @@ const ReactPlayer = forwardRef<MockReactPlayerHandle, MockReactPlayerProps>((pro
 	);
 
 	return (
-		<div className={className} style={style}>
+		<div className={className} style={style} data-url={props.url}>
 			{/* Mirror the real react-player Preview semantics: it renders a plain
 			    div with only tabIndex from `previewTabIndex` — no role, no
 			    aria-label, no native button fallback. Video.tsx relies on that

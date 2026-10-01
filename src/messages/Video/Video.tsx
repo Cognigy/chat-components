@@ -5,14 +5,19 @@ import classnames from "classnames";
 import PrimaryButton from "src/common/Buttons/PrimaryButton";
 import { DownloadIcon, VideoPlayIcon } from "src/assets/svg";
 import { useLiveRegion, useMessageContext } from "src/messages/hooks";
-import { getChannelPayload } from "src/utils";
+import { getChannelPayload, resolveAttachmentUrl } from "src/utils";
 import { IWebchatVideoAttachment } from "@cognigy/socket-client";
 
 const Video: FC = () => {
 	const { message, config } = useMessageContext();
 	const payload = getChannelPayload(message, config);
-	const { url, altText, captionsUrl } =
-		(payload?.message?.attachment as IWebchatVideoAttachment)?.payload || {};
+	const { url, altText, captionsUrl, downloadUrl } =
+		(
+			payload?.message?.attachment as IWebchatVideoAttachment & {
+				payload: { downloadUrl?: string };
+			}
+		)?.payload || {};
+	const resolvedUrl = resolveAttachmentUrl({ url, downloadUrl });
 
 	const downloadTranscriptLinkRef = useRef<HTMLAnchorElement>(null);
 	const [playing, setPlaying] = useState(false);
@@ -23,7 +28,7 @@ const Video: FC = () => {
 	useLiveRegion({
 		messageType: "video",
 		data: { hasTranscript: !!altText, hasCaptions: !!captionsUrl },
-		validation: () => !!url,
+		validation: () => !!resolvedUrl,
 	});
 
 	const handleFocus = useCallback(
@@ -82,7 +87,7 @@ const Video: FC = () => {
 		],
 	};
 
-	if (!url) return null;
+	if (!resolvedUrl) return null;
 
 	const playVideoLabel =
 		config?.settings.customTranslations?.ariaLabels?.playVideo || "Play video";
@@ -103,7 +108,7 @@ const Video: FC = () => {
 			>
 				<ReactPlayer
 					ref={videoPlayerRef}
-					url={url}
+					url={resolvedUrl}
 					light={lightMode}
 					playing={playing}
 					controls

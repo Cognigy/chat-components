@@ -8,10 +8,12 @@ import {
 import { it, describe, expect } from "vitest";
 import Message from "src/messages/Message";
 import video from "test/fixtures/video.json";
+import videoDownloadUrl from "test/fixtures/video-download-url.json";
 import { IMessage } from "@cognigy/socket-client";
 
 describe("Message Video", () => {
 	const message = video as unknown as IMessage;
+	const messageDownloadUrl = videoDownloadUrl as unknown as IMessage;
 
 	it("renders video message", async () => {
 		render(<Message message={message} />);
@@ -47,5 +49,16 @@ describe("Message Video", () => {
 		waitFor(() =>
 			expect(screen.getByTestId("video-message").querySelector("video")).toBeInTheDocument(),
 		);
+	});
+
+	it("prefers downloadUrl over url when both are present", async () => {
+		render(<Message message={messageDownloadUrl} />);
+
+		await waitFor(() => {
+			expect(screen.getByTestId("video-message").querySelector("[data-url]")).toHaveAttribute(
+				"data-url",
+				"https://download.example.com/video.mp4",
+			);
+		});
 	});
 });

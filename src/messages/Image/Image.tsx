@@ -3,14 +3,19 @@ import { ImageMessageContext } from "./context";
 import Lightbox from "./lightbox/Lightbox";
 import ImageThumb from "./ImageThumb";
 import { useMessageContext } from "src/messages/hooks";
-import { getChannelPayload } from "src/utils";
+import { getChannelPayload, resolveAttachmentUrl } from "src/utils";
 import { IWebchatButton, IWebchatImageAttachment } from "@cognigy/socket-client";
 
 const Image: FC = () => {
 	const { message, config } = useMessageContext();
 	const payload = getChannelPayload(message, config);
-	const { url, altText, buttons } =
-		(payload?.message?.attachment as IWebchatImageAttachment)?.payload || {};
+	const { url, altText, buttons, downloadUrl } =
+		(
+			payload?.message?.attachment as IWebchatImageAttachment & {
+				payload: { downloadUrl?: string };
+			}
+		)?.payload || {};
+	const resolvedUrl = resolveAttachmentUrl({ url, downloadUrl });
 
 	const button = buttons?.[0];
 
@@ -30,15 +35,15 @@ const Image: FC = () => {
 				setShowLightbox(false);
 				buttonRef.current?.focus(); // Restore focus after closing the lightbox
 			},
-			url,
+			url: resolvedUrl ?? "",
 			altText,
 			isDownloadable,
 			button,
 		}),
-		[altText, button, isDownloadable, url],
+		[altText, button, isDownloadable, resolvedUrl],
 	);
 
-	if (!url) return null;
+	if (!resolvedUrl) return null;
 
 	return (
 		<ImageMessageContext.Provider value={contextValue}>
