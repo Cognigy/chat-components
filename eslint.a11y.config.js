@@ -39,6 +39,15 @@ export default [
 			"dist",
 			"dist-demo",
 			"node_modules",
+			// Nested Claude Code git worktrees: each is a full checkout of this
+			// repo (its own src/, test/ and node_modules) living under
+			// .claude/worktrees/<name>. Linting them reports every finding from
+			// unrelated branches as if it were a local violation, which CI never
+			// sees — it does a fresh checkout with no nested worktrees. Git
+			// already skips them via .git/info/exclude; ESLint doesn't read that.
+			// Scoped to worktrees/ so the tracked .claude/ content (agents,
+			// commands, skills) stays in scope exactly as it is on CI.
+			".claude/worktrees/**",
 			// Test-only mocks never ship; their DOM mimics third-party
 			// libraries and is exercised by the runtime axe gate instead.
 			"test/__mocks__",
