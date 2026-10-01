@@ -22,6 +22,29 @@ body {
 	transform-origin: top;
 }
 
+.streamingMarkdownLab {
+	display: flex;
+	flex-direction: column;
+	gap: 8px;
+	padding: 16px;
+}
+
+.streamingMarkdownLab textarea,
+.streamingMarkdownLab select {
+	font: inherit;
+	max-width: 100%;
+}
+
+.streamingMarkdownLab button {
+	align-self: flex-start;
+	cursor: pointer;
+}
+
+.streamingExamplesHeading {
+	font-size: 1.2em;
+	margin: 16px;
+}
+
 @keyframes pop {
 	0% {
 		opacity: 0.125;

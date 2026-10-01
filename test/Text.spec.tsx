@@ -1,7 +1,8 @@
-import { render, screen } from "@testing-library/react";
-import { describe, test, expect } from "vitest";
+import { act, render, screen } from "@testing-library/react";
+import { afterEach, describe, test, expect, vi } from "vitest";
 import { Message, defaultAllowedHtmlTags } from "src/index";
-import { IWebchatConfig } from "src/messages/types";
+import { IStreamingMessage, IWebchatConfig } from "src/messages/types";
+import StreamingTextAnimation from "src/messages/Text/StreamingTextAnimation";
 
 describe("Text Component", () => {
 	describe("Links", () => {
@@ -352,6 +353,411 @@ describe("Text Component", () => {
 			expect(heading?.textContent).toBe("Test Heading");
 		});
 	});
+
+	describe("Progressive Markdown Rendering", () => {
+		afterEach(() => vi.useRealTimers());
+
+		const renderStreamingText = (
+			text: string | string[],
+			renderMarkdown = true,
+			onSetMessageAnimated?: (id: string, state: IStreamingMessage["animationState"]) => void,
+			onSetLiveRegionText?: (id: string, text: string) => void,
+			finished = true,
+		) => {
+			const config = {
+				settings: {
+					behavior: { progressiveMessageRendering: true, renderMarkdown },
+				},
+			} as IWebchatConfig;
+			const renderMessage = (
+				messageText: string | string[],
+				animationState: IStreamingMessage["animationState"] = "start",
+				isFinished = finished,
+			) => (
+				<Message
+					message={
+						{
+							id: "streaming-text",
+							source: "bot",
+							// Streaming chunks are supported at runtime, though socket-client
+							// currently types message.text as a single string.
+							text: messageText,
+							animationState,
+							finishReason: isFinished ? "stop" : undefined,
+						} as unknown as IStreamingMessage
+					}
+					config={config}
+					onSetMessageAnimated={onSetMessageAnimated}
+					onSetLiveRegionText={onSetLiveRegionText}
+					data-message-id="streaming-text"
+				/>
+			);
+			const result = render(renderMessage(text));
+			return {
+				...result,
+				renderText: (
+					nextText: string | string[],
+					animationState?: IStreamingMessage["animationState"],
+					isFinished?: boolean,
+				) => result.rerender(renderMessage(nextText, animationState, isFinished)),
+			};
+		};
+
+		const advanceCharacters = async (count: number) => {
+			for (let index = 0; index < count; index++) {
+				await act(async () => {
+					await vi.advanceTimersByTimeAsync(25);
+				});
+			}
+		};
+
+		test.each([
+			["Here is **bold text**", /\*\*/u],
+			["Read [the guide](https://example.com/guide)", /\[|\]|\]\(|https?:\/\//u],
+			["This is <b>bold</b> and `code`", /<\/?b|`/u],
+			["### Heading\n- list item", /###|^- /u],
+		])("does not expose raw syntax in any sampled frame of %s", async (text, rawSyntax) => {
+			vi.useFakeTimers();
+			const { container } = renderStreamingText(text);
+
+			for (let index = 0; index < text.length + 3; index++) {
+				await advanceCharacters(1);
+				const visible = container.querySelector(".markdown")?.textContent ?? "";
+				expect(visible, `visible text after ${index + 1} timer ticks`).not.toMatch(
+					rawSyntax,
+				);
+			}
+		});
+
+		test.each([
+			["Text ****", "Text"],
+			["Text \\***", "Text *"],
+			["Text \\*", "Text *"],
+		])("handles trailing delimiters in %s while still streaming", async (text, expected) => {
+			vi.useFakeTimers();
+			const { container } = renderStreamingText(text, true, undefined, undefined, false);
+
+			await advanceCharacters(text.length + 2);
+			expect(container.querySelector(".markdown")?.textContent).toBe(expected);
+		});
+
+		test("renders incomplete bold markup during typing and completes without duplicating text", async () => {
+			vi.useFakeTimers();
+			const onSetMessageAnimated = vi.fn();
+			const onSetLiveRegionText = vi.fn();
+			const { container, renderText } = renderStreamingText(
+				"**bold text**",
+				true,
+				onSetMessageAnimated,
+				onSetLiveRegionText,
+			);
+
+			await advanceCharacters(1);
+			expect(container.querySelector(".markdown")?.textContent).toBe("");
+			await advanceCharacters(1);
+			expect(container.querySelector(".markdown")?.textContent).toBe("");
+			await advanceCharacters(6);
+			expect(container.querySelector("strong")?.textContent).toMatch(/^bold/);
+			expect(container.textContent).not.toContain("**");
+			expect(onSetMessageAnimated).not.toHaveBeenCalledWith("streaming-text", "done");
+			expect(onSetLiveRegionText).not.toHaveBeenCalled();
+
+			await advanceCharacters(25);
+			expect(container.querySelector("strong")?.textContent).toBe("bold text");
+			expect(container.querySelectorAll("strong")).toHaveLength(1);
+			expect(onSetMessageAnimated).toHaveBeenCalledWith("streaming-text", "done");
+
+			renderText("**bold text**", "done");
+			expect(container.querySelector("strong")?.textContent).toBe("bold text");
+			expect(container.querySelectorAll("strong")).toHaveLength(1);
+		});
+
+		test("keeps formatting continuous across streamed chunks", async () => {
+			vi.useFakeTimers();
+			const onSetMessageAnimated = vi.fn();
+			const { container } = renderStreamingText(
+				["Hello **bold", " and more**"],
+				true,
+				onSetMessageAnimated,
+			);
+
+			await advanceCharacters(15);
+			expect(container.querySelector("strong")?.textContent).toMatch(/^bold/);
+			expect(container.textContent).not.toContain("**");
+			expect(onSetMessageAnimated).not.toHaveBeenCalledWith("streaming-text", "done");
+
+			await advanceCharacters(53);
+			expect(container.querySelector("strong")?.textContent).toBe("bold and more");
+			expect(container.querySelectorAll("strong")).toHaveLength(1);
+			expect(onSetMessageAnimated).toHaveBeenCalledWith("streaming-text", "done");
+		});
+
+		test.each(["new array", "same array"])(
+			"renders a chunk appended with a %s while the previous chunk is still typing",
+			async arrayUpdate => {
+				vi.useFakeTimers();
+				const onSetMessageAnimated = vi.fn();
+				const chunks = ["Hello **bold"];
+				const { container, renderText } = renderStreamingText(
+					chunks,
+					true,
+					onSetMessageAnimated,
+				);
+
+				await advanceCharacters(6);
+				if (arrayUpdate === "same array") {
+					chunks.push(" and more**");
+					renderText(chunks);
+				} else {
+					renderText([...chunks, " and more**"]);
+				}
+
+				await advanceCharacters(65);
+				expect(container.querySelector("strong")?.textContent).toBe("bold and more");
+				expect(onSetMessageAnimated).toHaveBeenCalledWith("streaming-text", "done");
+			},
+		);
+
+		test("hides incomplete link syntax and exposes the final link only when complete", async () => {
+			vi.useFakeTimers();
+			const { container } = renderStreamingText("[helpful link](https://example.com)");
+
+			await advanceCharacters(1);
+			expect(container.querySelector(".markdown")?.textContent).toBe("");
+			await advanceCharacters(13);
+			expect(container.querySelector(".markdown")?.textContent).toMatch(/^helpful lin/);
+			expect(container.querySelector("a")).toBeNull();
+
+			await advanceCharacters(1);
+			expect(container.textContent).toContain("helpful link");
+			expect(container.textContent).not.toContain("[");
+			expect(container.querySelector("a")).toBeNull();
+
+			await advanceCharacters(54);
+			expect(screen.getByRole("link", { name: "helpful link" })).toHaveAttribute(
+				"href",
+				"https://example.com",
+			);
+			expect(container.textContent).not.toContain("](");
+		});
+
+		test("handles delayed link chunks and waits for the last chunk before finishing", async () => {
+			vi.useFakeTimers();
+			const onSetMessageAnimated = vi.fn();
+			const chunks = [
+				"Read the [Markdown",
+				" guide](",
+				"https://example.com/guide",
+				") done",
+			];
+			const { container, renderText } = renderStreamingText(
+				chunks.slice(0, 1),
+				true,
+				onSetMessageAnimated,
+				undefined,
+				false,
+			);
+
+			await advanceCharacters(45);
+			expect(container.querySelector(".markdown")?.textContent).toBe("Read the Markdown");
+			expect(onSetMessageAnimated).not.toHaveBeenCalledWith("streaming-text", "done");
+
+			renderText(chunks.slice(0, 2), "start", false);
+			await advanceCharacters(35);
+			expect(container.querySelector(".markdown")?.textContent).toBe(
+				"Read the Markdown guide",
+			);
+			expect(container.querySelector("a")).toBeNull();
+
+			renderText(chunks.slice(0, 3), "start", false);
+			await advanceCharacters(85);
+			expect(container.querySelector(".markdown")?.textContent).toBe(
+				"Read the Markdown guide",
+			);
+			expect(onSetMessageAnimated).not.toHaveBeenCalledWith("streaming-text", "done");
+
+			renderText(chunks, "start", true);
+			await advanceCharacters(45);
+			expect(screen.getByRole("link", { name: "Markdown guide" })).toHaveAttribute(
+				"href",
+				"https://example.com/guide",
+			);
+			expect(container.querySelector(".markdown")?.textContent).toBe(
+				"Read the Markdown guide done",
+			);
+			expect(onSetMessageAnimated).toHaveBeenCalledWith("streaming-text", "done");
+		});
+
+		test.each([
+			{ renderMarkdown: true, label: "Markdown" },
+			{ renderMarkdown: false, label: "plain-text" },
+		])(
+			"completes a $label message when finishReason arrives after its last chunk",
+			async ({ renderMarkdown }) => {
+				vi.useFakeTimers();
+				const onSetMessageAnimated = vi.fn();
+				const chunks = ["Here is **bold", " text**"];
+				const { container, renderText } = renderStreamingText(
+					chunks,
+					renderMarkdown,
+					onSetMessageAnimated,
+					undefined,
+					false,
+				);
+
+				await advanceCharacters(60);
+				if (renderMarkdown) {
+					expect(container.querySelector("strong")?.textContent).toBe("bold text");
+				} else {
+					expect(container.textContent).toContain("Here is **bold text**");
+				}
+				expect(onSetMessageAnimated).not.toHaveBeenCalledWith("streaming-text", "done");
+
+				renderText(chunks, "start", true);
+				await advanceCharacters(2);
+				expect(onSetMessageAnimated).toHaveBeenCalledWith("streaming-text", "done");
+				expect(
+					onSetMessageAnimated.mock.calls.filter(([, state]) => state === "done"),
+				).toHaveLength(1);
+
+				renderText(chunks, "done", true);
+				expect(
+					onSetMessageAnimated.mock.calls.filter(([, state]) => state === "done"),
+				).toHaveLength(1);
+			},
+		);
+
+		test("renders partial inline code and raw HTML without exposing incomplete tags", async () => {
+			vi.useFakeTimers();
+			const { container } = renderStreamingText("`code` <b>bold</b>");
+
+			await advanceCharacters(1);
+			expect(container.querySelector(".markdown")?.textContent).toBe("");
+			await advanceCharacters(3);
+			expect(container.querySelector("code")?.textContent).toMatch(/^c/);
+			expect(container.textContent).not.toContain("`");
+
+			await advanceCharacters(3);
+			expect(container.querySelector(".markdown")?.textContent).toBe("code");
+			await advanceCharacters(6);
+			expect(container.querySelector("b")?.textContent).toMatch(/^bo/);
+			expect(container.textContent).not.toContain("<b");
+		});
+
+		test.each([
+			{ text: "# Heading", markerLength: 1, selector: "h1" },
+			{ text: "- item", markerLength: 1, selector: "li" },
+			{ text: "1. item", markerLength: 2, selector: "li" },
+		])(
+			"hides an unfinished block marker in $text",
+			async ({ text, markerLength, selector }) => {
+				vi.useFakeTimers();
+				const { container } = renderStreamingText(text);
+
+				await advanceCharacters(markerLength);
+				expect(container.querySelector(".markdown")?.textContent).toBe("");
+
+				await advanceCharacters(20);
+				expect(container.querySelector(selector)?.textContent).toBe(text.split(" ").at(-1));
+			},
+		);
+
+		test("shows literal punctuation and brackets once animation finishes", async () => {
+			vi.useFakeTimers();
+			const { container, renderText } = renderStreamingText(
+				"A * and [label]",
+				true,
+				undefined,
+				undefined,
+				false,
+			);
+
+			await advanceCharacters(3);
+			expect(container.querySelector(".markdown")?.textContent).toBe("A");
+
+			await advanceCharacters(30);
+			expect(container.querySelector(".markdown")?.textContent).toBe("A * and label");
+
+			renderText("A * and [label]", "start", true);
+			expect(container.querySelector(".markdown")?.textContent).toBe("A * and [label]");
+		});
+
+		test.each([
+			["without a completion callback", undefined],
+			["when the callback does not update animationState", vi.fn()],
+		])("restores literal final Markdown %s", async (_label, onSetMessageAnimated) => {
+			vi.useFakeTimers();
+			const chunks = ["A * and ", "[label]"];
+			const { container, renderText } = renderStreamingText(
+				chunks,
+				true,
+				onSetMessageAnimated,
+				undefined,
+				false,
+			);
+			await advanceCharacters(45);
+			expect(container.querySelector(".markdown")?.textContent).toBe("A * and label");
+
+			renderText(chunks, "start", true);
+			expect(container.querySelector(".markdown")?.textContent).toBe("A * and [label]");
+		});
+
+		test("batches partial Markdown previews and clears pending updates on completion", async () => {
+			vi.useFakeTimers();
+			const onTypingTextUpdate = vi.fn();
+			const onTextUpdate = vi.fn();
+			const text = "a".repeat(64);
+			const { unmount } = render(
+				<StreamingTextAnimation
+					content={[text]}
+					messageId="batched-preview"
+					animationState="start"
+					finishReason={undefined}
+					renderTypingText={false}
+					onTextUpdate={onTextUpdate}
+					onTypingTextUpdate={onTypingTextUpdate}
+				/>,
+			);
+
+			await advanceCharacters(10);
+			expect(onTypingTextUpdate.mock.calls.length).toBeLessThan(8);
+			expect(onTypingTextUpdate.mock.lastCall?.[0].length).toBeGreaterThan(5);
+
+			await advanceCharacters(60);
+			expect(onTextUpdate).toHaveBeenCalledWith(text);
+			expect(onTypingTextUpdate.mock.lastCall).toEqual([""]);
+			const updatesAfterCompletion = onTypingTextUpdate.mock.calls.length;
+			await advanceCharacters(10);
+			expect(onTypingTextUpdate).toHaveBeenCalledTimes(updatesAfterCompletion);
+			unmount();
+		});
+
+		test("does not expose a partial escaped delimiter", async () => {
+			vi.useFakeTimers();
+			const { container, renderText } = renderStreamingText("escaped \\*asterisk\\*");
+
+			await advanceCharacters(9);
+			expect(container.querySelector(".markdown")?.textContent).toBe("escaped");
+			await advanceCharacters(10);
+			expect(container.querySelector(".markdown")?.textContent).toBe("escaped *asterisk");
+			expect(container.querySelector(".markdown")?.textContent).not.toContain("\\");
+
+			await advanceCharacters(20);
+			renderText("escaped \\*asterisk\\*", "done");
+			expect(container.querySelector(".markdown")?.textContent).toBe("escaped *asterisk*");
+		});
+
+		test("keeps the existing plain-text typing behavior when Markdown is disabled", async () => {
+			vi.useFakeTimers();
+			const { container } = renderStreamingText("**bold**", false);
+
+			await advanceCharacters(4);
+			expect(container.querySelector("strong")).toBeNull();
+			expect(container.querySelector("p")?.textContent).toBe("");
+			expect(container.textContent).toContain("**bo");
+		});
+	});
+
 	describe("Consumers that drop the <style> tag", () => {
 		// An embedding page with a nonce-only style-src-elem (the Cognigy.AI
 		// Interaction Panel) drops `style` from the allowlist so no message
