@@ -37,10 +37,44 @@ const stripTrailingMarkdownDelimiter = (text: string) => {
 	return text.slice(0, start);
 };
 
+const getOpenCode = (text: string) => {
+	let inlineRun = 0;
+	let fenced = false;
+
+	for (let index = 0; index < text.length; index++) {
+		if (text[index] === "\\") {
+			index++;
+			continue;
+		}
+		if (text[index] !== "`") continue;
+
+		let end = index + 1;
+		while (text[end] === "`") end++;
+		const length = end - index;
+		if (length === 3 && inlineRun === 0) {
+			fenced = !fenced;
+		} else if (!fenced) {
+			if (inlineRun === length) inlineRun = 0;
+			else if (inlineRun === 0) inlineRun = length;
+		}
+		index = end - 1;
+	}
+
+	return { inlineRun, inCode: fenced || inlineRun > 0 };
+};
+
+const getTrailingBareUrl = (text: string) => {
+	let start = text.length;
+	while (start > 0 && !/\s/u.test(text[start - 1])) start--;
+	while ("*_~".includes(text[start])) start++;
+	const tail = text.slice(start);
+	return /^https?:\/\//iu.test(tail) ? tail : undefined;
+};
+
 const completeStreamingMarkdown = (text: string) => {
 	// An unfinished link label, block marker, or bare delimiter cannot be
 	// resolved until more text arrives; leave the completed message untouched.
-	const withoutPendingSyntax = stripTrailingMarkdownDelimiter(
+	let withoutPendingSyntax = stripTrailingMarkdownDelimiter(
 		text
 			.replace(/(?<!\\)(!?)\[([^[\]]*)\]$/u, (_match, image: string, label: string) =>
 				image ? "" : label,
@@ -48,7 +82,11 @@ const completeStreamingMarkdown = (text: string) => {
 			.replace(/(^|\n)[ \t]*(?:#{1,6}|[-+*]|>{1,3}|\d+[.)])[ \t]*$/u, "$1"),
 	).replace(/(?<!\\)(?:\\\\)*\\$/u, match => match.slice(0, -1));
 
-	return remend(withoutPendingSyntax, { linkMode: "text-only" });
+	const { inlineRun, inCode } = getOpenCode(withoutPendingSyntax);
+	const pendingUrl = inCode ? undefined : getTrailingBareUrl(withoutPendingSyntax);
+	if (inlineRun) withoutPendingSyntax += "`".repeat(inlineRun);
+
+	return { text: remend(withoutPendingSyntax, { linkMode: "text-only" }), pendingUrl };
 };
 
 const Text: FC<TextProps> = props => {
@@ -129,13 +167,30 @@ const Text: FC<TextProps> = props => {
 		renderMarkdown && isStreaming && shouldAnimate && !finishedTyping
 			? completeStreamingMarkdown(displayedText + typingText)
 			: undefined;
+	const pendingUrlStart =
+		streamingMarkdown?.pendingUrl === undefined
+			? -1
+			: streamingMarkdown.text.lastIndexOf(streamingMarkdown.pendingUrl);
 	const markdownContent =
 		streamingMarkdown === undefined
 			? processedContent || displayedText
 			: processHTML(
 					config?.settings?.widgetSettings?.disableRenderURLsAsLinks
-						? streamingMarkdown
-						: replaceUrlsWithHTMLanchorElem(streamingMarkdown),
+						? streamingMarkdown.text
+						: pendingUrlStart < 0
+							? replaceUrlsWithHTMLanchorElem(streamingMarkdown.text)
+							: replaceUrlsWithHTMLanchorElem(
+									streamingMarkdown.text.slice(0, pendingUrlStart),
+								) + streamingMarkdown.text.slice(pendingUrlStart),
+				);
+	const pendingUrlOffset =
+		pendingUrlStart < 0 || !streamingMarkdown?.pendingUrl
+			? -1
+			: markdownContent.lastIndexOf(
+					streamingMarkdown.pendingUrl.slice(
+						0,
+						streamingMarkdown.pendingUrl.indexOf("://") + 3,
+					),
 				);
 
 	return (
@@ -148,12 +203,16 @@ const Text: FC<TextProps> = props => {
 					remarkPlugins={[remarkGfm]}
 					urlTransform={url => url}
 					components={{
-						a: ({ node: _node, ...props }) => (
-							/* eslint-disable-next-line jsx-a11y/anchor-has-content -- react-markdown
-							   component override: the link text always arrives as children via the
-							   {...props} spread from the markdown AST; the rule cannot see it. */
-							<a target="_blank" rel="noreferrer" {...props} />
-						),
+						a: ({ node, ...props }) =>
+							node?.position?.start.offset === pendingUrlOffset &&
+							pendingUrlOffset >= 0 ? (
+								<>{props.children}</>
+							) : (
+								/* eslint-disable-next-line jsx-a11y/anchor-has-content -- react-markdown
+								   component override: the link text always arrives as children via the
+								   {...props} spread from the markdown AST; the rule cannot see it. */
+								<a target="_blank" rel="noreferrer" {...props} />
+							),
 						p: ({ node: _node, children, ...props }) => (
 							<p {...props}>
 								{/* The extra span is a workaround for the crash caused by google translate issue in React applications.

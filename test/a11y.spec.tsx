@@ -165,6 +165,50 @@ it("stateful: partial streaming Markdown is accessible", async () => {
 	await expectA11yCompliant("stateful: partial streaming Markdown", container);
 });
 
+it("stateful: unfinished Markdown links and bare URLs avoid premature anchors", async () => {
+	vi.useFakeTimers();
+	let container!: HTMLElement;
+	try {
+		({ container } = render(
+			<Message
+				message={{
+					id: "streaming-link-a11y",
+					source: "bot",
+					text: "Read [guide](https://example.com) and https://example.net/docs",
+					animationState: "start",
+				}}
+				config={
+					{
+						settings: {
+							behavior: { renderMarkdown: true, progressiveMessageRendering: true },
+						},
+					} as React.ComponentProps<typeof Message>["config"]
+				}
+			/>,
+		));
+		for (let index = 0; index < 13; index++) {
+			await act(async () => {
+				await vi.advanceTimersByTimeAsync(25);
+			});
+		}
+		expect(container.querySelector("a")).toBeNull();
+
+		for (let index = 0; index < 75; index++) {
+			await act(async () => {
+				await vi.advanceTimersByTimeAsync(25);
+			});
+		}
+		expect(container.querySelectorAll("a")).toHaveLength(1);
+		expect(container.querySelector("a")?.getAttribute("href")).toBe("https://example.com");
+		expect(container.querySelector(".markdown")?.textContent).toContain(
+			"https://example.net/docs",
+		);
+	} finally {
+		vi.useRealTimers();
+	}
+	await expectA11yCompliant("stateful: unfinished Markdown and bare URL", container);
+});
+
 describe("Accessibility (WCAG 2.2 AA): message-type sweep", () => {
 	it.each(sweepCases)(
 		"$name — renders without axe violations",

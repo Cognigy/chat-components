@@ -97,7 +97,11 @@ const streamingMarkdownExamples = {
 		"The total is 5 * 3. A literal [label] and an escaped \\*asterisk\\* stay visible.",
 };
 
-const StreamingMarkdownRun: FC<{ text: string }> = ({ text }) => {
+const StreamingMarkdownRun: FC<{
+	text: string;
+	animationState: "start" | "done";
+	onSetMessageAnimated: (id: string, state: IStreamingMessage["animationState"]) => void;
+}> = ({ text, animationState, onSetMessageAnimated }) => {
 	const chunks = useMemo(() => {
 		const characters = Array.from(text);
 		return Array.from({ length: Math.ceil(characters.length / 8) }, (_, index) =>
@@ -105,13 +109,6 @@ const StreamingMarkdownRun: FC<{ text: string }> = ({ text }) => {
 		);
 	}, [text]);
 	const [received, setReceived] = useState(chunks.slice(0, 1));
-	const [animationState, setAnimationState] = useState<"start" | "done">("start");
-	const onSetMessageAnimated = React.useCallback(
-		(_id: string, state: IStreamingMessage["animationState"]) => {
-			if (state === "done") setAnimationState("done");
-		},
-		[],
-	);
 
 	useEffect(() => {
 		const timers = chunks
@@ -126,36 +123,29 @@ const StreamingMarkdownRun: FC<{ text: string }> = ({ text }) => {
 	}, [chunks]);
 
 	return (
-		<>
-			<p role="status">
-				{animationState === "done"
-					? "Finished rendering"
-					: "Receiving and rendering chunks"}
-			</p>
-			<Message
-				message={
-					{
-						id: "streaming-markdown-demo",
-						source: "bot",
-						text: received,
-						animationState,
-						finishReason: received.length === chunks.length ? "stop" : undefined,
-					} as unknown as IStreamingMessage
-				}
-				config={
-					{
-						settings: {
-							behavior: {
-								renderMarkdown: true,
-								progressiveMessageRendering: true,
-								collateStreamedOutputs: true,
-							},
+		<Message
+			message={
+				{
+					id: "streaming-markdown-demo",
+					source: "bot",
+					text: received,
+					animationState,
+					finishReason: received.length === chunks.length ? "stop" : undefined,
+				} as unknown as IStreamingMessage
+			}
+			config={
+				{
+					settings: {
+						behavior: {
+							renderMarkdown: true,
+							progressiveMessageRendering: true,
+							collateStreamedOutputs: true,
 						},
-					} as IWebchatConfig
-				}
-				onSetMessageAnimated={onSetMessageAnimated}
-			/>
-		</>
+					},
+				} as IWebchatConfig
+			}
+			onSetMessageAnimated={onSetMessageAnimated}
+		/>
 	);
 };
 
@@ -165,6 +155,13 @@ const StreamingMarkdownLab: FC = () => {
 	const [draft, setDraft] = useState<string>(streamingMarkdownExamples[example]);
 	const [activeText, setActiveText] = useState(draft);
 	const [run, setRun] = useState(0);
+	const [animationState, setAnimationState] = useState<"start" | "done">("start");
+	const onSetMessageAnimated = React.useCallback(
+		(_id: string, state: IStreamingMessage["animationState"]) => {
+			if (state === "done") setAnimationState("done");
+		},
+		[],
+	);
 
 	return (
 		<div className="streamingMarkdownLab">
@@ -198,12 +195,23 @@ const StreamingMarkdownLab: FC = () => {
 				disabled={!draft}
 				onClick={() => {
 					setActiveText(draft);
+					setAnimationState("start");
 					setRun(previous => previous + 1);
 				}}
 			>
 				Replay streaming
 			</button>
-			<StreamingMarkdownRun key={run} text={activeText} />
+			<p role="status">
+				{animationState === "done"
+					? "Finished rendering"
+					: "Receiving and rendering chunks"}
+			</p>
+			<StreamingMarkdownRun
+				key={run}
+				text={activeText}
+				animationState={animationState}
+				onSetMessageAnimated={onSetMessageAnimated}
+			/>
 		</div>
 	);
 };

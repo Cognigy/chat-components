@@ -541,6 +541,114 @@ describe("Text Component", () => {
 			expect(container.textContent).not.toContain("](");
 		});
 
+		test("keeps a trailing bare URL as text until its address is complete", async () => {
+			vi.useFakeTimers();
+			const text = "Visit https://example.com/docs";
+			const { container, renderText } = renderStreamingText(
+				text,
+				true,
+				undefined,
+				undefined,
+				false,
+			);
+
+			await advanceCharacters(20);
+			expect(container.querySelector(".markdown")?.textContent).toContain("https://");
+			expect(container.querySelector("a")).toBeNull();
+
+			await advanceCharacters(50);
+			expect(container.querySelector(".markdown")?.textContent).toBe(text);
+			expect(container.querySelector("a")).toBeNull();
+
+			renderText(text, "start", true);
+			expect(screen.getByRole("link", { name: "https://example.com/docs" })).toHaveAttribute(
+				"href",
+				"https://example.com/docs",
+			);
+		});
+
+		test("turns a URL into a link after the next word starts streaming", async () => {
+			vi.useFakeTimers();
+			const chunks = ["Visit https://example.com/docs", " now"];
+			const { container, renderText } = renderStreamingText(
+				chunks.slice(0, 1),
+				true,
+				undefined,
+				undefined,
+				false,
+			);
+
+			await advanceCharacters(60);
+			expect(container.querySelector("a")).toBeNull();
+			renderText(chunks, "start", false);
+			await advanceCharacters(12);
+			expect(container.querySelector("a")?.getAttribute("href")).toBe(
+				"https://example.com/docs",
+			);
+		});
+
+		test("keeps an unfinished URL inside inline code as code", async () => {
+			vi.useFakeTimers();
+			const { container } = renderStreamingText(
+				"`https://example.com/docs",
+				true,
+				undefined,
+				undefined,
+				false,
+			);
+
+			await advanceCharacters(55);
+			expect(container.querySelector("code")?.textContent).toBe("https://example.com/docs");
+			expect(container.querySelector("a")).toBeNull();
+		});
+
+		test("does not expose a changing URL nested inside bold", async () => {
+			vi.useFakeTimers();
+			const { container } = renderStreamingText(
+				"**https://example.com/docs",
+				true,
+				undefined,
+				undefined,
+				false,
+			);
+
+			await advanceCharacters(65);
+			expect(container.querySelector("strong")?.textContent).toBe("https://example.com/docs");
+			expect(container.querySelector("a")).toBeNull();
+		});
+
+		test("preserves completed links while an identical trailing URL is still streaming", async () => {
+			vi.useFakeTimers();
+			const text = "https://example.com and https://example.com";
+			const { container } = renderStreamingText(text, true, undefined, undefined, false);
+
+			await advanceCharacters(75);
+			expect(container.querySelector(".markdown")?.textContent).toBe(text);
+			expect(container.querySelector("a")?.getAttribute("href")).toBe("https://example.com");
+			expect(container.querySelectorAll(".markdown a")).toHaveLength(2);
+		});
+
+		test("keeps bold and inline code nested while a code span is unfinished", async () => {
+			vi.useFakeTimers();
+			const chunks = ["**bold with `co", "de` here**"];
+			const { container, renderText } = renderStreamingText(
+				chunks.slice(0, 1),
+				true,
+				undefined,
+				undefined,
+				false,
+			);
+
+			await advanceCharacters(30);
+			expect(container.querySelector("strong code")?.textContent).toBe("co");
+			expect(container.querySelector(".markdown")?.textContent).not.toContain("**");
+
+			renderText(chunks, "start", true);
+			await advanceCharacters(45);
+			expect(container.querySelector("strong code")?.textContent).toBe("code");
+			expect(container.querySelector("strong")?.textContent).toBe("bold with code here");
+		});
+
 		test("handles delayed link chunks and waits for the last chunk before finishing", async () => {
 			vi.useFakeTimers();
 			const onSetMessageAnimated = vi.fn();
