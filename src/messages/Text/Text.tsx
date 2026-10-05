@@ -203,15 +203,14 @@ const Text: FC<TextProps> = props => {
 					remarkPlugins={[remarkGfm]}
 					urlTransform={url => url}
 					components={{
-						a: ({ node, ...props }) =>
+						a: ({ node, children, ...props }) =>
 							node?.position?.start.offset === pendingUrlOffset &&
 							pendingUrlOffset >= 0 ? (
-								<>{props.children}</>
+								<>{children}</>
 							) : (
-								/* eslint-disable-next-line jsx-a11y/anchor-has-content -- react-markdown
-								   component override: the link text always arrives as children via the
-								   {...props} spread from the markdown AST; the rule cannot see it. */
-								<a target="_blank" rel="noreferrer" {...props} />
+								<a target="_blank" rel="noreferrer" {...props}>
+									{children}
+								</a>
 							),
 						p: ({ node: _node, children, ...props }) => (
 							<p {...props}>
