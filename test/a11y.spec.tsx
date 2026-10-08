@@ -5,9 +5,9 @@
  * The sweep iterates the SAME case corpus as the DOM-compatibility gate
  * (test/fixtures/message-cases.ts) — adding a new message type there puts
  * it under both gates automatically. On top of the idle-state sweep,
- * stateful cases scan interaction states (open datepicker dialog, open
- * image lightbox, gallery after slide navigation) where dialog-name and
- * focus-management violations live — axe only sees DOM that exists.
+ * stateful cases scan active streaming and interaction states (open
+ * datepicker dialog, open image lightbox, gallery after slide navigation)
+ * where violations can only be found in the current DOM.
  *
  * Rules that need real layout/paint (color-contrast, target-size,
  * scrollable-region-focusable) are disabled here and covered by Webchat's
@@ -25,8 +25,8 @@
  * axe-core cannot run concurrently in one environment — tests in this file
  * must stay serial (never `test.concurrent`).
  */
-import { render, screen, fireEvent } from "@testing-library/react";
-import { describe, it, expect } from "vitest";
+import { act, render, screen, fireEvent } from "@testing-library/react";
+import { describe, it, expect, vi } from "vitest";
 
 import Message from "src/messages/Message";
 import { coreCases, demoCases, a11yOnlyCases, asBot, type Case } from "./fixtures/message-cases";
@@ -131,6 +131,83 @@ async function expectA11yCompliant(caseName: string, container: Element) {
 }
 
 const sweepCases: Case[] = [...coreCases, ...demoCases, ...a11yOnlyCases];
+
+it("stateful: partial streaming Markdown is accessible", async () => {
+	vi.useFakeTimers();
+	let container!: HTMLElement;
+	try {
+		({ container } = render(
+			<Message
+				message={{
+					id: "streaming-a11y",
+					source: "bot",
+					text: "**bold and still typing**",
+					animationState: "start",
+				}}
+				config={
+					{
+						settings: {
+							behavior: { renderMarkdown: true, progressiveMessageRendering: true },
+						},
+					} as React.ComponentProps<typeof Message>["config"]
+				}
+			/>,
+		));
+		for (let index = 0; index < 8; index++) {
+			await act(async () => {
+				await vi.advanceTimersByTimeAsync(25);
+			});
+		}
+		expect(container.querySelector("strong")?.textContent).toContain("bold");
+	} finally {
+		vi.useRealTimers();
+	}
+	await expectA11yCompliant("stateful: partial streaming Markdown", container);
+});
+
+it("stateful: unfinished Markdown links and bare URLs avoid premature anchors", async () => {
+	vi.useFakeTimers();
+	let container!: HTMLElement;
+	try {
+		({ container } = render(
+			<Message
+				message={{
+					id: "streaming-link-a11y",
+					source: "bot",
+					text: "Read [guide](https://example.com) and https://example.net/docs",
+					animationState: "start",
+				}}
+				config={
+					{
+						settings: {
+							behavior: { renderMarkdown: true, progressiveMessageRendering: true },
+						},
+					} as React.ComponentProps<typeof Message>["config"]
+				}
+			/>,
+		));
+		for (let index = 0; index < 13; index++) {
+			await act(async () => {
+				await vi.advanceTimersByTimeAsync(25);
+			});
+		}
+		expect(container.querySelector("a")).toBeNull();
+
+		for (let index = 0; index < 75; index++) {
+			await act(async () => {
+				await vi.advanceTimersByTimeAsync(25);
+			});
+		}
+		expect(container.querySelectorAll("a")).toHaveLength(1);
+		expect(container.querySelector("a")?.getAttribute("href")).toBe("https://example.com");
+		expect(container.querySelector(".markdown")?.textContent).toContain(
+			"https://example.net/docs",
+		);
+	} finally {
+		vi.useRealTimers();
+	}
+	await expectA11yCompliant("stateful: unfinished Markdown and bare URL", container);
+});
 
 describe("Accessibility (WCAG 2.2 AA): message-type sweep", () => {
 	it.each(sweepCases)(

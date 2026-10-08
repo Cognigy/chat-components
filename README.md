@@ -24,6 +24,14 @@ and much more. We aim to use these components in various products such as:
 
 `npm run test:watch`
 
+To inspect progressive Markdown rendering, open the dev server's
+`/#streaming-messages` tab (usually `http://localhost:5173/#streaming-messages`).
+Choose an example or enter your own Markdown, then select **Replay streaming**.
+It sends eight-character chunks every 250 ms with Markdown and progressive
+rendering enabled; watch the message while it arrives and compare its finished
+output with the editor. The existing message examples appear below the replay
+controls. The former `/#streaming-markdown-lab` URL also opens this tab.
+
 ### To test in local Webchat v3 build:
 
 1. In /chat-components run `npm ci && npm pack`
