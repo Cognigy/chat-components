@@ -2,7 +2,7 @@ import { render, screen } from "@testing-library/react";
 import { describe, expect, test } from "vitest";
 import { Message } from "src/index";
 import { IWebchatConfig } from "src/messages/types";
-import { decodeLegacyEscapes, escapeHtml, plainTextToHtml } from "src/utils";
+import { escapeHtml, plainTextToHtml } from "src/utils";
 import { IMessage } from "@cognigy/socket-client";
 import file from "test/fixtures/file.json";
 
@@ -67,15 +67,18 @@ describe("user text with disableHtmlInput (plain text mode)", () => {
 		expect(container.querySelector("img")).toBeNull();
 	});
 
-	// Webchat 3.48–3.53 sent and stored user text HTML-escaped. Replayed from
-	// history, it must display as the user typed it, not as "&amp;".
+	// Entity-like text displays exactly as typed: nothing is decoded. This
+	// includes the four sequences an HTML serializer emits. (User text stored by
+	// Webchat 3.48–3.53 was escaped before sending, so it displays escaped too.)
 	test.each([
-		["Tools &amp; Access", "Tools & Access"],
-		["a &lt; b &amp; c", "a < b & c"],
-		["&lt;img src=x onerror=alert(1)&gt;", "<img src=x onerror=alert(1)>"],
-	])("displays escaped history text %s as %s", (stored, shown) => {
-		const { container } = renderUserMessage(stored);
-		expect(bubbleText(container)).toBe(shown);
+		"Tom &amp; Jerry",
+		"&lt;3",
+		"a &gt; b",
+		"a&nbsp;b",
+		"&lt;img src=x onerror=alert(1)&gt;",
+	])("displays typed %s exactly as typed", text => {
+		const { container } = renderUserMessage(text);
+		expect(bubbleText(container)).toBe(text);
 		expect(container.querySelector("img")).toBeNull();
 	});
 
@@ -172,33 +175,9 @@ describe("escapeHtml", () => {
 	});
 });
 
-describe("decodeLegacyEscapes", () => {
-	// Exactly what Webchat 3.48–3.53 produced when it escaped user text.
-	test("decodes &amp;, &lt;, &gt; and &nbsp;", () => {
-		expect(decodeLegacyEscapes("a &lt; b &amp; c &gt; d&nbsp;e")).toBe("a < b & c > d e");
-	});
-
-	// One pass: "&amp;lt;" was a typed "&lt;", so it must not become "<".
-	test("decodes only one level", () => {
-		expect(decodeLegacyEscapes("&amp;lt;")).toBe("&lt;");
-	});
-
-	// A full HTML decoder treats "&reg", "&sect", "&para" (no semicolon) as
-	// entities and corrupts query strings. These must pass through unchanged.
-	test.each(["?a=1&region=eu&section=2&para=x", "Caf&eacute;", "&#60;3"])(
-		"leaves %s unchanged",
-		text => {
-			expect(decodeLegacyEscapes(text)).toBe(text);
-		},
-	);
-});
-
 describe("plainTextToHtml", () => {
-	// Decode, then escape: the output is the same for raw and once-escaped text.
-	test("is stable for text that was already escaped once", () => {
-		expect(plainTextToHtml("a &lt; b &amp; c", false)).toBe(
-			plainTextToHtml("a < b & c", false),
-		);
+	test("escapes every &, including entity-like sequences", () => {
+		expect(plainTextToHtml("a &lt; b & c", false)).toBe("a &amp;lt; b &amp; c");
 	});
 
 	test("escapes text around and inside links", () => {

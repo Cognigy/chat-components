@@ -204,49 +204,26 @@ export const replaceUrlsWithHTMLanchorElem = (text: string) => {
 export const escapeHtml = (text: string): string =>
 	text.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
 
-const LEGACY_ESCAPES: Record<string, string> = {
-	"&amp;": "&",
-	"&lt;": "<",
-	"&gt;": ">",
-	"&nbsp;": " ",
-};
-
-/**
- * Reverses the escaping that Webchat 3.48–3.53 applied to user text before
- * sending it (an `innerHTML` serialization, which only emits these four
- * entities). Persisted history from those versions holds `Tools &amp; Access`.
- * Only these exact sequences are decoded, in one pass: a full entity decoder
- * would also turn `?a=1&region=eu` into `?a=1®ion=eu`.
- * @param text User text, possibly stored by Webchat 3.48–3.53.
- * @returns The text with those four entities decoded.
- */
-export const decodeLegacyEscapes = (text: string): string =>
-	text.replace(/&(?:amp|lt|gt|nbsp);/g, entity => LEGACY_ESCAPES[entity]);
-
 /**
  * Converts plain text to HTML that displays it literally, optionally with URLs
  * as links. Escaping is applied per segment, after URL matching, so an escaped
  * `&lt;` or `&amp;` can never be pulled into a URL.
- *
- * Text escaped by Webchat 3.48–3.53 is decoded first (`decodeLegacyEscapes`),
- * so old history displays as typed and text escaped once is not escaped twice.
  * @param text The plain text.
  * @param linkify Whether to turn URLs into links.
  * @returns HTML that displays the text literally.
  */
 export const plainTextToHtml = (text: string, linkify: boolean): string => {
-	const plain = decodeLegacyEscapes(text);
-	if (!linkify) return escapeHtml(plain);
+	if (!linkify) return escapeHtml(text);
 
 	let html = "";
 	let lastIndex = 0;
-	for (const match of plain.matchAll(URL_MATCHER_REGEX)) {
+	for (const match of text.matchAll(URL_MATCHER_REGEX)) {
 		const url = escapeHtml(match[0]);
-		html += escapeHtml(plain.slice(lastIndex, match.index));
+		html += escapeHtml(text.slice(lastIndex, match.index));
 		html += `<a href="${url}" target="_blank">${url}</a>`;
 		lastIndex = match.index + match[0].length;
 	}
-	return html + escapeHtml(plain.slice(lastIndex));
+	return html + escapeHtml(text.slice(lastIndex));
 };
 
 /**
