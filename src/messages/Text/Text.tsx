@@ -2,7 +2,7 @@ import { FC, useEffect, useMemo, useState } from "react";
 import classNames from "classnames";
 import { useLiveRegion, useMessageContext } from "../hooks";
 import ChatBubble from "../../common/ChatBubble";
-import { replaceUrlsWithHTMLanchorElem } from "src/utils";
+import { plainTextToHtml, replaceUrlsWithHTMLanchorElem } from "src/utils";
 import { useSanitize } from "src/sanitize";
 import { IStreamingMessage } from "../types";
 import classes from "./Text.module.css";
@@ -138,10 +138,20 @@ const Text: FC<TextProps> = props => {
 		}
 	}, [content, isStreaming, message]);
 
+	// With disableHtmlInput, user input is plain text, so it is escaped here, at
+	// render time. Webchat sends it unescaped: escaping before sending put
+	// `&amp;` into the text that flows, intents and logs receive (CGY-36060).
+	// Escaping at render also covers messages replayed from history.
+	const renderAsPlainText =
+		source === "user" && !!config?.settings?.widgetSettings?.disableHtmlInput;
+	const linkify = !config?.settings?.widgetSettings?.disableRenderURLsAsLinks;
+
 	// Optionally transform URL strings into clickable links
-	const enhancedURLsText = config?.settings?.widgetSettings?.disableRenderURLsAsLinks
-		? displayedText
-		: replaceUrlsWithHTMLanchorElem(displayedText);
+	const enhancedURLsText = renderAsPlainText
+		? plainTextToHtml(displayedText, linkify)
+		: linkify
+			? replaceUrlsWithHTMLanchorElem(displayedText)
+			: displayedText;
 
 	const ignoreSanitization =
 		source === "user" && config?.settings?.widgetSettings?.disableTextInputSanitization;
