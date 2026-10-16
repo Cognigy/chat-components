@@ -70,8 +70,7 @@ const baselineVersion: string = JSON.parse(
 // The shared <Message> case corpus. The same tables drive the a11y gate
 // (test/a11y.spec.tsx) — a new message type added there is automatically
 // covered by both gates. See test/fixtures/message-cases.ts.
-import { coreCases, demoCases, type Case } from "./fixtures/message-cases";
-import pkg from "../package.json";
+import { coreCases, demoCases } from "./fixtures/message-cases";
 
 import type { IMessage } from "@cognigy/socket-client";
 
@@ -188,88 +187,18 @@ describe("normalize preserves the accessibility contract", () => {
 	});
 });
 
-// Version-aware skip for INTENTIONAL structural divergence (procedure in
-// docs/accessibility.md, "ARIA is API"). The skip only applies while the
-// installed baseline predates the release that ships the change, so the cases
-// re-enable themselves once that version is on npm `latest`.
-//
-// Version-aware skip for INTENTIONAL structural divergence (CGY-38030): image/video/audio/file
-// attachments now prefer `downloadUrl` over the legacy `url` when both are present. The dedicated
-// "* download url" corpus cases set them to different values on purpose to prove the preference,
-// so their rendered `src`/`href` diverges from any published baseline older than this fix.
-//
-// The cases stay in the shared corpus, so the a11y gate keeps scanning them. Once 0.83.0 ships to
-// npm latest, install-dom-compat-baseline resolves to it, the condition turns false, and the cases
-// re-enable themselves. Cut the release that carries this change as 0.83.0 — or update FIX_VERSION
-// to the version it actually ships under (the hygiene guard below fails the bump PR otherwise).
-// TODO(CGY-38030): delete this block once 0.83.0 is on npm latest.
-const FIX_VERSION = "0.83.0";
-const INTENTIONALLY_DIVERGING_PRE_0_82 = new Set<string>([
-	"demo: image download url",
-	"demo: video download url",
-	"demo: audio download url",
-	"demo: file download url",
-]);
-// Compares release triplets only: tolerates a leading "v" and ignores any
-// prerelease/build suffix (a "0.80.0-beta.1" baseline published to npm
-// `latest` counts as 0.80.0 — betas of the fix version carry the change).
-// Non-numeric segments compare as 0 rather than poisoning the result as NaN.
-const semverLt = (a: string, b: string): boolean => {
-	const parse = (version: string) =>
-		version
-			.replace(/^v/, "")
-			.split(/[-+]/)[0]
-			.split(".")
-			.map(segment => (Number.isFinite(Number(segment)) ? Number(segment) : 0));
-	const pa = parse(a);
-	const pb = parse(b);
-	for (let i = 0; i < 3; i++) {
-		if ((pa[i] ?? 0) !== (pb[i] ?? 0)) return (pa[i] ?? 0) < (pb[i] ?? 0);
-	}
-	return false;
-};
-const isSkipped = (c: Case) =>
-	semverLt(baselineVersion, FIX_VERSION) && INTENTIONALLY_DIVERGING_PRE_0_82.has(c.name);
-
-// Release-version guard for the skip block. Nothing else ties FIX_VERSION to
-// the version that actually ships: package.json is bumped in a separate
-// release PR, and if that PR bumped to e.g. 0.80.1, semverLt("0.80.1",
-// "0.81.0") would stay true and the case would be skipped indefinitely — a
-// hole in the very contract this spec protects. While the block exists,
-// package.json must therefore be either the still-unreleased baseline (no
-// bump yet) or FIX_VERSION itself (the bump PR for the fix release). Any
-// other value means the fix is shipping under a different number (update
-// FIX_VERSION) or the block outlived its release (delete it).
-const releaseTriplet = (version: string) =>
-	version.replace(/^v/, "").split(/[-+]/)[0].split(".").slice(0, 3).join(".");
-describe("version-aware skip block hygiene (CGY-38030)", () => {
-	it(`package.json version (${pkg.version}) is the baseline (${baselineVersion}) or FIX_VERSION (${FIX_VERSION}) — otherwise update FIX_VERSION or delete the skip block`, () => {
-		expect([releaseTriplet(baselineVersion), releaseTriplet(FIX_VERSION)]).toContain(
-			releaseTriplet(pkg.version),
-		);
-	});
-});
-
 describe(`DOM compatibility: branch vs @cognigy/chat-components@${baselineVersion}`, () => {
 	describe("core source fixtures", () => {
-		it.each(coreCases.filter(c => !isSkipped(c)))(
+		it.each(coreCases)(
 			"$name — <Message> matches published release DOM",
 			({ message, config, prevMessage }) => assertSameDom(message, config, prevMessage),
-		);
-		it.skip.each(coreCases.filter(isSkipped))(
-			"$name — skipped: intentional DOM change pending 0.83.0 publish (CGY-38030)",
-			() => {},
 		);
 	});
 
 	describe("demo-page message tabs", () => {
-		it.each(demoCases.filter(c => !isSkipped(c)))(
+		it.each(demoCases)(
 			"$name — matches published release DOM",
 			({ message, config, prevMessage }) => assertSameDom(message, config, prevMessage),
-		);
-		it.skip.each(demoCases.filter(isSkipped))(
-			"$name — skipped: intentional DOM change pending 0.83.0 publish (CGY-38030)",
-			() => {},
 		);
 	});
 });
