@@ -181,19 +181,49 @@ export const getRandomId = (prefix = "") => {
  * @param text The Text that should get URLs replaced with <a> elements
  * @returns The Text with <a> elements in place of the urls
  */
-export const replaceUrlsWithHTMLanchorElem = (text: string) => {
-	// Enhanced regex to better capture URLs with parameters
-	//
-	const urlMatcherRegex =
-		/(^|\s)(\b(https?):\/\/([-A-Z0-9+&@$#/%?=~_|!:,.;\p{L}]*[-A-Z0-9+&$@#/%=~_|\p{L}]))/giu;
+// Enhanced regex to better capture URLs with parameters
+const URL_MATCHER_REGEX =
+	/(^|\s)(\b(https?):\/\/([-A-Z0-9+&@$#/%?=~_|!:,.;\p{L}]*[-A-Z0-9+&$@#/%=~_|\p{L}]))/giu;
 
+export const replaceUrlsWithHTMLanchorElem = (text: string) => {
 	if (typeof text !== "string") return text;
 
-	const enhancedText = text.replace(urlMatcherRegex, url => {
+	const enhancedText = text.replace(URL_MATCHER_REGEX, url => {
 		return `<a href="${url}" target="_blank">${url}</a>`;
 	});
 
 	return enhancedText;
+};
+
+/**
+ * Escapes the characters that are significant in HTML text content, so a plain
+ * text string can be placed into an HTML string and display literally.
+ * @param text The plain text.
+ * @returns The text with `&`, `<` and `>` replaced by entities.
+ */
+export const escapeHtml = (text: string): string =>
+	text.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+
+/**
+ * Converts plain text to HTML that displays it literally, optionally with URLs
+ * as links. Escaping is applied per segment, after URL matching, so an escaped
+ * `&lt;` or `&amp;` can never be pulled into a URL.
+ * @param text The plain text.
+ * @param linkify Whether to turn URLs into links.
+ * @returns HTML that displays the text literally.
+ */
+export const plainTextToHtml = (text: string, linkify: boolean): string => {
+	if (!linkify) return escapeHtml(text);
+
+	let html = "";
+	let lastIndex = 0;
+	for (const match of text.matchAll(URL_MATCHER_REGEX)) {
+		const url = escapeHtml(match[0]);
+		html += escapeHtml(text.slice(lastIndex, match.index));
+		html += `<a href="${url}" target="_blank">${url}</a>`;
+		lastIndex = match.index + match[0].length;
+	}
+	return html + escapeHtml(text.slice(lastIndex));
 };
 
 /**

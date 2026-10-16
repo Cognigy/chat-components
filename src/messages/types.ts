@@ -42,6 +42,9 @@ export interface IWebchatSettings {
 		/** Replaces the sanitizer's default tag allow-list entirely; only these tags
 		 *  survive sanitization (`sanitizeHTMLWithConfig` in `src/sanitize.ts`). */
 		customAllowedHtmlTags?: string[];
+		/** User input is plain text, not markup: user text messages are HTML-escaped
+		 *  before rendering, so `&`, `<`, `>` display literally and never become elements. */
+		disableHtmlInput?: boolean;
 		disableRenderURLsAsLinks?: boolean;
 		disableTextInputSanitization?: boolean;
 		enableAutoFocus?: boolean;
