@@ -1016,3 +1016,72 @@ describe("CGY-39786 - every library-added label and accessible name is translata
 		expect(root.querySelector(".flatpickr-minute")).toHaveAttribute("aria-label", "Minute");
 	});
 });
+
+describe("CGY-34998 - month selector stays tabbable without rewriting itself", () => {
+	const messageSingleDate = singleDate as unknown as IMessage;
+	const monthSelectOf = (root: HTMLElement) =>
+		root.querySelector<HTMLSelectElement>(
+			".flatpickr-monthDropdown-months",
+		) as HTMLSelectElement;
+
+	it("an idle open picker never mutates its DOM (month <select> included)", async () => {
+		const { getByTestId, findByRole } = render(<Message message={messageSingleDate} />);
+		const root = await openDialog(findByRole, getByTestId);
+		const monthSelect = monthSelectOf(root);
+		expect(monthSelect).toHaveAttribute("tabindex", "0");
+
+		// The old month-selector observer rewrote tabindex every ~100ms forever; Gecko rebuilds
+		// the native popup on each attribute mutation (flicker on desktop, crash on Firefox for
+		// Android). Watching the whole dialog also catches the same loop in any other observer.
+		const records: MutationRecord[] = [];
+		const watcher = new MutationObserver(list => records.push(...list));
+		watcher.observe(screen.getByRole("dialog"), {
+			attributes: true,
+			childList: true,
+			characterData: true,
+			subtree: true,
+		});
+		await new Promise(resolve => setTimeout(resolve, 500));
+		watcher.disconnect();
+
+		expect(records).toHaveLength(0);
+		expect(monthSelect).toHaveAttribute("tabindex", "0");
+	});
+
+	it("re-enters the tab order after flatpickr rebuilds the options (month nav across a year)", async () => {
+		const { getByTestId, findByRole } = render(<Message message={messageSingleDate} />);
+		const root = await openDialog(findByRole, getByTestId);
+		const next = root.querySelector(".flatpickr-next-month") as Element;
+
+		// changeMonth -> onYearChange -> buildMonthSwitch() resets tabIndex to -1.
+		for (let i = 0; i < 12; i++) fireEvent.click(next);
+		await waitFor(() => expect(monthSelectOf(root)).toHaveAttribute("tabindex", "0"));
+	});
+
+	it("re-enters the tab order after a typed year change (no flatpickr hook fires after it)", async () => {
+		const { getByTestId, findByRole } = render(<Message message={messageSingleDate} />);
+		const root = await openDialog(findByRole, getByTestId);
+		const yearInput = root.querySelector<HTMLInputElement>(".cur-year") as HTMLInputElement;
+
+		// changeYear runs buildMonthSwitch() after onYearChange, so hooks alone would miss it.
+		yearInput.value = String(Number(yearInput.value) + 3);
+		fireEvent.keyUp(yearInput, { key: "Enter" });
+		await waitFor(() => expect(monthSelectOf(root)).toHaveAttribute("tabindex", "0"));
+	});
+
+	it("does not touch the <select> while it is focused; restores tabindex on blur", async () => {
+		const { getByTestId, findByRole } = render(<Message message={messageSingleDate} />);
+		const root = await openDialog(findByRole, getByTestId);
+		const monthSelect = monthSelectOf(root);
+
+		monthSelect.focus();
+		// What buildMonthSwitch() does while the native popup may be open.
+		monthSelect.tabIndex = -1;
+		// Long enough for any observer callback or debounce to have written to it.
+		await new Promise(resolve => setTimeout(resolve, 300));
+		expect(monthSelect).toHaveAttribute("tabindex", "-1");
+
+		monthSelect.blur();
+		await waitFor(() => expect(monthSelect).toHaveAttribute("tabindex", "0"));
+	});
+});
