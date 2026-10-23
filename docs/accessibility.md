@@ -143,6 +143,10 @@ Assistive-technology behavior in every consumer depends on this library's render
 - Example: a gallery card with a `default_action` URL exposes its `role="link"` on an inner `.webchat-carousel-template-link` wrapper (or on the image area when the content block has no text) with `tabindex="0"`, and its buttons are siblings of the link rather than nested inside it (CGY-37634, shipped in 0.81.0). Since 0.82.0 the image area is also used when the block text itself contains a control such as an `<a href>`, so a link is never nested in the link (CGY-39786); the affected case is skipped against baselines < 0.82.0. Once that version is on npm `latest` the block is deleted, not kept.
 - The skip block carries a guard test that pins `FIX_VERSION` to the release: while the skip block exists, `package.json` must equal either the installed baseline or `FIX_VERSION`, so a bump PR to a different number fails loudly instead of leaving the case skipped forever. Cut the release as `FIX_VERSION` or update it in the same PR.
 
+## Language of parts: localized message time (CGY-3745)
+
+`customTranslations.dateLocale` (a BCP 47 tag, resolved by `getDateLocale` in `src/utils.ts`) sets the locale of the time in `MessageHeader`. That time may be in a different language than the page, so when the setting is present it is marked with `lang` (SC 3.1.2): on the visible `<time>`, and on a `<span>` around the time inside the screen-reader label (`ariaLabels.messageHeader.timestamp`, "At {time},"). The template text around the time keeps the page language. When the setting is missing or invalid, `Intl` uses the browser locale and the markup is unchanged, so the dom-compat corpus (which does not set it) needs no skip. Webchat resolves the same setting with the same rules for its own dates, such as the previous-conversations list.
+
 ## Keyboard & interaction specs
 
 axe audits static ARIA; it cannot press keys. Interactive components therefore need a dedicated **`<Component>A11y.spec.tsx`** interaction spec covering:

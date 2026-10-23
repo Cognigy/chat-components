@@ -6,7 +6,7 @@ import { useMessageContext } from "src/messages/hooks";
 import Avatar from "./Avatar";
 import { HeaderEllipsis } from "src/assets/svg";
 import Typography from "./Typography/Typography";
-import { interpolateString } from "src/utils";
+import { getDateLocale, interpolateString } from "src/utils";
 
 interface MessageHeaderProps {
 	enableAvatar?: boolean;
@@ -60,10 +60,31 @@ const MessageHeader: FC<MessageHeaderProps> = props => {
 		name = overrides.botAvatarOverrideNameOnce;
 	}
 
-	const timestamp = new Date(recievedAt).toLocaleTimeString([], {
+	// undefined (no or an invalid customTranslations.dateLocale) uses the browser's locale
+	const dateLocale = getDateLocale(config);
+
+	const timestamp = new Date(recievedAt).toLocaleTimeString(dateLocale, {
 		hour: "2-digit",
 		minute: "2-digit",
 	});
+
+	const timestampTemplate =
+		config?.settings.customTranslations?.ariaLabels?.messageHeader?.timestamp ?? "At {time},";
+	const timestampLabelParts = timestampTemplate.split("{time}");
+
+	// With a configured dateLocale the time may be in another language than the
+	// rest of the label (and the page), so mark it for screen readers (SC 3.1.2).
+	// Without one the label stays a plain string, identical to earlier versions.
+	const timestampLabel =
+		dateLocale && timestampLabelParts.length > 1 ? (
+			<>
+				{interpolateString(timestampLabelParts[0], {})}
+				<span lang={dateLocale}>{timestamp}</span>
+				{interpolateString(timestampLabelParts.slice(1).join(timestamp), {})}
+			</>
+		) : (
+			interpolateString(timestampTemplate, { time: timestamp })
+		);
 
 	const sourceInfo = isUserMessage
 		? (config?.settings.customTranslations?.ariaLabels?.messageHeader?.user ?? "You said:")
@@ -85,15 +106,7 @@ const MessageHeader: FC<MessageHeaderProps> = props => {
 		<header className={className} data-testid="message-header">
 			{props.enableAvatar && <Avatar />}
 			<span className={mainClasses.srOnly}>
-				<span data-skip-live-region>
-					{interpolateString(
-						config?.settings.customTranslations?.ariaLabels?.messageHeader?.timestamp ??
-							"At {time},",
-						{
-							time: timestamp,
-						},
-					)}
-				</span>
+				<span data-skip-live-region>{timestampLabel}</span>
 				{sourceInfo}
 			</span>
 			<Typography
@@ -111,7 +124,9 @@ const MessageHeader: FC<MessageHeaderProps> = props => {
 					</>
 				)}
 				<span>
-					<time className={classes.timestamp}>{timestamp}</time>
+					<time className={classes.timestamp} lang={dateLocale}>
+						{timestamp}
+					</time>
 				</span>
 			</Typography>
 		</header>
