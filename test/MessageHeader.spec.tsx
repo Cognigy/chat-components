@@ -70,6 +70,9 @@ describe("MessageHeader - customTranslations.dateLocale", () => {
 		["unset", {}],
 		["empty", { dateLocale: "" }],
 		["invalid", { dateLocale: "not a locale!" }],
+		// Valid tag, but no date formatting for it: the text falls back to the
+		// browser locale, so it must not claim lang="tlh"
+		["valid but unsupported", { dateLocale: "tlh" }],
 	])("falls back to the browser locale with unchanged markup when %s", (_, translations) => {
 		const { time, srLabel } = renderHeader(configWith(translations));
 
