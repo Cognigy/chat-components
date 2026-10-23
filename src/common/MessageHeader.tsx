@@ -1,4 +1,4 @@
-import { FC, useEffect } from "react";
+import { FC, Fragment, useEffect } from "react";
 import classes from "./MessageHeader.module.css";
 import classnames from "classnames";
 import mainClasses from "src/main.module.css";
@@ -73,14 +73,18 @@ const MessageHeader: FC<MessageHeaderProps> = props => {
 	const timestampLabelParts = timestampTemplate.split("{time}");
 
 	// With a configured dateLocale the time may be in another language than the
-	// rest of the label (and the page), so mark it for screen readers (SC 3.1.2).
-	// Without one the label stays a plain string, identical to earlier versions.
+	// rest of the label (and the page), so mark every {time} for screen readers
+	// (SC 3.1.2). Without one the label stays a plain string, identical to
+	// earlier versions.
 	const timestampLabel =
 		dateLocale && timestampLabelParts.length > 1 ? (
 			<>
-				{interpolateString(timestampLabelParts[0], {})}
-				<span lang={dateLocale}>{timestamp}</span>
-				{interpolateString(timestampLabelParts.slice(1).join(timestamp), {})}
+				{timestampLabelParts.map((part, index) => (
+					<Fragment key={index}>
+						{index > 0 && <span lang={dateLocale}>{timestamp}</span>}
+						{interpolateString(part, {})}
+					</Fragment>
+				))}
 			</>
 		) : (
 			interpolateString(timestampTemplate, { time: timestamp })

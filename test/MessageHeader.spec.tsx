@@ -59,6 +59,22 @@ describe("MessageHeader - customTranslations.dateLocale", () => {
 		expect(srLabel.querySelector("span[lang='en-US']")).toHaveTextContent("02:05 PM");
 	});
 
+	it("marks every {time} in the template with its language", () => {
+		const { srLabel } = renderHeader(
+			configWith({
+				dateLocale: "en-US",
+				ariaLabels: { messageHeader: { timestamp: "Um {time}; nochmals {time}." } },
+			}),
+		);
+
+		expect(srLabel).toHaveTextContent("Um 02:05 PM; nochmals 02:05 PM.");
+		const times = srLabel.querySelectorAll("span[lang='en-US']");
+		expect(times).toHaveLength(2);
+		times.forEach(time => expect(time).toHaveTextContent("02:05 PM"));
+		// The template text around the times stays unmarked
+		expect(srLabel.querySelectorAll("[lang]")).toHaveLength(2);
+	});
+
 	it("canonicalizes the tag", () => {
 		const { time } = renderHeader(configWith({ dateLocale: " DE-de " }));
 
