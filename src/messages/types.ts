@@ -59,6 +59,9 @@ export interface IWebchatSettings {
 	customTranslations?: {
 		datePickerMonthLabel?: string;
 		datePickerYearLabel?: string;
+		/** BCP 47 language tag ("de", "fr-CA") for the time in the message header.
+		 *  Unset or invalid: the browser's locale is used. */
+		dateLocale?: string;
 		/** Accessible names used by the renderers; each read site has an English fallback. */
 		ariaLabels?: {
 			// Links and buttons
