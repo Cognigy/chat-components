@@ -37,7 +37,7 @@
 		"prepare": "husky || true"
 	},
 	"devDependencies": {
-		"@cognigy/socket-client": "5.0.0-beta.20",
+		"@cognigy/socket-client": "5.0.0-beta.26",
 		"@fontsource/geist": "^5.2.8",
 		"@testing-library/jest-dom": "^6.9.1",
 		"@testing-library/react": "^16.3.0",
