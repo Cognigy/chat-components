@@ -75,8 +75,6 @@ function customElements(pluginConfig: Config): Plugin {
 		// owns, so they outlive a single render; collect them and disconnect every one in onDestroy
 		// to avoid leaking observers (and the nodes they reference) when the instance is destroyed.
 		const observers: MutationObserver[] = [];
-		// Pending timeouts (e.g. the month-selector debounce) cleared on destroy.
-		const timeouts: ReturnType<typeof setTimeout>[] = [];
 
 		let liveRegion: HTMLElement | null = null;
 		// When true, a month/year change is being driven by our PageUp/PageDown handler, which
@@ -631,7 +629,17 @@ function customElements(pluginConfig: Config): Plugin {
 			refreshGridAfterRebuild();
 		}
 
-		// Observe month selector for changes and set tabindex again to 0. This is to ensure that the month selector is focusable all the time
+		// Keep the month selector in the tab order. flatpickr's buildMonthSwitch() resets it to
+		// tabIndex=-1 whenever it rebuilds the options (year change, redraw, jumpToDate, ...), and
+		// on several of those paths no hook fires afterwards (e.g. changeYear runs it after
+		// onYearChange), so the reset is caught with an observer rather than re-applied from hooks.
+		// The observer must settle (CGY-34998): setAttribute() queues a mutation record even when
+		// the value is unchanged, so an unconditional write here re-triggers this observer forever
+		// — ~10 writes/s on an idle picker, which made Firefox rebuild the native <select> popup
+		// (flicker on desktop, browser + OS crash on Firefox for Android). Hence the tabindex-only
+		// filter and the early return once the value is already "0". The <select> is also never
+		// touched while focused, which is when its native popup can be open; that reset is
+		// deferred until blur.
 		function observeMonthSelector() {
 			const monthYearDiv =
 				fp?.calendarContainer?.getElementsByClassName("flatpickr-current-month")[0];
@@ -640,28 +648,32 @@ function customElements(pluginConfig: Config): Plugin {
 				"flatpickr-monthDropdown-months",
 			)?.[0] as HTMLElement;
 
-			if (monthSelector) {
-				if (monthSelector.dataset.observed === "true") return;
+			if (!monthSelector || monthSelector.dataset.observed === "true") return;
+			monthSelector.dataset.observed = "true";
 
-				let timeout: NodeJS.Timeout | null = null;
+			let restoreOnBlur = false;
+			const restoreTabindex = () => {
+				if (monthSelector.getAttribute("tabindex") === "0") return;
+				if (document.activeElement === monthSelector) {
+					if (!restoreOnBlur) {
+						restoreOnBlur = true;
+						monthSelector.addEventListener(
+							"blur",
+							() => {
+								restoreOnBlur = false;
+								restoreTabindex();
+							},
+							{ once: true },
+						);
+					}
+					return;
+				}
+				monthSelector.setAttribute("tabindex", "0");
+			};
 
-				const observer = new MutationObserver(() => {
-					if (timeout) clearTimeout(timeout);
-
-					timeout = setTimeout(() => {
-						monthSelector.setAttribute("tabindex", "0");
-					}, 100);
-					timeouts.push(timeout);
-				});
-
-				observer.observe(monthSelector, {
-					attributes: true,
-					childList: false,
-					subtree: false,
-				});
-				observers.push(observer);
-				monthSelector.dataset.observed = "true";
-			}
+			const observer = new MutationObserver(restoreTabindex);
+			observer.observe(monthSelector, { attributes: true, attributeFilter: ["tabindex"] });
+			observers.push(observer);
 		}
 
 		// Set necessary label and attributes to month select for accessibility
@@ -1202,14 +1214,12 @@ function customElements(pluginConfig: Config): Plugin {
 			});
 		}
 
-		// Disconnect every observer and clear pending timeouts created by this plugin. flatpickr
-		// calls onDestroy when the instance is destroyed/unmounted; without this the long-lived
-		// observers (nav buttons, day grid, month selector) would keep referencing detached DOM.
+		// Disconnect every observer created by this plugin. flatpickr calls onDestroy when the
+		// instance is destroyed/unmounted; without this the long-lived observers (nav buttons,
+		// day grid, month selector) would keep referencing detached DOM.
 		function cleanup() {
 			observers.forEach(observer => observer.disconnect());
 			observers.length = 0;
-			timeouts.forEach(timeout => clearTimeout(timeout));
-			timeouts.length = 0;
 			liveRegion?.remove();
 			liveRegion = null;
 		}
