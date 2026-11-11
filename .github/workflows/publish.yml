@@ -44,7 +44,7 @@ jobs:
 
             # Use this GitHub Action
             - name: Check package version
-              uses: technote-space/package-version-check-action@v1
+              uses: technote-space/package-version-check-action@5b8670322cb31a68e5252c2dc7bc0016f7701ce6 # v1.9.3
               with:
                   COMMIT_DISABLED: 1
 
