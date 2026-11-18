@@ -39,7 +39,7 @@ jobs:
               if: always()
               run: npm run coverage
 
-            - uses: SonarSource/sonarqube-scan-action@v7
+            - uses: SonarSource/sonarqube-scan-action@e805d875275f728fac1885b413934be6d7c63f65 # v8.4.1
               if: always() && hashFiles('coverage/lcov.info') != ''
               env:
                   SONAR_TOKEN: ${{ secrets.NICE_SONAR_TOKEN }}
