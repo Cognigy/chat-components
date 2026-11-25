@@ -329,9 +329,14 @@ describe("sanitizeHTMLWithConfig", () => {
 			const result = sanitizeHTMLWithConfig(input, undefined);
 			expect(result).toContain("srcdoc");
 			expect(result).toContain("Welcome");
-			expect(result).toContain("This is");
-			expect(result).toContain("<b>valid</b>");
-			expect(result).toContain("content.");
+			// parse5 8.1 serializes < and > in attribute values as entities, so compare the decoded value
+			const srcdoc = new DOMParser()
+				.parseFromString(result, "text/html")
+				.querySelector("iframe")
+				?.getAttribute("srcdoc");
+			expect(srcdoc).toContain("This is");
+			expect(srcdoc).toContain("<b>valid</b>");
+			expect(srcdoc).toContain("content.");
 		});
 
 		test("preserves styled content in iframe srcdoc", () => {
