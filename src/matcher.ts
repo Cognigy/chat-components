@@ -9,6 +9,7 @@ import {
 	Gallery,
 	TextWithButtons,
 	DatePicker,
+	Rating,
 	AdaptiveCard,
 } from "./messages";
 import { IWebchatConfig } from "./messages/types";
@@ -18,6 +19,7 @@ import { IAdaptiveCardMessage } from "@cognigy/socket-client/lib/interfaces/mess
 import { XAppSubmitMessage } from "./messages/xApp";
 import type { MessageProps } from "./messages/Message";
 import Webchat3Event from "./messages/Webchat3Event";
+import { isRatingMessage } from "./messages/Rating/helper";
 
 export type MatchConfig = {
 	match: (message: IMessage, config?: IWebchatConfig) => boolean;
@@ -47,6 +49,11 @@ const defaultConfig: MatchConfig[] = [
 			return message?.data?._plugin?.type === "date-picker";
 		},
 		component: DatePicker,
+	},
+	{
+		// Rating
+		match: message => isRatingMessage(message),
+		component: Rating,
 	},
 	{
 		// Text with buttons / Quick Replies

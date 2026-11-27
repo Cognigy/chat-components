@@ -1,0 +1,17 @@
+{
+	"text": "",
+	"data": {
+		"_plugin": {
+			"type": "rating",
+			"data": {
+				"title": "How would you rate this conversation?",
+				"maxRating": 5,
+				"enableComment": true,
+				"commentPlaceholder": "Tell us more (optional)",
+				"commentRequiredBelow": 2,
+				"submitButtonText": "Send feedback",
+				"thankYouText": "Thank you for your feedback!"
+			}
+		}
+	}
+}

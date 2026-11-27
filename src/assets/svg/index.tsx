@@ -15,6 +15,7 @@ import EllipsisVerticalIcon from "./ellipsis_vertical.svg?react";
 import CirclePlayIcon from "./circle_play.svg?react";
 import PlayIcon from "./play.svg?react";
 import PauseIcon from "./pause.svg?react";
+import StarIcon from "./star.svg?react";
 
 export {
 	BotAvatar,
@@ -34,4 +35,5 @@ export {
 	CirclePlayIcon,
 	PlayIcon,
 	PauseIcon,
+	StarIcon,
 };

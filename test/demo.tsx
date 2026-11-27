@@ -33,6 +33,7 @@ import datePickerNoTime from "test/fixtures/datepicker/noTime.json";
 import datePickerTimeonly from "test/fixtures/datepicker/timeOnly.json";
 import datePickerDisableWeekends from "test/fixtures/datepicker/disableWeekends.json";
 import datePickerLocaleDe from "test/fixtures/datepicker/localeDe.json";
+import rating from "test/fixtures/rating.json";
 
 import { IMessage } from "@cognigy/socket-client";
 import { ChatEvent, TypingIndicator, Typography } from "../src/index.ts";
@@ -1338,6 +1339,29 @@ const screens: TScreen[] = [
 						},
 					},
 				},
+			},
+		],
+	},
+	{
+		title: "Rating",
+		anchor: "rating",
+		messages: [
+			{ message: rating as IMessage },
+			{
+				message: {
+					source: "bot",
+					data: {
+						_plugin: {
+							type: "rating",
+							data: {
+								title: "How likely are you to recommend us?",
+								maxRating: 10,
+								enableComment: false,
+								submitButtonText: "Submit",
+							},
+						},
+					},
+				} as IMessage,
 			},
 		],
 	},
