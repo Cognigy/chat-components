@@ -25,6 +25,6 @@ jobs:
 
         steps:
             - name: "Create release"
-              uses: "ergebnis/.github/actions/github/release/create@1.8.0"
+              uses: "ergebnis/.github/actions/github/release/create@005d2a20cf85a212b5dfef28bed2f341addcf000" # 1.17.1
               with:
                   github-token: "${{ secrets.GITHUB_TOKEN }}"
