@@ -14,7 +14,7 @@ const ImageThumb = forwardRef((_props, ref) => {
 	const [isImageBroken, setImageBroken] = useState(false);
 
 	const handleKeyDown = (event: React.KeyboardEvent<HTMLDivElement>) => {
-		if (event.key === "Enter" || event.key === " ") {
+		if (event.key === "Enter") {
 			if (onExpand) onExpand();
 		}
 	};

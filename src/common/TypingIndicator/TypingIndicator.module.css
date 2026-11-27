@@ -57,12 +57,6 @@
 	animation-name: dot3;
 }
 
-@media (prefers-reduced-motion) {
-	.dot {
-		animation: none !important;
-	}
-}
-
 @keyframes dot1 {
 	0% {
 		transform: translateY(0);

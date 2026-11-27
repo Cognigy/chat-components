@@ -4,7 +4,7 @@ import classes from "./Audio.module.css";
 import classnames from "classnames";
 import Controls from "./Controls";
 import { OnProgressProps } from "react-player/base";
-import { useLiveRegion, useMessageContext } from "src/messages/hooks";
+import { useMessageContext } from "src/messages/hooks";
 import { getChannelPayload, resolveAttachmentUrl } from "src/utils";
 import { IWebchatAudioAttachment } from "@cognigy/socket-client";
 
@@ -57,12 +57,6 @@ const Audio: FC = () => {
 	const handleDuration = useCallback((duration: number) => {
 		setDuration(duration);
 	}, []);
-
-	useLiveRegion({
-		messageType: "audio",
-		data: { hasTranscript: !!altText },
-		validation: () => !!resolvedUrl,
-	});
 
 	if (!resolvedUrl) return null;
 

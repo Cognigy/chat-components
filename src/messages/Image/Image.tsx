@@ -31,10 +31,7 @@ const Image: FC = () => {
 	const contextValue = useMemo(
 		() => ({
 			onExpand: () => isDownloadable && setShowLightbox(true),
-			onClose: () => {
-				setShowLightbox(false);
-				buttonRef.current?.focus(); // Restore focus after closing the lightbox
-			},
+			onClose: () => setShowLightbox(false),
 			url: resolvedUrl ?? "",
 			altText,
 			isDownloadable,

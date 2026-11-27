@@ -24,9 +24,6 @@ const LightboxHeader: FC = () => {
 		window.open(url, "_blank");
 	};
 
-	const downloadFullsizeImageLabel =
-		config?.settings.customTranslations?.ariaLabels?.downloadFullsizeImage ||
-		"Download full-size image";
 	const closeFullsizeImageModalLabel =
 		config?.settings.customTranslations?.ariaLabels?.closeFullsizeImageModal ||
 		"Close full-size image viewer";
@@ -35,12 +32,7 @@ const LightboxHeader: FC = () => {
 		<div className={classes.header}>
 			<div className={classes.caption}>{altText}</div>
 			<div className={classes.iconsGroup}>
-				<button
-					ref={downloadButton}
-					onClick={handleDownload}
-					aria-label={downloadFullsizeImageLabel}
-					className={classes.icon}
-				>
+				<button ref={downloadButton} onClick={handleDownload} className={classes.icon}>
 					<DownloadIcon />
 				</button>
 				<button

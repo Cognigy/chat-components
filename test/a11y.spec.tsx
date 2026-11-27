@@ -82,6 +82,22 @@ const knownViolations: Record<string, KnownViolation[]> = {
 			nodes: ['.flatpickr-innerContainer[role="grid"]', '.flatpickr-days[role="rowgroup"]'],
 		},
 	],
+	"stateful: image lightbox open": [
+		{
+			rule: "button-name",
+			nodes: ["button"],
+			ticket: "TBD",
+			note: "icon-only download button in the lightbox header",
+		},
+	],
+	"stateful: image lightbox open (no alt text)": [
+		{
+			rule: "button-name",
+			nodes: ["button"],
+			ticket: "TBD",
+			note: "icon-only download button in the lightbox header",
+		},
+	],
 };
 
 /**

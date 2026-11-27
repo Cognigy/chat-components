@@ -188,7 +188,7 @@ const GalleryItem: FC<GallerySlideProps> = props => {
 			) : (
 				<img
 					src={image_url}
-					alt={image_alt_text || ""}
+					alt={image_alt_text}
 					className={classes.slideImage}
 					onError={() => setImageBroken(true)}
 				/>

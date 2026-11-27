@@ -295,12 +295,8 @@ const Controls: FC<ControlsProps> = props => {
 		config?.settings?.customTranslations?.ariaLabels?.audioTimeRemaining ?? "{time} remaining";
 	const muteAudioLabel =
 		config?.settings?.customTranslations?.ariaLabels?.muteAudio || "Mute audio";
-	const unmuteAudioLabel =
-		config?.settings?.customTranslations?.ariaLabels?.unmuteAudio || "Unmute audio";
 	const volumeLabel =
 		config?.settings?.customTranslations?.ariaLabels?.audioVolume || "Audio volume";
-	const moreOptionsLabel =
-		config?.settings?.customTranslations?.ariaLabels?.audioMoreOptions || "More options";
 	const playbackSpeedLabel =
 		config?.settings?.customTranslations?.ariaLabels?.audioPlaybackSpeed || "Playback speed";
 	const normalSpeedLabel =
@@ -361,7 +357,7 @@ const Controls: FC<ControlsProps> = props => {
 					<button
 						className={classes.muteButton}
 						onClick={onMuteToggle}
-						aria-label={muted ? unmuteAudioLabel : muteAudioLabel}
+						aria-label={muteAudioLabel}
 						data-testid="mute-button"
 					>
 						{muted || volume === 0 ? <VolumeXIcon /> : <VolumeIcon />}
@@ -396,7 +392,7 @@ const Controls: FC<ControlsProps> = props => {
 								className={classnames(classes.menuButton, {
 									[classes.menuButtonActive]: menuOpen,
 								})}
-								aria-label={moreOptionsLabel}
+								aria-label="More options"
 								aria-haspopup="menu"
 							>
 								<EllipsisVerticalIcon />

@@ -11,7 +11,7 @@ const Lightbox: FC = () => {
 	const dialogRef = useRef<HTMLDivElement>(null);
 
 	// Window-level keyboard handling for the modal (APG modal dialog pattern):
-	// Escape closes; Tab / Shift+Tab cycle through the dialog's focusable
+	// Tab / Shift+Tab cycle through the dialog's focusable
 	// elements and never leave it. The trap lives on the window rather than on
 	// the buttons or the dialog element so it also covers focus resting on
 	// nothing: clicking the full-size image moves focus to <body>, and since
@@ -19,10 +19,6 @@ const Lightbox: FC = () => {
 	// there lands in the page behind the lightbox.
 	useEffect(() => {
 		const handleKeyDown = (event: KeyboardEvent) => {
-			if (event.key === "Escape" || event.code === "Escape") {
-				onClose && onClose();
-				return;
-			}
 			if (event.key !== "Tab" || !dialogRef.current) return;
 
 			const { firstFocusable, lastFocusable } = getFocusableElements(dialogRef.current);
@@ -44,7 +40,7 @@ const Lightbox: FC = () => {
 		};
 		window.addEventListener("keydown", handleKeyDown);
 		return () => window.removeEventListener("keydown", handleKeyDown);
-	}, [onClose]);
+	}, []);
 
 	const handleOnClickBackdrop = (event: React.MouseEvent<HTMLElement>) => {
 		event.preventDefault();

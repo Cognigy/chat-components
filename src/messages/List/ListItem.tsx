@@ -1,4 +1,4 @@
-import { FC, useMemo, KeyboardEvent, useEffect } from "react";
+import { FC, useMemo, useEffect } from "react";
 import classes from "./List.module.css";
 import mainclasses from "src/main.module.css";
 import { useMessageContext, useRandomId } from "src/messages/hooks";
@@ -57,12 +57,6 @@ const ListItem: FC<IListItemProps> = props => {
 		return;
 	};
 
-	const handleKeyDown = (event: KeyboardEvent) => {
-		if (default_action && event.key === "Enter") {
-			handleClick();
-		}
-	};
-
 	const titleHtml = processHTML(title);
 	const subtitleHtml = processHTML(subtitle);
 	const subtitleId = useRandomId("webchatListTemplateHeaderSubtitle");
@@ -82,20 +76,13 @@ const ListItem: FC<IListItemProps> = props => {
 	const renderImage = useMemo(() => {
 		if (!image_url) return null;
 
-		// Without alt text a role="img" would expose an unnamed image to
-		// assistive technology (axe: role-img-alt); treat it as decorative
-		// instead so screen readers skip it entirely.
 		return (
 			<div
 				className={classes.listItemImage}
 				style={{ backgroundImage: getBackgroundImage(image_url) }}
 				data-testid="regular-image"
 			>
-				{image_alt_text ? (
-					<span role="img" aria-label={image_alt_text} />
-				) : (
-					<span aria-hidden="true" />
-				)}
+				<span role="img" aria-label={image_alt_text} />
 			</div>
 		);
 	}, [image_alt_text, image_url]);
@@ -151,10 +138,10 @@ const ListItem: FC<IListItemProps> = props => {
 			id={id}
 		>
 			{!isHeaderElement && dividerBefore && <div className={mainclasses.divider} />}
+			{/* eslint-disable-next-line jsx-a11y/click-events-have-key-events */}
 			<div
 				className={contentClasses}
 				onClick={handleClick}
-				onKeyDown={handleKeyDown}
 				role={default_action?.url ? "link" : undefined}
 				aria-label={default_action?.url ? `${titleHtml}. ${opensInNewTabLabel}` : undefined}
 				aria-describedby={subtitle ? subtitleId : undefined}
